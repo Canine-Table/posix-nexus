@@ -1,4 +1,5 @@
 function _unsetMap(hash) {
+
     if (hash in hash_key) {
         delete hash_key[hash];
     }
@@ -7,7 +8,7 @@ function _unsetMap(hash) {
         delete hash_value[hash];
     }
 
-    hash = "";
+    hash = _null();
 }
 
 function _absolute(integer) {
@@ -24,11 +25,53 @@ function _null() {
     return "";
 }
 
-function _ascii(character) {
-    return index("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789", character);
+function _ascii(character, character_class) {
+
+    if (length(ascii_character_map["ascii"]) < 127) {
+        split("", ascii_character_map, "");
+        ascii_character_map["lower"] = "abcdefghijklmnopqrstuvwxyz";
+        ascii_character_map["upper"] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        ascii_character_map["digit"] = "0123456789";
+        ascii_character_map["punct"] = " !\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~";
+        ascii_character_map["cntrl"] = "\x00\x01\x02\x03\x04\x05\x06\x07\x08\x09\x0A\x0B\x0C\x0D\x0E\x0F\x10\x11\x12\x13\x14\x15\x16\x17\x18\x19\x1A\x1B\x1C\x1D\x1E\x1F";
+        ascii_character_map["xdigit"] = sprintf("%s%s%s", substr(ascii_character_map["lower"], 1  , 6), substr(ascii_character_map["upper"], 1  , 6), ascii_character_map["digit"]);
+        ascii_character_map["alpha"] = sprintf("%s%s", ascii_character_map["upper"], ascii_character_map["lower"]);
+        ascii_character_map["word"] = sprintf("%s%s", ascii_character_map["alpha"], "_");
+        ascii_character_map["alnum"] = sprintf("%s%s", ascii_character_map["alpha"], ascii_character_map["digit"]);
+        ascii_character_map["ascii"] = ascii_character_map["cntrl"] " !\"#$%&'()*+,-./" ascii_character_map["digit"] ":;<=>?@" ascii_character_map["upper"] "[\\]^_`" ascii_character_map["lower"] "{|}~";
+    }
+
+    if (_isEmpty(character) != _null()) {
+        if (_isEmpty(character_class) == _null()) {
+            character_class = ascii_character_map["ascii"];
+        } else if (character_class ~ /^(aln(u(m)?)?)$/) {
+            character_class = ascii_character_map["alnum"];
+        } else if (character_class ~ /^(w(o(r(d)?)?)?)$/) {
+            character_class = ascii_character_map["word"];
+        } else if (character_class ~ /^(alp(h(a)?)?)$/) {
+            character_class = ascii_character_map["alpha"];
+        } else if (character_class ~ /^(x(d(i(g(i(t)?)?)?)?)?)$/) {
+            character_class = ascii_character_map["xdigit"];
+        } else if (character_class ~ /^(d(i(g(i(t)?)?)?)?)$/) {
+            character_class = ascii_character_map["digit"];
+        } else if (character_class ~ /^(u(p(p(e(r)?)?)?)?)$/) {
+                character_class = ascii_character_map["upper"];
+        } else if (character_class ~ /^(l(o(w(e(r)?)?)?)?)$/) {
+            character_class = ascii_character_map["lower"];
+        } else if (character_class ~ /^(p(u(n(c(t)?)?)?)?)$/) {
+            character_class = ascii_character_map["punct"];
+        } else {
+            character_class = sprintf("%s", ascii_character_map["ascii"]);
+        }
+
+        return index(character_class, character);
+    }
+    
+    return _boolean("error");
 }
 
-function _hash(hash_string, indexes) {
+function _hash(string, salt) {
+
     if (_isEmpty(hash_string) != _null()) {
         for (i = 1; i <= 100; i++) {
             hash_string = hash_string "" i; hash = 0;
@@ -100,6 +143,30 @@ function _boolean(value) {
     }
 }
 
+
+function _unique(array_list, delimiter) {
+
+    if (_isEmpty(delimiter) == _null()) {
+        delimiter = ",";
+    }
+
+    split("", unique, "");
+    unique_string = "";
+
+    for (item in array_list) {
+        unique[array_list[item]] = 1;
+    }
+
+    # Print the unique keys
+    for (key in unique) {
+        unique_string = unique_string "," key;
+    }
+
+    delete unique;
+    return split(substr(unique_string, 2), array_list, delimiter);
+}
+
+
 function _yield(value) {
     if (length(value) > 0) {
         return value;
@@ -160,48 +227,28 @@ function _hashmap(hash_string, hash_number, delimiter) {
 
 }
 
-
-function parameters(parameter_string, selected_option, delimiter) {
-
-    if (length(delimiter) < 1) {
-        delimiter = ",";
-    }
-
-    string_length = 0; parameter_count = split(parameter_string, parameter_values, delimiter);
-    if (length(parameter_string) > 0) {
-        {
-            for (parameter_index in parameter_values) {
-                gsub(/([[:space:]]+$)|(^[[:space:]]+)/, "", parameter_values[parameter_index]);
-                current_index = parameter_index; is_uniq = "true";
-                current_substring = substr(parameter_values[current_index], 1, ++string_length);
-
-                if (string_length > length(parameter_values[current_index])) {
-                    break;
-                }
-
-                for (substring_index in parameter_values) {
-                    substring = substr(parameter_values[substring_index], 1, string_length);
-                                   print substring
-
-                    if (current_index != substring_index && current_substring == substring) {
-                        is_uniq = "false";
-                        break;
-                    }
-                }
-            }
-
-            if (is_uniq == "true" || parameter_count == 1) {
-                prefix_suffix_map[parameter_values[current_index]] = substr(parameter_values[current_index], string_length);
-                print parameter_values[current_index] " " prefix_suffix_map[parameter_values[current_index]];
-                delete parameter_values[current_index];
-                string_length = 0; substring = ""; parameter_count = parameter_count - 1;
-            }
+function _clear(array_name) {
+    if (_isEmpty(array_name) != _null()) {
+        if (length(delimiter) < 1) {
+            delimiter = ",";
         }
 
-    } while (length(parameter_values) != length(parameter_values) + int(duplicates));
+        index_count = split(array_name, array_list, delimiter);
+        for (array_index = 1; array_index <= index_count; ++array_index) {
+            delete array_list[array_index];
+            split("", array_list[array_index]);
+        }
 
-    delete parameter_values;
-    delete prefix_suffix_map;
+        delete array_list;
+    }
+}
+
+function _append(string) {
+    if (_isEmpty(option_string) != _null()) {
+        if (length(delimiter) < 1) {
+            delimiter = ",";
+        }
+    }
 }
 
 function _option(option_string, delimiter) {
@@ -210,27 +257,53 @@ function _option(option_string, delimiter) {
             delimiter = ",";
         }
 
-        option_count = split(option_string, options, delimiter);
-        split("", prefix_map, "");
+        if (option_string !~ /,[[:space:]]$/) {
+            option_string = option_string ",";
+        }
 
-        for (current in options) {
+        seen_string = _null();
+        split(option_string, options, delimiter);
+        option_count = _unique(options);
 
-            characters = 0;
-            while (current in options) {
-                ++characters;
+    while (length(option_string) > 0) {
+            # Iterate over each word
+            for (option in options) {
+                current_option = _removeSpaces(options[option]);
+                current_prefix = _null();
 
-                for (option in options) {
+                option_search = "^[[:space:]]*" current_option "[[:space:]]*,";
+                sub(option_search, "", option_string);
+                option_search = "^[[:space:]]*" current_option "[[:space:]]*,";
 
-                    if (option != current && characters < length(current)) {
+                # Find the shortest unique prefix
+                for (characters = 1; characters <= length(current_option); ++characters) {
+                    current_prefix = substr(current_option, 1, characters);
 
+                    # print option_string
+                    if (!(current_prefix in seen_options) && seen_string !~ option_search) {
+                        seen_options[current_prefix] = substr(current_option, length(current_prefix) + 1);
+                        seen_string = seen_string "," current_option;
+                        gsub(current_option ",", "", option_string);
+                        break;
                     }
-
-                    if (characters == length(current) && ! current in prefix_map) {
-
-                    }
-
                 }
             }
         }
+
+        for (seen in seen_options) {
+            print seen " + " seen_options[seen]; # " + "seen_options[seen];
+        }
+
+        delete seen_options;
+        delete options;
+
+        return _boolean("true");
     }
+
+    return _boolean("false");
+}
+
+function _shell() {
+    shell = ENVIRON["SHELL"];
+    print shell;
 }

@@ -124,9 +124,9 @@ function _import() {
 
         }
        # cut -s -d '/' -f 1 "${V}"; # &;
-        POSIX_SH_LIBRARY_DIRECTORY
-        POSIX_AWK_LIBRARY_DIRECTORY
-        POSIX_SED_LIBRARY_DIRECTORY
+        # POSIX_SH_LIBRARY_DIRECTORY
+        # POSIX_AWK_LIBRARY_DIRECTORY
+        # POSIX_SED_LIBRARY_DIRECTORY
     done < "${V}";
 
     awk -v shell="$(ps -p $$ | awk '{ if ( $NF != "CMD" ) { print $NF } }')" 'BEGIN {

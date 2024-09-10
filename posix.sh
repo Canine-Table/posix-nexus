@@ -1,7 +1,7 @@
 #!/bin/sh
 
 function _posix() {
-    awk ${@} \
+    echo "${@}" | awk \
         -f '/usr/local/include/posix/posix.d/awk/awk-utilities.awk' \
         -f '/usr/local/include/posix/posix.d/awk/testing-utilities.awk';
     return 0;

@@ -1,3 +1,6 @@
-BEGIN {
-    while (my_list("hello world", 3);
+{
+    _option("app,apple,apple,ape,angry,help");
+    for (y in x) {
+        print x[y];
+    }
 }
