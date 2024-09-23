@@ -1,26 +1,3 @@
-############################################# ( Authentication Functions ) #############################################
-
-
-function _shell() {
-    shell = ENVIRON["SHELL"];
-    gsub(/^.*\//, "", shell);
-    return shell;
-
-}
-
-
-################################################ ( Datatype Functions ) ################################################
-
-
-function _null() {
-    return "";
-
-}
-
-
-################################################# ( String Functions ) #################################################
-
-
 function _completion(completion_string, completion_input, completion_delimiter) {
 
     # Use "," as the fallback completion_delimiter if the 3rd parameter 'completion_delimiter' is empty or not provided
@@ -127,8 +104,25 @@ function _completion(completion_string, completion_input, completion_delimiter) 
 }
 
 
-################################################## ( Math Functions ) ##################################################
+function _truncate(truncate_string) {
+    # Remove leading and trailing whitespace from truncate_string
+    gsub(/(^[[:space:]]+)|([[:space:]]+$)/, "", truncate_string);
+
+    # Return the modified truncate_string
+    return truncate_string;
+
+}
 
 
-#################################################################################################################
+
+function _constant(constant_string_delimiter, constant_string) {
+    if (! constant_string_delimiter) {
+        constant_string_delimiter = ",";
+    }
+
+    __constant_delimiter_pairs = constant_string_delimiter;
+    gsub("[^" constant_string_delimiter "]", "", __constant_delimiter_pairs);
+    #print __constant_delimiter_pairs
+    # print __constant_delimiter_pairs;
+}
 
