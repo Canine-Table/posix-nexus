@@ -226,19 +226,20 @@
 225                      "" #
 226                      "" #
 227                      "" #
-228                      "" #
-230                      "Lower" # [a-z]
-231                      "Upper" # [A-Z]
-232                      "Alpha" # [A-Z] and [a-z]
-233                      "Digit" # [0-9]
-234                      "XDigit" # [0-9], [a-f], and [A-F]
-235                      "Alnum" # [0-9], [a-z], and [A-Z]
-236                      "" #
-237                      "" #
-238                      "" #
-239                      "" #
-240                      "" #
-241                      "" #
+228                      "Invalid Input" #
+229                      "Lower" # [a-z]
+230                      "Upper" # [A-Z]
+231                      "Alpha" # [A-Z] and [a-z]
+232                      "Digit" # [0-9]
+233                      "XDigit" # [0-9], [a-f], and [A-F]
+234                      "Alnum" # [0-9], [a-z], and [A-Z]
+235                      "Regular File"
+236                      "Directory"
+237                      "Symbolic Link"
+238                      "Block Device"
+239                      "Socket"
+240                      "Named Pipe"
+241                      "Socket"
 242                      "Char" # Between (-128 and 127)
 243                      "Unsigned Char" # Between, (0, 255)
 244                      "Short" # Between (-32768, 32767)
