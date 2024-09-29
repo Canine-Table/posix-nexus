@@ -1,5 +1,5 @@
-0                        "False"
-1                        "True"
+0                        "False" # in Bash 0 is "True";
+1                        "True" in Bash anything greater than 0 is "False";
 2                        "" #
 3                        "" #
 4                        "" #
@@ -198,14 +198,14 @@
 197                      "" #
 198                      "" #
 199                      "" #
-200                      "" #
-201                      "" #
-202                      "" #
-203                      "" #
-204                      "" #
-205                      "" #
-206                      "" #
-207                      "" #
+200                      "Permissions on file is ---" #
+201                      "Permissions on file is --x" #
+202                      "Permissions on file is -w-" #
+203                      "Permissions on file is -wx" #
+204                      "Permissions on file is r--" #
+205                      "Permissions on file is r-x" #
+206                      "Permissions on file is rw-" #
+207                      "Permissions on file is rww" #
 208                      "" #
 209                      "" #
 210                      "" #
@@ -218,28 +218,28 @@
 217                      "" #
 218                      "" #
 219                      "" #
-220                      "" #
-221                      "" #
-222                      "" #
-223                      "" #
-224                      "" #
-225                      "" #
-226                      "" #
-227                      "" #
-228                      "Invalid Input" #
-229                      "Lower" # [a-z]
-230                      "Upper" # [A-Z]
-231                      "Alpha" # [A-Z] and [a-z]
-232                      "Digit" # [0-9]
-233                      "XDigit" # [0-9], [a-f], and [A-F]
-234                      "Alnum" # [0-9], [a-z], and [A-Z]
-235                      "Regular File"
-236                      "Directory"
-237                      "Symbolic Link"
-238                      "Block Device"
-239                      "Socket"
+220                      "Invalid Properties" #
+221                      "Sourced From an Invalid File" #
+222                      "Invalid Input" #
+223                      "Command Not Found" #
+224                      "Lower" # [a-z]
+225                      "Upper" # [A-Z]
+226                      "Alpha" # [A-Z] and [a-z]
+227                      "Digit" # [0-9]
+228                      "XDigit" # [0-9], [a-f], and [A-F]
+229                      "Alnum" # [0-9], [a-z], and [A-Z]
+230                      "Regular File"
+231                      "NOT a Regular File"
+232                      "Directory"
+233                      "NOT a Directory"
+234                      "Symbolic Link"
+235                      "NOT a Symbolic Link"
+236                      "Block Device"
+237                      "NOT a Block Device"
+238                      "Socket"
+239                      "NOT a Socket"
 240                      "Named Pipe"
-241                      "Socket"
+241                      "NOT a Named Pipe"
 242                      "Char" # Between (-128 and 127)
 243                      "Unsigned Char" # Between, (0, 255)
 244                      "Short" # Between (-32768, 32767)
@@ -254,3 +254,4 @@
 253                      "Double" #Between (2.22507e-308, 1.79769e+308)
 254                      "Long Double" # Between (3.3621e-4932, 1.18973e+4932)
 255                      "Null" # Empty String
+well you sort of see what im trying to do. map meaning for every digit so I have to do less computation. the only thing is my system is clearly not clomplete. can we complete this system together to give the posix shells return code the power it desirves?
