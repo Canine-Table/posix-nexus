@@ -1,0 +1,15 @@
+EXIT, Triggered when the shell exits.
+HUP, Hangup detected on controlling terminal or death of controlling process.
+INT, Interrupt from keyboard (usually Ctrl+C).
+QUIT, Quit from keyboard (usually Ctrl+).
+TERM, Termination signal.
+USR1, User-defined signal 1.
+USR2, User-defined signal 2.
+ALRM, Timer signal from alarm function.
+CHLD, Child stopped or terminated.
+CONT, Continue if stopped.
+STOP, Stop process.
+TSTP, Stop typed at terminal.
+TTIN, Terminal input for background process.
+TTOU, Terminal output for background process.
+WINCH, Window size change.

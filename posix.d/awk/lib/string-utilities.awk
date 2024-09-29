@@ -114,15 +114,180 @@ function _truncate(truncate_string) {
 }
 
 
+function _characterCounter(characterCounter_string, characterCounter_character) {
 
-function _constant(constant_string_delimiter, constant_string) {
-    if (! constant_string_delimiter) {
-        constant_string_delimiter = ",";
+    # Check if the input string is provided
+    if (characterCounter_string) {
+ 
+        # If the character to count is not provided, default to a space
+        if (! characterCounter_character) {
+            characterCounter_character = " ";
+
+        }
+
+        # Use gsub to replace all occurrences of the character with an empty string
+        # gsub returns the number of replacements made, which is the count of the character
+        return gsub(characterCounter_character, "", characterCounter_string);
+
+    } else {
+        # If the input string is not provided, return 0
+        return 0;
+
     }
 
-    __constant_delimiter_pairs = constant_string_delimiter;
-    gsub("[^" constant_string_delimiter "]", "", __constant_delimiter_pairs);
-    #print __constant_delimiter_pairs
-    # print __constant_delimiter_pairs;
+}
+
+
+function _constant(constant_string, constant_array_reference) {
+
+    # Check if the input string is provided.
+    if (constant_string) {
+        # Clear the array to ensure it's empty before starting.
+        split("", constant_array_reference, "");
+        constant_array_reference[0] = "";
+
+        # Define a constant character using its ASCII code (0x27 is the ASCII code for the single quote character ')
+        __constant_character = sprintf("%c", "\x27");
+ 
+        # Define a delimiter character using its ASCII code (0x2c is the ASCII code for the comma character ,)
+        __constant_delimiter_character = sprintf("%c", "\x2c");
+
+        # Define a escape character using its ASCII code (0x2f is the ASCII code for the forward slash character /)
+        __constant_escape_character = sprintf("%c", "\x2f");
+
+        # Temporary string to hold the current field.
+        __constant_result = "";
+
+        # Define and set last index to 0 for empty
+        __constant_result_index = 0;
+
+        # Loop while constant_string is not empty.
+        while (constant_string) {
+            # Find the index of the constant character in the string.
+            __constant_index = index(constant_string, __constant_character);
+
+            # Find the index of the delimiter character in the string.
+            __constant_delimiter_index = index(constant_string, __constant_delimiter_character);
+
+            # Check if the constant character appears in the string.
+            if (_characterCounter(constant_string, __constant_character) > 0) {
+
+                # Check if the constant character appears before the delimiter.
+                if (_characterCounter(constant_string, __constant_delimiter_character) > 0 && __constant_index < __constant_delimiter_index) {
+
+                    # Check if the character immediately before the constant character is the escape character
+                    if (substr(constant_string, __constant_index - 1, 1) == __constant_escape_character) {
+                        __constantEscape(constant_string " " __constant_index);
+                        exit; # TODO testing
+
+                    # Check if the string matches the pattern: any characters, a constant character, any characters, another constant character, and optional spaces
+                    } else if (match(constant_string, "^.*" __constant_character ".*" __constant_character "[[:space:]]*")) {
+                        # Extract the substring from the start to the end of the matched pattern
+                        __constant_placeholder = substr(constant_string, 1, RSTART + RLENGTH);
+
+                        # Check if the placeholder matches the pattern: constant character, optional spaces, delimiter character, optional spaces, end of string
+                        if (match(__constant_placeholder, __constant_character "[[:space:]]*" __constant_delimiter_character "[[:space:]]*$")) {
+                            # Extract the substring from the start of the matched pattern to the end
+                            __constant_end = substr(__constant_placeholder, RSTART, RLENGTH);
+
+                            # Remove the matched pattern from the placeholder
+                            sub(__constant_end, "", __constant_placeholder);
+
+                            # Remove the delimiter character from the end pattern
+                            sub(__constant_delimiter_character, "", __constant_end);
+                            
+                            # Append the placeholder and end pattern to the result
+                            __constant_result = __constant_result "" __constant_placeholder "" __constant_end;
+
+                             # Clear the placeholder and end pattern
+                            __constant_placeholder = ""; 
+                            __constant_end = "";
+
+                        }
+
+                        constant_array_reference[++__constant_result_index] = "\x22" __constant_result "\x22";
+
+                        # Check if the value 0 is present in constant_array_reference
+                        if (constant_array_reference[0] != "") {
+                            # Append the result __constant_delimiter_character to constant_array_reference[0] if index 0 of constant_array_reference is not empty.
+                            constant_array_reference[0] = "\x51" constant_array_reference[0] "" __constant_delimiter_character "\x51";
+
+                        }
+
+                        # Concatenate the result at the current index to the value at index 0
+                        constant_array_reference[0] = constant_array_reference[0] ""  constant_array_reference[__constant_result_index];
+                        
+                        # Update constant_string to the substring starting after the matched pattern
+                        constant_string = substr(constant_string, RSTART + RLENGTH + 1);
+
+                        # Reset __constant_result to an empty string
+                        __constant_result = "";
+ 
+                    }
+                }
+
+            } else {
+                # Split constant_string into __constant_values using __constant_delimiter_character and store the count in __constant_value_count
+                __constant_value_count = split(constant_string, __constant_values, __constant_delimiter_character);
+
+                # Loop through each value except the first one
+                for (__constant_value_index = 1; __constant_value_index < __constant_value_count; ++__constant_value_index) {
+
+                    # Check if the value 0 is present in constant_array_reference
+                    if (constant_array_reference[0] != "") {
+                        # Append the result __constant_delimiter_character to constant_array_reference[0] if index 0 of constant_array_reference is not empty.
+                        constant_array_reference[0] = constant_array_reference[0] "" __constant_delimiter_character;
+
+                    }
+
+                    # Update constant_array_reference at the next index with the concatenation of __constant_result and the value at __constant_value_index
+                    onstant_array_reference[++__constant_result_index] = __constant_result "" __constant_values[__constant_value_index];
+
+
+                    # Concatenate multiple values and characters to the value at index 0 of constant_array_reference
+                    constant_array_reference[0] = constant_array_reference[0] "" __constant_character "" __constant_result "" constant_array_reference[__constant_result_index] "" __constant_character;
+
+                    # Reset __constant_result to an empty string
+                    __constant_result = "";
+
+                    # Extract substring from constant_string starting from the first character
+                    # up to the character just before the first occurrence of __constant_delimiter_character
+                    sub(substr(constant_string, 1, index(constant_string, __constant_delimiter_character) - 1), "", constant_string);
+
+                    # Find the position of the first occurrence of __constant_delimiter_character
+                    # Move the position to just after the delimiter
+                    # Extract the substring starting from the position just after the delimiter to the end of constant_string
+                    constant_string = substr(constant_string, index(constant_string, __constant_delimiter_character) + 1);
+                }
+
+                #Check if the value 0 is present in constant_array_reference
+                if (constant_array_reference[0] != "") {
+                    # Append the result __constant_delimiter_character to constant_array_reference[0] if index 0 of constant_array_reference is not empty.
+                    constant_array_reference[0] = constant_array_reference[0] "" __constant_delimiter_character;
+
+                }
+
+
+                # Update constant_array_reference at the next index with the concatenation of __constant_result and the value at __constant_value_index
+                constant_array_reference[++__constant_result_index] = constant_string;
+
+                # Concatenate multiple values and characters to the value at index 0 of constant_array_reference
+                constant_array_reference[0] = constant_array_reference[0] "" __constant_character "" __constant_result "" constant_array_reference[__constant_result_index] "" __constant_character;
+
+                # Reset constant_string and __constant_result to empty strings
+                constant_string = ""; __constant_result = "";
+
+            }
+
+        }
+
+        delete __constant_values;
+        for (__constant_value_index = 0; __constant_value_index < length(constant_array_reference); ++__constant_value_index) {
+            print constant_array_reference[__constant_value_index];
+
+        }
+
+    }
+
 }
 
