@@ -33,7 +33,7 @@ function _shell() {
 function _awk() {
 
     # Attempt to find and set an awk variant, prioritizing common and lightweight versions
-    export AWK="$(
+    [ -z "${AWK}" -o "${1}" = '-R' -o "${1}" = '--reload' ] && export AWK="$(
         command -v mawk ||          # Mawk is a fast and lightweight version of awk
         command -v nawk ||          # Nawk is the new awk, often used as the default on many systems
         command -v gawk ||          # Gawk is the GNU version of awk, feature-rich and widely used
@@ -54,243 +54,245 @@ function _awk() {
 }
 
 
-function _sed() {
+function _ckeck() {
 
-    # Attempt to find and set a sed variant, prioritizing common versions
-    export SED="$(
-        command -v sed ||           # BSD sed, commonly found on BSD-based systems
-        command -v gsed ||          # GNU sed, feature-rich and widely used
-        false;                      # Ensure the chain returns a non-zero status if no sed variant is found
+    _awk || return 228;
 
-    )" || {
-        # If no variant of sed is found, return 1 (failure)
-        return 1;
-
-    } && {
-
-        # If arguments are provided, run the sed command with those arguments
-        [ -n "${*}" ] && {
-            ${SED} "${*}";
-        }
-
-        # Return 0 (success)
-        return 0;
-    }
-}
-
-
-function _grep() {
-
-    # Attempt to find and set a grep variant, prioritizing common versions
-    export GREP="$(
-        command -v grep ||          # Standard grep, interprets patterns as basic regular expressions
-        command -v egrep ||         # Extended grep, interprets patterns as extended regular expressions (deprecated)
-        command -v fgrep ||         # Fixed grep, interprets patterns as fixed strings (deprecated)
-        false;                      # Ensure the chain returns a non-zero status if no grep variant is found
-
-    )" || {
-        # If no variant of grep is found, return 1 (failure)
-        return 1;
-
-    } && {
-        # If arguments are provided, run the grep command with those arguments
-        [ -n "${*}" ] && {
-            ${GREP} "${*}";
-        }
-
-        # Return 0 (success)
-        return 0;
+    # Check if both arguments are provided
+    [ -n "${1}" -a -n "${2}" ] || {
+        # Return 255 if the arguments are not provided
+        return 255;
 
     }
+    
+    (
 
-}
+        # List directory details and pipe to awk for processing
+        ls --color=never -dal "${2}" | ${AWK} \
+            -v validation_string="${1}" \
+            -v user="$(whoami)" \
+            -v groups="$(groups "$(whoami)")" \
+            -v container="$(ls --color=never -dal "$(dirname "${2}")" | awk '{printf("%s %s %s", substr($1, 2), $4, $3)}')" \
+        '{
 
+            if (validation_string) {
+                # Initialize flag count and flag types
+                flag_count = length(validation_string);
+                type_flags = "lbpcd-";
+                permission_flags = "rwx";
+                split(groups, group_list, " ");
 
-function _pager() {
+                do {
+                    # Extract the current flag
+                    flag = substr(validation_string, flag_count--, 1);
 
-    # Attempt to find and set a pager, prioritizing common and feature-rich versions
-    export PAGER="$(
-        command -v less ||          # Less is more advanced than more, with backward movement and search capabilities
-        command -v more ||          # More is a basic pager, allowing forward movement through a file
-        command -v most ||          # Most allows viewing multiple files and split-screen functionality
-        command -v pg ||            # Pg is similar to more, with forward and backward movement
-        command -v w3m ||           # W3m is a text-based web browser that can also function as a pager
-        command -v lv ||            # Lv supports multi-byte character encodings, useful for different languages
-        false;                      # Ensure the chain returns a non-zero status if no pager is found
+                    # Check if the flag is a type flag
+                    if (flag ~ /^([lbpcd]|\-)$/) {
 
-    )" || {
-        # If no pager is found, return 1 (failure)
-        return 1;
+                        # Check if the flag is a type flag
+                        if (index(type_flags, flag)) {
+                           # Remove the flag from type_flags
+                            sub(flag, "", type_flags);
 
-    } && {
+                            # Check if the flag matches the file type
+                            if (flag !~ substr($1, 1, 1)) {
+                                # A type flag (one of l, b, p, c, d, -) is found in validation_string but does not match the file type.
+                                exit 4;
+                            }
 
-        # If arguments are provided, run the pager command with those arguments
-        [ -n "${*}" ] && {
-            ${PAGER} "${*}";
-        }
+                        } else {
+                            # A type flag is found in validation_string but it is not in the type_flags string.
+                            exit 2;
 
-        # Return 0 (success)
-        return 0;
+                        }
 
-    }
+                    # Check if the flag is a permission flag
+                    } else if (flag ~ /^([rwx])$/) {
+                        
+                        # Extract the permission part of the file details
+                        if (substr(permission_flags, index(permission_flags, flag), 1)) {
+                            type_permission = substr($1, 2);
 
-}
+                            # Determine the symbolic index for the permission flag
+                            if (flag == "r") {
+                                symbolic = 1;
 
+                            } else if (flag == "w") {
+                                symbolic = 2;
 
-function _editor() {
+                            } else if (flag == "x") {
+                                symbolic = 3;
 
-    # Attempt to find and set a text editor, prioritizing common and feature-rich versions
-    export EDITOR="$(
-        command -v nvim ||          # Nvim is a modern refactor of Vim
-        command -v vim ||           # Vim is a highly configurable text editor built to enable efficient text editing
-        command -v vi ||            # Vi is the original screen-oriented text editor
-        command -v code ||          # Code refers to Visual Studio Code, a powerful code editor
-        command -v emacs ||         # Emacs is an extensible, customizable text editor
-        command -v micro ||         # Micro is a modern and easy-to-use terminal-based text editor
-        command -v kate ||          # Kate is a feature-rich text editor for KDE
-        command -v gedit ||         # Gedit is the default text editor for the GNOME desktop environment
-        command -v leafpad ||       # Leafpad is a simple GTK+ based text editor
-        command -v nano ||          # Nano is a simple, user-friendly text editor
-        false;                      # Ensure the chain returns a non-zero status if no editor is found
+                            }
 
-    )" || {
-        # If no editor is found, return 1 (failure)
-        return 1;
+                            permission_index = symbolic + 6;
 
-    } && {
+                            # Determine the symbolic index for the permission flag
+                            for (; symbolic <= permission_index; symbolic += 3) {
+                                member = int(symbolic / 3);
 
-        # If arguments are provided, run the editor command with those arguments
-        [ -n "${*}" ] && {
-            ${EDITOR} "${*}";
+                                if ((member == 0 && user == $3) || (member == 1 && $4 in group_list) || (member == 2)) {
 
-        }
+                                    if (substr(type_permission, symbolic, 1) == flag) {
 
-        # Return 0 (success)
-        return 0;
+                                        for (symbolic_parent; symbolic_parent <= 9; ++symbolic_parent) {
 
-    }
+                                            if (substr(container, symbolic_parent, 1) == "x") {
 
-}
+                                                space_index = index(substr(container, 11), " ");
 
+                                                if ((symbolic_parent == 3 && user != substr(container, 11 + space_index)) && (symbolic_parent == 6 && ! substr(container, 11, space_index) in group_list)) {
+                                                    delete group_list;
+                                                    exit 8;
 
-function _awk() {
+                                                }
 
-    # Attempt to find and set an awk variant, prioritizing common and lightweight versions
-    export AWK="$(
-        command -v mawk ||          # Mawk is a fast and lightweight version of awk
-        command -v nawk ||          # Nawk is the new awk, often used as the default on many systems
-        command -v gawk ||          # Gawk is the GNU version of awk, feature-rich and widely used
-        command -v awk ||           # Awk is the original version, often a symlink to another variant
-        command -v busybox awk ||   # BusyBox awk is used in embedded systems
-        false;                      # Ensure the chain returns a non-zero status if no awk variant is found
+                                                break;
 
-    )" || {
-        # If no variant of awk is found, return 1 (failure)
-        return 1;
+                                            } else if (symbolic_parent == 9) {
+                                                delete group_list;
+                                                exit 7;
+                                            }
 
-    } && {
-        # Return 0 (success)
-        return 0;
+                                        }
 
-    }
+                                    }
+
+                                } else if (member >= 3) {
+                                    delete group_list;
+                                    
+                                    # The script is checking permissions and the user is not the owner, not in the group, and not others.
+                                    exit 5;
+
+                                }
+
+                            }
+
+                            delete group_list;
+
+                            # Determine the symbolic index for the permission flag
+                            sub(flag, "", permission_flags);
+
+                        } else {
+                            # A permission flag (one of r, w, x) is found in validation_string but it is not in the permission_flags string.
+                            exit 3;
+
+                        }
+
+                    } else {
+                        # A flag in validation_string is neither a type flag nor a permission flag.
+                        exit 1;
+
+                    }
+
+                } while(flag_count);
+                # All flags in validation_string are successfully validated.
+                exit 0;
+
+            }
+
+        }';
+
+        exit $?;
+
+    );
+
+    return $?;
 
 }
 
 
 function _signalList() {
 
+    _awk || return 228;
+
     # Check if the first argument is not empty
     [ -n "${1}" ] || {
         # Return 255 if the first argument is empty
         return 255;
 
-    } && {
+    }
 
-        # List all signal names and numbers, replace newlines with spaces, and process with awk
-        _awk || {
-            exit 1;
+    # List all signal names and numbers, replace newlines with spaces, and process with awk
+    trap -l | tr '\n' ' ' | ${AWK} -F ' ' -v trap="${1}" 'BEGIN {
 
-        } && trap -l | tr '\n' ' ' | ${AWK} -F ' ' -v trap="${1}" 'BEGIN {
+        # Remove leading and trailing spaces from the trap argument and convert to uppercase
+        gsub(/(^[[:space:]]+)|([[:space:]]+$)/, "", trap);
+        trap = toupper(trap);
 
-            # Remove leading and trailing spaces from the trap argument and convert to uppercase
-            gsub(/(^[[:space:]]+)|([[:space:]]+$)/, "", trap);
-            trap = toupper(trap);
+    } {
+        # Remove closing parenthesis from the input
+        gsub("\x29", "", $0);
 
-        } {
-            # Remove closing parenthesis from the input
-            gsub("\x29", "", $0);
+        # Loop through the signals
+        for (signal = 1; signal <= NF; signal += 2) {
+                # Get the signal name
+            signal_name = $(signal + 1);
 
-            # Loop through the signals
-            for (signal = 1; signal <= NF; signal += 2) {
-                 # Get the signal name
-                signal_name = $(signal + 1);
+            # Create a match pattern
+            signal_match = sprintf("%s\x7c%s", $signal, signal_name);
 
-                # Create a match pattern
-                signal_match = sprintf("%s\x7c%s", $signal, signal_name);
+            pseudo_signal = signal_name;
 
-                pseudo_signal = signal_name;
+            # Remove 'SIG' prefix from the signal name if present
+            if (sub(/^(SIG)/, "", pseudo_signal) && pseudo_signal) {
+                signal_match = sprintf("%s\x7c%s", signal_match, pseudo_signal);
 
-                # Remove 'SIG' prefix from the signal name if present
-                if (sub(/^(SIG)/, "", pseudo_signal) && pseudo_signal) {
-                    signal_match = sprintf("%s\x7c%s", signal_match, pseudo_signal);
-
-                }
-
-                # Check if the trap argument matches the signal pattern
-                if (trap ~ "\x5e\x28" signal_match "\x29\x24") {
-                    if (pseudo_signal) {
-                        # Print the pseudo signal name if present                    
-                        printf("%s", pseudo_signal);
-
-                    } else {
-                        # Otherwise, print the signal name
-                        printf("%s", signal_name);
- 
-                    }
-
-                    # Exit with the signal number
-                    exit 0;
-                }
             }
 
-            # Exit with 0 if no match is found
-            exit 1;
+            # Check if the trap argument matches the signal pattern
+            if (trap ~ "\x5e\x28" signal_match "\x29\x24") {
+                if (pseudo_signal) {
+                    # Print the pseudo signal name if present                    
+                    printf("%s", pseudo_signal);
 
-        }' || {
+                } else {
+                    # Otherwise, print the signal name
+                    printf("%s", signal_name);
 
-            [ -n "${2}" ] && {
-                echo -n "${2}" | ${AWK} -v trap="${1}" 'BEGIN {
-                    # Remove leading and trailing spaces from the trap argument and convert to uppercase
-                    gsub(/(^[[:space:]]+)|([[:space:]]+$)/, "", trap);
-                    trap = toupper(trap);
+                }
 
-                } {
-                    line = $0;
+                # Exit with the signal number
+                exit 0;
+            }
+        }
 
-                    do {
+        # Exit with 0 if no match is found
+        exit 1;
 
-                        # Check if the line matches the pattern
-                        if (match(line, /^(.*[[:space:]]+)/)) {
-                            # Remove the matched part from the line
-                            line = substr(line, RSTART + RLENGTH);
-                            sub(/^(.*[[:space:]]+)/, "", value);
+    }' || {
 
-                            # Check if the trap matches the remaining line
-                            if (trap ~ "^" line "$") {
-                                print trap;
-                                exit 0;
+        [ -n "${2}" ] && {
+            echo -n "${2}" | ${AWK} -v trap="${1}" 'BEGIN {
+                # Remove leading and trailing spaces from the trap argument and convert to uppercase
+                gsub(/(^[[:space:]]+)|([[:space:]]+$)/, "", trap);
+                trap = toupper(trap);
 
-                            }
+            } {
+                line = $0;
+
+                do {
+
+                    # Check if the line matches the pattern
+                    if (match(line, /^(.*[[:space:]]+)/)) {
+                        # Remove the matched part from the line
+                        line = substr(line, RSTART + RLENGTH);
+                        sub(/^(.*[[:space:]]+)/, "", value);
+
+                        # Check if the trap matches the remaining line
+                        if (trap ~ "^" line "$") {
+                            print trap;
+                            exit 0;
 
                         }
 
-                    } while ((getline line) > 0);
+                    }
 
-                    # Exit with status 1 if no match is found
-                    exit 1;
-                }';
+                } while ((getline line) > 0);
 
-            }
+                # Exit with status 1 if no match is found
+                exit 1;
+            }';
 
         }
 
@@ -304,60 +306,57 @@ function _signalList() {
 
 function _signalLookup() {
 
+    _awk || return 228;
+
     # Check if both arguments are provided
     [ -n "${1}" -a -n "${2}" ] || {
         # Return 255 if the arguments are not provided
         return 255;
 
-    } && {
+    }
 
-        # Use awk to process the input
-        _awk || {
-            exit 1;
+    # Use awk to process the input
+    echo -n "${1}" | ${AWK} -v trap="${2}" 'BEGIN {
+        # Remove leading and trailing spaces from the trap argument and convert to uppercase
+        gsub(/(^[[:space:]]+)|([[:space:]]+$)/, "", trap);
+        trap = toupper(trap);
 
-        } && echo -n "${1}" | ${AWK} -v trap="${2}" 'BEGIN {
-            # Remove leading and trailing spaces from the trap argument and convert to uppercase
-            gsub(/(^[[:space:]]+)|([[:space:]]+$)/, "", trap);
-            trap = toupper(trap);
+    } {
+        line = $0;
 
-        } {
-            line = $0;
+        do {
 
-            do {
+            if (match(line, /^(.*[[:space:]]+)/)) {
+                current_signal = line;
+                sub("^" substr(line, RSTART, RLENGTH), "", current_signal);
 
-                if (match(line, /^(.*[[:space:]]+)/)) {
-                    current_signal = line;
-                    sub("^" substr(line, RSTART, RLENGTH), "", current_signal);
+                if (trap ~ "\x5e\x28" current_signal "\x29\x24") {
+                    current_delimiter = substr(line, index(line, current_signal) - 2, 1);
 
-                    if (trap ~ "\x5e\x28" current_signal "\x29\x24") {
-                        current_delimiter = substr(line, index(line, current_signal) - 2, 1);
+                    # If the delimiter is '-', exit with status 3
+                    if (current_delimiter ~ /^-$/) {
+                        exit 3;
 
-                        # If the delimiter is '-', exit with status 3
-                        if (current_delimiter ~ /^-$/) {
-                            exit 3;
-
-                        } else {
-                            # Remove the signal and delimiter from the line and print the remaining part
-                            sub("\x28" current_delimiter "[[:space:]]+" current_signal "\x29\x24", "", line);
-                            printf("%s", substr(substr(line, RSTART, RLENGTH), index(line, current_delimiter) + 1));
-                            exit 0;
-                        
-                        }
-
+                    } else {
+                        # Remove the signal and delimiter from the line and print the remaining part
+                        sub("\x28" current_delimiter "[[:space:]]+" current_signal "\x29\x24", "", line);
+                        printf("%s", substr(substr(line, RSTART, RLENGTH), index(line, current_delimiter) + 1));
+                        exit 0;
+                    
                     }
 
-                } else {
-                    # Exit with status 2 if no match is found
-                    exit 2;
                 }
 
-            } while ((getline line) > 0);
+            } else {
+                # Exit with status 2 if no match is found
+                exit 2;
+            }
 
-            # Exit with status 1 if the end of the input is reached without a match
-            exit 1;
-        }';
+        } while ((getline line) > 0);
 
-    }
+        # Exit with status 1 if the end of the input is reached without a match
+        exit 1;
+    }';
 
     # Return the exit status of the awk command
     return $?;
@@ -372,8 +371,10 @@ function _trap() {
         # Return 255 if the arguments are not provided
         return 255;
 
-    } && (
-        
+    }
+
+    (
+
         # Set a trap to unset variables on exit
         trap 'unset OPT OPTARG OPTIND SIGNAL_S SIGNAL_E SIGNAL_P' EXIT;
 
@@ -388,31 +389,27 @@ function _trap() {
         shift $((OPTIND - 1));
 
         # Get the signal list and store it in SIGNAL_S
-        SIGNAL_S="$(_signalList "${SIGNAL_S}" "${1}")" || {
-            exit 1;
-        } && {
+        SIGNAL_S="$(_signalList "${SIGNAL_S}" "${1}")" || exit 1;
     
-            # Lookup the signal and store it in SIGNAL_P
-            SIGNAL_P="$(_signalLookup "${1}" "${SIGNAL_S}")" && {
-                # Print the signal
-                printf "%s" "${SIGNAL_P}";
- 
-                # If SIGNAL_E is not empty, print a semicolon
-                [ -z "${SIGNAL_E}" ] || {
-                    printf "\x3b";
-                }
+        # Lookup the signal and store it in SIGNAL_P
+        SIGNAL_P="$(_signalLookup "${1}" "${SIGNAL_S}")" && {
+            # Print the signal
+            printf "%s" "${SIGNAL_P}";
 
+            # If SIGNAL_E is not empty, print a semicolon
+            [ -z "${SIGNAL_E}" ] || {
+                printf "\x3b";
             }
 
-            # Print SIGNAL_E
-            printf "%s" "${SIGNAL_E}"
-
         }
+
+        # Print SIGNAL_E
+        printf "%s" "${SIGNAL_E}";
 
         # Exit with the status of the last command
         exit $?;
 
-    );
+    )
 
     # Return the exit status of the subshell
     return $?;
@@ -504,7 +501,7 @@ function _export() {
 
         exit $?;
 
-    );
+    )
 
     return $?;
    
@@ -557,96 +554,39 @@ function _directoryLinker() {
 }
 
 
-function _ckeck() {
+function _import() {
 
-    # Check if both arguments are provided
-    [ -n "${1}" -a -n "${2}" ] || {
+    # Check arguments are provided
+    [ -n "${*}" ] || {
         # Return 255 if the arguments are not provided
         return 255;
 
-    } && (
- 
-        ls --color=never -dal "${2}" | awk \
-            -v validation_string="${1}" \
-            -v user="$(whoami)" \
-            -v groups="$(groups "$(whoami)")" \
-        '{
-            if (validation_string) {
-               flag_count = length(validation_string);
-               type_flags = "lbpcd-";
-               permission_flags = "rwx";
+    }
+    # for _ in $*
+    # while [ ${#@} -gt 0 ]
 
-                do {
-                    flag = substr(validation_string, flag_count--, 1);
-                    sub(flag "$", "", validation_string);
+        # Set a trap to unset variables on exit
+     #   trap "$(_trap -S 'EXIT' -E "unset ERROR_COUNT" "$(trap -p)")" EXIT;
 
-                    if (flag ~ /^([lbpcd]|-)$/) {
+    #     while [ ${#@} -gt 0 ]; do
+    #         _ckeck 'r-' "${1}" && {
+    #             realpath "${1}";
+    #         } || {
+    #             ((++ERROR_COUNT));
+    #         }
 
-                        if (index(type_flags, flag)) {
-                            sub(flag, "", type_flags);
-                            
-                            if (flag !~ substr($1, 1, 1)) {
-                                exit 4;                            
-                            }
+    #         # Shift to the next argument
+    #         shift;
 
-                        } else {
-                            exit 2;
+    #     done
 
-                        }
+    #     exit ${ERROR_COUNT};
+    # ) && echo $_ || echo " $?"
 
-                    } else if (flag ~ /^([rwx])$/) {
+    # while (
 
-                        if (index(permission_flags, flag)) {
-                            sub(flag, "", permission_flags);
-
-                            type_permission = substr($1, 2);
-
-                            if (flag == "r") {
-                                symbolic = 1;
-
-                            } else if (flag == "w") {
-                                symbolic = 2;
-
-                            } else if (flag == "x") {
-                                symbolic = 3;
-
-                            }
-
-                            permission_index = symbolic + 6;
-
-                            for (; symbolic <= permission_index; symbolic += 3) {
-                                permissions = permissions "" substr(type_permission, symbolic, 1);
-                            }
-
-                            print permissions
-
-                            #gsub("[^" flag "^-"]", "", type_permission)
-                            # print type_permission;
-
-                        } else {
-                            exit 3;
-
-                        }
-
-
-                        # printf("%s", flag);
-
-                    } else {
-                        exit 1;
-
-                    }
-
-                } while(flag_count);
-           }
-
-        }'
-
-    );
-
-    return $?;
+    # ); do
+    #     [ "${_}" = "]" ] && break || echo "${_}";
+    # done
 
 }
-
-
-
-_ckeck "${@}";
