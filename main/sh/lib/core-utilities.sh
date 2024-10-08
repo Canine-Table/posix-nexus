@@ -361,9 +361,6 @@ function _export() {
    
 }
 
-function _awkFactory() {
-    return $?;
-}
 
 function _nexus() {
 
@@ -393,7 +390,12 @@ function _nexus() {
     [ -d '/var/tmp/posix-nexus' ] || {
         [ -e '/var/tmp/posix-nexus' ] && _noClobber '/var/tmp/posix-nexus' 6;
         mkdir -p '/var/tmp/posix-nexus' || exit 7;
+    }
 
+    # Check if the /tmp/posix-nexus directory exists, if not, create it
+    [ -d '/tmp/posix-nexus' ] || {
+        [ -e '/tmp/posix-nexus' ] && _noClobber '/tmp/posix-nexus';
+        mkdir '/tmp/posix-nexus' && chmod 777 "${_}";
     }
 
     # Check if the posix-nexus.pid file exists, if not, create it
@@ -406,7 +408,7 @@ function _nexus() {
     (
 
         # Set a trap to unset variables on exit
-        trap "$(_trap -S 'EXIT' -E "unset POSIX_NEXUS_LOCATION POSIX_NEXUS_PID POSIX_NEXUS_GARBAGE" "$(trap -p)")" EXIT;
+        trap "$(_trap -S 'EXIT' -E "unset POSIX_NEXUS_LOCATION POSIX_NEXUS_PID POSIX_NEXUS_GARBAGE; rm -f '/tmp/posix-nexus/posix-nexus.pid'; jobs -p | xargs kill" "$(trap -p)")" EXIT;
 
         POSIX_NEXUS_PID="$(cat '/var/run/posix-nexus/posix-nexus.pid')";
 
@@ -423,26 +425,24 @@ function _nexus() {
 
         # Check if the posix-nexus-location symlink exists and is a symlink, if not, exit
         [ -e '/var/run/posix-nexus/posix-nexus-location' ] && {
-            [ -h '/var/run/posix-nexus/posix-nexus-location' ] || exit 12;
-
             # Remove the existing posix-nexus-location symlink
-            rm '/var/run/posix-nexus/posix-nexus-location' || exit 13;
+            rm '/var/run/posix-nexus/posix-nexus-location' || exit 12;
         }
 
         # Check if mkfifo command is available
-        command -v mkfifo 1> /dev/null || exit 14;
+        command -v mkfifo 1> /dev/null || exit 13;
 
         # Create a named pipe (FIFO) at POSIX_NEXUS_LOCATION/stdin
-        mkfifo "${POSIX_NEXUS_LOCATION}/stdin" || exit 15;
+        mkfifo "${POSIX_NEXUS_LOCATION}/stdin" || exit 14;
 
         # Check if nohup command is available
-        command -v nohup 1> /dev/null || exit 16;
+        command -v nohup 1> /dev/null || exit 15;
 
         # Select the fastest installed shell to run the script in the background using nohup
-        _shell || exit 17;
+        _shell || exit 16;
 
         # If SHELL is set, use nohup to run a shell script in the background
-        nohup ${SHELL} -c '
+        nohup "${SHELL}" -c '
 
             # Wait until the posix-nexus-location symlink exists
             while [ ! -h '/var/run/posix-nexus/posix-nexus-location' ]; do
@@ -451,22 +451,38 @@ function _nexus() {
 
             # Continuously read from the named pipe and output to stdout
             while :; do
-                cat "${POSIX_NEXUS_LOCATION}/stdin";
+                cat "${POSIX_NEXUS_LOCATION}/stdin" | awk "{
+                    print $0
+
+                }";
             done
         ' \
-            1>  "${POSIX_NEXUS_LOCATION}/stdout" \
-            2>  "${POSIX_NEXUS_LOCATION}/stderr" \
-            & printf "%d" $! > '/var/run/posix-nexus/posix-nexus.pid' || exit 18;
+            1> "${POSIX_NEXUS_LOCATION}/stdout" \
+            2> "${POSIX_NEXUS_LOCATION}/stderr" \
+            & printf "%d" $! > '/var/run/posix-nexus/posix-nexus.pid' || exit 17;
+
+        POSIX_NEXUS_PID="$(cat '/var/run/posix-nexus/posix-nexus.pid')";
 
         for POSIX_NEXUS_GARBAGE in $(ls --color=never '/var/tmp/posix-nexus/'); do
             [ "${POSIX_NEXUS_GARBAGE}" = "posix-nexus-$$" ] || rm -rf "/var/tmp/posix-nexus/${POSIX_NEXUS_GARBAGE}";
         done &
 
         # Create a symbolic link to POSIX_NEXUS_LOCATION
-        ln -sf "${POSIX_NEXUS_LOCATION}" '/var/run/posix-nexus/posix-nexus-location' || exit 19;
+        ln -sf "${POSIX_NEXUS_LOCATION}" '/var/run/posix-nexus/posix-nexus-location' || exit 18;
+
+        ln -sf '/var/run/posix-nexus/posix-nexus.pid' '/tmp/posix-nexus/posix-nexus.pid';
+        chmod 444 '/tmp/posix-nexus/posix-nexus.pid';
 
     ) || exit $?;
 
     return 0;
 
 }
+
+# function _interNexusBridge() {
+
+#     [ -f '/tmp/posix-nexus/posix-nexus.pid' ] && ps -o pid | awk '{print $1}' | grep -q "^[[:space:]]*$(cat '/tmp/posix-nexus/posix-nexus.pid')$" && {
+
+#     }
+
+# }
