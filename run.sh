@@ -1,55 +1,108 @@
-#!/bin/sh
+function _pathErrors() {
+
+    function _commonPathErrors() {
+
+        # Determine the type of error based on the first argument        
+        case "${1}" in
+            e)
+                # Check if the path exists
+                [ -e "${PATH_LOCATION}/${2}" ] || {
+                    printf "No match found for for '%s' in the '%s' root directory" "${2}" "${PATH_LOCATION}";
+                    return 1;
+                };;
+            d)
+                # Check if the path is a directory
+                [ -d "${PATH_LOCATION}/${2}" ] || {
+                    printf "The path to '%s' is already in use within the '%s' root directory. '%s' is not a directory" "${2}" "${PATH_LOCATION}" "${2}";
+                    return 1;
+                };;
+
+            f)
+                # Check if the path is a regular file
+                [ -f "${PATH_LOCATION}/${2}" ] || {
+                    printf "The path to '%s' exists within '%s' but '%s' is a not regular file" "${2}" "${PATH_LOCATION}" "$(basename "${2}")";
+                    return 1;
+                };;
+
+            r)
+                # Check if the path is readable
+                [ -r "${PATH_LOCATION}/${2}" ] || {
+                    printf "The path to '%s' exists within '%s' but '%s' is not readable" "${2}" "${PATH_LOCATION}" "$(basename "${2}")";
+                    return 1;
+                };;
+            w)
+                # Check if the path is writable
+                [ -w "${PATH_LOCATION}/${2}" ] || {
+                    printf "The path to '%s' exists within '%s' but '%s' is not writable" "${2}" "${PATH_LOCATION}" "$(basename "${2}")";
+                    return 1;
+                };;
+
+            x)
+                # Check if the path is executable
+                [ -x "${PATH_LOCATION}/${2}" ] || {
+                    printf "The path to '%s' exists within the '%s' root directory but '%s' is not executable" "${2}" "${PATH_LOCATION}" "$(basename "${2}")";
+                    return 1;
+                };;
+
+            *)
+                # Handle unknown error flags
+                printf "Unknown error flag '%s'" "${1}";;
+        esac
+
+    }
+
+    (
+        trap 'unset PATH_ERROR_COUNT PATH_CHECK PATH_LOCATION' EXIT;
+
+        [ -z "${PATH_LOCATION}" ] && {
+            PATH_LOCATION="${1}";
+            shift;
+        }
+
+        # Process each pair of arguments
+        while [ ${#@} -gt 0 ]; do
+
+            # Increment the PATH_ERROR_COUNT
+            ((++PATH_ERROR_COUNT));
+
+            # Check for path errors
+            PATH_CHECK="$(_commonPathErrors "${1}" "${2}")" || {
+                printf "\n\033[1;31m%s.\033[0m\n" "${PATH_CHECK}";
+                exit $((PATH_ERROR_COUNT));
+            }
+
+            shift 2;
+        done
+
+    ) || exit $?;
+
+    return 0;
+}
+
 
 function run() {
 
-        printf "%s" "$(realpath "$(dirname "${_}")")/main" | xargs -I "{}" sh -c '
-            MESSAGE="$(
-                [ -e "{}" ] || { printf "The path to main does not exist."; exit 1; };
-                [ -d "{}" ] || { printf "The path to main exists but is not a directory."; exit 2; };
-                [ -x "{}" ] || { printf "The main directory exists but is not executable."; exit 3; };
+    (
 
-                [ -e "{}/awk" ] || { printf "The path to awk in main does not exist."; exit 4; };
-                [ -d "{}/awk" ] || { printf "The path to awk in main exists but is not a directory."; exit 5; };
-                [ -x "{}/awk" ] || { printf "The awk directory in the main directory exists but is not executable."; exit 6; };
+        _pathErrors "$(realpath "$(dirname "${_}")")" \
+            e 'main' d 'main' x 'main' \
+            e 'main/awk' d 'main/awk' x 'main/awk' \
+            e 'main/awk/lib' d 'main/awk/lib' x 'main/awk/lib' r 'main/awk/lib' \
+            e 'main/awk/lib/core-utilities.awk' f 'main/awk/lib/core-utilities.awk' r 'main/awk/lib/core-utilities.awk' \
+            e 'main/sh' d 'main/sh' x 'main/sh' \
+            e 'main/sh/lib' d 'main/sh/lib' x 'main/sh/lib' r 'main/sh/lib' \
+            e 'main/sh/lib/core-utilities.sh' f 'main/sh/lib/core-utilities.sh' r 'main/sh/lib/core-utilities.sh';
 
-                [ -e "{}/awk/lib" ] || { printf "The path to lib in main/awk does not exist."; exit 7; };
-                [ -d "{}/awk/lib" ] || { printf "The path to lib in main/awk exists but is not a directory."; exit 8; };
-                [ -r "{}/awk/lib" ] || { printf "The lib directory in main/awk in the directory exists but is not readable."; exit 9; };
-                [ -x "{}/awk/lib" ] || { printf "The lib directory in the main/awk directory exists but is not executable."; exit 10; };
-
-                [ -e "{}/sh" ] || { printf "The path to sh in main does not exist."; exit 11; };
-                [ -d "{}/sh" ] || { printf "The path to sh in main exists but is not a directory."; exit 12; };
-                [ -x "{}/sh" ] || { printf "The sh directory in the main directory exists but is not executable."; exit 13; };
-
-                [ -e "{}/sh/lib" ] || { printf "The path to lib in main/sh does not exist."; exit 14; };
-                [ -d "{}/sh/lib" ] || { printf "The path to lib in main/sh exists but is not a directory."; exit 15; };
-                [ -r "{}/sh/lib" ] || { printf "The lib directory in main/sh in the directory exists but is not readable."; exit 16; };
-                [ -x "{}/sh/lib" ] || { printf "The lib directory in the main/sh directory exists but is not executable."; exit 17; };
-
-                [ -e "{}/sh/lib/core-utilities.sh" ] || { printf "The path to core-utilities.sh in main/sh/lib does not exist."; exit 18; };
-                [ -f "{}/sh/lib/core-utilities.sh" ] || { printf "The path to core-utilities.sh in main/sh/lib exists but is not a file."; exit 19; };
-                [ -r "{}/sh/lib/core-utilities.sh" ] || { printf "The core-utilities.sh file in main/sh/lib exists but is not readable."; exit 20; };
-
-                [ -e "{}/awk/lib/core-logic.sh" ] || { printf "The path to core-logic.awk in main/awk/lib does not exist."; exit 18; };
-                [ -f "{}/awk/lib/core-logic.sh" ] || { printf "The path to core-logic.awk in main/awk/lib exists but is not a file."; exit 19; };
-                [ -r "{}/awk/lib/core-logic.sh" ] || { printf "The core-logic.awk file in main/awk/lib exists but is not readable."; exit 20; };
-
-            )" || {
-                STATUS=$?;
-                echo -e "\033[1;31m${MESSAGE}\033[0m";
-
-            }
-
-            exit ${STATUS:-0};
-    ' || exit $?;
+    ) || return $?;
 
     (
         . "$(realpath "$(dirname "${_}")")/main/sh/lib/core-utilities.sh";
 
-        _nexus;
+        _nexus
 
         exit $?;
     )
+
 
     return $?;
 
