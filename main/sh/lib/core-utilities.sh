@@ -33,7 +33,7 @@ function _shell() {
 function _awk() {
 
     # Attempt to find and set an awk variant, prioritizing common and lightweight versions
-    [ -z "${AWK}" -o "${1}" = '-R' -o "${1}" = '--reload' ] && export AWK="$(
+    export AWK="$(
         command -v mawk ||          # Mawk is a fast and lightweight version of awk
         command -v nawk ||          # Nawk is the new awk, often used as the default on many systems
         command -v gawk ||          # Gawk is the GNU version of awk, feature-rich and widely used
@@ -50,154 +50,6 @@ function _awk() {
         return 0;
 
     }
-
-}
-
-
-function _ckeck() {
-
-    _awk || return 228;
-
-    # Check if both arguments are provided
-    [ -n "${1}" -a -n "${2}" ] || {
-        # Return 255 if the arguments are not provided
-        return 255;
-
-    }
-    
-    (
-
-        # List directory details and pipe to awk for processing
-        ls --color=never -dal "${2}" | ${AWK} \
-            -v validation_string="${1}" \
-            -v user="$(whoami)" \
-            -v groups="$(groups "$(whoami)")" \
-            -v container="$(ls --color=never -dal "$(dirname "${2}")" | awk '{printf("%s %s %s", substr($1, 2), $4, $3)}')" \
-        '{
-
-            if (validation_string) {
-                # Initialize flag count and flag types
-                flag_count = length(validation_string);
-                type_flags = "lbpcd-";
-                permission_flags = "rwx";
-                split(groups, group_list, " ");
-
-                do {
-                    # Extract the current flag
-                    flag = substr(validation_string, flag_count--, 1);
-
-                    # Check if the flag is a type flag
-                    if (flag ~ /^([lbpcd]|\-)$/) {
-
-                        # Check if the flag is a type flag
-                        if (index(type_flags, flag)) {
-                           # Remove the flag from type_flags
-                            sub(flag, "", type_flags);
-
-                            # Check if the flag matches the file type
-                            if (flag !~ substr($1, 1, 1)) {
-                                # A type flag (one of l, b, p, c, d, -) is found in validation_string but does not match the file type.
-                                exit 4;
-                            }
-
-                        } else {
-                            # A type flag is found in validation_string but it is not in the type_flags string.
-                            exit 2;
-
-                        }
-
-                    # Check if the flag is a permission flag
-                    } else if (flag ~ /^([rwx])$/) {
-                        
-                        # Extract the permission part of the file details
-                        if (substr(permission_flags, index(permission_flags, flag), 1)) {
-                            type_permission = substr($1, 2);
-
-                            # Determine the symbolic index for the permission flag
-                            if (flag == "r") {
-                                symbolic = 1;
-
-                            } else if (flag == "w") {
-                                symbolic = 2;
-
-                            } else if (flag == "x") {
-                                symbolic = 3;
-
-                            }
-
-                            permission_index = symbolic + 6;
-
-                            # Determine the symbolic index for the permission flag
-                            for (; symbolic <= permission_index; symbolic += 3) {
-                                member = int(symbolic / 3);
-
-                                if ((member == 0 && user == $3) || (member == 1 && $4 in group_list) || (member == 2)) {
-
-                                    if (substr(type_permission, symbolic, 1) == flag) {
-
-                                        for (symbolic_parent; symbolic_parent <= 9; ++symbolic_parent) {
-
-                                            if (substr(container, symbolic_parent, 1) == "x") {
-
-                                                space_index = index(substr(container, 11), " ");
-
-                                                if ((symbolic_parent == 3 && user != substr(container, 11 + space_index)) && (symbolic_parent == 6 && ! substr(container, 11, space_index) in group_list)) {
-                                                    delete group_list;
-                                                    exit 8;
-
-                                                }
-
-                                                break;
-
-                                            } else if (symbolic_parent == 9) {
-                                                delete group_list;
-                                                exit 7;
-                                            }
-
-                                        }
-
-                                    }
-
-                                } else if (member >= 3) {
-                                    delete group_list;
-                                    
-                                    # The script is checking permissions and the user is not the owner, not in the group, and not others.
-                                    exit 5;
-
-                                }
-
-                            }
-
-                            delete group_list;
-
-                            # Determine the symbolic index for the permission flag
-                            sub(flag, "", permission_flags);
-
-                        } else {
-                            # A permission flag (one of r, w, x) is found in validation_string but it is not in the permission_flags string.
-                            exit 3;
-
-                        }
-
-                    } else {
-                        # A flag in validation_string is neither a type flag nor a permission flag.
-                        exit 1;
-
-                    }
-
-                } while(flag_count);
-                # All flags in validation_string are successfully validated.
-                exit 0;
-
-            }
-
-        }';
-
-        exit $?;
-
-    );
-
-    return $?;
 
 }
 
@@ -226,7 +78,7 @@ function _signalList() {
 
         # Loop through the signals
         for (signal = 1; signal <= NF; signal += 2) {
-                # Get the signal name
+            # Get the signal name
             signal_name = $(signal + 1);
 
             # Create a match pattern
@@ -424,7 +276,9 @@ function _export() {
         # Return 255 if the arguments are not provided
         return 255;
 
-    } && (
+    }
+    
+    (
         # Set a trap to unset variables on exit
         trap "$(_trap -S 'EXIT' -E "unset OPT OPTARG OPTIND EXPORT_N EXPORT_V EXPORT_E" "$(trap -p)")" EXIT;
 
@@ -507,86 +361,112 @@ function _export() {
    
 }
 
-
-function _directoryLinker() {
-
-    POSIX_LINKER_VARIABLE="$(_export -N POSIX_LINKER_MAIN)" || for POSIX_LINKER_VARIABLE in $(
-        # Set a trap to unset variables on exit
-        trap "$(_trap -S 'EXIT' -E "unset POSIX_LINKER_DIRECTORY POSIX_LINKER_VARIABLE POSIX_LINKER_NAME" "$(trap -p)")" EXIT;
-
-        [ "$(basename "${0}")" = 'core-utilities.sh' ] && {
-            POSIX_LINKER_DIRECTORY="$(realpath "$(dirname "${0}")/../..")";
-            
-            [ "$(basename "${POSIX_LINKER_DIRECTORY}")" = 'main' ] || {
-                exit 1;
-
-            }
-
-        }
-
-        # Iterate over directories in POSIX_LINKER_DIRECTORY
-        for POSIX_LINKER_VARIABLE in $(find "${POSIX_LINKER_DIRECTORY}" -maxdepth 1 -readable -writable -executable -type d -exec basename '{}' \;); do
-            # Set POSIX_LINKER_NAME to the uppercase directory name
-            POSIX_LINKER_NAME="POSIX_LINKER_$(printf "%s" "${POSIX_LINKER_VARIABLE^^}" | sed 's/\.//')_DIRECTORY";
-
-            # Attempt to export the directory name, or set it if it fails
-            "${POSIX_LINKER_NAME}"="$(_export -N "${POSIX_LINKER_NAME}")" 2> /dev/null || {
-                echo "${POSIX_LINKER_NAME}=${POSIX_LINKER_DIRECTORY}/${POSIX_LINKER_VARIABLE}";
-            }
-
-        done
-
-        exit $?;
-
-    ); do
-
-        [ -n "${POSIX_LINKER_VARIABLE}" ] && {
-            export "${POSIX_LINKER_VARIABLE}";
-
-        }
-        
-        unset POSIX_LINKER_VARIABLE;
-
-    done
-
-    unset POSIX_LINKER_VARIABLE;
+function _awkFactory() {
     return $?;
 }
 
+function _nexus() {
 
-function _import() {
+    function _noClobber() {
+       # Move the file to a backup location with a timestamp, or exit with the given exit code (default 1)
+        mv "${1}" "${1}-$(date +"%s").bak" || exit ${2:-1};
+    }
 
-    # Check arguments are provided
-    [ -n "${*}" ] || {
-        # Return 255 if the arguments are not provided
-        return 255;
+    # Ensure the script is run as 'run.sh' or exit
+    [ "$(basename "${0}")" = 'run.sh' ] || exit 1;
+
+    # Check if the /var/run/posix-nexus directory exists, if not, create it
+    [ -d '/var/run/posix-nexus' ] || {
+        # If the path exists but is not a directory, back it up
+        [ -e '/var/run/posix-nexus' ] && _noClobber '/var/run/posix-nexus' 2;
+        mkdir -p '/var/run/posix-nexus' || exit 3;
+    }
+
+    # Check if the /var/log/posix-nexus directory exists, if not, create it
+    [ -d '/var/log/posix-nexus' ] || {
+        # If the path exists but is not a directory, back it up
+        [ -e '/var/log/posix-nexus' ] && _noClobber '/var/log/posix-nexus' 4;
+        mkdir -p '/var/log/posix-nexus' || exit 5;
+    }
+
+    # Check if the /var/tmp/posix-nexus directory exists, if not, create it
+    [ -d '/var/tmp/posix-nexus' ] || {
+        [ -e '/var/tmp/posix-nexus' ] && _noClobber '/var/tmp/posix-nexus' 6;
+        mkdir -p '/var/tmp/posix-nexus' || exit 7;
 
     }
-    # for _ in $*
-    # while [ ${#@} -gt 0 ]
+
+    # Check if the posix-nexus.pid file exists, if not, create it
+    [ -f '/var/run/posix-nexus/posix-nexus.pid' ] || {
+        # If a file exists at the location, remove it
+        [ -e '/var/tmp/posix-nexus' ] && rm -rf '/var/run/posix-nexus/posix-nexus.pid' || exit 8;
+        touch '/var/run/posix-nexus/posix-nexus.pid' || exit 9;
+    }
+
+    (
 
         # Set a trap to unset variables on exit
-     #   trap "$(_trap -S 'EXIT' -E "unset ERROR_COUNT" "$(trap -p)")" EXIT;
+        trap "$(_trap -S 'EXIT' -E "unset POSIX_NEXUS_LOCATION POSIX_NEXUS_PID POSIX_NEXUS_GARBAGE" "$(trap -p)")" EXIT;
 
-    #     while [ ${#@} -gt 0 ]; do
-    #         _ckeck 'r-' "${1}" && {
-    #             realpath "${1}";
-    #         } || {
-    #             ((++ERROR_COUNT));
-    #         }
+        POSIX_NEXUS_PID="$(cat '/var/run/posix-nexus/posix-nexus.pid')";
 
-    #         # Shift to the next argument
-    #         shift;
+        # Check if the process with POSIX_NEXUS_PID is running, if not, exit
+        ps -o pid | awk '{print $1}' | grep -q "^[[:space:]]*${POSIX_NEXUS_PID}$" && {
+            kill -n0 "${POSIX_NEXUS_PID}" || exit 10;
+        }
 
-    #     done
+        # Create the POSIX_NEXUS_LOCATION directory
+        export POSIX_NEXUS_LOCATION="/var/tmp/posix-nexus/posix-nexus-$$";
 
-    #     exit ${ERROR_COUNT};
-    # ) && echo $_ || echo " $?"
+        # Create the POSIX_NEXUS_LOCATION directory
+        mkdir "${POSIX_NEXUS_LOCATION}" || exit 11;
 
-    # while (
+        # Check if the posix-nexus-location symlink exists and is a symlink, if not, exit
+        [ -e '/var/run/posix-nexus/posix-nexus-location' ] && {
+            [ -h '/var/run/posix-nexus/posix-nexus-location' ] || exit 12;
 
-    # ); do
-    #     [ "${_}" = "]" ] && break || echo "${_}";
-    # done
+            # Remove the existing posix-nexus-location symlink
+            rm '/var/run/posix-nexus/posix-nexus-location' || exit 13;
+        }
+
+        # Check if mkfifo command is available
+        command -v mkfifo 1> /dev/null || exit 14;
+
+        # Create a named pipe (FIFO) at POSIX_NEXUS_LOCATION/stdin
+        mkfifo "${POSIX_NEXUS_LOCATION}/stdin" || exit 15;
+
+        # Check if nohup command is available
+        command -v nohup 1> /dev/null || exit 16;
+
+        # Select the fastest installed shell to run the script in the background using nohup
+        _shell || exit 17;
+
+        # If SHELL is set, use nohup to run a shell script in the background
+        nohup ${SHELL} -c '
+
+            # Wait until the posix-nexus-location symlink exists
+            while [ ! -h '/var/run/posix-nexus/posix-nexus-location' ]; do
+                sleep 1;
+            done
+
+            # Continuously read from the named pipe and output to stdout
+            while :; do
+                cat "${POSIX_NEXUS_LOCATION}/stdin";
+            done
+        ' \
+            1>  "${POSIX_NEXUS_LOCATION}/stdout" \
+            2>  "${POSIX_NEXUS_LOCATION}/stderr" \
+            & printf "%d" $! > '/var/run/posix-nexus/posix-nexus.pid' || exit 18;
+
+        for POSIX_NEXUS_GARBAGE in $(ls --color=never '/var/tmp/posix-nexus/'); do
+            [ "${POSIX_NEXUS_GARBAGE}" = "posix-nexus-$$" ] || rm -rf "/var/tmp/posix-nexus/${POSIX_NEXUS_GARBAGE}";
+        done &
+
+        # Create a symbolic link to POSIX_NEXUS_LOCATION
+        ln -sf "${POSIX_NEXUS_LOCATION}" '/var/run/posix-nexus/posix-nexus-location' || exit 19;
+
+    ) || exit $?;
+
+    return 0;
 
 }
