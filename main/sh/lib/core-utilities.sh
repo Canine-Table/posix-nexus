@@ -1,4 +1,4 @@
-function _shell() {
+_shell() {
 
     # Attempt to find and set a POSIX-compliant shell, prioritizing speed
     export SHELL="$(
@@ -30,7 +30,7 @@ function _shell() {
 }
 
 
-function _awk() {
+_awk() {
 
     # Attempt to find and set an awk variant, prioritizing common and lightweight versions
     export AWK="$(
@@ -54,7 +54,7 @@ function _awk() {
 }
 
 
-function _signalList() {
+_signalList() {
 
     _awk || return 228;
 
@@ -156,7 +156,7 @@ function _signalList() {
 }
 
 
-function _signalLookup() {
+_signalLookup() {
 
     _awk || return 228;
 
@@ -216,7 +216,7 @@ function _signalLookup() {
 }
 
 
-function _trap() {
+_trap() {
 
     # Check arguments are provided
     [ -n "${*}" ] || {
@@ -269,7 +269,7 @@ function _trap() {
 }
 
 
-function _export() {
+_export() {
 
     # Check if arguments are provided
     [ -n "${*}" ] || {
@@ -362,9 +362,9 @@ function _export() {
 }
 
 
-function _nexus() {
+_nexus() {
 
-    function _noClobber() {
+    _noClobber() {
        # Move the file to a backup location with a timestamp, or exit with the given exit code (default 1)
         mv "${1}" "${1}-$(date +"%s").bak" || exit ${2:-1};
     }
@@ -414,7 +414,7 @@ function _nexus() {
 
         # Check if the process with POSIX_NEXUS_PID is running, if not, exit
         ps -o pid | awk '{print $1}' | grep -q "^[[:space:]]*${POSIX_NEXUS_PID}$" && {
-            kill -n0 "${POSIX_NEXUS_PID}" || exit 10;
+            kill -n 0 "${POSIX_NEXUS_PID}" || exit 10;
         }
 
         # Create the POSIX_NEXUS_LOCATION directory
@@ -479,10 +479,4 @@ function _nexus() {
 
 }
 
-# function _interNexusBridge() {
-
-#     [ -f '/tmp/posix-nexus/posix-nexus.pid' ] && ps -o pid | awk '{print $1}' | grep -q "^[[:space:]]*$(cat '/tmp/posix-nexus/posix-nexus.pid')$" && {
-
-#     }
-
-# }
+_nexus
