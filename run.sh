@@ -30,13 +30,13 @@ _taskErrors() {
                     ERROR_OCCURED=false;
 
                     PATH_LOCATION="${WORKING_DIRECTORY}${2}";
-                    ((INDEX += 2));
+                    INDEX=$((INDEX + 2));
 
                     case "${1}" in
                         e)
                             # Check if the path exists
                             [ -e "${PATH_LOCATION}" ] || {
-                                printf "\033[1;31mNo match found for the relative path '%s' in the '%s' working directory" "${2}" "${WORKING_DIRECTORY}";
+                                printf "No match found for the relative path '%s' in the '%s' working directory" "${2}" "${WORKING_DIRECTORY}";
                                 ERROR_OCCURED=true;
 
                             };;
@@ -44,7 +44,7 @@ _taskErrors() {
                         d)
                             # Check if the path is a directory
                             [ -d "${PATH_LOCATION}" ] || {
-                                printf "\033[1;31m[${1}] The relative path to '%s' is already in use within the '%s' working directory" "${2}" "${WORKING_DIRECTORY}";
+                                printf "[${1}] The relative path to '%s' is already in use within the '%s' working directory" "${2}" "${WORKING_DIRECTORY}";
                                 ERROR_OCCURED=true;
 
                             };;
@@ -52,7 +52,7 @@ _taskErrors() {
                         f)
                             # Check if the path is a regular file
                             [ -f "${PATH_LOCATION}" ] || {
-                                printf "\033[1;31m[${1}] The the relative path to '%s' exists within '%s' but '%s' is a not regular file" "${2}" "${WORKING_DIRECTORY}" "`basename "${2}"`";
+                                printf "[${1}] The the relative path to '%s' exists within '%s' but '%s' is a not regular file" "${2}" "${WORKING_DIRECTORY}" "`basename "${2}"`";
                                 ERROR_OCCURED=true;
 
                             };;
@@ -60,14 +60,14 @@ _taskErrors() {
                         r)
                             # Check if the path is readable
                             [ -r "${PATH_LOCATION}" ] || {
-                                printf "\033[1;31m[${1}] The path to '%s' exists within '%s' but '%s' is not readable" "${2}" "${WORKING_DIRECTORY}" "`basename "${2}"`";
+                                printf "[${1}] The path to '%s' exists within '%s' but '%s' is not readable" "${2}" "${WORKING_DIRECTORY}" "`basename "${2}"`";
                                 ERROR_OCCURED=true;
 
                             };;
                         w)
                             # Check if the path is writable
                             [ -w "${PATH_LOCATION}" ] || {
-                                printf "\033[1;31m[${1}] The path to '%s' exists within '%s' but '%s' is not writable" "${2}" "${WORKING_DIRECTORY}" "`basename "${2}"`";
+                                printf "[${1}] The path to '%s' exists within '%s' but '%s' is not writable" "${2}" "${WORKING_DIRECTORY}" "`basename "${2}"`";
                                 ERROR_OCCURED=true;
 
                             };;
@@ -75,7 +75,7 @@ _taskErrors() {
                         x)
                             # Check if the path is executable
                             [ -x "${PATH_LOCATION}" ] || {
-                                printf "\033[1;31m[${1}] The path to '%s' exists within the '%s' root directory but '%s' is not executable" "${2}" "${WORKING_DIRECTORY}" "`basename "${2}"`";
+                                printf "[${1}] The path to '%s' exists within the '%s' root directory but '%s' is not executable" "${2}" "${WORKING_DIRECTORY}" "`basename "${2}"`";
                                 ERROR_OCCURED=true;
 
                             };;
@@ -89,7 +89,7 @@ _taskErrors() {
                     shift 2;
 
                     "${ERROR_OCCURED}" && {
-                        printf ".\033[0m\x0a";
+                        printf ".\x0a";
                         "${QUIT_ON_ERROR:-false}" && exit 0;
                     }
 
@@ -114,13 +114,13 @@ _taskErrors() {
 
                 while [ ${#@} -gt ${INDEX} ]; do
                     ERROR_OCCURED=false;
-                    ((++INDEX));
+                    INDEX=((INDEX + 1));
 
                     case "${1}" in
                         S)
                             # If source error, provide a message and set ERROR_OCCURED
                             {
-                                printf "\033[1;31m[-] Please execute the 'run.sh' script to initialize the POSIX Nexus environment or ensure the correct file path is specified";
+                                printf "[-] Please execute the 'run.sh' script to initialize the POSIX Nexus environment or ensure the correct file path is specified";
                                 ERROR_OCCURED=true;
 
                             };;
@@ -134,7 +134,7 @@ _taskErrors() {
                     shift;
 
                     ${ERROR_OCCURED} && {
-                        printf ".\033[0m\x0a";
+                        printf ".\x0a";
                         "${QUIT_ON_ERROR:-false}" && exit 0;
                     }
 
@@ -155,14 +155,14 @@ _taskErrors() {
             item) _itemErrors "${@}";;
             static) _staticErrors "${@}";;
             # Default case for unknown argument, print help message
-            *) printf "\033[1;31m[-] Undefined case, cannot handle argument: %s\033[0m\x0a" "${1}";;
+            *) printf "[-] Undefined case, cannot handle argument: %s\x0a" "${1}";;
         esac
 
     }
 
     # If the number of arguments exceeds 256, return an error
     [ ${#@} -gt 255 ] && {
-        printf "\033[1;31m[-] Too many arguments provided, maximum is 255.\033[0m\x0a";
+        printf "[-] Too many arguments provided, maximum is 255.\x0a";
         return 1;
 
     }
