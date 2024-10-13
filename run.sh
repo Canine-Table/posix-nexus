@@ -97,7 +97,7 @@ _taskErrors() {
 
                 exit ${INDEX};
 
-            ) 1>&2 && exit 2;
+            ) && exit 2;
 
             shift $?;
 
@@ -114,7 +114,7 @@ _taskErrors() {
 
                 while [ ${#@} -gt ${INDEX} ]; do
                     ERROR_OCCURED=false;
-                    INDEX=((INDEX + 1));
+                    INDEX=$((INDEX + 1));
 
                     case "${1}" in
                         S)
@@ -142,7 +142,7 @@ _taskErrors() {
 
                 exit ${INDEX};
 
-            ) 1>&2 && exit 3;
+            ) && exit 3;
 
             shift $?;
 
@@ -160,14 +160,18 @@ _taskErrors() {
 
     }
 
-    # If the number of arguments exceeds 256, return an error
-    [ ${#@} -gt 255 ] && {
-        printf "[-] Too many arguments provided, maximum is 255.\x0a";
-        return 1;
-
-    }
 
     (
+
+        trap 'exec 1>&-' EXIT;
+
+        exec 1>&2;
+        # If the number of arguments exceeds 256, return an error
+        [ ${#@} -gt 255 ] && {
+            printf "[-] Too many arguments provided, maximum is 255.\x0a";
+            return 1;
+
+        }
 
         # If the first argument is 'Q', enable QUIT_ON_ERROR and shift past it
         [ "${1}" = 'Q' ] && {
