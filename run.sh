@@ -1,3 +1,4 @@
+#!/bin/sh
 
 _taskErrors() {
 
@@ -132,7 +133,7 @@ _taskErrors() {
 
                     shift;
 
-                    "${ERROR_OCCURED}" && {
+                    ${ERROR_OCCURED} && {
                         printf ".\033[0m\x0a";
                         "${QUIT_ON_ERROR:-false}" && exit 0;
                     }
@@ -163,6 +164,7 @@ _taskErrors() {
     [ ${#@} -gt 255 ] && {
         printf "\033[1;31m[-] Too many arguments provided, maximum is 255.\033[0m\x0a";
         return 1;
+
     }
 
     (
@@ -181,27 +183,26 @@ _taskErrors() {
 }
 
 
-startPosixNexus() {
+_startPosixNexus() {
 
     (
 
-        # Check various paths and files using the _pathErrors function
+        # Check various paths and files using the _taskErrors function
         # Ensures all necessary directories and files exist and are accessible
         _taskErrors 'item' 'dir' "${1}" \
             e 'main' d 'main' x 'main' \
             e 'main/awk' d 'main/awk' x 'main/awk' \
             e 'main/awk/lib' d 'main/awk/lib' x 'main/awk/lib' r 'main/awk/lib' \
-            e 'main/awk/lib/core-utilities.awk' f 'main/awk/lib/core-utilities.awk' r 'main/awk/lib/core-utilities.awk' \
             e 'main/sh' d 'main/sh' x 'main/sh' \
             e 'main/sh/lib' d 'main/sh/lib' x 'main/sh/lib' r 'main/sh/lib' \
-            e 'main/sh/lib/core-utilities.sh' f 'main/sh/lib/core-utilities.sh' r 'main/sh/lib/core-utilities.sh' || exit $?;
+            e 'main/sh/lib/posix-nexus.sh' f 'main/sh/lib/posix-nexus.sh' r 'main/sh/lib/posix-nexus.sh' || exit;
 
         # Set the root directory for POSIX Nexus
         export POSIX_NEXUS_ROOT="${1}";
         shift;
 
-        # Read and evaluate the content of core-utilities.sh, appending each argument wrapped in single quotes and spaces.
-        eval "`cat "${POSIX_NEXUS_ROOT}/main/sh/lib/core-utilities.sh"``
+        # Read and evaluate the content of posix-nexus.sh, appending each argument wrapped in single quotes and spaces.
+        eval "`cat "${POSIX_NEXUS_ROOT}/main/sh/lib/posix-nexus.sh"``
             while [ ${#@} -gt 0 ]; do
                 echo -en "\x20\x27${1}\x27";
                 shift;
@@ -214,8 +215,8 @@ startPosixNexus() {
 
 }
 
-if realpath -q -e "`pwd`/`dirname "${0}"`/main/sh/lib/core-utilities.sh" 1> /dev/null; then
-    startPosixNexus "`pwd`/`dirname "${0}"`" "${@}";
+if realpath -q -e "`pwd`/`dirname "${0}"`/main/sh/lib/posix-nexus.sh" 1> /dev/null; then
+    _startPosixNexus "`pwd`/`dirname "${0}"`" "${@}";
 else
     _taskErrors static S;
     exit 1;
