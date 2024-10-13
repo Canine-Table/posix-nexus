@@ -11,7 +11,7 @@ _taskErrors() {
 
             # If WORKING_DIRECTORY is not set, initialize it
             [ "${1}" = 'dir' ] && {
-                WORKING_DIRECTORY="$(realpath "${2}")";
+                WORKING_DIRECTORY="`cd "${2}"; pwd`/";
                 shift;
 
                 # Check if WORKING_DIRECTORY is a directory and executable
@@ -29,7 +29,7 @@ _taskErrors() {
                 while [ ${#@} -gt ${INDEX} ]; do
                     ERROR_OCCURED=false;
 
-                    PATH_LOCATION="$(realpath "${WORKING_DIRECTORY}/${2}")";
+                    PATH_LOCATION="${WORKING_DIRECTORY}${2}";
                     ((INDEX += 2));
 
                     case "${1}" in
@@ -52,7 +52,7 @@ _taskErrors() {
                         f)
                             # Check if the path is a regular file
                             [ -f "${PATH_LOCATION}" ] || {
-                                printf "\033[1;31m[${1}] The the relative path to '%s' exists within '%s' but '%s' is a not regular file" "${2}" "${WORKING_DIRECTORY}" "$(basename "${2}")";
+                                printf "\033[1;31m[${1}] The the relative path to '%s' exists within '%s' but '%s' is a not regular file" "${2}" "${WORKING_DIRECTORY}" "`basename "${2}"`";
                                 ERROR_OCCURED=true;
 
                             };;
@@ -60,14 +60,14 @@ _taskErrors() {
                         r)
                             # Check if the path is readable
                             [ -r "${PATH_LOCATION}" ] || {
-                                printf "\033[1;31m[${1}] The path to '%s' exists within '%s' but '%s' is not readable" "${2}" "${WORKING_DIRECTORY}" "$(basename "${2}")";
+                                printf "\033[1;31m[${1}] The path to '%s' exists within '%s' but '%s' is not readable" "${2}" "${WORKING_DIRECTORY}" "`basename "${2}"`";
                                 ERROR_OCCURED=true;
 
                             };;
                         w)
                             # Check if the path is writable
                             [ -w "${PATH_LOCATION}" ] || {
-                                printf "\033[1;31m[${1}] The path to '%s' exists within '%s' but '%s' is not writable" "${2}" "${WORKING_DIRECTORY}" "$(basename "${2}")";
+                                printf "\033[1;31m[${1}] The path to '%s' exists within '%s' but '%s' is not writable" "${2}" "${WORKING_DIRECTORY}" "`basename "${2}"`";
                                 ERROR_OCCURED=true;
 
                             };;
@@ -75,7 +75,7 @@ _taskErrors() {
                         x)
                             # Check if the path is executable
                             [ -x "${PATH_LOCATION}" ] || {
-                                printf "\033[1;31m[${1}] The path to '%s' exists within the '%s' root directory but '%s' is not executable" "${2}" "${WORKING_DIRECTORY}" "$(basename "${2}")";
+                                printf "\033[1;31m[${1}] The path to '%s' exists within the '%s' root directory but '%s' is not executable" "${2}" "${WORKING_DIRECTORY}" "`basename "${2}"`";
                                 ERROR_OCCURED=true;
 
                             };;
@@ -215,8 +215,10 @@ _startPosixNexus() {
 
 }
 
-if realpath -q -e "`pwd`/`dirname "${0}"`/main/sh/lib/posix-nexus.sh" 1> /dev/null; then
-    _startPosixNexus "`pwd`/`dirname "${0}"`" "${@}";
+#TODO color support validation
+
+if [ -e "`cd "\`dirname "${0}"\`" && pwd`/main/sh/lib/posix-nexus.sh" ]; then
+    _startPosixNexus "`cd "\`dirname "${0}"\`" && pwd`" "${@}";
 else
     _taskErrors static S;
     exit 1;
