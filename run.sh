@@ -11,7 +11,7 @@ _taskErrors() {
 
             # If WORKING_DIRECTORY is not set, initialize it
             [ "${1}" = 'dir' ] && {
-                WORKING_DIRECTORY="`cd "${2}"; pwd`/";
+                WORKING_DIRECTORY="$(cd "${2}" && pwd)/";
                 shift;
 
                 # Check if WORKING_DIRECTORY is a directory and executable
@@ -52,7 +52,7 @@ _taskErrors() {
                         f)
                             # Check if the path is a regular file
                             [ -f "${PATH_LOCATION}" ] || {
-                                printf "[${1}] The the relative path to '%s' exists within '%s' but '%s' is a not regular file" "${2}" "${WORKING_DIRECTORY}" "`basename "${2}"`";
+                                printf "[${1}] The the relative path to '%s' exists within '%s' but '%s' is a not regular file" "${2}" "${WORKING_DIRECTORY}" "$(basename "${2}")";
                                 ERROR_OCCURED=true;
 
                             };;
@@ -60,14 +60,14 @@ _taskErrors() {
                         r)
                             # Check if the path is readable
                             [ -r "${PATH_LOCATION}" ] || {
-                                printf "[${1}] The path to '%s' exists within '%s' but '%s' is not readable" "${2}" "${WORKING_DIRECTORY}" "`basename "${2}"`";
+                                printf "[${1}] The path to '%s' exists within '%s' but '%s' is not readable" "${2}" "${WORKING_DIRECTORY}" "$(basename "${2}")";
                                 ERROR_OCCURED=true;
 
                             };;
                         w)
                             # Check if the path is writable
                             [ -w "${PATH_LOCATION}" ] || {
-                                printf "[${1}] The path to '%s' exists within '%s' but '%s' is not writable" "${2}" "${WORKING_DIRECTORY}" "`basename "${2}"`";
+                                printf "[${1}] The path to '%s' exists within '%s' but '%s' is not writable" "${2}" "${WORKING_DIRECTORY}" "$(basename "${2}")";
                                 ERROR_OCCURED=true;
 
                             };;
@@ -75,7 +75,7 @@ _taskErrors() {
                         x)
                             # Check if the path is executable
                             [ -x "${PATH_LOCATION}" ] || {
-                                printf "[${1}] The path to '%s' exists within the '%s' root directory but '%s' is not executable" "${2}" "${WORKING_DIRECTORY}" "`basename "${2}"`";
+                                printf "[${1}] The path to '%s' exists within the '%s' root directory but '%s' is not executable" "${2}" "${WORKING_DIRECTORY}" "$(basename "${2}")";
                                 ERROR_OCCURED=true;
 
                             };;
@@ -120,7 +120,7 @@ _taskErrors() {
                         S)
                             # If source error, provide a message and set ERROR_OCCURED
                             {
-                                printf "[-] Please execute the 'run.sh' script to initialize the POSIX Nexus environment or ensure the correct file path is specified";
+                                echo "[-] Please execute the 'run.sh' script to initialize the POSIX Nexus environment or ensure the correct file path is specified";
                                 ERROR_OCCURED=true;
 
                             };;
@@ -134,7 +134,6 @@ _taskErrors() {
                     shift;
 
                     ${ERROR_OCCURED} && {
-                        printf ".\x0a";
                         "${QUIT_ON_ERROR:-false}" && exit 0;
                     }
 
@@ -160,16 +159,22 @@ _taskErrors() {
 
     }
 
-
     (
 
-        trap 'exec 1>&-' EXIT;
+        trap 'echo -en "${ANSI_COLOR:+\\033[0m}"; exec 1>&-' EXIT;
+
+        case "${TERM}" in
+            screen*|Eterm*|alacritty*|aterm*|foot*|gnome*|konsole*|kterm*|putty*|rxvt*|tmux*|xterm*) ANSI_COLOR='\033[1;31m';;
+        esac
 
         exec 1>&2;
+
+        echo -en "${ANSI_COLOR}";
+
         # If the number of arguments exceeds 256, return an error
         [ ${#@} -gt 255 ] && {
-            printf "[-] Too many arguments provided, maximum is 255.\x0a";
-            return 1;
+            echo "[-] Too many arguments provided, maximum is 255.";
+            exit 1;
 
         }
 
@@ -185,7 +190,6 @@ _taskErrors() {
     )
 
 }
-
 
 _startPosixNexus() {
 
@@ -206,23 +210,21 @@ _startPosixNexus() {
         shift;
 
         # Read and evaluate the content of posix-nexus.sh, appending each argument wrapped in single quotes and spaces.
-        eval "`cat "${POSIX_NEXUS_ROOT}/main/sh/lib/posix-nexus.sh"``
+        eval "$(cat "${POSIX_NEXUS_ROOT}/main/sh/lib/posix-nexus.sh")$(
             while [ ${#@} -gt 0 ]; do
                 echo -en "\x20\x27${1}\x27";
                 shift;
 
             done
 
-        `";
+        )";
 
     ) || exit;
 
 }
 
-#TODO color support validation
-
-if [ -e "`cd "\`dirname "${0}"\`" && pwd`/main/sh/lib/posix-nexus.sh" ]; then
-    _startPosixNexus "`cd "\`dirname "${0}"\`" && pwd`" "${@}";
+if [ -e "$(cd "$(dirname "${0}")" && pwd)/main/sh/lib/posix-nexus.sh" ]; then
+    _startPosixNexus "$(cd "$(dirname "${0}")" && pwd)" "${@}";
 else
     _taskErrors static S;
     exit 1;
