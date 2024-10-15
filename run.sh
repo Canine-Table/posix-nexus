@@ -1,209 +1,317 @@
 #!/bin/sh
 
-_taskErrors() {
+try() {
 
-    _commonErrors() {
+    _exceptionc() {
 
-        _itemErrors() {
+        ${ANSI_COLOR:-false} && ANSI_COLOR_VALUE="$(
 
-            # If the first argument is 'item', shift past it
-            [ "${1}" = 'item' ] && shift;
+            case "${1}" in
+                E) printf "%d" 31;; # Success
+                S) printf "%d" 32;; # Error
+                W) printf "%d" 33;; # Warning
+                D) printf "%d" 35;; # Debug
+                *) exit 1;;
+            esac
 
-            # If WORKING_DIRECTORY is not set, initialize it
-            [ "${1}" = 'dir' ] && {
-                WORKING_DIRECTORY="$(cd "${2}" && pwd)/";
-                shift;
+            exit 0;
 
-                # Check if WORKING_DIRECTORY is a directory and executable
-                [ -d "${WORKING_DIRECTORY}" -a -x "${WORKING_DIRECTORY}" ] && {
-                    shift;
-
-                } || unset WORKING_DIRECTORY;
-
-            }
-
-            (
-                INDEX=0;
-
-                # Loop through all arguments
-                while [ ${#@} -gt ${INDEX} ]; do
-                    ERROR_OCCURED=false;
-
-                    PATH_LOCATION="${WORKING_DIRECTORY}${2}";
-                    INDEX=$((INDEX + 2));
-
-                    case "${1}" in
-                        e)
-                            # Check if the path exists
-                            [ -e "${PATH_LOCATION}" ] || {
-                                printf "No match found for the relative path '%s' in the '%s' working directory" "${2}" "${WORKING_DIRECTORY}";
-                                ERROR_OCCURED=true;
-
-                            };;
-
-                        d)
-                            # Check if the path is a directory
-                            [ -d "${PATH_LOCATION}" ] || {
-                                printf "[${1}] The relative path to '%s' is already in use within the '%s' working directory" "${2}" "${WORKING_DIRECTORY}";
-                                ERROR_OCCURED=true;
-
-                            };;
-
-                        f)
-                            # Check if the path is a regular file
-                            [ -f "${PATH_LOCATION}" ] || {
-                                printf "[${1}] The the relative path to '%s' exists within '%s' but '%s' is a not regular file" "${2}" "${WORKING_DIRECTORY}" "$(basename "${2}")";
-                                ERROR_OCCURED=true;
-
-                            };;
-
-                        r)
-                            # Check if the path is readable
-                            [ -r "${PATH_LOCATION}" ] || {
-                                printf "[${1}] The path to '%s' exists within '%s' but '%s' is not readable" "${2}" "${WORKING_DIRECTORY}" "$(basename "${2}")";
-                                ERROR_OCCURED=true;
-
-                            };;
-                        w)
-                            # Check if the path is writable
-                            [ -w "${PATH_LOCATION}" ] || {
-                                printf "[${1}] The path to '%s' exists within '%s' but '%s' is not writable" "${2}" "${WORKING_DIRECTORY}" "$(basename "${2}")";
-                                ERROR_OCCURED=true;
-
-                            };;
-
-                        x)
-                            # Check if the path is executable
-                            [ -x "${PATH_LOCATION}" ] || {
-                                printf "[${1}] The path to '%s' exists within the '%s' root directory but '%s' is not executable" "${2}" "${WORKING_DIRECTORY}" "$(basename "${2}")";
-                                ERROR_OCCURED=true;
-
-                            };;
-
-                        item|static)
-                            # Handle common errors
-                            _commonErrors "${@}" &
-                            exit 0;;
-                    esac
-
-                    shift 2;
-
-                    "${ERROR_OCCURED}" && {
-                        printf ".\x0a";
-                        "${QUIT_ON_ERROR:-false}" && exit 0;
-                    }
-
-                done
-
-                exit ${INDEX};
-
-            ) && exit 2;
-
-            shift $?;
-
-            [ ${#@} -gt 1 ] && _itemErrors "${@}";
-
+        )" && {
+            echo -en "\x1b[0m\x1b[1;${ANSI_COLOR_VALUE}m";
         }
 
-        _staticErrors() {
+        unset ANSI_COLOR_VALUE;
+        return 0;
+    }
 
-            [ "${1}" = 'static' ] && shift;
-
-            (
-                INDEX=0;
-
-                while [ ${#@} -gt ${INDEX} ]; do
-                    ERROR_OCCURED=false;
-                    INDEX=$((INDEX + 1));
-
-                    case "${1}" in
-                        S)
-                            # If source error, provide a message and set ERROR_OCCURED
-                            {
-                                echo "[-] Please execute the 'run.sh' script to initialize the POSIX Nexus environment or ensure the correct file path is specified";
-                                ERROR_OCCURED=true;
-
-                            };;
-                        item|static)
-                            # Handle common errors
-                            _commonErrors "${@}" &
-                            exit 0;;
-
-                    esac
-
-                    shift;
-
-                    ${ERROR_OCCURED} && {
-                        "${QUIT_ON_ERROR:-false}" && exit 0;
-                    }
-
-                done
-
-                exit ${INDEX};
-
-            ) && exit 3;
-
-            shift $?;
-
-            [ ${#@} -gt 0 ] && _staticErrors "${@}";
-
-        }
-
-        # Dispatch to the appropriate error handling function based on the first argument
-        case "${1}" in
-            item) _itemErrors "${@}";;
-            static) _staticErrors "${@}";;
-            # Default case for unknown argument, print help message
-            *) printf "[-] Undefined case, cannot handle argument: %s\x0a" "${1}";;
-        esac
+    _exceptionR() {
+        # RegexError
+        echo "${1}";
+   
+        return 1;
 
     }
 
+    _exceptionT() {
+        # TypeError
+        return 0;
+
+    }
+
+    _exceptionV() {
+        # ValueError
+        return 0;
+
+    }
+
+    _exceptionS() {
+        # SyntaxError
+        return 0;
+
+    }
+
+    _exceptionA() {
+        # ArithmeticError
+        return 0;
+        
+    }
+
+    _exceptionP() {
+        # PropertyError
+        return 0;
+
+    }
+
+    _exceptionO() {
+        # OSError
+        return 0;
+
+    }
+
+    _exceptionI() {
+
+        (
+
+            _item() {
+                # Check if the key path exists in the root directory
+                [ -${KEY} "${ROOT_DIRECTORY}/${J}" ] || {
+                    ERROR_OCCURED=true;
+                    return 1;
+                }
+
+            }
+
+            _output() {
+                # Echo formatted error message
+                echo "[${KEY}] The path to '${J}' ${ROOT_DIRECTORY:+"within '${ROOT_DIRECTORY}' "}is not ${1}";
+            }
+
+            INDEX=0;
+
+            for I in $(iterator ',' "${@}"); do
+                ERROR_OCCURED=false;
+
+                for J in $(iterator '=' "${I}"); do
+                    INDEX=$((INDEX + 1));
+
+                    if [ $((INDEX % 2)) -eq 1 ]; then
+                        case "${J}" in
+                            R|s|h|L|t|x|w|r|f|d|e|p) KEY="${J}";;
+                            *) echo "[-] The option '${J}' is not supported by _exceptionI: [R|s|h|L|t|x|w|r|f|d|e|p]";;
+                        esac
+                    else
+
+                        case "${KEY}" in
+
+                            R) 
+                                {
+                                    # Check if the working directory is a directory and executable
+                                    _exceptionI "e=${J},d=${J},x=${J}" && ROOT_DIRECTORY="$(cd "${J}" && pwd)";
+                                };;
+
+                            e)
+                                _item || {
+                                    # Check if the path is a exists
+                                    echo "[${KEY}] Error: Path to $(basename "${J}") does not exist ${ROOT_DIRECTORY:+"within in '${ROOT_DIRECTORY}' directory"}";
+                                };;
+
+                            d)
+                                _item || {
+                                    # Check if the path is a directory
+                                    _output "is not directory.";
+                                };;
+                            f)
+                                _item || {
+                                    # Check if the path is a file
+                                    _output "file";
+                                };;
+
+                            r)
+                                _item || {
+                                    # Check if the path is an readable
+                                    _output "readable.";
+                                };;
+
+                            w)
+                                _item || {
+                                    # Check if the path is an writable
+                                    _output "writable.";
+                                };;
+
+                            x)
+                                _item "${ROOT_DIRECTORY}${J}" || {
+                                    # Check if the path is an executable
+                                    _output "an executable.";
+                                };;
+
+                            s) 
+                                _item || {
+                                    # Check if the path is a socket
+                                    _output "socket";
+                                };;
+
+                            h|L) 
+                                _item || {
+                                    # Check if the path is a symbolic link
+                                    _output "symbolic link";
+                                };;
+                            p)
+                                _item || {
+                                    # Check if the path is a fifo file (named pipe)
+                                    _output "named pipe";
+                                };;
+
+                            t)
+                                _item || {
+                                     # Check if the path is attached to a terminal
+                                    _output "file that is not attached to a terminal";
+                                    ERROR_OCCURED=true;
+
+                                };;
+
+                        esac
+
+                    fi
+
+                done
+
+                (${q_SET:-false} && ${ERROR_OCCURED:-false}) && exit 1;
+
+            done
+
+        ) || ERROR_OCCURED=true;
+
+       return 0;
+    }
+
+    _exceptionC() {
+
+        case $(echo -n "${1}" | cut -c 1) in
+            H) _exceptionc W; echo "Undefined case, cannot handle argument: '-$(echo "${1}" | cut -c 3-)'.";;
+            R) echo "Please execute the 'run.sh' script to initialize the POSIX Nexus environment or ensure the correct file path is specified.";;
+            A) _exceptionc W; echo "The '-$(echo "${1}" | cut -c 3-)' exception requires an argument.";;
+            U) _exceptionc W; echo -e "Unknown option '-$(echo "${2}" | cut -d ',' -f 1)'. The parameter '$(echo "${2}" | cut -d ',' -f 2)' assigned to '$(echo "${2}" | cut -d ',' -f 1)' will be discarded.";;
+            *) _exceptionc W;  echo "[-] The option '$(echo -n "${1}" | cut -c 1)' is not supported and will be skipped: [H|R|A|U]";;
+        esac
+
+        _exceptionc E;
+        return 0;
+    }
+
+    _exceptionTemplate() {
+
+        [ "${1}" = 'q' ] && {
+            q_SET=true;
+            return 0;
+        }
+
+        [ "${1}" = 'Q' ] && {
+            q_SET=false;
+            return 0;
+        }
+
+        [ -z "${2}" ] && {
+            _exceptionC A;
+            return 1;
+        }
+
+        (
+            INDEX=0;
+            _exceptionc E;
+
+            while [ ${#@} -gt ${INDEX} ]; do
+                ERROR_OCCURED=false;
+                INDEX=$((INDEX + 2));
+
+                case "${1}" in
+                    c) _exception${1} "${2}";;
+                    P|I|C|T|V|S|A|O|R) _exception${1} "${2}" & PROCESS_IDS="${PROCESS_IDS} $!";;
+                    *) _exceptionC U "${1},${2}";;
+                esac
+
+                [ ${ERROR_OCCURED} = true ] && echo "[-] An unexpected error occurred within the '_exception${1}' while passing '${2}'." && exit 1;
+
+                shift 2;
+
+                ${q_SET:-false} && {
+                    wait ${PROCESS_IDS};
+                    [ $? -gt 0 ] && exit 0;
+                    unset PROCESS_IDS;
+
+                }
+
+            done
+
+            wait ${PROCESS_IDS};
+            exit ${INDEX};
+
+        ) && exit 1;
+
+        return 0;
+    }
+
+    _exception() {
+
+        # Dispatch to the appropriate error handling function based on the first argument
+        while getopts :I:T:V:P:S:A:O:R:C:S:cQq OPT; do
+            case ${OPT} in
+                q|Q) _exceptionTemplate ${OPT};;
+                c|I|P|C|T|V|S|A|O|R) _exceptionTemplate "${OPT}" "${OPTARG}";;
+                ?) _exceptionTemplate C "H ${OPTARG}";;
+            esac
+        done
+
+        shift $((OPTIND - 1));
+
+        return 0;
+
+    }
+    
     (
 
-        trap 'echo -en "${ANSI_COLOR:+\\033[0m}"; exec 1>&-' EXIT;
-
-        case "${TERM}" in
-            screen*|Eterm*|alacritty*|aterm*|foot*|gnome*|konsole*|kterm*|putty*|rxvt*|tmux*|xterm*) ANSI_COLOR='\033[1;31m';;
-        esac
+        trap 'echo -en "${ANSI_COLOR:+\\x1b[0m}"; exec 1>&-' EXIT;
 
         exec 1>&2;
 
-        echo -en "${ANSI_COLOR}";
+        case "${TERM}" in
+            screen*|Eterm*|alacritty*|aterm*|foot*|gnome*|konsole*|kterm*|putty*|rxvt*|tmux*|xterm*) ANSI_COLOR=true;;
+        esac
 
-        # If the number of arguments exceeds 256, return an error
-        [ ${#@} -gt 255 ] && {
-            echo "[-] Too many arguments provided, maximum is 255.";
-            exit 1;
-
-        }
-
-        # If the first argument is 'Q', enable QUIT_ON_ERROR and shift past it
-        [ "${1}" = 'Q' ] && {
-            QUIT_ON_ERROR='true';
-            shift;
-
-        }
-
-        _commonErrors "${@}";
-
+        _exception "${@}";
     )
-
 }
 
-_startPosixNexus() {
+iterator() {
+
+    # Process the input string using Awk with the specified field separator (FS)
+    echo -n "${*}" | awk -v FS="${1}" '{
+        for (i = 1; i <= NF; ++i) {
+            # Remove leading and trailing whitespace from each field
+            gsub(/(^[[:space:]]+)|([[:space:]]+$)/, "", $i);
+            if ($i) {
+                # Print each non-empty field
+                print $i;
+            }
+        }
+    }'
+
+    return 0;
+}
+
+
+startPosixNexus() {
 
     (
 
         # Check various paths and files using the _taskErrors function
         # Ensures all necessary directories and files exist and are accessible
-        _taskErrors 'item' 'dir' "${1}" \
-            e 'main' d 'main' x 'main' \
-            e 'main/awk' d 'main/awk' x 'main/awk' \
-            e 'main/awk/lib' d 'main/awk/lib' x 'main/awk/lib' r 'main/awk/lib' \
-            e 'main/sh' d 'main/sh' x 'main/sh' \
-            e 'main/sh/lib' d 'main/sh/lib' x 'main/sh/lib' r 'main/sh/lib' \
-            e 'main/sh/lib/posix-nexus.sh' f 'main/sh/lib/posix-nexus.sh' r 'main/sh/lib/posix-nexus.sh' || exit;
+        try -I "R=${1},\
+        d=main,d=main,x=main,\
+        e=main/awk,d=main/awk,x=main/awk,\
+        e=main/awk/lib,d=main/awk/lib,x=main/awk/lib,r=main/awk/lib,\
+        e=main/sh,d=main/sh,x=main/sh \
+        e=main/sh/lib,d=main/sh/lib,x=main/sh/lib,r=main/sh/lib,\
+        e=main/sh/lib/posix-nexus.sh,f=main/sh/lib/posix-nexus.sh,r=main/sh/lib/posix-nexus.sh" || exit;
 
         # Set the root directory for POSIX Nexus
         export POSIX_NEXUS_ROOT="${1}";
@@ -211,6 +319,8 @@ _startPosixNexus() {
 
         # Read and evaluate the content of posix-nexus.sh, appending each argument wrapped in single quotes and spaces.
         eval "$(cat "${POSIX_NEXUS_ROOT}/main/sh/lib/posix-nexus.sh")$(
+            echo -en "\x0aposixNexusDaemon";
+
             while [ ${#@} -gt 0 ]; do
                 echo -en "\x20\x27${1}\x27";
                 shift;
@@ -223,9 +333,10 @@ _startPosixNexus() {
 
 }
 
+
 if [ -e "$(cd "$(dirname "${0}")" && pwd)/main/sh/lib/posix-nexus.sh" ]; then
-    _startPosixNexus "$(cd "$(dirname "${0}")" && pwd)" "${@}";
+    startPosixNexus "$(cd "$(dirname "${0}")" && pwd)" "${@}";
 else
-    _taskErrors static S;
+    try -C R;
     exit 1;
 fi
