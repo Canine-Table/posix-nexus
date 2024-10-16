@@ -1,5 +1,30 @@
 #!/bin/sh
 
+awkIterpreter() {
+
+    (
+        # Attempt to find and set an awk variant, prioritizing common and lightweight versions
+        AWK="$(
+            command -v mawk ||          # Mawk is a fast and lightweight version of awk
+            command -v nawk ||          # Nawk is the new awk, often used as the default on many systems
+            command -v awk ||           # Awk is the original version, often a symlink to another variant
+            command -v gawk ||          # Gawk is the GNU version of awk, feature-rich and widely used
+            command -v busybox awk ||   # BusyBox awk is used in embedded systems
+            false;                      # Ensure the chain returns a non-zero status if no awk variant is found
+        )" || {
+            # If no variant of awk is found, return 1 (failure)
+            try -O 'C=awk';
+            exit 1;
+
+        } && {
+            # Return 0 (success)
+            echo -n "${AWK}";
+
+        }
+    )
+}
+
+
 try() {
 
     _kwargs() {
@@ -9,24 +34,25 @@ try() {
             # Export the function name and flags for environment use
             export NAME="${1}"; # NAME
             export FLAGS="$(
-                case "$(awk 'BEGIN{ printf("%s", substr(ENVIRON["NAME"], length(ENVIRON["NAME"])))}')" in
-                    P) ;;                       # Placeholder for P flag
-                    I) echo -n 'RshLtxwrfdep';; # Supported flags for I
+                case "$(${AWK} 'BEGIN{ printf("%s", substr(ENVIRON["NAME"], length(ENVIRON["NAME"])))}')" in
+                    P) ;;                       # Property flags _exceptionP
+                    I) echo -n 'RshLtxwrfdep';; # Item flags for _exceptionI
                     T) ;;                       # Placeholder for T flag
                     C) echo -n 'R';;            # Placeholder for T flag
-                    V) ;;                       # Placeholder for V flag
-                    W) echo -n 'HA';;           # Supported for W flag
+                    V) echo -n 'zn';;           # Value flags for _exceptionV
+                    W) echo -n 'HA';;           # Warning flags for _exceptionW
                     S) ;;                       # Placeholder for S flag
                     A) ;;                       # Placeholder for A flag
-                    O) ;;                       # Placeholder for O flag
-                    R) echo -n 'N';;            # Supported flag for R
+                    O) echo -n 'TMCD';;         # Operating System flags for _exceptionO
+                    R) echo -n 'N';;            # Regular Expressions flags for _exceptionR
                 esac
             )"
-
-            INDEX=0;  # Initialize index
+            
+            # Initialize the index
+            INDEX=0;  
 
             # Iterate through the provided arguments, delimited by commas
-            for VALUE in $(echo -n "${2}," | awk '{
+            for VALUE in $(echo -n "${2}," | ${AWK} '{
 
                 while((position = index(substr($0, last_position), character))) {
 
@@ -50,7 +76,7 @@ try() {
                 # For odd indexed elements, validate the key
                 if [ $((INDEX % 2)) -eq 1 ]; then
                     ERROR_OCCURED=false;
-                    export KEY="$(echo -n "${VALUE}" | awk '{
+                    export KEY="$(echo -n "${VALUE}" | ${AWK} '{
 
                         split(ENVIRON["FLAGS"], list, "");
 
@@ -86,11 +112,13 @@ try() {
                         esac
                     }
 
+                    ${ANSI_COLOR:-false} && echo -en "${ANSI_COLOR_VALUE:-$(_exceptionc E)}";
+
                 fi
 
             done
 
-        ) || ERROR_OCCURED=true;
+        ) ||  ERROR_OCCURED=true;
 
         return 0;
 
@@ -123,7 +151,7 @@ try() {
 
         case "${1}" in
             N)
-                echo -n "${2}" | awk '{ if ($0 ~ /^((_)?[[:alpha:]]{1}(_)?[[:alnum:]_]*)$/) { exit 0; } else { exit 1; } }' || {
+                echo -n "${2}" | ${AWK} '{ if ($0 ~ /^((_)?[[:alpha:]]{1}(_)?[[:alnum:]_]*)$/) { exit 0; } else { exit 1; } }' || {
                     echo "Invalid naming convention '${2}': Names must start with an optional underscore, followed by an alphabetic character, and can include alphanumeric characters and underscores.";
                     return 1;
                 };;
@@ -138,7 +166,26 @@ try() {
     }
 
     _exceptionV() {
-        # ValueError
+        # ValueErrors
+
+        _variable() {
+            [ -${KEY} "$(eval "echo -n \$${VALUE}")" ] || {
+                return 1;
+            }
+        }
+
+        case "${KEY}" in
+            z) _variable || {
+                    echo "The '${VALUE}' variable has already been assigned the value '$(eval "echo -n \$${VALUE}")'";
+                    return 1;
+                };;
+            n)
+                _variable || {
+                    echo "The '${VALUE}' variable has not been defined or is empty";
+                    return 1;
+                };;
+        esac
+
         return 0;
 
     }
@@ -157,23 +204,64 @@ try() {
 
     _exceptionP() {
         # PropertyError
-
-        # (
-        #     case "${1}" in
-        #         F) ;;
-        #     esac
-        # )
-        # 1=funtionname
-        # 2=required size
-        # 3=passed size
-        # 4=options
-
         return 0;
-
     }
 
     _exceptionO() {
         # OSError
+
+        _error() {
+            echo "The task to ${1} '${VALUE}' failed. Manual intervention is required";
+            return 1;
+        }
+
+        _success() {
+            _exceptionc S;
+            echo "The ${1} '${VALUE}' was successfully ${2}";
+        }
+
+        case "${KEY}" in
+            C)
+                command -v "${VALUE}" 1> /dev/null || {
+                    echo "Your '$(uname -o)' system on '$(uname -n)' does not have the '${VALUE}' command installed";
+                    return 1;
+                };;
+            D)
+                {
+
+                    [ -e "${VALUE}" ] || {
+
+                        mkdir -p "${VALUE}" && {
+                            _success "directory" "created";
+                        }
+
+                    } || _error "create the directory";
+
+                };;
+            M)
+                {
+                    [ -e "${VALUE}" ] || {
+                        
+                        mv "${VALUE}" "$(dirname "${VALUE}")/.$(basename "${VALUE}")-$(date +"%s").bak" && {
+                            _success "item" "moved";
+                        }
+
+                    } || _error "move";
+
+                };;
+            T) 
+                {
+                    [ -e "${VALUE}" ] || {
+                        
+                        touch "${VALUE}" && {
+                            _success "file" "created";
+                        }
+
+                    } || _error "create";
+
+                };;
+        esac
+
         return 0;
 
     }
@@ -190,7 +278,7 @@ try() {
 
         _output() {
             # Echo formatted error message
-            echo "[${KEY}] The path to '${ROOT_DIRECTORY}${VALUE}' ${ROOT_DIRECTORY:+"within '${ROOT_DIRECTORY}' "}is not ${1}";
+            echo "[${KEY}] The path to '${VALUE}' ${ROOT_DIRECTORY:+"within '${ROOT_DIRECTORY}' "}is not ${1}";
             return 1;
         }
 
@@ -221,6 +309,7 @@ try() {
                 _item || {
                     # Check if the path is a directory
                     _output "is not a directory.";
+                    return 1;
                 };;
             f)
                 _item || {
@@ -275,33 +364,23 @@ try() {
 
     _exceptionC() {
 
-        (
-            _exceptionc W;
+        _exceptionc W;
 
-            case "${KEY}" in
-                R) echo "Please execute the '${VALUE}' script to initialize the POSIX Nexus environment or ensure the correct file path is specified.";;
-            esac
-
-        )
-
-        ${ANSI_COLOR:-false} && echo -e "${ANSI_COLOR_VALUE:-$(_exceptionc E)}";
+        case "${KEY}" in
+            R) echo "Please execute the '${VALUE}' script to initialize the POSIX Nexus environment or ensure the correct file path is specified.";;
+        esac
 
         return 0;
     }
 
     _exceptionW() {
 
-        (
-            _exceptionc W;
+        _exceptionc W;
 
-            case "${KEY}" in
-                H) echo "Undefined case, cannot handle argument: '${VALUE}'";;
-                A) echo "An empty value was passed to _exceptionTemplate. The _exceptionTemplate requires an argument";;
-            esac
-
-        )
-
-        ${ANSI_COLOR:-false} && echo -e "${ANSI_COLOR_VALUE:-$(_exceptionc E)}";
+        case "${KEY}" in
+            H) echo "Undefined case, cannot handle argument: '${VALUE}'";;
+            A) echo "An empty value was passed to _exceptionTemplate. The _exceptionTemplate requires an argument";;
+        esac
 
     }
 
@@ -320,7 +399,7 @@ try() {
 
         [ -z "${2}" ] && {
             _kwargs "_exceptionW" "A=${1}";
-            return 2;
+            return 0;
         }
 
         (
@@ -337,14 +416,16 @@ try() {
                     ?) _kwargs "_exceptionW" "H=${2}";;
                     *) echo "The option '_exception${1}' is nor an existing function. The value '${2}' which was assigned to '_exception${1}' will be discarded.";;
                 esac
-
-                [ ${ERROR_OCCURED} = true ] && echo "[-] An unexpected error occurred within the '_exception${1}' while passing '${2}'." && exit 1;
+                [ ${ERROR_OCCURED} = true ] && {
+                    echo "[-] An unexpected error occurred within the '_exception${1}' while passing '${2}'.";
+                    exit 0;
+                }
 
                 shift 2;
 
                 ${Q_SET:-false} && {
                     wait ${PROCESS_IDS};
-                    [ $? -gt 0 ] && exit 0;
+                    [ "${ERROR_OCCURED}" = 'true' ] || exit 0;
                     unset PROCESS_IDS;
 
                 }
@@ -361,17 +442,17 @@ try() {
 
     _exception() {
 
+        export AWK="$(awkIterpreter)" || exit 1;
+
         # Dispatch to the appropriate error handling function based on the first argument
         while getopts :I:T:V:P:S:A:O:R:C:S:cQq OPT; do
             case ${OPT} in
                 q|Q) _exceptionTemplate ${OPT};;
-                *) _exceptionTemplate "${OPT}" "${OPTARG}";;
+                *) _exceptionTemplate "${OPT}" "${OPTARG}" || exit 2;;
             esac
         done
 
         shift $((OPTIND - 1));
-
-        return 0;
 
     }
 
@@ -386,7 +467,8 @@ try() {
         esac
 
         _exception "${@}";
-    )
+
+    ) || exit;
 }
 
 
@@ -394,6 +476,7 @@ startPosixNexus() {
 
     (
 
+        export AWK="$(awkIterpreter)" || exit 1;
         # Check various paths and files using the _taskErrors function
         # Ensures all necessary directories and files exist and are accessible
         try -I "R=${1},\
@@ -433,3 +516,4 @@ startPosixNexus() {
     fi
 
 )
+
