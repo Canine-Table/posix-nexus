@@ -2,6 +2,100 @@
 
 try() {
 
+    _kwargs() {
+
+        (
+
+            # Export the function name and flags for environment use
+            export NAME="${1}"; # NAME
+            export FLAGS="$(
+                case "$(awk 'BEGIN{ printf("%s", substr(ENVIRON["NAME"], length(ENVIRON["NAME"])))}')" in
+                    P) ;;                       # Placeholder for P flag
+                    I) echo -n 'RshLtxwrfdep';; # Supported flags for I
+                    T) ;;                       # Placeholder for T flag
+                    C) echo -n 'R';;            # Placeholder for T flag
+                    V) ;;                       # Placeholder for V flag
+                    W) echo -n 'HA';;           # Supported for W flag
+                    S) ;;                       # Placeholder for S flag
+                    A) ;;                       # Placeholder for A flag
+                    O) ;;                       # Placeholder for O flag
+                    R) echo -n 'N';;            # Supported flag for R
+                esac
+            )"
+
+            INDEX=0;  # Initialize index
+
+            # Iterate through the provided arguments, delimited by commas
+            for VALUE in $(echo -n "${2}," | awk '{
+
+                while((position = index(substr($0, last_position), character))) {
+
+                    if (character == "=") {
+                        character = ",";
+                    } else {
+                        character = "=";
+                    }
+
+                    print substr($0, last_position, position - 1);
+                    last_position = last_position + position;
+
+                }
+
+                print substr($0, last_position, position - 1);
+
+            }'); do
+
+                INDEX=$((INDEX + 1));
+
+                # For odd indexed elements, validate the key
+                if [ $((INDEX % 2)) -eq 1 ]; then
+                    ERROR_OCCURED=false;
+                    export KEY="$(echo -n "${VALUE}" | awk '{
+
+                        split(ENVIRON["FLAGS"], list, "");
+
+                        for (flag in list) {
+                            if (list[flag] == $0) {
+                                printf("%s", $0);
+                                delete list;
+                                exit 0;
+                            }
+
+                            string = string "|" list[flag];
+                            delete list[flag];
+
+                        }
+
+                        printf("[-] The option \x27%s\x27 is not one supported by the \x27%s\x27. The supported options are as follows: [%s]\x0a", $0, ENVIRON["NAME"], substr(string, 2));
+                        delete list;
+                        exit 1;
+
+                    }')" || {
+                        echo "${KEY}";
+                        INDEX=$((INDEX + 1));
+                        ERROR_OCCURED=true;
+                        unset KEY;
+                    }
+
+                else
+                    # For even indexed elements, evaluate the function with key and value
+                    "${NAME}" "${KEY}" "${VALUE}" || {
+                        case $? in
+                            254) export ROOT_DIRECTORY="${_}/";;  # Special case handling
+                            *) ${Q_SET:-false} && exit 1;;         # Handle errors
+                        esac
+                    }
+
+                fi
+
+            done
+
+        ) || ERROR_OCCURED=true;
+
+        return 0;
+
+    }
+
     _exceptionc() {
 
         ${ANSI_COLOR:-false} && ANSI_COLOR_VALUE="$(
@@ -17,18 +111,23 @@ try() {
             exit 0;
 
         )" && {
-            echo -en "\x1b[0m\x1b[1;${ANSI_COLOR_VALUE}m";
+            export ANSI_COLOR_VALUE="$(echo -en "\x1b[0m\x1b[1;${ANSI_COLOR_VALUE}m")";
+            echo -n "${ANSI_COLOR_VALUE}";
         }
 
-        unset ANSI_COLOR_VALUE;
         return 0;
     }
 
     _exceptionR() {
         # RegexError
-        echo "${1}";
-   
-        return 1;
+
+        case "${1}" in
+            N)
+                echo -n "${2}" | awk '{ if ($0 ~ /^((_)?[[:alpha:]]{1}(_)?[[:alnum:]_]*)$/) { exit 0; } else { exit 1; } }' || {
+                    echo "Invalid naming convention '${2}': Names must start with an optional underscore, followed by an alphabetic character, and can include alphanumeric characters and underscores.";
+                    return 1;
+                };;
+        esac
 
     }
 
@@ -58,6 +157,17 @@ try() {
 
     _exceptionP() {
         # PropertyError
+
+        # (
+        #     case "${1}" in
+        #         F) ;;
+        #     esac
+        # )
+        # 1=funtionname
+        # 2=required size
+        # 3=passed size
+        # 4=options
+
         return 0;
 
     }
@@ -70,149 +180,147 @@ try() {
 
     _exceptionI() {
 
-        (
+        _item() {
+            # Check if the key path exists in the root directory
+            [ -${KEY} "${ROOT_DIRECTORY}${VALUE}" ] || {
+                return 1;
+            }
 
-            _item() {
-                # Check if the key path exists in the root directory
-                [ -${KEY} "${ROOT_DIRECTORY}/${J}" ] || {
-                    ERROR_OCCURED=true;
+        }
+
+        _output() {
+            # Echo formatted error message
+            echo "[${KEY}] The path to '${ROOT_DIRECTORY}${VALUE}' ${ROOT_DIRECTORY:+"within '${ROOT_DIRECTORY}' "}is not ${1}";
+            return 1;
+        }
+
+        case "${1}" in
+
+            R) 
+                {
+                    # Check if the working directory is a directory and executable
+                    (
+                        _kwargs "_exceptionI" "e=${2},r=${2},d=${2}";
+                    ) && {
+                        export ROOT_DIRECTORY="$(cd "${2}" && pwd)";
+                        return 254;
+                    } || {
+                        return 1;
+                    }
+
+                };;
+
+            e)
+                _item || {
+                    # Check if the path is a exists
+                    echo "[${KEY}] Error: Path to $(basename "${VALUE}") does not exist ${ROOT_DIRECTORY:+"within '${ROOT_DIRECTORY}' directory"}";
                     return 1;
-                }
+                };;
 
-            }
+            d)
+                _item || {
+                    # Check if the path is a directory
+                    _output "is not a directory.";
+                };;
+            f)
+                _item || {
+                    # Check if the path is a file
+                    _output "a file";
+                };;
 
-            _output() {
-                # Echo formatted error message
-                echo "[${KEY}] The path to '${J}' ${ROOT_DIRECTORY:+"within '${ROOT_DIRECTORY}' "}is not ${1}";
-            }
+            r)
+                _item || {
+                    # Check if the path is an readable
+                    _output "readable.";
+                };;
 
-            INDEX=0;
+            w)
+                _item || {
+                    # Check if the path is an writable
+                    _output "writable.";
+                };;
 
-            for I in $(iterator ',' "${@}"); do
-                ERROR_OCCURED=false;
+            x)
+                _item "${ROOT_DIRECTORY}${2}" || {
+                    # Check if the path is an executable
+                    _output "an executable.";
+                };;
 
-                for J in $(iterator '=' "${I}"); do
-                    INDEX=$((INDEX + 1));
+            s) 
+                _item || {
+                    # Check if the path is a socket
+                    _output "a socket";
+                };;
 
-                    if [ $((INDEX % 2)) -eq 1 ]; then
-                        case "${J}" in
-                            R|s|h|L|t|x|w|r|f|d|e|p) KEY="${J}";;
-                            *) echo "[-] The option '${J}' is not supported by _exceptionI: [R|s|h|L|t|x|w|r|f|d|e|p]";;
-                        esac
-                    else
+            h|L) 
+                _item || {
+                    # Check if the path is a symbolic link
+                    _output "a symbolic link";
+                };;
+            p)
+                _item || {
+                    # Check if the path is a fifo file (named pipe)
+                    _output "a named pipe";
+                };;
 
-                        case "${KEY}" in
+            t)
+                _item || {
+                    # Check if the path is attached to a terminal
+                    _output "file that is not attached to a terminal";
+                };;
 
-                            R) 
-                                {
-                                    # Check if the working directory is a directory and executable
-                                    _exceptionI "e=${J},d=${J},x=${J}" && ROOT_DIRECTORY="$(cd "${J}" && pwd)";
-                                };;
+        esac
 
-                            e)
-                                _item || {
-                                    # Check if the path is a exists
-                                    echo "[${KEY}] Error: Path to $(basename "${J}") does not exist ${ROOT_DIRECTORY:+"within in '${ROOT_DIRECTORY}' directory"}";
-                                };;
-
-                            d)
-                                _item || {
-                                    # Check if the path is a directory
-                                    _output "is not directory.";
-                                };;
-                            f)
-                                _item || {
-                                    # Check if the path is a file
-                                    _output "file";
-                                };;
-
-                            r)
-                                _item || {
-                                    # Check if the path is an readable
-                                    _output "readable.";
-                                };;
-
-                            w)
-                                _item || {
-                                    # Check if the path is an writable
-                                    _output "writable.";
-                                };;
-
-                            x)
-                                _item "${ROOT_DIRECTORY}${J}" || {
-                                    # Check if the path is an executable
-                                    _output "an executable.";
-                                };;
-
-                            s) 
-                                _item || {
-                                    # Check if the path is a socket
-                                    _output "socket";
-                                };;
-
-                            h|L) 
-                                _item || {
-                                    # Check if the path is a symbolic link
-                                    _output "symbolic link";
-                                };;
-                            p)
-                                _item || {
-                                    # Check if the path is a fifo file (named pipe)
-                                    _output "named pipe";
-                                };;
-
-                            t)
-                                _item || {
-                                     # Check if the path is attached to a terminal
-                                    _output "file that is not attached to a terminal";
-                                    ERROR_OCCURED=true;
-
-                                };;
-
-                        esac
-
-                    fi
-
-                done
-
-                (${q_SET:-false} && ${ERROR_OCCURED:-false}) && exit 1;
-
-            done
-
-        ) || ERROR_OCCURED=true;
-
-       return 0;
     }
 
     _exceptionC() {
 
-        case $(echo -n "${1}" | cut -c 1) in
-            H) _exceptionc W; echo "Undefined case, cannot handle argument: '-$(echo "${1}" | cut -c 3-)'.";;
-            R) echo "Please execute the 'run.sh' script to initialize the POSIX Nexus environment or ensure the correct file path is specified.";;
-            A) _exceptionc W; echo "The '-$(echo "${1}" | cut -c 3-)' exception requires an argument.";;
-            U) _exceptionc W; echo -e "Unknown option '-$(echo "${2}" | cut -d ',' -f 1)'. The parameter '$(echo "${2}" | cut -d ',' -f 2)' assigned to '$(echo "${2}" | cut -d ',' -f 1)' will be discarded.";;
-            *) _exceptionc W;  echo "[-] The option '$(echo -n "${1}" | cut -c 1)' is not supported and will be skipped: [H|R|A|U]";;
-        esac
+        (
+            _exceptionc W;
 
-        _exceptionc E;
+            case "${KEY}" in
+                R) echo "Please execute the '${VALUE}' script to initialize the POSIX Nexus environment or ensure the correct file path is specified.";;
+            esac
+
+        )
+
+        ${ANSI_COLOR:-false} && echo -e "${ANSI_COLOR_VALUE:-$(_exceptionc E)}";
+
         return 0;
+    }
+
+    _exceptionW() {
+
+        (
+            _exceptionc W;
+
+            case "${KEY}" in
+                H) echo "Undefined case, cannot handle argument: '${VALUE}'";;
+                A) echo "An empty value was passed to _exceptionTemplate. The _exceptionTemplate requires an argument";;
+            esac
+
+        )
+
+        ${ANSI_COLOR:-false} && echo -e "${ANSI_COLOR_VALUE:-$(_exceptionc E)}";
+
     }
 
     _exceptionTemplate() {
 
         [ "${1}" = 'q' ] && {
-            q_SET=true;
+            Q_SET=true;
             return 0;
         }
 
+
         [ "${1}" = 'Q' ] && {
-            q_SET=false;
+            Q_SET=false;
             return 0;
         }
 
         [ -z "${2}" ] && {
-            _exceptionC A;
-            return 1;
+            _kwargs "_exceptionW" "A=${1}";
+            return 2;
         }
 
         (
@@ -225,15 +333,16 @@ try() {
 
                 case "${1}" in
                     c) _exception${1} "${2}";;
-                    P|I|C|T|V|S|A|O|R) _exception${1} "${2}" & PROCESS_IDS="${PROCESS_IDS} $!";;
-                    *) _exceptionC U "${1},${2}";;
+                    C|P|I|T|V|S|A|O|R|W) _kwargs "_exception${1}" "${2}" & PROCESS_IDS="${PROCESS_IDS} $!";;
+                    ?) _kwargs "_exceptionW" "H=${2}";;
+                    *) echo "The option '_exception${1}' is nor an existing function. The value '${2}' which was assigned to '_exception${1}' will be discarded.";;
                 esac
 
                 [ ${ERROR_OCCURED} = true ] && echo "[-] An unexpected error occurred within the '_exception${1}' while passing '${2}'." && exit 1;
 
                 shift 2;
 
-                ${q_SET:-false} && {
+                ${Q_SET:-false} && {
                     wait ${PROCESS_IDS};
                     [ $? -gt 0 ] && exit 0;
                     unset PROCESS_IDS;
@@ -256,8 +365,7 @@ try() {
         while getopts :I:T:V:P:S:A:O:R:C:S:cQq OPT; do
             case ${OPT} in
                 q|Q) _exceptionTemplate ${OPT};;
-                c|I|P|C|T|V|S|A|O|R) _exceptionTemplate "${OPT}" "${OPTARG}";;
-                ?) _exceptionTemplate C "H ${OPTARG}";;
+                *) _exceptionTemplate "${OPT}" "${OPTARG}";;
             esac
         done
 
@@ -266,7 +374,7 @@ try() {
         return 0;
 
     }
-    
+
     (
 
         trap 'echo -en "${ANSI_COLOR:+\\x1b[0m}"; exec 1>&-' EXIT;
@@ -279,23 +387,6 @@ try() {
 
         _exception "${@}";
     )
-}
-
-iterator() {
-
-    # Process the input string using Awk with the specified field separator (FS)
-    echo -n "${*}" | awk -v FS="${1}" '{
-        for (i = 1; i <= NF; ++i) {
-            # Remove leading and trailing whitespace from each field
-            gsub(/(^[[:space:]]+)|([[:space:]]+$)/, "", $i);
-            if ($i) {
-                # Print each non-empty field
-                print $i;
-            }
-        }
-    }'
-
-    return 0;
 }
 
 
@@ -333,10 +424,12 @@ startPosixNexus() {
 
 }
 
+(
+    if [ -e "$(cd "$(dirname "${0}")" && pwd)/main/sh/lib/posix-nexus.sh" ]; then
+        startPosixNexus "$(cd "$(dirname "${0}")" && pwd)" "${@}";
+    else
+        try -C 'R=run.sh';
+        exit 1;
+    fi
 
-if [ -e "$(cd "$(dirname "${0}")" && pwd)/main/sh/lib/posix-nexus.sh" ]; then
-    startPosixNexus "$(cd "$(dirname "${0}")" && pwd)" "${@}";
-else
-    try -C R;
-    exit 1;
-fi
+)
