@@ -40,10 +40,10 @@ try() {
                     T) ;;                       # Placeholder for T flag
                     C) echo -n 'R';;            # Placeholder for T flag
                     V) echo -n 'zn';;           # Value flags for _exceptionV
-                    W) echo -n 'HA';;           # Warning flags for _exceptionW
+                    W) echo -n 'HAE';;          # Warning flags for _exceptionW
                     S) ;;                       # Placeholder for S flag
                     A) ;;                       # Placeholder for A flag
-                    O) echo -n 'TMCDLRF';;        # Operating System flags for _exceptionO
+                    O) echo -n 'TMCDLRF';;      # Operating System flags for _exceptionO
                     R) echo -n 'N';;            # Regular Expressions flags for _exceptionR
                 esac
             )"
@@ -108,7 +108,7 @@ try() {
                     "${NAME}" "${KEY}" "${VALUE}" || {
                         case $? in
                             254) export ROOT_DIRECTORY="${_}/";;  # Special case handling
-                            *) ${Q_SET:-false} && exit 1;;         # Handle errors
+                            *) [ -n "${Q_SET}" ] && exit 1;;      # Handle errors
                         esac
                     }
 
@@ -118,7 +118,7 @@ try() {
 
             done
 
-        ) ||  ERROR_OCCURED=true;
+        ) || ERROR_OCCURED=true;
 
         return 0;
 
@@ -256,29 +256,33 @@ try() {
 
                         touch "${VALUE}" && {
                             _success "file" "created";
-                        }
+                        } || _error "create";
 
-                    } || _error "create";
+                    } 
 
                 };;
 
             L)
                 {
                     {
+                        _exceptionc E;
                         eval "$(echo -n "${VALUE}" | awk '{
                             i = index($0, ":");
                             print "ln -sf " substr($0, 1, i - 1) " " substr($0, i + 1);
-                        }')" && {
-                            _success "symbolic link" "created";
-                        }
+                        }')"  && _success "symbolic link" "created"
+
                     } || _error "link";
 
                 };;
 
             R)
                 {
-                    {
-                        rm -rf "${VALUE}" &&  _success "item" "removed";
+                    [ -e "${VALUE}" ] && {
+
+                        rm -rf "${VALUE}" && {
+                            _success "item" "removed";
+                        }
+
                     } || _error "remove";
 
                 };;
@@ -412,6 +416,7 @@ try() {
         case "${KEY}" in
             H) echo "Undefined case, cannot handle argument: '${VALUE}'";;
             A) echo "An empty value was passed to _exceptionTemplate. The _exceptionTemplate requires an argument";;
+            E) echo "Please fix the errors above before continuing";;
         esac
 
     }
@@ -423,9 +428,13 @@ try() {
             return 0;
         }
 
-
         [ "${1}" = 'Q' ] && {
             Q_SET=false;
+            return 0;
+        }
+
+        [ "${1}" = 'E' ] && {
+            Q_SET="on";
             return 0;
         }
 
@@ -448,6 +457,7 @@ try() {
                     ?) _kwargs "_exceptionW" "H=${2}";;
                     *) echo "The option '_exception${1}' is nor an existing function. The value '${2}' which was assigned to '_exception${1}' will be discarded.";;
                 esac
+
                 [ ${ERROR_OCCURED} = true ] && {
                     echo "[-] An unexpected error occurred within the '_exception${1}' while passing '${2}'.";
                     exit 0;
@@ -455,9 +465,9 @@ try() {
 
                 shift 2;
 
-                ${Q_SET:-false} && {
+                [ -n "${Q_SET}" ] && {
                     wait ${PROCESS_IDS};
-                    [ "${ERROR_OCCURED}" = 'true' ] || exit 0;
+                    [ ${ERROR_OCCURED:-false} = true ] || exit 0;
                     unset PROCESS_IDS;
 
                 }
@@ -467,7 +477,15 @@ try() {
             wait ${PROCESS_IDS};
             exit ${INDEX};
 
-        ) && exit 1;
+        ) && case "${Q_SET}" in 
+            on) export ERROR_ON_EXIT='on';;
+            *) exit 1;;
+        esac
+
+        [ "${ERROR_ON_EXIT}" = 'on' ] && {
+            _exceptionW E;
+            exit 1;
+        }
 
         return 0;
     }
@@ -477,15 +495,16 @@ try() {
         export AWK="$(awkIterpreter)" || exit 1;
 
         # Dispatch to the appropriate error handling function based on the first argument
-        while getopts :I:T:V:P:S:A:O:R:C:S:cQq OPT; do
+        while getopts :I:T:V:P:S:A:O:R:C:S:cEQq OPT; do
             case ${OPT} in
-                q|Q) _exceptionTemplate ${OPT};;
+                E|q|Q) _exceptionTemplate ${OPT};;
                 *) _exceptionTemplate "${OPT}" "${OPTARG}" || exit 2;;
             esac
         done
 
         shift $((OPTIND - 1));
 
+        return 0;
     }
 
     (
@@ -500,7 +519,7 @@ try() {
 
         _exception "${@}";
 
-    ) || exit;
+    )
 }
 
 
@@ -512,12 +531,13 @@ startPosixNexus() {
         # Check various paths and files using the _taskErrors function
         # Ensures all necessary directories and files exist and are accessible
         try -I "R=${1},\
-        d=main,d=main,x=main,\
-        e=main/awk,d=main/awk,x=main/awk,\
-        e=main/awk/lib,d=main/awk/lib,x=main/awk/lib,r=main/awk/lib,\
-        e=main/sh,d=main/sh,x=main/sh \
-        e=main/sh/lib,d=main/sh/lib,x=main/sh/lib,r=main/sh/lib,\
-        e=main/sh/lib/posix-nexus.sh,f=main/sh/lib/posix-nexus.sh,r=main/sh/lib/posix-nexus.sh" || exit;
+            d=main,d=main,x=main,\
+            e=main/awk,d=main/awk,x=main/awk,\
+            e=main/awk/lib,d=main/awk/lib,x=main/awk/lib,r=main/awk/lib,\
+            e=main/awk/lib/awk-interpreter.awk,f=main/awk/lib/awk-interpreter.awk,r=main/awk/lib/awk-interpreter.awk,\
+            e=main/sh,d=main/sh,x=main/sh \
+            e=main/sh/lib,d=main/sh/lib,x=main/sh/lib,r=main/sh/lib,\
+            e=main/sh/lib/posix-nexus.sh,f=main/sh/lib/posix-nexus.sh,r=main/sh/lib/posix-nexus.sh" || exit;
 
         # Set the root directory for POSIX Nexus
         export POSIX_NEXUS_ROOT="${1}";
@@ -533,7 +553,7 @@ startPosixNexus() {
 
             done
 
-        )";
+        )"
 
     ) || exit;
 
