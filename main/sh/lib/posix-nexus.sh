@@ -63,17 +63,6 @@ posixNexusDaemon() {
 
     }
 
-    _removal() {
-
-        (
-            # todo garbage collection
-            :
-        )
-
-        return 0;
-    }
-
-
     _noClobber() {
 
         [ -${1} "${2}" ] || {
@@ -93,14 +82,44 @@ posixNexusDaemon() {
     try -O 'T=/var/run/posix-nexus/posix-nexus.pid' -I "R=/var/run/posix-nexus,r=posix-nexus.pid,w=posix-nexus.pid,f=posix-nexus.pid" && {
 
         ps -o pid | grep -q "^$(cat '/var/run/posix-nexus/posix-nexus.pid')$" || {
-            
-            [ -d "/var/tmp/posix-nexus-$$" ] || {
-                
-                try -O "D=/var/tmp/posix-nexus-$$" -I "R=/var/tmp,w=posix-nexus-$$,r=posix-nexus-$$,d=posix-nexus-$$,x=posix-nexus-$$" && {
 
-                   ln -sf "/var/tmp/posix-nexus-$$" "/var/run/posix-nexus-directory" && {
-                        :
-                   } || exit 5;
+            [ -d "/var/tmp/posix-nexus/posix-nexus-$$" ] || {
+
+                try -O "D=/var/tmp/posix-nexus/posix-nexus-$$" -I "R=/var/tmp/posix-nexus,w=posix-nexus-$$,r=posix-nexus-$$,d=posix-nexus-$$,x=posix-nexus-$$" && {
+
+                    try -O "L=/var/tmp/posix-nexus/posix-nexus-$$:/var/run/posix-nexus/posix-nexus-directory" && {
+
+                        {
+                            for OLD in /var/tmp/posix-nexus/posix-nexus-*; do
+                                [ "${OLD}" = "/var/tmp/posix-nexus/posix-nexus-$$" ] || rm -rf "${OLD}" 2> /dev/null;
+                            done
+
+                            unset OLD;
+
+                        }  &
+
+                        try -q -O "C=mkfifo,F=/var/tmp/posix-nexus/posix-nexus-$$/stdin-posix-nexus-${$}.in" || exit 6;
+
+                        _start() {
+                            #    _posixNexusLinker 'awk' || exit 8;
+                            #    echo ${POSIX_NEXUS_AWK_LINKER};
+
+                            nohup ${AWK} "${POSIX_NEXUS_AWK_LINKER}" "{
+
+                                while ((getline line < \"/var/run/posix-nexus-directory/stdin-posix-nexus-${$}.in\") > 0) {
+                                    print line;
+                                }
+                                
+                                close(\"/var/run/posix-nexus-directory/stdin-posix-nexus-${$}.in\");
+                            " \
+                                1> "/var/run/posix-nexus-directory/stdout-posix-nexus-${$}.out" \
+                                2> "/var/run/posix-nexus-directory/stderr-posix-nexus-${$}.out" \
+                                & printf "%d" $! > '/var/run/posix-nexus.pid' || exit 7;
+                        }
+
+                        #_start;
+
+                    } || exit 5;
 
                 } || exit 4;
 
@@ -108,30 +127,6 @@ posixNexusDaemon() {
         }
 
     } || exit 3;
-
-    # try -I "R=/var/run,f=posix-nexus.pid,w=posix-nexus.pid,r=posix-nexus.pid" && {
-
-    #     ps -A | grep -q "^$(cat '/var/run/posix-nexus.pid')$" || {
-
-    #         [ -d "/var/tmp/posix-nexus-$$" ] || {
-
-    #             try -O "D=/var/tmp/posix-nexus-$$" || exit 6;
-    #         }
-
-
-    #         [ -p "/var/run/posix-nexus-directory/stdin-posix-nexus-${$}.in" ] || {
-    #             try -O "C=mkfifo" || exit 7;
-
-    #             mkfifo "/var/run/posix-nexus-directory/stdin-posix-nexus-${$}.in";
-    #         }
-
-    #         nohup sh -c 'while :; do  sleep 3; cat "/var/run/posix-nexus-directory/stdin-posix-nexus-${$}.in"; done' \
-    #             1> "/var/run/posix-nexus-directory/stdout-posix-nexus-${$}.out" \
-    #             2> "/var/run/posix-nexus-directory/stderr-posix-nexus-${$}.out" \
-    #             & printf "%d" $! > '/var/run/posix-nexus.pid' || exit 8;
-
-    #     }
-    # }
 
 }
 
