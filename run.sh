@@ -43,7 +43,7 @@ try() {
                     W) echo -n 'HA';;           # Warning flags for _exceptionW
                     S) ;;                       # Placeholder for S flag
                     A) ;;                       # Placeholder for A flag
-                    O) echo -n 'TMCD';;         # Operating System flags for _exceptionO
+                    O) echo -n 'TMCDLRF';;        # Operating System flags for _exceptionO
                     R) echo -n 'N';;            # Regular Expressions flags for _exceptionR
                 esac
             )"
@@ -249,10 +249,11 @@ try() {
                     } || _error "move";
 
                 };;
-            T) 
+            T)
                 {
+
                     [ -e "${VALUE}" ] || {
-                        
+
                         touch "${VALUE}" && {
                             _success "file" "created";
                         }
@@ -260,6 +261,37 @@ try() {
                     } || _error "create";
 
                 };;
+
+            L)
+                {
+                    {
+                        eval "$(echo -n "${VALUE}" | awk '{
+                            i = index($0, ":");
+                            print "ln -sf " substr($0, 1, i - 1) " " substr($0, i + 1);
+                        }')" && {
+                            _success "symbolic link" "created";
+                        }
+                    } || _error "link";
+
+                };;
+
+            R)
+                {
+                    {
+                        rm -rf "${VALUE}" &&  _success "item" "removed";
+                    } || _error "remove";
+
+                };;
+            
+            F) 
+
+                {
+                    {
+                        mkfifo "${VALUE}" &&  _success "fifo file" "created";
+                    } || _error "create the fifo file";
+                };;
+
+
         esac
 
         return 0;
@@ -507,13 +539,9 @@ startPosixNexus() {
 
 }
 
-(
-    if [ -e "$(cd "$(dirname "${0}")" && pwd)/main/sh/lib/posix-nexus.sh" ]; then
-        startPosixNexus "$(cd "$(dirname "${0}")" && pwd)" "${@}";
-    else
-        try -C 'R=run.sh';
-        exit 1;
-    fi
-
-)
-
+if [ -e "$(cd "$(dirname "${0}")" && pwd)/main/sh/lib/posix-nexus.sh" ]; then
+    startPosixNexus "$(cd "$(dirname "${0}")" && pwd)" "${@}";
+else
+    try -C 'R=run.sh';
+    exit 1;
+fi
