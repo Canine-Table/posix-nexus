@@ -1,11 +1,30 @@
 posixNexusDaemon() {
 
+    _posixNexusDaemonGlobals() {
+
+        # Set file creation mask
+        umask 027;
+
+        # Set environment variables for various paths
+        export POSIX_NEXUS_RUN_ROOT="/var/run/posix-nexus";
+        export POSIX_NEXUS_LOG_ROOT="/var/log/posix-nexus";
+        export POSIX_NEXUS_TEMP_ROOT="/var/tmp/posix-nexus";
+        export POSIX_NEXUS_DAEMON_ROOT="${POSIX_NEXUS_TEMP_ROOT}/posix-nexus-$$";
+        export POSIX_NEXUS_PID="${POSIX_NEXUS_RUN_ROOT}/posix-nexus.pid";
+        export POSIX_NEXUS_LINK="${POSIX_NEXUS_RUN_ROOT}/posix-nexus-directory";
+        export POSIX_NEXUS_STDIN="${POSIX_NEXUS_DAEMON_ROOT}/stdin-posix-nexus.in";
+        export POSIX_NEXUS_STDOUT="${POSIX_NEXUS_DAEMON_ROOT}/stdout-posix-nexus.out";
+        export POSIX_NEXUS_STDERR="${POSIX_NEXUS_DAEMON_ROOT}/stderr-posix-nexus.out";
+
+    }
+
     _posixNexusLinker() {
 
         # Ensure POSIX_NEXUS_ROOT is set, or return an error
         # Validate the first argument to ensure it's a valid variable name
         try -V 'n=POSIX_NEXUS_ROOT' -R "N=${1}" || return 1;
 
+        # Export linker variable
         export "POSIX_NEXUS_${1:+$(echo -n "${1}" | tr '[:lower:]' '[:upper:]')}_LINKER"="$(
             LINKER_PROCESS_IDS="";
             # Iterate over files in the specified directory that match the pattern
@@ -41,6 +60,7 @@ posixNexusDaemon() {
                 };
 
             done
+
         ) || return 1;
 
     }
@@ -64,7 +84,7 @@ posixNexusDaemon() {
     }
 
     _noClobber() {
-
+        # Ensure no clobbering occurs by moving existing files to backup
         [ -${1} "${2}" ] || {
 
             [ -e "${2}" ] && {
@@ -75,58 +95,101 @@ posixNexusDaemon() {
         }
     }
 
-    _setupTree '/var/run/posix-nexus' '/var/log/posix-nexus' '/var/tmp/posix-nexus' || exit 1;
-    _posixNexusLinker 'sh' || exit 2;
-    _import ${POSIX_NEXUS_SH_LINKER};
+    _replace() {
 
-    try -O 'T=/var/run/posix-nexus/posix-nexus.pid' -I "R=/var/run/posix-nexus,r=posix-nexus.pid,w=posix-nexus.pid,f=posix-nexus.pid" && {
+        # Replace occurrences of match_value with replace_value using AWK
+        echo -n "${1}" | awk \
+            -v match_value="${2}" \
+            -v replace_value="${3}" \
+        '{
+            gsub(match_value, replace_value);
+            print;
+        }'
 
-        ps -o pid | grep -q "^$(cat '/var/run/posix-nexus/posix-nexus.pid')$" || {
+    }
 
-            [ -d "/var/tmp/posix-nexus/posix-nexus-$$" ] || {
-
-                try -O "D=/var/tmp/posix-nexus/posix-nexus-$$" -I "R=/var/tmp/posix-nexus,w=posix-nexus-$$,r=posix-nexus-$$,d=posix-nexus-$$,x=posix-nexus-$$" && {
-
-                    try -O "L=/var/tmp/posix-nexus/posix-nexus-$$:/var/run/posix-nexus/posix-nexus-directory" && {
-
-                        {
-                            for OLD in /var/tmp/posix-nexus/posix-nexus-*; do
-                                [ "${OLD}" = "/var/tmp/posix-nexus/posix-nexus-$$" ] || rm -rf "${OLD}" 2> /dev/null;
-                            done
-
-                            unset OLD;
-
-                        }  &
-
-                        try -q -O "C=mkfifo,F=/var/tmp/posix-nexus/posix-nexus-$$/stdin-posix-nexus-${$}.in" || exit 6;
-
-                        _start() {
-                            #    _posixNexusLinker 'awk' || exit 8;
-                            #    echo ${POSIX_NEXUS_AWK_LINKER};
-
-                            nohup ${AWK} "${POSIX_NEXUS_AWK_LINKER}" "{
-
-                                while ((getline line < \"/var/run/posix-nexus-directory/stdin-posix-nexus-${$}.in\") > 0) {
-                                    print line;
-                                }
-                                
-                                close(\"/var/run/posix-nexus-directory/stdin-posix-nexus-${$}.in\");
-                            " \
-                                1> "/var/run/posix-nexus-directory/stdout-posix-nexus-${$}.out" \
-                                2> "/var/run/posix-nexus-directory/stderr-posix-nexus-${$}.out" \
-                                & printf "%d" $! > '/var/run/posix-nexus.pid' || exit 7;
-                        }
-
-                        #_start;
-
-                    } || exit 5;
-
-                } || exit 4;
-
+    _posixNexusDaemonGlobals;
+ 
+    {
+        # Setup necessary directory trees
+        STARTUP_ERROR=false
+        [ -h "${POSIX_NEXUS_LINK}" ] && {
+            try -E -O "R=${POSIX_NEXUS_LINK}" && {
+                STARTUP_ERROR=true;
+                echo "error 1";
+                
             }
         }
 
-    } || exit 3;
+        try -E -O "\
+            D=${POSIX_NEXUS_TEMP_ROOT},\
+            D=${POSIX_NEXUS_RUN_ROOT},\
+            D=${POSIX_NEXUS_LOG_ROOT},\
+            C=ln,\
+            C=mkfifo,\
+            T=${POSIX_NEXUS_PID},\
+            D=${POSIX_NEXUS_DAEMON_ROOT},\
+            F=${POSIX_NEXUS_STDIN},\
+            T=${POSIX_NEXUS_STDOUT},\
+            T=${POSIX_NEXUS_STDERR},\
+            L=${POSIX_NEXUS_DAEMON_ROOT}:${POSIX_NEXUS_LINK}" && {
+                STARTUP_ERROR=true;
+                echo "error 2";
+
+            }
+
+            try -E -I "\
+            d=/var,w=/var,x=/var,\
+            d=/var/run,x=/var/run,w=/var/run,\
+            d=/var/tmp,x=/var/tmp,w=/var/tmp,\
+            d=/var/log,x=/var/log,w=/var/log,\
+            d=${POSIX_NEXUS_TEMP_ROOT},x=${POSIX_NEXUS_TEMP_ROOT},w=${POSIX_NEXUS_TEMP_ROOT},\
+            d=${POSIX_NEXUS_RUN_ROOT},x=${POSIX_NEXUS_RUN_ROOT},w=${POSIX_NEXUS_RUN_ROOT},\
+            d=${POSIX_NEXUS_LOG_ROOT},x=${POSIX_NEXUS_LOG_ROOT},w=${POSIX_NEXUS_LOG_ROOT}" && {
+                STARTUP_ERROR=true;
+                echo "error 3";
+
+            }
+
+        try -E -I "\
+            f=${POSIX_NEXUS_PID},r=${POSIX_NEXUS_PID},w=${POSIX_NEXUS_PID},\
+            d=${POSIX_NEXUS_DAEMON_ROOT},x=${POSIX_NEXUS_DAEMON_ROOT},\
+            p=${POSIX_NEXUS_STDIN},r=${POSIX_NEXUS_STDOUT},\
+            f=${POSIX_NEXUS_STDOUT},r=${POSIX_NEXUS_STDOUT},w=${POSIX_NEXUS_STDOUT},\
+            f=${POSIX_NEXUS_STDERR},r=${POSIX_NEXUS_STDERR},w=${POSIX_NEXUS_STDERR},\
+            h=${POSIX_NEXUS_LINK},x=${POSIX_NEXUS_LINK}" && {
+                STARTUP_ERROR=true;
+                echo "error 4";
+
+            }
+
+       [ ${STARTUP_ERROR:-false} = true ] && exit 2;
+        cat "${POSIX_NEXUS_PID}"
+        exit
+        ps -o pid | grep -q "^$(cat "${POSIX_NEXUS_PID}")$" || {
+            kill "$(cat "${POSIX_NEXUS_PID}")" 2> /dev/null;
+
+            {
+                # Clean up old directories and start the daemon
+                for OLD in ${POSIX_NEXUS_TEMP_ROOT}/*; do
+                    [ "${OLD}" = "${POSIX_NEXUS_DAEMON_ROOT}" ] || rm -rf "${OLD}" 2> /dev/null;
+                done
+
+                unset OLD;
+
+            } &
+
+            # Link necessary utilities for AWK
+            _posixNexusLinker 'awk' || exit 2;
+
+            # Start the posix-nexus daemon with nohup, redirecting stdout and stderr, and store the PID
+            nohup ${AWK} -f $(_replace "${POSIX_NEXUS_AWK_LINKER}" ',' ' -f ')${POSIX_NEXUS_ROOT}/main/awk/lib/awk-interpreter.awk \
+                1> "${POSIX_NEXUS_STDOUT}" \
+                2> "${POSIX_NEXUS_STDERR}" \
+                & printf "%d" $! > "${POSIX_NEXUS_PID}" || exit 3;
+
+        } || echo "already running";
+
+    } || exit;
 
 }
-
