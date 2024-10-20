@@ -180,47 +180,44 @@ try() {
     }
 
     _exceptionC() {
-        _color E true;
 
         _missing() {
             # Output a message indicating that a required POSIX compatible tool needs to be installed
-            echo "The posix-nexus requires a posix compatible ${1} to be installed.";
+            _error "The posix-nexus requires a posix compatible ${1} to be installed.";
             # Provide possible options for the missing tool
             _possible "${2}";
         }
 
         _invalid() {
             # Output a message indicating that the provided option is not supported by the function
-            echo "The option '${1}' is not one of the flags the '${2}' function supports.";
+            _error "The option '${1}' is not one of the flags the '${2}' function supports.";
             # List the supported options for the function
             _options "${3}";
         }
 
         _possible() {
-            _color I true;
             # Output possible options for the required tool
-            echo "Possible options: ${1}";
+            _info "Possible options: ${1}";
         }
 
         _options() {
-           _color I true;
             # Format and output the supported options for a function
-            echo "${1}" | awk '{
+            _info "${1}" | awk '{
                 gsub(//, "|", $0);
                 print "Supported options are: [" substr($0, 2, length($0) - 2) "]";
             }';
-
         }
 
         # Handle different exception cases
         case "${1}" in
-            R) echo "Please execute the '${2}' script to initialize the POSIX Nexus environment or ensure the correct file path is specified.";;
-            E) echo "The '${2}' subroutine does not support the '-${3}' flag.";;
-            I) echo "The '-${1}' flag of the '${2}' subroutine requires an argument.";;
+            R) _error "Please execute the '${2}' script to initialize the POSIX Nexus environment or ensure the correct file path is specified.";;
+            E) _error "The '${2}' subroutine does not support the '-${3}' flag.";;
+            I) _error "The '-${1}' flag of the '${2}' subroutine requires an argument.";;
             S) _missing "'shell'" "[dash|ash|sh|mksh|posh|yash|ksh|loksh|pdksh|bash|zsh|fish|busybox]";;
             A) _missing "'awk' interpreter" "[mawk|nawk|awk|gawk|busybox]";;
             F) _invalid "${1}" "${2}" "${3}";;
-            *) _invalid "${1}" "_exceptionC" "REISAF";;
+            D) _debug "$(basename "${2}") tests completed!";;
+            *) _invalid "${1}" "_exceptionC" "REISAFD";;
         esac
 
         return 0;
@@ -260,13 +257,13 @@ try() {
             e)
                 _item || {
                     # Check if the path exists
-                    _error "Path to $(basename "${VALUE}") does not exist ${WORKING_DIRECTORY:+"within '${WORKING_DIRECTORY}' directory"}";
+                    _error "Path to $(basename "${VALUE}") does not exist ${WORKING_DIRECTORY:+"within the '${WORKING_DIRECTORY}' directory."}";
                 };;
 
             d)
                 _item || {
                     # Check if the path is a directory
-                    _output "is not a directory.";
+                    _output "is not a directory";
                 };;
             f)
                 _item || {
@@ -277,19 +274,19 @@ try() {
             r)
                 _item || {
                     # Check if the path is an readable
-                    _output "readable.";
+                    _output "readable";
                 };;
 
             w)
                 _item || {
                     # Check if the path is an writable
-                    _output "writable.";
+                    _output "writable";
                 };;
 
             x)
                 _item "${WORKING_DIRECTORY}${2}" || {
                     # Check if the path is an executable
-                    _output "an executable.";
+                    _output "an executable";
                 };;
 
             s) 
@@ -380,10 +377,10 @@ try() {
                 };;
 
             # Handle move operation
-            M) 
+            M)
                 {
                     # Execute the formatted move command
-                    eval "$(_format "${VALUE}" "mv '<>' '<>'")" 2> /dev/null || {
+                    eval $(_format "${VALUE}" "mv '<>' '<>'") 2> /dev/null || {
                         _error "Failed to move $(_format "${VALUE}" "'<>' to '<>'"). Please ensure the destination directory exists and you have the necessary permissions.";
                     }
                 };;
@@ -398,67 +395,67 @@ try() {
             # Handle symbolic link operation
             S)
 
-                eval "$(_format "${VALUE}" "ln -s '<>' '<>'")" 2> /dev/null || {
+                eval "$(_format "${VALUE}" "ln -sf <> <>")" 2> /dev/null || {
                     _error "Failed to create a link using command '$(_format "${VALUE}" "from '<>' to '<>'"). Please ensure the source and target directories exist and you have the necessary permissions.";
                 };;
 
             # Handle hard link creation
             H)
                 # Execute the formatted hardlink link command (ln)
-                eval "$(_format "${VALUE}" "ln '<>' '<>'")" 2> /dev/null || {
-                    _error "Failed to create a hard link using command '$(_format "${VALUE}" "ln '<>' '<>'")'. Please ensure the source and target directories exist and you have the necessary permissions.";
+                eval $(_format "${VALUE}" "ln -f '<>' '<>'") 2> /dev/null || {
+                    _error "Failed to create a hard link using command $(_format "${VALUE}" "ln '<>' '<>'"). Please ensure the source and target directories exist and you have the necessary permissions.";
                 };;
 
             # Handle change mode operation
             P)
 
                 # Execute the formatted chmod command
-                eval "$(_format "${VALUE}" "chmod '<>' '<>'")" 2> /dev/null || {
+                eval $(_format "${VALUE}" "chmod '<>' '<>'") 2> /dev/null || {
                     _error "Failed to change mode '$(_format "${VALUE}" "<> on '<>'"). Please ensure you have the necessary permissions.";
                 };;
-            
+
             # Handle change group operation
             G)
                 # Execute the formatted chgrp command
-                eval "$(_format "${VALUE}" "chgrp '<>' '<>'")" 2> /dev/null || {
-                    _error "Failed to change group from $(_format "${VALUE}" "'<>' on '<>'"). Please ensure you have the necessary permissions.";
+                eval $(_format "${VALUE}" "chgrp <> '<>'")  || {
+                    _error "Failed to change group to $(_format "${VALUE}" "'<>' on '<>'"). Please ensure you have the necessary permissions.";
                 };;
 
             # Handle copy operation
             W)
                 # Execute the formatted copy command
-                eval "$(_format "${VALUE}" "cp -R '<>' '<>'")" 2> /dev/null || {
+                eval $(_format "${VALUE}" "cp -R '<>' '<>'") 2> /dev/null || {
                     _error "Failed to copy $(_format "${VALUE}" "from '<>' to '<>'")'. Please ensure the source and destination directories exist and you have the necessary permissions."
                 };;
 
             # Handle kill operation
             K)
                 # Execute the formatted kill command
-                eval "$(_format "${VALUE}" "kill <>")" 2> /dev/null || {
-                    _error "Failed to kill process using command '$(_format "${VALUE}" "kill <>")'. Please ensure the process ID is valid and you have the necessary permissions.";
+                kill "${VALUE}" 2> /dev/null  || {
+                    _error "Failed to kill process '${VALUE}'. Please ensure the process ID is valid and you have the necessary permissions.";
                 };;
 
             # Handle unlink operation
             U)
 
-                # Execute the formatted unlink command
-                eval "$(_format "${VALUE}" "unlink '<>'")" 2> /dev/null || {
-                    _error "Failed to unlink using command $(_format "${VALUE}" "unlink '<>'"). Please ensure you have the necessary permissions.";
+                unlink "${VALUE}" 2> /dev/null || {
+                    _error "Failed to unlink '${VALUE}'. Please ensure you have the necessary permissions.";
                 };;
 
             # Handle archive operation
             A)
 
                 # Execute the formatted tar command
-                eval "$(_format "${VALUE}" "tar -cvf '<>' '<>'")" 1> /dev/null 2>&1 || {
+                eval $(_format "${VALUE}" "tar -cvf '<>' '<>'") 1> /dev/null 2>&1 || {
                     _error "Failed to archive using command $(_format "${VALUE}" "tar -cvf '<>' '<>'"). Please ensure the source directory exists and you have the necessary permissions.";
                 };;
 
             # Handle change owner operation
             O)
+
                 # Execute the formatted chown command
-                eval "$(_format "${VALUE}" "chown <>:<> '<>'")" 2> /dev/null || {
-                    _error "Failed to change owner using chown $(_format "${VALUE}" "from <> to <> on '<>'"). Please ensure you have the necessary permissions.";
+                eval $(_format "${VALUE}" "chown <>:<> '<>'") 2> /dev/null || {
+                    _error "Failed to change owner $(_format "${VALUE}" "from <> to <> on '<>'"). Please ensure you have the necessary permissions.";
                 };;
         esac
     }
@@ -471,19 +468,19 @@ try() {
             export FLAGS="$(
                 case "$(${AWK} 'BEGIN{ printf("%s", substr(ENVIRON["NAME"], length(ENVIRON["NAME"])))}')" in
                     I) echo -n 'RshLtxwrfdep';;         # Item flags for _exceptionI
-                    C) echo -n 'REISAF';;               # Custom flags for _exceptionC
+                    C) echo -n 'REISAFD';;              # Custom flags for _exceptionC
                     V) echo -n 'zn';;                   # Value flags for _exceptionV
                     W) echo -n 'HAE';;                  # Warning flags for _exceptionW
                     O) echo -n 'CTDFMRPGWSHUAKNGO';;    # Operating System flags for _exceptionO
                     R) echo -n 'N';;                    # Regular Expressions flags for _exceptionR
                 esac
-            )"
+            )";
 
             # Initialize the index
             INDEX=0;
 
             # Iterate through the provided arguments, delimited by , and =
-            for VALUE in $(echo -n "${2}," | ${AWK} '{
+            for VALUE in $(echo  "${2}," | ${AWK} '{
 
                 # Loop to process the input string, alternating the character between '=' and ','
                 while((position = index(substr($0, last_position), character))) {
@@ -510,21 +507,15 @@ try() {
                 # For odd indexed elements, validate the key
                 if [ $((INDEX % 2)) -eq 1 ]; then
                     export KEY="$(echo -n "${VALUE}" | ${AWK} '{
+                        for (i = 1; i <= length(ENVIRON["FLAGS"]); i++) {
 
-                        split(ENVIRON["FLAGS"], list, "");
-
-                        for (flag in list) {
-                            if (list[flag] == $0) {
+                            if (substr(ENVIRON["FLAGS"], i, 1) == $0) {
                                 printf("%s", $0);
-                                delete list;
                                 exit 0;
                             }
-
                         }
 
-                        delete list;
                         exit 1;
-
                     }')" || {
                         _exceptionC "${VALUE}" "${NAME}" "${FLAGS}";
                         INDEX=$((INDEX + 1));
@@ -550,7 +541,7 @@ try() {
 
     _exception() {
         # Call the _exceptionTemplate function with the given exception and argument, or exit if it fails
-        _exceptionTemplate "_exception${1:-OPT}" "${2:-OPTARG}" || exit;
+        _exceptionTemplate "_exception${1-OPT}" "${2-OPTARG}" || exit;
     }
 
     (
@@ -615,7 +606,6 @@ startPosixNexus() {
         export POSIX_NEXUS_ROOT="${1}";
         shift;
 
-        [ "${1}" = 'TESTING' ] 
         # Read and evaluate the content of posix-nexus.sh, appending each argument wrapped in single quotes and spaces.
         eval "$(cat "${POSIX_NEXUS_ROOT}/main/sh/lib/posix-nexus.sh")$(
             echo -en "\x0aposixNexusDaemon";
@@ -636,9 +626,9 @@ if [ -e "$(cd "$(dirname "${0}")" && pwd)/main/sh/lib/posix-nexus.sh" ]; then
     startPosixNexus "$(cd "$(dirname "${0}")" && pwd)" "${@}";
 else
     case "$(cd "$(dirname "${0}")" && pwd)" in
-        *testdir*) 
+        *testdir*)
             {
-                trap 'echo -en "$(basename "${0}") tests completed!"' EXIT;
+               trap 'try -C D=${0}' EXIT;
             };;
         *)
             {
