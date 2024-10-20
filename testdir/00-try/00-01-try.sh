@@ -45,7 +45,23 @@ tryN2() {
 
 }
 
-tryN1;
-tryN2;
+tryN3() {
+
+    (
+        try -V "z=H";
+        try -V "n=H";
+        H="hello"
+        try -V "z=H";
+        try -V "n=H";
+
+    )
+
+    try -C 'D=tryN3';
+
+}
+
+#tryN1;
+#tryN2;
+tryN3;
 
 # rm -rf /tmp/tryN*;
