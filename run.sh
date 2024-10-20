@@ -9,22 +9,25 @@ try() {
 
             # Split the format string into parameters using ":" as the delimiter
             parameter_count = split($0, parameters, /:/);
+            parameter_index = 1;
 
             # Iterate through parameters and replace placeholders in the message
             do {
 
+                value = "<" parameter_index ">";
                 # Replace all occurrences of "{parameter_index}" with the current parameter
-                if (! gsub("{" ++parameter_index "}", parameters[parameter_count], message)) {
-                    # Replace the first occurrence of "{}" with the current parameter
-                    sub("{}", parameters[parameter_count], message);
+                if (! gsub(value, parameters[parameter_index], message)) {
+                    # Replace the first occurrence of "<>" with the current parameter
+                    sub("<>", parameters[parameter_index], message);
                 }
 
-                delete parameters[parameter_count--];
-            } while (parameter_count);
+                delete parameters[parameter_index++];
+            } while (parameter_count in parameters);
 
             # Print the formatted message
             delete parameters;
             printf("%s", message);
+                ;
 
         }'
     }
@@ -326,13 +329,15 @@ try() {
 
     _exceptionO() {
 
+        # Error descriptions:
         # C: Command not found
         # T: Touch operation failed
         # D: Directory creation failed
         # F: FIFO special file creation failed
         # M: Move operation failed
         # R: Remove operation failed
-        # L: Link creation failed
+        # S: Symbolic link creation failed
+        # H: Hard link creation failed
         # P: Change mode failed
         # G: Change group failed
         # W: Copy (cp) failed
@@ -346,7 +351,7 @@ try() {
             # Handle command checks
             C)
                 # Check if the specified command is available
-                command -v "${VALUE}" > /dev/null 2>&1 || {
+                command -v "${VALUE}" 1> /dev/null 2>&1 || {
                     # If the command is not found, log an error message
                     _error "Command '${VALUE}' not found. Please ensure it is installed and available in your PATH.";
                 };;
@@ -358,14 +363,19 @@ try() {
                     # If the touch operation fails, log an error message
                     _error "Failed to touch the file '${VALUE}'. Please ensure the directory $(dirname "${VALUE}") exists and you have the necessary permissions.";
                 };;
+
+            # Handle make directory operation
             D)
                 # Attempt to create the directory
-                mkdir -p "${value}" 2> /dev/null || {
-                    _error "Failed to create the directory '${value}'. Please ensure the directory '$(dirname "${VALUE}")' exists and you have the necessary permissions.";
+                mkdir -p "${VALUE}" 2> /dev/null || {
+                    _error "Failed to create the directory '${VALUE}'. Please ensure the directory '$(dirname "${VALUE}")' exists and you have the necessary permissions.";
                 };;
+
+            # Handle named pipe operation
             F)
                 # Attempt to create a FIFO special file (named pipe)
-                mkfifo "${VALUE}" 2> /dev/null || {
+                WARNING="$(mkfifo "${VALUE}" 2> /dev/null)" || {
+                    _error "${WARNING}";
                     _error "Failed to create the FIFO '${VALUE}'. Please ensure the directory '$(dirname "${VALUE}")' exists and you have the necessary permissions.";
                 };;
 
@@ -373,74 +383,82 @@ try() {
             M) 
                 {
                     # Execute the formatted move command
-                    eval "$(_format "${VALUE}" "mv '{}' '{}'")" 2> /dev/null || {
-                        _error "Failed to move '$(_format "${VALUE}" "{} to {}")'. Please ensure the destination directory exists and you have the necessary permissions.";
+                    eval "$(_format "${VALUE}" "mv '<>' '<>'")" 2> /dev/null || {
+                        _error "Failed to move $(_format "${VALUE}" "'<>' to '<>'"). Please ensure the destination directory exists and you have the necessary permissions.";
                     }
                 };;
 
             # Handle remove operation
             R)
+
                 # Attempt to remove the file or directory
                 rm -rf "${VALUE}" 2> /dev/null || {
                     _error "Failed to remove '${VALUE}'. Please ensure you have the necessary permissions.";
                 };;
-            L)
-                # Execute the formatted link command
-                eval "$(_format "${VALUE}" "ln {} '{}' '{}'")" 2> /dev/null || {
-                    _error "Failed to create a link using command '$(_format "${VALUE}" "from {2} to {3}")'. Please ensure the source and target directories exist and you have the necessary permissions.";
+            # Handle symbolic link operation
+            S)
+
+                eval "$(_format "${VALUE}" "ln -s '<>' '<>'")" 2> /dev/null || {
+                    _error "Failed to create a link using command '$(_format "${VALUE}" "from '<>' to '<>'"). Please ensure the source and target directories exist and you have the necessary permissions.";
+                };;
+
+            # Handle hard link creation
+            H)
+                # Execute the formatted hardlink link command (ln)
+                eval "$(_format "${VALUE}" "ln '<>' '<>'")" 2> /dev/null || {
+                    _error "Failed to create a hard link using command '$(_format "${VALUE}" "ln '<>' '<>'")'. Please ensure the source and target directories exist and you have the necessary permissions.";
                 };;
 
             # Handle change mode operation
             P)
 
                 # Execute the formatted chmod command
-                eval "$(_format "${VALUE}" "chmod {} '{}'")" 2> /dev/null || {
-                    _error "Failed to change mode using command '$(_format "${VALUE}" "chmod {} '{}'")'. Please ensure you have the necessary permissions.";
+                eval "$(_format "${VALUE}" "chmod '<>' '<>'")" 2> /dev/null || {
+                    _error "Failed to change mode '$(_format "${VALUE}" "<> on '<>'"). Please ensure you have the necessary permissions.";
                 };;
             
             # Handle change group operation
             G)
                 # Execute the formatted chgrp command
-                eval "$(_format "${VALUE}" "chgrp {} '{}'")" 2> /dev/null || {
-                    _error "Failed to change group using command '$(_format "${VALUE}" "chgrp {} '{}'")'. Please ensure you have the necessary permissions.";
+                eval "$(_format "${VALUE}" "chgrp '<>' '<>'")" 2> /dev/null || {
+                    _error "Failed to change group from $(_format "${VALUE}" "'<>' on '<>'"). Please ensure you have the necessary permissions.";
                 };;
 
             # Handle copy operation
             W)
                 # Execute the formatted copy command
-                eval "$(_format "${VALUE}" "cp '{}' '{}'")" 2> /dev/null || {
-                    _error "Failed to copy using command '$(_format "${VALUE}" "cp '{}' '{}'")'. Please ensure the source and destination directories exist and you have the necessary permissions."
+                eval "$(_format "${VALUE}" "cp -R '<>' '<>'")" 2> /dev/null || {
+                    _error "Failed to copy $(_format "${VALUE}" "from '<>' to '<>'")'. Please ensure the source and destination directories exist and you have the necessary permissions."
                 };;
-
 
             # Handle kill operation
             K)
                 # Execute the formatted kill command
-                eval "$(_format "${VALUE}" "kill {}")" 2> /dev/null || {
-                    _error "Failed to kill process using command '$(_format "${VALUE}" "kill {}")'. Please ensure the process ID is valid and you have the necessary permissions.";
+                eval "$(_format "${VALUE}" "kill <>")" 2> /dev/null || {
+                    _error "Failed to kill process using command '$(_format "${VALUE}" "kill <>")'. Please ensure the process ID is valid and you have the necessary permissions.";
                 };;
 
             # Handle unlink operation
             U)
 
                 # Execute the formatted unlink command
-                eval "$(_format "${VALUE}" "unlink '{}'")" 2> /dev/null || {
-                    _error "Failed to unlink using command '$(_format "${VALUE}" "unlink '{}'")'. Please ensure you have the necessary permissions.";
+                eval "$(_format "${VALUE}" "unlink '<>'")" 2> /dev/null || {
+                    _error "Failed to unlink using command $(_format "${VALUE}" "unlink '<>'"). Please ensure you have the necessary permissions.";
                 };;
 
             # Handle archive operation
             A)
 
                 # Execute the formatted tar command
-                eval "$(_format "${VALUE}" "tar -cvf '{}' '{}'")" 2> /dev/null || {
-                    _error "Failed to archive using command '$(_format "${VALUE}" "tar -cvf '{}' '{}'")'. Please ensure the source directory exists and you have the necessary permissions.";
+                eval "$(_format "${VALUE}" "tar -cvf '<>' '<>'")" 1> /dev/null 2>&1 || {
+                    _error "Failed to archive using command $(_format "${VALUE}" "tar -cvf '<>' '<>'"). Please ensure the source directory exists and you have the necessary permissions.";
                 };;
 
             # Handle change owner operation
             O)
                 # Execute the formatted chown command
-                eval "$(_format "${VALUE}" "chown '{}:{}' '{}'")" 2> /dev/null || {
-                    _error "Failed to change owner using command '$(_format "${VALUE}" "from {2} to {3}")'. Please ensure you have the necessary permissions.";
+                eval "$(_format "${VALUE}" "chown <>:<> '<>'")" 2> /dev/null || {
+                    _error "Failed to change owner using chown $(_format "${VALUE}" "from <> to <> on '<>'"). Please ensure you have the necessary permissions.";
                 };;
         esac
     }
@@ -456,7 +474,7 @@ try() {
                     C) echo -n 'REISAF';;               # Custom flags for _exceptionC
                     V) echo -n 'zn';;                   # Value flags for _exceptionV
                     W) echo -n 'HAE';;                  # Warning flags for _exceptionW
-                    O) echo -n 'CTDFMRLPGWSUAKNGO';;    # Operating System flags for _exceptionO
+                    O) echo -n 'CTDFMRPGWSHUAKNGO';;    # Operating System flags for _exceptionO
                     R) echo -n 'N';;                    # Regular Expressions flags for _exceptionR
                 esac
             )"
@@ -582,8 +600,6 @@ startPosixNexus() {
 
     (
 
-echo ${1}
-exit
         # Check various paths and files using the _taskErrors function
         # Ensures all necessary directories and files exist and are accessible
         try -I "R=${1},\
@@ -620,16 +636,14 @@ if [ -e "$(cd "$(dirname "${0}")" && pwd)/main/sh/lib/posix-nexus.sh" ]; then
     startPosixNexus "$(cd "$(dirname "${0}")" && pwd)" "${@}";
 else
     case "$(cd "$(dirname "${0}")" && pwd)" in
-    *testdir*) 
-        {
-            trap 'echo -n "$(basename "${0}") tests completed!"' EXIT;
-
-        };;
-    *) 
-        {
-            try -C 'R=run.sh';
-            exit 1;
-        };;
-
+        *testdir*) 
+            {
+                trap 'echo -en "$(basename "${0}") tests completed!"' EXIT;
+            };;
+        *)
+            {
+                try -C 'R=run.sh';
+                exit 1;
+            };;
     esac
 fi
