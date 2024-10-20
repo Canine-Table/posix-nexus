@@ -15,7 +15,7 @@ try() {
             do {
 
                 value = "<" parameter_index ">";
-                # Replace all occurrences of "{parameter_index}" with the current parameter
+                # Replace all occurrences of "<parameter_index>" with the current parameter
                 if (! gsub(value, parameters[parameter_index], message)) {
                     # Replace the first occurrence of "<>" with the current parameter
                     sub("<>", parameters[parameter_index], message);
