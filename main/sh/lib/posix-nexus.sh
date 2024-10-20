@@ -109,6 +109,8 @@ posixNexusDaemon() {
     }
 
     _posixNexusDaemonGlobals;
+
+    exit;
  
     {
         # Setup necessary directory trees
