@@ -32,6 +32,10 @@ try() {
         }'
     }
 
+    _value() {
+        eval "eval echo -en '\$${VALUE}'";
+    }
+
     _error() {
 
         # Set color to error (red) and display the error symbol
@@ -230,7 +234,6 @@ try() {
             [ -${KEY} "${WORKING_DIRECTORY}${VALUE}" ] || {
                 return 1;
             }
-
         }
 
         _output() {
@@ -310,8 +313,31 @@ try() {
 
     }
 
+    _exceptionV() {
+        # Value Errors
+
+        _variable() {
+            [ -${KEY} "$(_value)" ] || {
+                return 1;
+            }
+        }
+
+        case "${KEY}" in
+            n)
+                # Check if the value is non-empty
+                _variable || {
+                    _error "The variable '\${${VALUE}}' should not be empty.";
+                };;
+            z)
+                # Check if the value is empty
+                _variable || {
+                    _error "The variable '\${${VALUE}}' has been assigned the value '$(_value)' when it should be empty.";
+                };;
+        esac
+    }
+
     _exceptionR() {
-        # RegexError
+        # RegexErrors
 
         case "${KEY}" in
             N)
@@ -470,7 +496,6 @@ try() {
                     I) echo -n 'RshLtxwrfdep';;         # Item flags for _exceptionI
                     C) echo -n 'REISAFD';;              # Custom flags for _exceptionC
                     V) echo -n 'zn';;                   # Value flags for _exceptionV
-                    W) echo -n 'HAE';;                  # Warning flags for _exceptionW
                     O) echo -n 'CTDFMRPGWSHUAKNGO';;    # Operating System flags for _exceptionO
                     R) echo -n 'N';;                    # Regular Expressions flags for _exceptionR
                 esac
@@ -561,7 +586,7 @@ try() {
         _awk;
 
         # Dispatch to the appropriate error handling function based on the first argument
-        while getopts :I:C:V:W:O:R:EQ OPT; do
+        while getopts :I:C:V:O:R:EQ OPT; do
 
             # Process command-line options
             case ${OPT} in
