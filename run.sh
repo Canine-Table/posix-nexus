@@ -40,7 +40,7 @@ try() {
 
         # Set color to error (red) and display the error symbol
         _color E true;
-        
+
         # Output the error message
         echo "${*}";
 
@@ -221,7 +221,8 @@ try() {
             A) _missing "'awk' interpreter" "[mawk|nawk|awk|gawk|busybox]";;
             F) _invalid "${1}" "${2}" "${3}";;
             D) _debug "$(basename "${2}") tests completed!";;
-            *) _invalid "${1}" "_exceptionC" "REISAFD";;
+            U) _success "The posix-nexus daemon '${2}' has started.";;
+            *) _invalid "${1}" "_exceptionC" "REISAFDU";;
         esac
 
         return 0;
@@ -494,7 +495,7 @@ try() {
             export FLAGS="$(
                 case "$(${AWK} 'BEGIN{ printf("%s", substr(ENVIRON["NAME"], length(ENVIRON["NAME"])))}')" in
                     I) echo -n 'RshLtxwrfdep';;         # Item flags for _exceptionI
-                    C) echo -n 'REISAFD';;              # Custom flags for _exceptionC
+                    C) echo -n 'REISAFDU';;             # Custom flags for _exceptionC
                     V) echo -n 'zn';;                   # Value flags for _exceptionV
                     O) echo -n 'CTDFMRPGWSHUAKNGO';;    # Operating System flags for _exceptionO
                     R) echo -n 'N';;                    # Regular Expressions flags for _exceptionR
@@ -502,30 +503,36 @@ try() {
             )";
 
             # Initialize the index
-            INDEX=0;
 
             # Iterate through the provided arguments, delimited by , and =
-            for VALUE in $(echo  "${2}," | ${AWK} '{
+            echo -n "${2}" | awk -v character='=' '{
+                string = string "" $0;
 
-                # Loop to process the input string, alternating the character between '=' and ','
-                while((position = index(substr($0, last_position), character))) {
-
+                if ((delimiter_index = index(string, character))) {
+                    print substr(string, 1, delimiter_index - 1)
+                    string = substr(string, delimiter_index + 1);
+        
                     if (character == "=") {
                         character = ",";
                     } else {
                         character = "=";
                     }
-
-                    # Print the substring from last_position up to the current position
-                    print substr($0, last_position, position - 1);
-                    last_position = last_position + position;
-
                 }
 
-                # Print the last substring after the final delimiter
-                print substr($0, last_position, position - 1);
+            } END {
+                    if ((delimiter_index = index(string, character))) {
+                        do { 
+                            print substr(string, 1, delimiter_index - 1);
+                            string = substr(string,  delimiter_index + 1);
 
-            }'); do
+                        } while ((delimiter_index = index(string, character)));
+                    }
+
+                    if (string) {
+                        print string;
+                    }
+
+            }' | while read -r VALUE; do
 
                 INDEX=$((INDEX + 1));
 
@@ -535,7 +542,7 @@ try() {
                         for (i = 1; i <= length(ENVIRON["FLAGS"]); i++) {
 
                             if (substr(ENVIRON["FLAGS"], i, 1) == $0) {
-                                printf("%s", $0);
+                                print $0;
                                 exit 0;
                             }
                         }
@@ -545,6 +552,7 @@ try() {
                         _exceptionC "${VALUE}" "${NAME}" "${FLAGS}";
                         INDEX=$((INDEX + 1));
                         unset KEY;
+
                     }
 
                 else
@@ -566,7 +574,7 @@ try() {
 
     _exception() {
         # Call the _exceptionTemplate function with the given exception and argument, or exit if it fails
-        _exceptionTemplate "_exception${1-OPT}" "${2-OPTARG}" || exit;
+        _exceptionTemplate "_exception${OPT}" "${OPTARG}" || exit;
     }
 
     (
@@ -589,7 +597,7 @@ try() {
         while getopts :I:C:V:O:R:EQ OPT; do
 
             # Process command-line options
-            case ${OPT} in
+            case "${OPT}" in
                 # Set status to quit (Q) or error (E)
                 E|Q) STATUS="${OPT}";;
                 # Handle missing arguments
@@ -597,7 +605,7 @@ try() {
                 # Handle unknown options
                 \?) _exceptionC E try "${OPTARG}";;
                 # Process other options
-                *) _exception "${OPT}" "${OPTARG}";;
+                *) _exception "${OPT}" "'${OPTARG}'";;
             esac
         done
 
@@ -646,6 +654,38 @@ startPosixNexus() {
     ) || exit;
 
 }
+
+
+
+    # _format() {
+
+    #     # First parameter is the format string, second parameter is the message to format
+    #     echo -n "${1}" | awk -v message="${2}" '{
+
+    #         # Split the format string into parameters using ":" as the delimiter
+    #         parameter_count = split($0, parameters, /:/);
+    #         parameter_index = 1;
+
+    #         # Iterate through parameters and replace placeholders in the message
+    #         do {
+
+    #             value = "<" parameter_index ">";
+    #             # Replace all occurrences of "<parameter_index>" with the current parameter
+    #             if (! gsub(value, parameters[parameter_index], message)) {
+    #                 # Replace the first occurrence of "<>" with the current parameter
+    #                 sub("<>", parameters[parameter_index], message);
+    #             }
+
+    #             delete parameters[parameter_index++];
+    #         } while (parameter_count in parameters);
+
+    #         # Print the formatted message
+    #         delete parameters;
+    #         printf("%s", message);
+    #             ;
+
+    #     }'
+    # }
 
 if [ -e "$(cd "$(dirname "${0}")" && pwd)/main/sh/lib/posix-nexus.sh" ]; then
     startPosixNexus "$(cd "$(dirname "${0}")" && pwd)" "${@}";
