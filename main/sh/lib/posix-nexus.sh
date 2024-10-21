@@ -42,59 +42,6 @@ posixNexusDaemon() {
         return 0;
     }
 
-    _setupTree() {
-
-        (
-
-            # Iterate through each tree directory provided as arguments
-            for TREE in $(echo -n "${*}" | awk '{
-                for (i = 1; i <= NF; ++i) {
-                    print $i;
-                }
-
-            }'); do
-
-                # Validate and create necessary directories
-                try -I "R=$(dirname "${TREE}"),e=$(basename "${TREE}")" || {
-                    try -O "D=${TREE}" || exit 1;
-                };
-
-            done
-
-        ) || return 1;
-
-    }
-
-    _import() {
-        eval "$(
-            echo -n "${*}" | ${AWK} -F ',' '{
-                for(i = 1; i < NF; ++i) {
-                    while ((getline line < $i) > 0) {
-                        print line;
-                    }
-
-                    close($i);
-                }
-
-            }'
-        )";
-
-        return 0;
-
-    }
-
-    _noClobber() {
-        # Ensure no clobbering occurs by moving existing files to backup
-        [ -${1} "${2}" ] || {
-
-            [ -e "${2}" ] && {
-                try -O "M=${2}" || return 1;
-
-            }
-
-        }
-    }
-
     _replace() {
 
         # Replace occurrences of match_value with replace_value using AWK
@@ -109,65 +56,39 @@ posixNexusDaemon() {
     }
 
     _posixNexusDaemonGlobals;
-
-    exit;
  
     {
         # Setup necessary directory trees
-        STARTUP_ERROR=false
         [ -h "${POSIX_NEXUS_LINK}" ] && {
-            try -E -O "R=${POSIX_NEXUS_LINK}" && {
-                STARTUP_ERROR=true;
-                echo "error 1";
-                
-            }
+            try -O "C=unlink,U=${POSIX_NEXUS_LINK}" || exit;
         }
 
-        try -E -O "\
-            D=${POSIX_NEXUS_TEMP_ROOT},\
-            D=${POSIX_NEXUS_RUN_ROOT},\
-            D=${POSIX_NEXUS_LOG_ROOT},\
-            C=ln,\
-            C=mkfifo,\
-            T=${POSIX_NEXUS_PID},\
-            D=${POSIX_NEXUS_DAEMON_ROOT},\
-            F=${POSIX_NEXUS_STDIN},\
-            T=${POSIX_NEXUS_STDOUT},\
-            T=${POSIX_NEXUS_STDERR},\
-            L=${POSIX_NEXUS_DAEMON_ROOT}:${POSIX_NEXUS_LINK}" && {
-                STARTUP_ERROR=true;
-                echo "error 2";
-
-            }
-
-            try -E -I "\
+        try -O "
+            D=${POSIX_NEXUS_TEMP_ROOT},
+            D=${POSIX_NEXUS_RUN_ROOT},
+            D=${POSIX_NEXUS_LOG_ROOT},
+            C=ln,
+            C=mkfifo,
+            T=${POSIX_NEXUS_PID},
+            D=${POSIX_NEXUS_DAEMON_ROOT},
+            F=${POSIX_NEXUS_STDIN},
+            T=${POSIX_NEXUS_STDOUT},
+            T=${POSIX_NEXUS_STDERR},
+            S=${POSIX_NEXUS_DAEMON_ROOT}:${POSIX_NEXUS_LINK}" -I "
             d=/var,w=/var,x=/var,\
-            d=/var/run,x=/var/run,w=/var/run,\
-            d=/var/tmp,x=/var/tmp,w=/var/tmp,\
-            d=/var/log,x=/var/log,w=/var/log,\
+            d=/var/run,x=/var/run,w=/var/run,
+            d=/var/tmp,x=/var/tmp,w=/var/tmp,
+            d=/var/log,x=/var/log,w=/var/log,
             d=${POSIX_NEXUS_TEMP_ROOT},x=${POSIX_NEXUS_TEMP_ROOT},w=${POSIX_NEXUS_TEMP_ROOT},\
             d=${POSIX_NEXUS_RUN_ROOT},x=${POSIX_NEXUS_RUN_ROOT},w=${POSIX_NEXUS_RUN_ROOT},\
-            d=${POSIX_NEXUS_LOG_ROOT},x=${POSIX_NEXUS_LOG_ROOT},w=${POSIX_NEXUS_LOG_ROOT}" && {
-                STARTUP_ERROR=true;
-                echo "error 3";
-
-            }
-
-        try -E -I "\
+            d=${POSIX_NEXUS_LOG_ROOT},x=${POSIX_NEXUS_LOG_ROOT},w=${POSIX_NEXUS_LOG_ROOT},\
             f=${POSIX_NEXUS_PID},r=${POSIX_NEXUS_PID},w=${POSIX_NEXUS_PID},\
             d=${POSIX_NEXUS_DAEMON_ROOT},x=${POSIX_NEXUS_DAEMON_ROOT},\
             p=${POSIX_NEXUS_STDIN},r=${POSIX_NEXUS_STDOUT},\
             f=${POSIX_NEXUS_STDOUT},r=${POSIX_NEXUS_STDOUT},w=${POSIX_NEXUS_STDOUT},\
             f=${POSIX_NEXUS_STDERR},r=${POSIX_NEXUS_STDERR},w=${POSIX_NEXUS_STDERR},\
-            h=${POSIX_NEXUS_LINK},x=${POSIX_NEXUS_LINK}" && {
-                STARTUP_ERROR=true;
-                echo "error 4";
-
-            }
-
-       [ ${STARTUP_ERROR:-false} = true ] && exit 2;
-        cat "${POSIX_NEXUS_PID}"
-        exit
+            h=${POSIX_NEXUS_LINK},x=${POSIX_NEXUS_LINK}" || exit;
+  
         ps -o pid | grep -q "^$(cat "${POSIX_NEXUS_PID}")$" || {
             kill "$(cat "${POSIX_NEXUS_PID}")" 2> /dev/null;
 
@@ -191,6 +112,8 @@ posixNexusDaemon() {
                 & printf "%d" $! > "${POSIX_NEXUS_PID}" || exit 3;
 
         } || echo "already running";
+
+        try -C 'U=run.sh';
 
     } || exit;
 
