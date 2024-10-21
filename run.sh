@@ -657,35 +657,49 @@ startPosixNexus() {
 
 
 
-    # _format() {
+format() {
 
-    #     # First parameter is the format string, second parameter is the message to format
-    #     echo -n "${1}" | awk -v message="${2}" '{
+    # First parameter is the format string, second parameter is the message to format
+    echo -n "${1}" | awk -v message="${2}" '{
 
-    #         # Split the format string into parameters using ":" as the delimiter
-    #         parameter_count = split($0, parameters, /:/);
-    #         parameter_index = 1;
+            string = string "" $0;
 
-    #         # Iterate through parameters and replace placeholders in the message
-    #         do {
+            if ((delimiter_index = index(string, ":"))) {
 
-    #             value = "<" parameter_index ">";
-    #             # Replace all occurrences of "<parameter_index>" with the current parameter
-    #             if (! gsub(value, parameters[parameter_index], message)) {
-    #                 # Replace the first occurrence of "<>" with the current parameter
-    #                 sub("<>", parameters[parameter_index], message);
-    #             }
+                current_string = substr(string, 1, delimiter_index - 1);
+                string = substr(string, delimiter_index + 1);
 
-    #             delete parameters[parameter_index++];
-    #         } while (parameter_count in parameters);
+                if (! gsub("<" ++parameter_index ">", current_string, message)) {
+                    sub("<>", current_string, message);
+                }
+            }
 
-    #         # Print the formatted message
-    #         delete parameters;
-    #         printf("%s", message);
-    #             ;
+        } END {
 
-    #     }'
-    # }
+            if ((delimiter_index = index(string, ":"))) {
+                do { 
+                    current_string = substr(string, 1, delimiter_index - 1);
+                    string = substr(string, delimiter_index + 1);
+
+                    if (! gsub("<" ++parameter_index ">", current_string, message)) {
+                        sub("<>", current_string, message);
+                    }
+
+                    string = substr(string,  delimiter_index + 1);
+
+                } while ((delimiter_index = index(string, character)));
+            }
+        }
+    }'
+}
+
+format "
+hello world:
+this is tom:" 'This is a test, greet {}.
+{}.
+'
+exit
+
 
 if [ -e "$(cd "$(dirname "${0}")" && pwd)/main/sh/lib/posix-nexus.sh" ]; then
     startPosixNexus "$(cd "$(dirname "${0}")" && pwd)" "${@}";
