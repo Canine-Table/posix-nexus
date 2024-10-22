@@ -1,7 +1,7 @@
 split() {
     # Process the input string using Awk with the specified delimiters
     echo -n "${*}" | awk -v delimeters="${1}" '{
-        
+
         # Remove the delimiters from the start of the string
         string = substr($0, length(delimeters) + 1);
         
@@ -39,7 +39,7 @@ split() {
 iterator() {
 
     # Process the input string using Awk with the specified field separator (FS)
-    echo -n "${*}" | awk -v FS="${1}" '{
+    echo -n $* | awk -v FS="${1}" '{
         for (i = 1; i <= NF; ++i) {
             # Remove leading and trailing whitespace from each field
             gsub(/(^[[:space:]]+)|([[:space:]]+$)/, "", $i);
@@ -51,38 +51,4 @@ iterator() {
     }'
 
     return 0;
-}
-
-unQuote() {
-
-    # Check if arguments are provided
-    [ -n "${*}" ] || {
-        # Return 255 if the arguments are not provided
-        return 255;
-
-    }
-
-    echo -n "${*}" | awk '{
-        # Remove leading and trailing whitespace
-        gsub(/(^[[:space:]]+)|([[:space:]]+$)/, "", $0);
-
-        # Get the first character of the input
-        start_of_record = substr($0, 1, 1);
-        
-        # Get the last character of the input
-        end_of_record = substr($0, length($0));
-
-        # Check if the input starts and ends with the same quote character
-        if ((start_of_record == "\x27" || start_of_record == "\x22") && start_of_record == end_of_record) {
-            # Remove the quotes
-            printf("%s", substr($0, 2, length($0) - 2));
-
-        } else {
-            # Print the input as-is
-            printf("%s", $0);                
-
-        }
-
-    }';
-
 }
