@@ -44,7 +44,7 @@ cmd() {
 }
 
 format() {
-    echo -n "${1}:" | awk -v msg="${2}" '
+    echo -en "${1}:" | awk -v msg="${2}" '
     function format() {
 
         if ((i = index(param["str"], "\x3a"))) {
@@ -92,6 +92,7 @@ kwargs() {
 
                 # Print the processed value or NULL if empty
                 if (tmp) {
+                    gsub(/ /, "\\x20", tmp);
                     print tmp;
                 } else {
                     print "NULL";
@@ -122,12 +123,14 @@ ref() {
     eval "eval echo -en '\$${1}'";
 }
 
+
+
 try() {
 
     _error() {
 
         # Set color to error (red) and display the error symbol
-        _color E true;
+        _style E true;
 
         # Output the error message
         echo $*;
@@ -135,6 +138,7 @@ try() {
         #10: Quit immediately on the first error.
         #11: Quit on the first chunk of errors (one chunk refers to one optarg iteration).
         #12: Exit if any error occurs.
+
         case "${STATUS}" in
             Q) exit 10;;
             E) _status 11;;
@@ -146,28 +150,28 @@ try() {
 
     _success() {
         # Set color to success (green) and display the success symbol
-        _color S true;
+        _style S true;
         # Output the success message
         echo $*;
     }
 
     _warning() {
         # Set color to warning (yellow) and display the warning symbol
-        _color W true;
+        _style W true;
         # Output the warning message
         echo $*;
     }
 
     _debug() {
         # Set color to debug (magenta) and display the debug symbol
-        _color D true;
+        _style D true;
         # Output the debug message
         echo $*;
     }
 
     _info() {
         # Set color to info (blue) and display the info symbol
-        _color I true;
+        _style I true;
         # Output the info message
         echo $*;
     }
@@ -215,7 +219,7 @@ try() {
 
     }
 
-    _color() {
+    _style() {
 
         # Check if color setting is enabled
         ${C_SET:-false} && SET_C="$(
@@ -337,7 +341,7 @@ try() {
                     # Check if the working directory is a directory and executable
                     if [ -n "$(_exceptionTemplate "_exceptionI" "edx = ${VALUE}")" ]; then
                        _warning "The root directory '${VALUE}' will be skipped as it does not meet the requirements.";
-                    #    unset WORKING_DIRECTORY;
+                       unset WORKING_DIRECTORY;
                     else
                         export WORKING_DIRECTORY="$(cd "${VALUE}" && pwd)/";
                     fi
@@ -492,7 +496,6 @@ try() {
             # Handle move operation
             M)
                 {
-
                     # Execute the formatted move command
                     eval $(format "${VALUE}" "mv '<>' '<>'") 2> /dev/null || {
                         _error "Failed to move $(format "${VALUE}" "'<>' to '<>'"). Please ensure the destination directory exists and you have the necessary permissions.";
@@ -506,6 +509,7 @@ try() {
                 rm -rf "${VALUE}" 2> /dev/null || {
                     _error "Failed to remove '${VALUE}'. Please ensure you have the necessary permissions.";
                 };;
+
             # Handle symbolic link operation
             S)
                 eval "$(format "${VALUE}" "ln -s '<>' '<>'")" 2> /dev/null || {
@@ -572,11 +576,6 @@ try() {
         esac
     }
 
-    _exception() {
-        # Call the _exceptionTemplate function with the given exception and argument, or exit if it fails
-        _exceptionTemplate "_exception${1}" "${2}" || exit;
-    }
-
     _exceptionTemplate() {
 
         (
@@ -594,18 +593,17 @@ try() {
 
             # Initialize the index
             INDEX=0;
-
             # Iterate through the provided arguments, delimited by , and =
-            kwargs $(unQuote $2) | while read -r VALUE; do
 
+            for VALUE in $(kwargs "${2}"); do
                 INDEX=$((INDEX + 1));
 
                 # For odd indexed elements, validate the key
                 if [ $((INDEX % 2)) -eq 1 ]; then
 
-                    export KEYS="$(echo -n "${VALUE}" | ${AWK} '{
+                    export KEYS="$(echo -en "${VALUE}" | ${AWK} '{
                         for (i = 1; i <= length(ENVIRON["FLAGS"]); i++) {
-                        
+
                             for (j = 1; j <= length($0); j++) {
                                 if (substr(ENVIRON["FLAGS"], i, 1) == substr($0, j, 1)) {
                                     v = v "" substr($0, j, 1);
@@ -620,7 +618,6 @@ try() {
                         }
 
                     }')" || {
-                        _exceptionC "${VALUE}" "${NAME}" "${FLAGS}";
                         INDEX=$((INDEX + 1));
                         unset KEYS;
                     }
@@ -642,19 +639,21 @@ try() {
             done
 
             case "$(_status G)" in
-                *11)  exit 11;
+                *11) exit 11;;
             esac
-
-            return 0;
 
         ) || exit;
 
     }
 
+    _exception() {
+        _exceptionTemplate "_exception${1}" "${2}" || exit;
+    }
+
     (
 
         # Ensure the terminal is reset on exit and retrieve the status
-        trap 'echo -en "${C_SET:+\\x1b[0m}"; _status R; exec 1>&-' EXIT;
+        trap '_status R; echo -en "${C_SET:+\\x1b[0m}"; exec 1>&-' EXIT;
 
         # Redirecting standard output to standard error, commonly done for logging
         exec 1>&2;
@@ -685,14 +684,15 @@ try() {
 
         # Check the status and exit accordingly
         case "$(_status G)" in
-            *12)  exit 12;;
-            *) exit 0;;
+            *12) exit 12;;
         esac
+
     ) && {
         _shell;
         _awk;
     }
 }
+
 
 startPosixNexus() {
 
@@ -700,21 +700,22 @@ startPosixNexus() {
 
         # Check various paths and files using the try function
         # Ensures all necessary directories and files exist and are accessible
-
-        try -I "
-            R = ${1}, e = main, d = main,x = main,
-            e = main/awk, d = main/awk, x = main/awk,
-            e = main/awk/lib, d = main/awk/lib, 
-            x = main/awk/lib, r = main/awk/lib,
-            e = main/awk/lib/awk-interpreter.awk, 
-            f = main/awk/lib/awk-interpreter.awk, 
-            r = main/awk/lib/awk-interpreter.awk,
-            e = main/sh, d = main/sh, x = main/sh,
-            e = main/sh/lib, d = main/sh/lib,
-            x = main/sh/lib, r = main/sh/lib, 
-            e = main/sh/lib/posix-nexus.sh,
-            f = main/sh/lib/posix-nexus.sh,
-            r = main/sh/lib/posix-nexus.sh" || exit;
+        try -E -I "
+            R = ${1},
+            edx = main
+        " -I "
+            R = ${1}/main,
+            edx = awk,
+            edx = sh
+        " -I "
+            R = ${1}/main/awk,
+            edxr = lib,
+            efr = lib/awk-interpreter.awk
+        " -I "
+            R = ${1}/main/sh,
+            edxr = lib,
+            efr = lib/posix-nexus.sh
+        " || exit;
 
         # Set the root directory for POSIX Nexus
         export POSIX_NEXUS_ROOT="${1}";
@@ -737,8 +738,6 @@ startPosixNexus() {
 }
 
 
-
-
 if [ -e "$(cd "$(dirname "${0}")" && pwd)/main/sh/lib/posix-nexus.sh" ]; then
     startPosixNexus "$(cd "$(dirname "${0}")" && pwd)" "${@}";
 else
@@ -754,3 +753,4 @@ else
             };;
     esac
 fi
+
