@@ -63,7 +63,7 @@ posixNexusDaemon() {
             try -O "C = unlink, U = ${POSIX_NEXUS_LINK}" || exit;
         }
 
-        try -O "
+        try -E -O "
             D=${POSIX_NEXUS_TEMP_ROOT},
             D=${POSIX_NEXUS_RUN_ROOT},
             D=${POSIX_NEXUS_LOG_ROOT},
@@ -73,7 +73,7 @@ posixNexusDaemon() {
             F=${POSIX_NEXUS_STDIN},
             T=${POSIX_NEXUS_STDOUT},
             T=${POSIX_NEXUS_STDERR},
-            S=${POSIX_NEXUS_DAEMON_ROOT} : ${POSIX_NEXUS_LINK}" -I "
+            S=${POSIX_NEXUS_DAEMON_ROOT} : ${POSIX_NEXUS_LINK}" -Q -I "
             d=/var, w=/var, x=/var,
             d=/var/run, x=/var/run, w=/var/run,
             d=/var/tmp, x=/var/tmp, w=/var/tmp,

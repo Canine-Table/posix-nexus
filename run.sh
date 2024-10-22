@@ -86,8 +86,9 @@ kwargs() {
         if ((i = index(param["str"], param["char"]))) {
             do {
                 tmp = substr(param["str"], 1, i - 1);
-                gsub(/(^[[:space:]]+)|([[:space:]]+$)/, "", tmp); # Trim whitespace
-                # gsub(/[[:space:]]/,)
+
+                # Trim whitespace
+                gsub(/(^[[:space:]]+)|([[:space:]]+$)/, "", tmp); 
 
                 # Print the processed value or NULL if empty
                 if (tmp) {
@@ -334,14 +335,13 @@ try() {
             R)
                 {
                     # Check if the working directory is a directory and executable
-                    (
-                        _exceptionTemplate "_exceptionI" "e=${VALUE},r=${VALUE},d=${VALUE}";
-                    ) && {
+                    if [ -n "$(_exceptionTemplate "_exceptionI" "edx = ${VALUE}")" ]; then
+                       _warning "The root directory '${VALUE}' will be skipped as it does not meet the requirements.";
+                    #    unset WORKING_DIRECTORY;
+                    else
                         export WORKING_DIRECTORY="$(cd "${VALUE}" && pwd)/";
-                    } || {
-                        _warning "The root directory '${VALUE}' will be skipped as it does not meet the requirements.";
-                    }
-
+                    fi
+ 
                     return 0;
                 };;
 
@@ -375,7 +375,7 @@ try() {
                 };;
 
             x)
-                _item "${WORKING_DIRECTORY}${2}" || {
+                _item || {
                     # Check if the path is an executable
                     _output "an executable";
                 };;
@@ -572,6 +572,11 @@ try() {
         esac
     }
 
+    _exception() {
+        # Call the _exceptionTemplate function with the given exception and argument, or exit if it fails
+        _exceptionTemplate "_exception${1}" "${2}" || exit;
+    }
+
     _exceptionTemplate() {
 
         (
@@ -597,26 +602,41 @@ try() {
 
                 # For odd indexed elements, validate the key
                 if [ $((INDEX % 2)) -eq 1 ]; then
-                    export KEY="$(echo -n "${VALUE}" | ${AWK} '{
-                        for (i = 1; i <= length(ENVIRON["FLAGS"]); i++) {
 
-                            if (substr(ENVIRON["FLAGS"], i, 1) == $0) {
-                                print $0;
-                                exit 0;
+                    export KEYS="$(echo -n "${VALUE}" | ${AWK} '{
+                        for (i = 1; i <= length(ENVIRON["FLAGS"]); i++) {
+                        
+                            for (j = 1; j <= length($0); j++) {
+                                if (substr(ENVIRON["FLAGS"], i, 1) == substr($0, j, 1)) {
+                                    v = v "" substr($0, j, 1);
+                                }
                             }
                         }
 
-                        exit 1;
+                        if (v) {
+                            print v;
+                        } else {
+                            exit 1;
+                        }
+
                     }')" || {
                         _exceptionC "${VALUE}" "${NAME}" "${FLAGS}";
                         INDEX=$((INDEX + 1));
-                        unset KEY;
-
+                        unset KEYS;
                     }
 
                 else
-                    # For even indexed elements, evaluate the function with key and value
-                    "${NAME}" "${KEY}" "${VALUE}" || exit 10;
+
+                    for KEY in $(
+                        ${AWK} 'BEGIN {
+                        for (i = 1; i <= length(ENVIRON["KEYS"]); i++) {
+                            print substr(ENVIRON["KEYS"], i, 1);
+                        }
+
+                    }'); do
+                        # For even indexed elements, evaluate the function with key and value
+                        "${NAME}" "${KEY}" "${VALUE}" || exit 10;
+                    done
                 fi
 
             done
@@ -629,11 +649,6 @@ try() {
 
         ) || exit;
 
-    }
-
-    _exception() {
-        # Call the _exceptionTemplate function with the given exception and argument, or exit if it fails
-        _exceptionTemplate "_exception${1}" "${2}" || exit;
     }
 
     (
@@ -664,7 +679,7 @@ try() {
                 # Handle unknown options
                 \?) _exceptionC E try "${OPTARG}";;
                 # Process other options
-                *) _exception "${OPT}" "'${OPTARG}'";;
+                *) _exception "${OPT}" "${OPTARG}";;
             esac
         done
 
@@ -683,10 +698,11 @@ startPosixNexus() {
 
     (
 
-        # Check various paths and files using the _taskErrors function
+        # Check various paths and files using the try function
         # Ensures all necessary directories and files exist and are accessible
+
         try -I "
-            R = ${1}, d = main, d = main,x = main,
+            R = ${1}, e = main, d = main,x = main,
             e = main/awk, d = main/awk, x = main/awk,
             e = main/awk/lib, d = main/awk/lib, 
             x = main/awk/lib, r = main/awk/lib,
@@ -721,13 +737,15 @@ startPosixNexus() {
 }
 
 
+
+
 if [ -e "$(cd "$(dirname "${0}")" && pwd)/main/sh/lib/posix-nexus.sh" ]; then
     startPosixNexus "$(cd "$(dirname "${0}")" && pwd)" "${@}";
 else
     case "$(cd "$(dirname "${0}")" && pwd)" in
         *testdir*)
             {
-               trap 'try -C D=${0}' EXIT;
+               trap 'try -C "D=${0}"' EXIT;
             };;
         *)
             {
