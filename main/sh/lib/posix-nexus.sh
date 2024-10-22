@@ -56,38 +56,37 @@ posixNexusDaemon() {
     }
 
     _posixNexusDaemonGlobals;
- 
+
     {
         # Setup necessary directory trees
         [ -h "${POSIX_NEXUS_LINK}" ] && {
-            try -O "C=unlink,U=${POSIX_NEXUS_LINK}" || exit;
+            try -O "C = unlink, U = ${POSIX_NEXUS_LINK}" || exit;
         }
 
         try -O "
             D=${POSIX_NEXUS_TEMP_ROOT},
             D=${POSIX_NEXUS_RUN_ROOT},
             D=${POSIX_NEXUS_LOG_ROOT},
-            C=ln,
-            C=mkfifo,
+            C=ln, C=mkfifo,
             T=${POSIX_NEXUS_PID},
             D=${POSIX_NEXUS_DAEMON_ROOT},
             F=${POSIX_NEXUS_STDIN},
             T=${POSIX_NEXUS_STDOUT},
             T=${POSIX_NEXUS_STDERR},
-            S=${POSIX_NEXUS_DAEMON_ROOT}:${POSIX_NEXUS_LINK}" -I "
-            d=/var,w=/var,x=/var,
-            d=/var/run,x=/var/run,w=/var/run,
-            d=/var/tmp,x=/var/tmp,w=/var/tmp,
-            d=/var/log,x=/var/log,w=/var/log,
-            d=${POSIX_NEXUS_TEMP_ROOT},x=${POSIX_NEXUS_TEMP_ROOT},w=${POSIX_NEXUS_TEMP_ROOT},
-            d=${POSIX_NEXUS_RUN_ROOT},x=${POSIX_NEXUS_RUN_ROOT},w=${POSIX_NEXUS_RUN_ROOT},
-            d=${POSIX_NEXUS_LOG_ROOT},x=${POSIX_NEXUS_LOG_ROOT},w=${POSIX_NEXUS_LOG_ROOT},
-            f=${POSIX_NEXUS_PID},r=${POSIX_NEXUS_PID},w=${POSIX_NEXUS_PID},
-            d=${POSIX_NEXUS_DAEMON_ROOT},x=${POSIX_NEXUS_DAEMON_ROOT},
-            p=${POSIX_NEXUS_STDIN},r=${POSIX_NEXUS_STDOUT},
-            f=${POSIX_NEXUS_STDOUT},r=${POSIX_NEXUS_STDOUT},w=${POSIX_NEXUS_STDOUT},
-            f=${POSIX_NEXUS_STDERR},r=${POSIX_NEXUS_STDERR},w=${POSIX_NEXUS_STDERR},
-            h=${POSIX_NEXUS_LINK},x=${POSIX_NEXUS_LINK}" || exit;
+            S=${POSIX_NEXUS_DAEMON_ROOT} : ${POSIX_NEXUS_LINK}" -I "
+            d=/var, w=/var, x=/var,
+            d=/var/run, x=/var/run, w=/var/run,
+            d=/var/tmp, x=/var/tmp, w=/var/tmp,
+            d=/var/log, x=/var/log, w=/var/log,
+            d=${POSIX_NEXUS_TEMP_ROOT}, x=${POSIX_NEXUS_TEMP_ROOT}, w=${POSIX_NEXUS_TEMP_ROOT},
+            d=${POSIX_NEXUS_RUN_ROOT}, x=${POSIX_NEXUS_RUN_ROOT}, w=${POSIX_NEXUS_RUN_ROOT},
+            d=${POSIX_NEXUS_LOG_ROOT}, x=${POSIX_NEXUS_LOG_ROOT}, w=${POSIX_NEXUS_LOG_ROOT},
+            f=${POSIX_NEXUS_PID}, r=${POSIX_NEXUS_PID},w=${POSIX_NEXUS_PID},
+            d=${POSIX_NEXUS_DAEMON_ROOT}, x=${POSIX_NEXUS_DAEMON_ROOT},
+            p=${POSIX_NEXUS_STDIN}, r=${POSIX_NEXUS_STDOUT},
+            f=${POSIX_NEXUS_STDOUT}, r=${POSIX_NEXUS_STDOUT}, w = ${POSIX_NEXUS_STDOUT},
+            f=${POSIX_NEXUS_STDERR}, r=${POSIX_NEXUS_STDERR}, w = ${POSIX_NEXUS_STDERR},
+            h=${POSIX_NEXUS_LINK}, x=${POSIX_NEXUS_LINK}" || exit;
   
         ps -o pid | grep -q "^$(cat "${POSIX_NEXUS_PID}")$" || {
             kill "$(cat "${POSIX_NEXUS_PID}")" 2> /dev/null;
@@ -111,7 +110,7 @@ posixNexusDaemon() {
                 2> "${POSIX_NEXUS_STDERR}" \
                 & printf "%d" $! > "${POSIX_NEXUS_PID}" || exit 3;
 
-        } || echo "already running";
+        }
 
         try -C 'U=run.sh';
 

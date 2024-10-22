@@ -1,40 +1,127 @@
 #!/bin/sh
 
-try() {
+unQuote() {
 
-    _format() {
+    echo -n "${*}" | awk '{
+        # Remove leading and trailing whitespace
+        gsub(/(^[[:space:]]+)|([[:space:]]+$)/, "", $0);
 
-        # First parameter is the format string, second parameter is the message to format
-        echo -n "${1}" | awk -v message="${2}" '{
+        # Get the first character of the input
+        start_of_record = substr($0, 1, 1);
+        
+        # Get the last character of the input
+        end_of_record = substr($0, length($0));
 
-            # Split the format string into parameters using ":" as the delimiter
-            parameter_count = split($0, parameters, /:/);
-            parameter_index = 1;
+        # Check if the input starts and ends with the same quote character
+        if ((start_of_record == "\x27" || start_of_record == "\x22") && start_of_record == end_of_record) {
+            # Remove the quotes
+            printf("%s", substr($0, 2, length($0) - 2));
 
-            # Iterate through parameters and replace placeholders in the message
+        } else {
+            # Print the input as-is
+            printf("%s", $0);                
+
+        }
+
+    }';
+
+}
+
+join() {
+    echo -n ${*} | awk '{
+        printf("%s\x20", $0);
+    }';
+}
+
+cmd() {
+
+    while [ ${#@} -gt 0 ]; do
+        command -v "${1}" && return;
+        shift;
+    done
+
+    return 1;
+}
+
+format() {
+    echo -n "${1}:" | awk -v msg="${2}" '
+    function format() {
+
+        if ((i = index(param["str"], "\x3a"))) {
             do {
-
-                value = "<" parameter_index ">";
-                # Replace all occurrences of "<parameter_index>" with the current parameter
-                if (! gsub(value, parameters[parameter_index], message)) {
-                    # Replace the first occurrence of "<>" with the current parameter
-                    sub("<>", parameters[parameter_index], message);
+                param["cur"] = substr(param["str"], 1, i - 1);
+                gsub(/(^[[:space:]]+)|([[:space:]]+$)/, "", param["cur"]);
+                param["str"] = substr(param["str"], i + 1);
+                param["i"] = param["i"] + 1;
+                
+                if (! gsub("<" param["i"] ">", param["cur"], param["msg"])) {
+                    sub("<>", param["cur"], param["msg"]);
                 }
 
-                delete parameters[parameter_index++];
-            } while (parameter_count in parameters);
-
-            # Print the formatted message
-            delete parameters;
-            printf("%s", message);
-                ;
-
-        }'
+            } while ((i = index(param["str"], "\x3a")));
+        }
     }
 
-    _value() {
-        eval "eval echo -en '\$${VALUE}'";
+    BEGIN {
+        param["msg"] = msg;
+    } {
+        param["str"] = param["str"] "" $0;
+        format();
+        gsub(/(^[[:space:]]+)|([[:space:]]+$)/, "", param["msg"]);
+        print param["msg"];
+        delete param;
+        exit 0;
+    }';
+}
+
+kwargs() {
+    echo $*, | awk '
+    function kwargs() {
+        # Set the initial character to equal sign if not set
+        if (!(char in param)) {
+            param["char"] = "\x3d";
+        }
+
+        # Find the index of the current character in the string
+        if ((i = index(param["str"], param["char"]))) {
+            do {
+                tmp = substr(param["str"], 1, i - 1);
+                gsub(/(^[[:space:]]+)|([[:space:]]+$)/, "", tmp); # Trim whitespace
+                # gsub(/[[:space:]]/,)
+
+                # Print the processed value or NULL if empty
+                if (tmp) {
+                    print tmp;
+                } else {
+                    print "NULL";
+                }
+
+                param["str"] = substr(param["str"], i + 1);
+                # Toggle the character between comma and equal sign
+                if (param["char"] == "\x2c") {
+                    param["char"] = "\x3d";
+                } else {
+                    param["char"] = "\x2c";
+                }
+
+            } while ((i = index(param["str"], param["char"])));
+        }
     }
+
+    {
+        param["str"] = param["str"] "" $0;
+        kwargs();
+        delete param;
+        exit 0;
+    }';
+
+}
+
+ref() {
+    eval "eval echo -en '\$${1}'";
+}
+
+try() {
 
     _error() {
 
@@ -42,7 +129,7 @@ try() {
         _color E true;
 
         # Output the error message
-        echo "${*}";
+        echo $*;
 
         #10: Quit immediately on the first error.
         #11: Quit on the first chunk of errors (one chunk refers to one optarg iteration).
@@ -60,40 +147,40 @@ try() {
         # Set color to success (green) and display the success symbol
         _color S true;
         # Output the success message
-        echo "${*}";
+        echo $*;
     }
 
     _warning() {
         # Set color to warning (yellow) and display the warning symbol
         _color W true;
         # Output the warning message
-        echo "${*}";
+        echo $*;
     }
 
     _debug() {
         # Set color to debug (magenta) and display the debug symbol
         _color D true;
         # Output the debug message
-        echo "${*}";
+        echo $*;
     }
 
     _info() {
         # Set color to info (blue) and display the info symbol
         _color I true;
         # Output the info message
-        echo "${*}";
+        echo $*;
     }
 
     _awk() {
 
         # Attempt to find and set an awk variant, prioritizing common and lightweight versions
-        export AWK="$(
-            command -v mawk ||          # Mawk is a fast and lightweight version of awk
-            command -v nawk ||          # Nawk is the new awk, often used as the default on many systems
-            command -v awk ||           # Awk is the original version, often a symlink to another variant
-            command -v gawk ||          # Gawk is the GNU version of awk, feature-rich and widely used
-            command -v busybox awk ||   # BusyBox awk is used in embedded systems
-            false;                      # Ensure the chain returns a non-zero status if no awk variant is found
+        export AWK="$(cmd mawk nawk awk gawk || false;
+            # Mawk is a fast and lightweight version of awk
+            # Nawk is the new awk, often used as the default on many systems
+            # Awk is the original version, often a symlink to another variant
+            # Gawk is the GNU version of awk, feature-rich and widely used
+            # BusyBox awk is used in embedded systems
+            # Ensure the chain returns a non-zero status if no awk variant is found
         )" || {
             # If no variant of awk is found, exit 2 (failure)
             _exceptionC A;
@@ -104,21 +191,21 @@ try() {
     _shell() {
 
         # Attempt to find and set a POSIX-compliant shell, prioritizing speed
-        export SHELL="$(
-            command -v dash ||          # Dash is very fast and lightweight
-            command -v ash ||           # Ash is also lightweight and fast
-            command -v sh ||            # Bourne shell is generally fast
-            command -v mksh ||          # MirBSD Korn Shell is lightweight
-            command -v posh ||          # Policy-compliant Ordinary Shell is minimal
-            command -v yash ||          # Yet Another Shell is focused on correctness
-            command -v ksh ||           # KornShell is balanced in performance and features
-            command -v loksh ||         # Loksh is a lightweight version of ksh
-            command -v pdksh ||         # Public Domain Korn Shell is another ksh variant
-            command -v bash ||          # Bash is feature-rich but slightly heavier
-            command -v zsh ||           # Zsh is powerful but can be heavier
-            command -v fish ||          # Fish is user-friendly but not as lightweight
-            command -v busybox sh ||    # BusyBox shell is used in embedded systems
-            false;                      # Ensure the chain returns a non-zero status if no shell is found
+        export SHELL="$(cmd dash sh ash mksh posh yash ksh loksh pdksh bash zsh fish || false;
+            # Dash is very fast and lightweight
+            # Bourne shell is generally fast
+            # Ash is also lightweight and fast
+            # MirBSD Korn Shell is lightweight
+            # Policy-compliant Ordinary Shell is minimal
+            # Yet Another Shell is focused on correctness
+            # KornShell is balanced in performance and features
+            # Loksh is a lightweight version of ksh
+            # Public Domain Korn Shell is another ksh variant
+            # Bash is feature-rich but slightly heavier
+            # Zsh is powerful but can be heavier
+            # Fish is user-friendly but not as lightweight
+            # BusyBox shell is used in embedded systems
+            # Ensure the chain returns a non-zero status if no shell is found
         )" || {
             # If no shell is found, exit 1 (failure)
             _exceptionC S;
@@ -318,7 +405,7 @@ try() {
         # Value Errors
 
         _variable() {
-            [ -${KEY} "$(_value)" ] || {
+            [ -${KEY} "$(ref VALUE)" ] || {
                 return 1;
             }
         }
@@ -332,7 +419,7 @@ try() {
             z)
                 # Check if the value is empty
                 _variable || {
-                    _error "The variable '\${${VALUE}}' has been assigned the value '$(_value)' when it should be empty.";
+                    _error "The variable '\${${VALUE}}' has been assigned the value '$(ref VALUE)' when it should be empty.";
                 };;
         esac
     }
@@ -375,7 +462,7 @@ try() {
             # Handle command checks
             C)
                 # Check if the specified command is available
-                command -v "${VALUE}" 1> /dev/null 2>&1 || {
+                cmd "${VALUE}" 1> /dev/null 2>&1 || {
                     # If the command is not found, log an error message
                     _error "Command '${VALUE}' not found. Please ensure it is installed and available in your PATH.";
                 };;
@@ -398,17 +485,17 @@ try() {
             # Handle named pipe operation
             F)
                 # Attempt to create a FIFO special file (named pipe)
-                WARNING="$(mkfifo "${VALUE}" 2> /dev/null)" || {
-                    _error "${WARNING}";
+                mkfifo "${VALUE}" 2> /dev/null || {
                     _error "Failed to create the FIFO '${VALUE}'. Please ensure the directory '$(dirname "${VALUE}")' exists and you have the necessary permissions.";
                 };;
 
             # Handle move operation
             M)
                 {
+
                     # Execute the formatted move command
-                    eval $(_format "${VALUE}" "mv '<>' '<>'") 2> /dev/null || {
-                        _error "Failed to move $(_format "${VALUE}" "'<>' to '<>'"). Please ensure the destination directory exists and you have the necessary permissions.";
+                    eval $(format "${VALUE}" "mv '<>' '<>'") 2> /dev/null || {
+                        _error "Failed to move $(format "${VALUE}" "'<>' to '<>'"). Please ensure the destination directory exists and you have the necessary permissions.";
                     }
                 };;
 
@@ -421,38 +508,37 @@ try() {
                 };;
             # Handle symbolic link operation
             S)
-
-                eval "$(_format "${VALUE}" "ln -sf <> <>")" 2> /dev/null || {
-                    _error "Failed to create a link using command '$(_format "${VALUE}" "from '<>' to '<>'"). Please ensure the source and target directories exist and you have the necessary permissions.";
+                eval "$(format "${VALUE}" "ln -s '<>' '<>'")" 2> /dev/null || {
+                    _error "Failed to create a link using command '$(format "${VALUE}" "from '<>' to '<>'"). Please ensure the source and target directories exist and you have the necessary permissions.";
                 };;
 
             # Handle hard link creation
             H)
                 # Execute the formatted hardlink link command (ln)
-                eval $(_format "${VALUE}" "ln -f '<>' '<>'") 2> /dev/null || {
-                    _error "Failed to create a hard link using command $(_format "${VALUE}" "ln '<>' '<>'"). Please ensure the source and target directories exist and you have the necessary permissions.";
+                eval $(format "${VALUE}" "ln '<>' '<>'") 2> /dev/null || {
+                    _error "Failed to create a hard link using command $(format "${VALUE}" "ln '<>' '<>'"). Please ensure the source and target directories exist and you have the necessary permissions.";
                 };;
 
             # Handle change mode operation
             P)
 
                 # Execute the formatted chmod command
-                eval $(_format "${VALUE}" "chmod '<>' '<>'") 2> /dev/null || {
-                    _error "Failed to change mode '$(_format "${VALUE}" "<> on '<>'"). Please ensure you have the necessary permissions.";
+                eval $(format "${VALUE}" "chmod '<>' '<>'") 2> /dev/null || {
+                    _error "Failed to change mode $(format "${VALUE}" "'<>' on '<>'"). Please ensure you have the necessary permissions.";
                 };;
 
             # Handle change group operation
             G)
                 # Execute the formatted chgrp command
-                eval $(_format "${VALUE}" "chgrp <> '<>'")  || {
-                    _error "Failed to change group to $(_format "${VALUE}" "'<>' on '<>'"). Please ensure you have the necessary permissions.";
+                eval $(format "${VALUE}" "chgrp '<>' '<>'") 2> /dev/null || {
+                    _error "Failed to change group to $(format "${VALUE}" "'<>' on '<>'"). Please ensure you have the necessary permissions.";
                 };;
 
             # Handle copy operation
             W)
                 # Execute the formatted copy command
-                eval $(_format "${VALUE}" "cp -R '<>' '<>'") 2> /dev/null || {
-                    _error "Failed to copy $(_format "${VALUE}" "from '<>' to '<>'")'. Please ensure the source and destination directories exist and you have the necessary permissions."
+                eval $(format "${VALUE}" "cp -R '<>' '<>'") 2> /dev/null || {
+                    _error "Failed to copy $(format "${VALUE}" "from '<>' to '<>'"). Please ensure the source and destination directories exist and you have the necessary permissions."
                 };;
 
             # Handle kill operation
@@ -473,16 +559,15 @@ try() {
             A)
 
                 # Execute the formatted tar command
-                eval $(_format "${VALUE}" "tar -cvf '<>' '<>'") 1> /dev/null 2>&1 || {
-                    _error "Failed to archive using command $(_format "${VALUE}" "tar -cvf '<>' '<>'"). Please ensure the source directory exists and you have the necessary permissions.";
+                eval $(format "${VALUE}" "tar -cf '<>' '<>'") 2> /dev/null || {
+                    _error "Failed to archive $(format "${VALUE}" "'<>' to '<>'"). Please ensure the source directory exists and you have the necessary permissions.";
                 };;
 
             # Handle change owner operation
             O)
-
                 # Execute the formatted chown command
-                eval $(_format "${VALUE}" "chown <>:<> '<>'") 2> /dev/null || {
-                    _error "Failed to change owner $(_format "${VALUE}" "from <> to <> on '<>'"). Please ensure you have the necessary permissions.";
+                eval $(format "${VALUE}" "chown '<>:<>' '<>'") 2> /dev/null || {
+                    _error "Failed to change owner $(format "${VALUE}" "from '<>' to '<>' on '<>'"). Please ensure you have the necessary permissions.";
                 };;
         esac
     }
@@ -503,36 +588,10 @@ try() {
             )";
 
             # Initialize the index
+            INDEX=0;
 
             # Iterate through the provided arguments, delimited by , and =
-            echo -n "${2}" | awk -v character='=' '{
-                string = string "" $0;
-
-                if ((delimiter_index = index(string, character))) {
-                    print substr(string, 1, delimiter_index - 1)
-                    string = substr(string, delimiter_index + 1);
-        
-                    if (character == "=") {
-                        character = ",";
-                    } else {
-                        character = "=";
-                    }
-                }
-
-            } END {
-                    if ((delimiter_index = index(string, character))) {
-                        do { 
-                            print substr(string, 1, delimiter_index - 1);
-                            string = substr(string,  delimiter_index + 1);
-
-                        } while ((delimiter_index = index(string, character)));
-                    }
-
-                    if (string) {
-                        print string;
-                    }
-
-            }' | while read -r VALUE; do
+            kwargs $(unQuote $2) | while read -r VALUE; do
 
                 INDEX=$((INDEX + 1));
 
@@ -574,7 +633,7 @@ try() {
 
     _exception() {
         # Call the _exceptionTemplate function with the given exception and argument, or exit if it fails
-        _exceptionTemplate "_exception${OPT}" "${OPTARG}" || exit;
+        _exceptionTemplate "_exception${1}" "${2}" || exit;
     }
 
     (
@@ -626,14 +685,20 @@ startPosixNexus() {
 
         # Check various paths and files using the _taskErrors function
         # Ensures all necessary directories and files exist and are accessible
-        try -I "R=${1},\
-            d=main,d=main,x=main,\
-            e=main/awk,d=main/awk,x=main/awk,\
-            e=main/awk/lib,d=main/awk/lib,x=main/awk/lib,r=main/awk/lib,\
-            e=main/awk/lib/awk-interpreter.awk,f=main/awk/lib/awk-interpreter.awk,r=main/awk/lib/awk-interpreter.awk,\
-            e=main/sh,d=main/sh,x=main/sh \
-            e=main/sh/lib,d=main/sh/lib,x=main/sh/lib,r=main/sh/lib,\
-            e=main/sh/lib/posix-nexus.sh,f=main/sh/lib/posix-nexus.sh,r=main/sh/lib/posix-nexus.sh" || exit;
+        try -I "
+            R = ${1}, d = main, d = main,x = main,
+            e = main/awk, d = main/awk, x = main/awk,
+            e = main/awk/lib, d = main/awk/lib, 
+            x = main/awk/lib, r = main/awk/lib,
+            e = main/awk/lib/awk-interpreter.awk, 
+            f = main/awk/lib/awk-interpreter.awk, 
+            r = main/awk/lib/awk-interpreter.awk,
+            e = main/sh, d = main/sh, x = main/sh,
+            e = main/sh/lib, d = main/sh/lib,
+            x = main/sh/lib, r = main/sh/lib, 
+            e = main/sh/lib/posix-nexus.sh,
+            f = main/sh/lib/posix-nexus.sh,
+            r = main/sh/lib/posix-nexus.sh" || exit;
 
         # Set the root directory for POSIX Nexus
         export POSIX_NEXUS_ROOT="${1}";
@@ -654,51 +719,6 @@ startPosixNexus() {
     ) || exit;
 
 }
-
-
-
-format() {
-
-    # First parameter is the format string, second parameter is the message to format
-    echo -n "${1}" | awk -v message="${2}" '{
-
-            string = string "" $0;
-
-            if ((delimiter_index = index(string, ":"))) {
-
-                current_string = substr(string, 1, delimiter_index - 1);
-                string = substr(string, delimiter_index + 1);
-
-                if (! gsub("<" ++parameter_index ">", current_string, message)) {
-                    sub("<>", current_string, message);
-                }
-            }
-
-        } END {
-
-            if ((delimiter_index = index(string, ":"))) {
-                do { 
-                    current_string = substr(string, 1, delimiter_index - 1);
-                    string = substr(string, delimiter_index + 1);
-
-                    if (! gsub("<" ++parameter_index ">", current_string, message)) {
-                        sub("<>", current_string, message);
-                    }
-
-                    string = substr(string,  delimiter_index + 1);
-
-                } while ((delimiter_index = index(string, character)));
-            }
-        }
-    }'
-}
-
-format "
-hello world:
-this is tom:" 'This is a test, greet {}.
-{}.
-'
-exit
 
 
 if [ -e "$(cd "$(dirname "${0}")" && pwd)/main/sh/lib/posix-nexus.sh" ]; then
