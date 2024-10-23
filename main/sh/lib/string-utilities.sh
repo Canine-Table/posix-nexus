@@ -52,3 +52,9 @@ iterator() {
 
     return 0;
 }
+
+
+hello() {
+    echo world;
+}
+

@@ -18,30 +18,6 @@ posixNexusDaemon() {
 
     }
 
-    _posixNexusLinker() {
-
-        # Ensure POSIX_NEXUS_ROOT is set, or return an error
-        # Validate the first argument to ensure it's a valid variable name
-        try -V 'n=POSIX_NEXUS_ROOT' -R "N=${1}" || return 1;
-
-        # Export linker variable
-        export "POSIX_NEXUS_${1:+$(echo -n "${1}" | tr '[:lower:]' '[:upper:]')}_LINKER"="$(
-            LINKER_PROCESS_IDS="";
-            # Iterate over files in the specified directory that match the pattern
-            for POSIX_NEXUS_LOCATION in "${POSIX_NEXUS_ROOT}/main/${1}/lib/"*"-utilities.${1}"; do
-                (
-                    try -I "e=${POSIX_NEXUS_LOCATION},f=${POSIX_NEXUS_LOCATION},r=${POSIX_NEXUS_LOCATION}" && {
-                        echo -n "${POSIX_NEXUS_LOCATION},";
-                    }
-                ) & LINKER_PROCESS_IDS="${LINKER_PROCESS_IDS} $!";
-            done
-
-            wait ${LINKER_PROCESS_IDS};
-        )";
-
-        return 0;
-    }
-
     _replace() {
 
         # Replace occurrences of match_value with replace_value using AWK
@@ -55,12 +31,17 @@ posixNexusDaemon() {
 
     }
 
+    # echo "line 34 posix-nexus.sh";
+    # exit;
     _posixNexusDaemonGlobals;
 
     {
         # Setup necessary directory trees
         [ -h "${POSIX_NEXUS_LINK}" ] && {
-           try -O "C = unlink, U = ${POSIX_NEXUS_LINK}" || exit;
+           try -O "
+                C = unlink, 
+                U = ${POSIX_NEXUS_LINK}
+            " || exit;
         }
 
         try -E -O "
@@ -93,10 +74,19 @@ posixNexusDaemon() {
             efrw = ${POSIX_NEXUS_STDOUT}
         " || exit;
 
-        exit;
+#         export -f _import;
+#         export -f _posixNexusLinker;
+
+#         sh -c "
+#         _import $(_posixNexusLinker sh);
+#                 echo $!
+# sleep 33
+#         " & echo $!
+# wait
+#         exit;
 
         ps -o pid | grep -q "^$(cat "${POSIX_NEXUS_PID}")$" || {
-            kill "$(cat "${POSIX_NEXUS_PID}")" 2> /dev/null;
+#            kill "$(cat "${POSIX_NEXUS_PID}")" 2> /dev/null;
 
             {
                 # Clean up old directories and start the daemon
@@ -112,10 +102,11 @@ posixNexusDaemon() {
             _posixNexusLinker 'awk' || exit 2;
 
             # Start the posix-nexus daemon with nohup, redirecting stdout and stderr, and store the PID
-            nohup ${AWK} -f $(_replace "${POSIX_NEXUS_AWK_LINKER}" ',' ' -f ')${POSIX_NEXUS_ROOT}/main/awk/lib/awk-interpreter.awk \
-                1> "${POSIX_NEXUS_STDOUT}" \
-                2> "${POSIX_NEXUS_STDERR}" \
-                & printf "%d" $! > "${POSIX_NEXUS_PID}" || exit 3;
+#echo            ${AWK} -f $(_replace "${POSIX_NEXUS_AWK_LINKER}" ',' ' -f ')${POSIX_NEXUS_ROOT}/main/awk/lib/awk-interpreter.awk
+exit
+            #     1> "${POSIX_NEXUS_STDOUT}" \
+            #     2> "${POSIX_NEXUS_STDERR}" \
+            #     & printf "%d" $! > "${POSIX_NEXUS_PID}" || exit 3;
 
         }
 
@@ -124,3 +115,4 @@ posixNexusDaemon() {
     } || exit;
 
 }
+
