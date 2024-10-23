@@ -124,13 +124,10 @@ tryN5() {
 
 }
 
-trySandbox1() {
-
-}
-
 # tryN1;
 # tryN2;
  tryN3;
+ echo hi
 # tryN4;
 #tryN5;
 #rm -rf /tmp/tryN*;

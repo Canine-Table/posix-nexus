@@ -1,8 +1,61 @@
 #!/bin/sh
 
+_awk() {
+
+    # Attempt to find and set an awk variant, prioritizing common and lightweight versions
+    export AWK="$(cmd mawk nawk awk gawk || false;
+        # Mawk is a fast and lightweight version of awk
+        # Nawk is the new awk, often used as the default on many systems
+        # Awk is the original version, often a symlink to another variant
+        # Gawk is the GNU version of awk, feature-rich and widely used
+        # BusyBox awk is used in embedded systems
+        # Ensure the chain returns a non-zero status if no awk variant is found
+    )" || {
+        # If no variant of awk is found, exit 2 (failure)
+        try -C "M = 'awk' interpreter : [mawk|nawk|awk|gawk|busybox]";
+        exit 1;
+    }
+}
+
+_shell() {
+
+    # Attempt to find and set a POSIX-compliant shell, prioritizing speed
+    export SHELL="$(cmd dash sh ash mksh posh yash ksh loksh pdksh bash zsh fish || false;
+        # Dash is very fast and lightweight
+        # Bourne shell is generally fast
+        # Ash is also lightweight and fast
+        # MirBSD Korn Shell is lightweight
+        # Policy-compliant Ordinary Shell is minimal
+        # Yet Another Shell is focused on correctness
+        # KornShell is balanced in performance and features
+        # Loksh is a lightweight version of ksh
+        # Public Domain Korn Shell is another ksh variant
+        # Bash is feature-rich but slightly heavier
+        # Zsh is powerful but can be heavier
+        # Fish is user-friendly but not as lightweight
+        # BusyBox shell is used in embedded systems
+        # Ensure the chain returns a non-zero status if no shell is found
+    )" || {
+        # If no shell is found, exit 1 (failure)
+        try -C "M = 'shell' : [dash|ash|sh|mksh|posh|yash|ksh|loksh|pdksh|bash|zsh|fish|busybox]";
+        exit 1;
+    }
+
+}
+
+cmd() {
+
+    while [ ${#@} -gt 0 ]; do
+        command -v "${1}" && return;
+        shift;
+    done
+
+    return 1;
+}
+
 unQuote() {
 
-    echo -n "${*}" | awk '{
+    echo -n $* | ${AWK} '{
         # Remove leading and trailing whitespace
         gsub(/(^[[:space:]]+)|([[:space:]]+$)/, "", $0);
 
@@ -28,23 +81,25 @@ unQuote() {
 }
 
 join() {
-    echo -n ${*} | awk '{
+    echo -n $* | ${AWK} '{
         printf("%s\x20", $0);
     }';
 }
 
-cmd() {
+tolower() {
+    echo -n $* | ${AWK} '{
+        printf("%s", tolower($0));
+    }';
+}
 
-    while [ ${#@} -gt 0 ]; do
-        command -v "${1}" && return;
-        shift;
-    done
-
-    return 1;
+toupper() {
+    echo -n  $* | ${AWK} '{
+        printf("%s", toupper($0));
+    }';
 }
 
 format() {
-    echo -en "${1}:" | awk -v msg="${2}" '
+    echo -en "${1}:" | ${AWK} -v msg="${2}" '
     function format() {
 
         if ((i = index(param["str"], "\x3a"))) {
@@ -52,9 +107,9 @@ format() {
                 param["cur"] = substr(param["str"], 1, i - 1);
                 gsub(/(^[[:space:]]+)|([[:space:]]+$)/, "", param["cur"]);
                 param["str"] = substr(param["str"], i + 1);
-                param["i"] = param["i"] + 1;
+                param["idx"] = param["idx"] + 1;
                 
-                if (! gsub("<" param["i"] ">", param["cur"], param["msg"])) {
+                if (! gsub("<" param["idx"] ">", param["cur"], param["msg"])) {
                     sub("<>", param["cur"], param["msg"]);
                 }
 
@@ -75,7 +130,7 @@ format() {
 }
 
 kwargs() {
-    echo $*, | awk '
+    echo $*, | ${AWK} '
     function kwargs() {
         # Set the initial character to equal sign if not set
         if (!(char in param)) {
@@ -123,8 +178,6 @@ ref() {
     eval "eval echo -en '\$${1}'";
 }
 
-
-
 try() {
 
     _error() {
@@ -137,7 +190,7 @@ try() {
 
         #10: Quit immediately on the first error.
         #11: Quit on the first chunk of errors (one chunk refers to one optarg iteration).
-        #12: Exit if any error occurs.
+        #12: Exit if any errors occur.
 
         case "${STATUS}" in
             Q) exit 10;;
@@ -174,49 +227,6 @@ try() {
         _style I true;
         # Output the info message
         echo $*;
-    }
-
-    _awk() {
-
-        # Attempt to find and set an awk variant, prioritizing common and lightweight versions
-        export AWK="$(cmd mawk nawk awk gawk || false;
-            # Mawk is a fast and lightweight version of awk
-            # Nawk is the new awk, often used as the default on many systems
-            # Awk is the original version, often a symlink to another variant
-            # Gawk is the GNU version of awk, feature-rich and widely used
-            # BusyBox awk is used in embedded systems
-            # Ensure the chain returns a non-zero status if no awk variant is found
-        )" || {
-            # If no variant of awk is found, exit 2 (failure)
-            _exceptionC A;
-            exit 2;
-        }
-    }
-
-    _shell() {
-
-        # Attempt to find and set a POSIX-compliant shell, prioritizing speed
-        export SHELL="$(cmd dash sh ash mksh posh yash ksh loksh pdksh bash zsh fish || false;
-            # Dash is very fast and lightweight
-            # Bourne shell is generally fast
-            # Ash is also lightweight and fast
-            # MirBSD Korn Shell is lightweight
-            # Policy-compliant Ordinary Shell is minimal
-            # Yet Another Shell is focused on correctness
-            # KornShell is balanced in performance and features
-            # Loksh is a lightweight version of ksh
-            # Public Domain Korn Shell is another ksh variant
-            # Bash is feature-rich but slightly heavier
-            # Zsh is powerful but can be heavier
-            # Fish is user-friendly but not as lightweight
-            # BusyBox shell is used in embedded systems
-            # Ensure the chain returns a non-zero status if no shell is found
-        )" || {
-            # If no shell is found, exit 1 (failure)
-            _exceptionC S;
-            exit 1;
-        }
-
     }
 
     _style() {
@@ -279,14 +289,16 @@ try() {
 
         _missing() {
             # Output a message indicating that a required POSIX compatible tool needs to be installed
-            _error "The posix-nexus requires a posix compatible ${1} to be installed.";
+            _error "The posix-nexus requires a posix compatible $(format  $* "<1>") to be installed.";
             # Provide possible options for the missing tool
-            _possible "${2}";
+            _possible "$(format  $* "<2>")";
         }
 
         _invalid() {
+
+            # exit
             # Output a message indicating that the provided option is not supported by the function
-            _error "The option '${1}' is not one of the flags the '${2}' function supports.";
+            _error "The option ${1} is not one of the flags the ${2} function supports.";
             # List the supported options for the function
             _options "${3}";
         }
@@ -297,24 +309,27 @@ try() {
         }
 
         _options() {
+
             # Format and output the supported options for a function
-            _info "${1}" | awk '{
+            _info $(echo -n $* | ${AWK} '{
                 gsub(//, "|", $0);
                 print "Supported options are: [" substr($0, 2, length($0) - 2) "]";
-            }';
+            }');
         }
 
+
+        echo $VALUE
         # Handle different exception cases
-        case "${1}" in
-            R) _error "Please execute the '${2}' script to initialize the POSIX Nexus environment or ensure the correct file path is specified.";;
-            E) _error "The '${2}' subroutine does not support the '-${3}' flag.";;
-            I) _error "The '-${1}' flag of the '${2}' subroutine requires an argument.";;
-            S) _missing "'shell'" "[dash|ash|sh|mksh|posh|yash|ksh|loksh|pdksh|bash|zsh|fish|busybox]";;
-            A) _missing "'awk' interpreter" "[mawk|nawk|awk|gawk|busybox]";;
-            F) _invalid "${1}" "${2}" "${3}";;
+        case "${KEY-${1}}" in
+            R) _error "Please execute the '${VALUE-${2}}' script to initialize the POSIX Nexus environment or ensure the correct file path is specified.";;
+            E) _error $(format "${VALUE-${2}}" "The '<1>' subroutine does not support the '-<2>' flag.");;
+            I) _error $(format "${KEY-${1}} : ${VALUE-${2}}" "The '-<1>' flag of the '<2>' subroutine requires an argument.");;
+            F)  _invalid $(format "${KEY-${1}} : ${VALUE-${2}}" "'<1>' '<2>' <3>");;
             D) _debug "$(basename "${2}") tests completed!";;
-            U) _success "The posix-nexus daemon '${2}' has started.";;
-            *) _invalid "${1}" "_exceptionC" "REISAFDU";;
+            L) _info "Location: $(cd "$(dirname "${VALUE-${2}}")" && pwd)";;
+            U) _success "The posix-nexus daemon '${VALUE-${2}}' has started.";;
+            M) _missing "${VALUE-${2}}";;
+            *) _invalid "${KEY-${1}} : _exceptionC : REIMFDUL";;
         esac
 
         return 0;
@@ -437,7 +452,7 @@ try() {
                 # followed by an alphabetic character, and can include alphanumeric characters and underscores.
                 echo -n "${VALUE}" | ${AWK} '{ if ($0 ~ /^((_)?[[:alpha:]]{1}(_)?[[:alnum:]_]*)$/) { exit 0; } else { exit 1; } }' || {
                     # Display error message if naming convention is invalid
-                    _error "Invalid naming convention '${VALUE}': Names must start with an optional underscore, followed by an alphabetic character, and can include alphanumeric characters and underscores.";
+                    _error "Invalid naming convention '${VALUE}'. Names must start with an optional underscore, followed by an alphabetic character, and can include alphanumeric characters and underscores.";
                 };;
         esac
     }
@@ -584,7 +599,7 @@ try() {
             export FLAGS="$(
                 case "$(${AWK} 'BEGIN{ printf("%s", substr(ENVIRON["NAME"], length(ENVIRON["NAME"])))}')" in
                     I) echo -n 'RshLtxwrfdep';;         # Item flags for _exceptionI
-                    C) echo -n 'REISAFDU';;             # Custom flags for _exceptionC
+                    C) echo -n 'LREIMFDU';;             # Custom flags for _exceptionC
                     V) echo -n 'zn';;                   # Value flags for _exceptionV
                     O) echo -n 'CTDFMRPGWSHUAKNGO';;    # Operating System flags for _exceptionO
                     R) echo -n 'N';;                    # Regular Expressions flags for _exceptionR
@@ -646,10 +661,6 @@ try() {
 
     }
 
-    _exception() {
-        _exceptionTemplate "_exception${1}" "${2}" || exit;
-    }
-
     (
 
         # Ensure the terminal is reset on exit and retrieve the status
@@ -663,9 +674,6 @@ try() {
             screen*|Eterm*|alacritty*|aterm*|foot*|gnome*|konsole*|kterm*|putty*|rxvt*|tmux*|xterm*) C_SET=true;;
         esac
 
-        _shell;
-        _awk;
-
         # Dispatch to the appropriate error handling function based on the first argument
         while getopts :I:C:V:O:R:EQ OPT; do
 
@@ -674,11 +682,11 @@ try() {
                 # Set status to quit (Q) or error (E)
                 E|Q) STATUS="${OPT}";;
                 # Handle missing arguments
-                \:) _exceptionC I try "${OPTARG}";;
+                \:) _exceptionC I "try : ${OPTARG}";;
                 # Handle unknown options
-                \?) _exceptionC E try "${OPTARG}";;
+                \?) _exceptionC E "try : ${OPTARG}";;
                 # Process other options
-                *) _exception "${OPT}" "${OPTARG}";;
+                *) _exceptionTemplate "_exception${OPT}" "${OPTARG}";;
             esac
         done
 
@@ -687,14 +695,60 @@ try() {
             *12) exit 12;;
         esac
 
-    ) && {
-        _shell;
-        _awk;
-    }
+    )
+
 }
 
 
 startPosixNexus() {
+
+    _import() {
+        eval "$(
+            echo -n $* | ${AWK} -F ',' '{
+                for(i = 1; i < NF; ++i) {
+                    while ((getline line < $i) > 0) {
+                        print line;
+                    }
+
+                    close($i);
+                }
+
+            }'
+        )";
+
+        return 0;
+
+    }
+    
+    _posixNexusLinker() {
+
+        # Ensure POSIX_NEXUS_ROOT is set, or return an error
+        # Validate the first argument to ensure it's a valid variable name
+        try -V '
+            n = POSIX_NEXUS_ROOT
+        ' -R "
+            N = ${1}
+        " || exit 1;
+
+        # Export linker variable
+        export "POSIX_NEXUS_$(toupper "${1}")_LINKER"="$(
+            LINKER_PROCESS_IDS="";
+            # Iterate over files in the specified directory that match the pattern
+            for POSIX_NEXUS_LOCATION in "${POSIX_NEXUS_ROOT}/main/${1}/lib/"*"-utilities.${1}"; do
+                {
+                    try -I "
+                        efr = ${POSIX_NEXUS_LOCATION}
+                    "  && echo -n "${POSIX_NEXUS_LOCATION},";
+                } & LINKER_PROCESS_IDS="${LINKER_PROCESS_IDS} $!";
+            done
+
+            wait ${LINKER_PROCESS_IDS};
+        )";
+
+        ref "POSIX_NEXUS_$(toupper "${1}")_LINKER";
+
+        return 0;
+    }
 
     (
 
@@ -738,13 +792,17 @@ startPosixNexus() {
 }
 
 
-if [ -e "$(cd "$(dirname "${0}")" && pwd)/main/sh/lib/posix-nexus.sh" ]; then
+
+
+_shell && _awk;
+if try -I "efr = $(cd "$(dirname "${0}")" && pwd)/main/sh/lib/posix-nexus.sh"; then
     startPosixNexus "$(cd "$(dirname "${0}")" && pwd)" "${@}";
 else
     case "$(cd "$(dirname "${0}")" && pwd)" in
-        *testdir*)
+        */test/*)
             {
-               trap 'try -C "D=${0}"' EXIT;
+                try -C "L=${0}";
+                trap 'try -C "D=${0}"' EXIT;
             };;
         *)
             {
@@ -753,4 +811,3 @@ else
             };;
     esac
 fi
-
