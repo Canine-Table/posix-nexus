@@ -45,7 +45,7 @@ posixNexusDaemon() {
     ";
 
     while :; do
-        cat "${POSIX_NEXUS_STDIN}" &
+        cat "${POSIX_NEXUS_STDIN}";
     done 1>"${POSIX_NEXUS_STDOUT}" 2>"${POSIX_NEXUS_STDERR}";
 
 }
