@@ -1,48 +1,5 @@
 #!/bin/sh
 
-_awk() {
-
-    # Attempt to find and set an awk variant, prioritizing common and lightweight versions
-    export AWK="$(cmd mawk nawk awk gawk || false;
-        # Mawk is a fast and lightweight version of awk
-        # Nawk is the new awk, often used as the default on many systems
-        # Awk is the original version, often a symlink to another variant
-        # Gawk is the GNU version of awk, feature-rich and widely used
-        # BusyBox awk is used in embedded systems
-        # Ensure the chain returns a non-zero status if no awk variant is found
-    )" || {
-        # If no variant of awk is found, exit 2 (failure)
-        try -C "M = 'awk' interpreter : [mawk|nawk|awk|gawk|busybox]";
-        exit 1;
-    }
-}
-
-_shell() {
-
-    # Attempt to find and set a POSIX-compliant shell, prioritizing speed
-    export SHELL="$(cmd dash sh ash mksh posh yash ksh loksh pdksh bash zsh fish || false;
-        # Dash is very fast and lightweight
-        # Bourne shell is generally fast
-        # Ash is also lightweight and fast
-        # MirBSD Korn Shell is lightweight
-        # Policy-compliant Ordinary Shell is minimal
-        # Yet Another Shell is focused on correctness
-        # KornShell is balanced in performance and features
-        # Loksh is a lightweight version of ksh
-        # Public Domain Korn Shell is another ksh variant
-        # Bash is feature-rich but slightly heavier
-        # Zsh is powerful but can be heavier
-        # Fish is user-friendly but not as lightweight
-        # BusyBox shell is used in embedded systems
-        # Ensure the chain returns a non-zero status if no shell is found
-    )" || {
-        # If no shell is found, exit 1 (failure)
-        try -C "M = 'shell' : [dash|ash|sh|mksh|posh|yash|ksh|loksh|pdksh|bash|zsh|fish|busybox]";
-        exit 1;
-    }
-
-}
-
 cmd() {
 
     while [ ${#@} -gt 0 ]; do
@@ -699,10 +656,11 @@ try() {
 
 }
 
-
-startPosixNexus() {
+# Any function defined beyond startPosixNexus will NOT be included in the daemons environment
+main() {
 
     _import() {
+
         eval "$(
             echo -n $* | ${AWK} -F ',' '{
                 for(i = 1; i < NF; ++i) {
@@ -713,6 +671,14 @@ startPosixNexus() {
                     close($i);
                 }
 
+            }'
+
+            cat "${POSIX_NEXUS_ROOT}" | ${AWK} '{
+                if ($0 !~ /^[[:space:]]*main[[:space:]]*\(\)[[:space:]]*\{/) {
+                    print $0;
+                } else {
+                    exit 0;
+                }
             }'
         )";
 
@@ -750,53 +716,141 @@ startPosixNexus() {
         return 0;
     }
 
-    (
+    # Check various paths and files using the try function
+    # Ensures all necessary directories and files exist and are accessible
+    try -Q -O "
+        C = nohup
+    " -E -I "
+        R = ${1},
+        edx = main
+    " -I "
+        R = ${1}/main,
+        edx = awk,
+        edx = sh
+    " -I "
+        R = ${1}/main/awk,
+        edxr = lib,
+        efr = lib/awk-interpreter.awk
+    " -I "
+        R = ${1}/main/sh,
+        edxr = lib,
+        efr = lib/posix-nexus.sh
+    " -I "
+        R = /var,
+        edx = run,
+        edx = tmp
+    " -O "
+        D = /var/run/posix-nexus,
+        D = /var/tmp/posix-nexus,
+        T = /var/run/posix-nexus/posix-nexus.pid
+    " -I "
+        w = /var/run/posix-nexus,
+        w = /var/tmp/posix-nexus,
+        wr = /var/run/posix-nexus/posix-nexus.pid
+    " || exit;
 
-        # Check various paths and files using the try function
-        # Ensures all necessary directories and files exist and are accessible
-        try -E -I "
-            R = ${1},
-            edx = main
-        " -I "
-            R = ${1}/main,
-            edx = awk,
-            edx = sh
-        " -I "
-            R = ${1}/main/awk,
-            edxr = lib,
-            efr = lib/awk-interpreter.awk
-        " -I "
-            R = ${1}/main/sh,
-            edxr = lib,
-            efr = lib/posix-nexus.sh
+    # Set the root directory for POSIX Nexus
+    export POSIX_NEXUS_ROOT="${1}";
+    shift;
+
+    # Functions to export
+    export -f _import;
+    export -f _posixNexusLinker;
+
+    # Set required run files
+    export POSIX_NEXUS_PID="/var/run/posix-nexus/posix-nexus.pid";
+    export POSIX_NEXUS_LINK="/var/run/posix-nexus/posix-nexus-directory";
+
+    # Set file creation mask
+    umask 027;
+
+    [ -h "${POSIX_NEXUS_LINK}" ] && {
+        try -Q -O "
+            C = unlink,
+            U = ${POSIX_NEXUS_LINK}
         " || exit;
+    }
 
-        # Set the root directory for POSIX Nexus
-        export POSIX_NEXUS_ROOT="${1}";
-        shift;
+    nohup ${SHELL} -c "
+        _import $(_posixNexusLinker sh);
+        printf '%d' $$ > '${POSIX_NEXUS_PID}';
+        export POSIX_NEXUS_DAEMON_ROOT='/var/tmp/posix-nexus/$$';
 
-        # Read and evaluate the content of posix-nexus.sh, appending each argument wrapped in single quotes and spaces.
-        eval "$(cat "${POSIX_NEXUS_ROOT}/main/sh/lib/posix-nexus.sh")$(
-            echo -en "\x0aposixNexusDaemon";
-
-            while [ ${#@} -gt 0 ]; do
-                echo -en "\x20\x27${1}\x27";
-                shift;
-
+        (
+            # Clean up old directories and start the daemon
+            for OLD in /var/run/posix-nexus/*; do
+                [ '${OLD}' = '${POSIX_NEXUS_DAEMON_ROOT}' ] || rm -rf '${OLD}';
             done
+        ) &
 
-        )"
+        export POSIX_NEXUS_STDIN='${POSIX_NEXUS_DAEMON_ROOT}/stdin-posix-nexus.in';
+        export POSIX_NEXUS_STDOUT='${POSIX_NEXUS_DAEMON_ROOT}/stdout-posix-nexus.out';
+        export POSIX_NEXUS_STDERR='${POSIX_NEXUS_DAEMON_ROOT}/stderr-posix-nexus.out';
 
-    ) || exit;
+        try -O '
+            C = mkfifo,
+            F = ${POSIX_NEXUS_STDIN},
+            S = ${POSIX_NEXUS_LINK} : ${POSIX_NEXUS_DAEMON_ROOT}
+        ';
+
+        exec 1>'${POSIX_NEXUS_STDOUT}';
+        exec 2>'${POSIX_NEXUS_STDERR}';
+
+        trap 'exec 1>&-; exec 2>&-' EXIT;
+
+        while :; do
+            cat '${POSIX_NEXUS_STDIN}';
+        done
+
+    " 1> /dev/null 2>&1 &
+}
+
+_awk() {
+
+    # Attempt to find and set an awk variant, prioritizing common and lightweight versions
+    export AWK="$(cmd mawk nawk awk gawk || false;
+        # Mawk is a fast and lightweight version of awk
+        # Nawk is the new awk, often used as the default on many systems
+        # Awk is the original version, often a symlink to another variant
+        # Gawk is the GNU version of awk, feature-rich and widely used
+        # BusyBox awk is used in embedded systems
+        # Ensure the chain returns a non-zero status if no awk variant is found
+    )" || {
+        # If no variant of awk is found, exit 2 (failure)
+        try -C "M = 'awk' interpreter : [mawk|nawk|awk|gawk|busybox]";
+        exit 1;
+    }
+}
+
+_shell() {
+
+    # Attempt to find and set a POSIX-compliant shell, prioritizing speed
+    export SHELL="$(cmd dash sh ash mksh posh yash ksh loksh pdksh bash zsh fish || false;
+        # Dash is very fast and lightweight
+        # Bourne shell is generally fast
+        # Ash is also lightweight and fast
+        # MirBSD Korn Shell is lightweight
+        # Policy-compliant Ordinary Shell is minimal
+        # Yet Another Shell is focused on correctness
+        # KornShell is balanced in performance and features
+        # Loksh is a lightweight version of ksh
+        # Public Domain Korn Shell is another ksh variant
+        # Bash is feature-rich but slightly heavier
+        # Zsh is powerful but can be heavier
+        # Fish is user-friendly but not as lightweight
+        # BusyBox shell is used in embedded systems
+        # Ensure the chain returns a non-zero status if no shell is found
+    )" || {
+        # If no shell is found, exit 1 (failure)
+        try -C "M = 'shell' : [dash|ash|sh|mksh|posh|yash|ksh|loksh|pdksh|bash|zsh|fish|busybox]";
+        exit 1;
+    }
 
 }
 
-
-
-
 _shell && _awk;
 if try -I "efr = $(cd "$(dirname "${0}")" && pwd)/main/sh/lib/posix-nexus.sh"; then
-    startPosixNexus "$(cd "$(dirname "${0}")" && pwd)" "${@}";
+    main "$(cd "$(dirname "${0}")" && pwd)" "${@}";
 else
     case "$(cd "$(dirname "${0}")" && pwd)" in
         */test/*)
