@@ -712,7 +712,9 @@ startPosixNexus() {
     # Check various paths and files using the try function
     # Ensures all necessary directories and files exist and are accessible
     try -Q -O "
-        C = nohup
+        C = nohup,
+        C = mkdir,
+        C = touch
     " -E -I "
         R = ${1},
         edx = main
@@ -752,6 +754,8 @@ startPosixNexus() {
 
     # Set required run files
     export POSIX_NEXUS_PID="/var/run/posix-nexus/posix-nexus.pid";
+    kill "$(cat "${POSIX_NEXUS_PID}")" 2> /dev/null;
+
     export POSIX_NEXUS_LINK="/var/run/posix-nexus/posix-nexus-directory";
 
     [ -h "${POSIX_NEXUS_LINK}" ] && {
@@ -761,8 +765,7 @@ startPosixNexus() {
         " || exit;
     }
 
-    kill "$(cat "${POSIX_NEXUS_PID}")" 2> /dev/null;
-    nohup "${POSIX_NEXUS_ROOT}/main/sh/lib/posix-nexus.sh" "$(basename "${0}")" \
+    nohup "${SHELL}" "${POSIX_NEXUS_ROOT}/main/sh/lib/posix-nexus.sh" "$(basename "${0}")" \
         1> /dev/null 2>&1 & printf "%d" $! > "${POSIX_NEXUS_PID}";
 
 }
