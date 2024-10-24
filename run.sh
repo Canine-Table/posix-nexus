@@ -657,7 +657,7 @@ try() {
 }
 
 # Any function defined beyond startPosixNexus will NOT be included in the daemons environment
-main() {
+startPosixNexus() {
 
     _import() {
 
@@ -672,17 +672,7 @@ main() {
                 }
 
             }'
-
-            cat "${POSIX_NEXUS_ROOT}" | ${AWK} '{
-                if ($0 !~ /^[[:space:]]*main[[:space:]]*\(\)[[:space:]]*\{/) {
-                    print $0;
-                } else {
-                    exit 0;
-                }
-            }'
         )";
-
-        return 0;
 
     }
     
@@ -715,6 +705,9 @@ main() {
 
         return 0;
     }
+
+    # Set file creation mask
+    umask 027;
 
     # Check various paths and files using the try function
     # Ensures all necessary directories and files exist and are accessible
@@ -761,9 +754,6 @@ main() {
     export POSIX_NEXUS_PID="/var/run/posix-nexus/posix-nexus.pid";
     export POSIX_NEXUS_LINK="/var/run/posix-nexus/posix-nexus-directory";
 
-    # Set file creation mask
-    umask 027;
-
     [ -h "${POSIX_NEXUS_LINK}" ] && {
         try -Q -O "
             C = unlink,
@@ -771,38 +761,10 @@ main() {
         " || exit;
     }
 
-    nohup ${SHELL} -c "
-        _import $(_posixNexusLinker sh);
-        printf '%d' $$ > '${POSIX_NEXUS_PID}';
-        export POSIX_NEXUS_DAEMON_ROOT='/var/tmp/posix-nexus/$$';
+    kill "$(cat "${POSIX_NEXUS_PID}")" 2> /dev/null;
+    nohup "${POSIX_NEXUS_ROOT}/main/sh/lib/posix-nexus.sh" "$(basename "${0}")" \
+        1> /dev/null 2>&1 & printf "%d" $! > "${POSIX_NEXUS_PID}";
 
-        (
-            # Clean up old directories and start the daemon
-            for OLD in /var/run/posix-nexus/*; do
-                [ '${OLD}' = '${POSIX_NEXUS_DAEMON_ROOT}' ] || rm -rf '${OLD}';
-            done
-        ) &
-
-        export POSIX_NEXUS_STDIN='${POSIX_NEXUS_DAEMON_ROOT}/stdin-posix-nexus.in';
-        export POSIX_NEXUS_STDOUT='${POSIX_NEXUS_DAEMON_ROOT}/stdout-posix-nexus.out';
-        export POSIX_NEXUS_STDERR='${POSIX_NEXUS_DAEMON_ROOT}/stderr-posix-nexus.out';
-
-        try -O '
-            C = mkfifo,
-            F = ${POSIX_NEXUS_STDIN},
-            S = ${POSIX_NEXUS_LINK} : ${POSIX_NEXUS_DAEMON_ROOT}
-        ';
-
-        exec 1>'${POSIX_NEXUS_STDOUT}';
-        exec 2>'${POSIX_NEXUS_STDERR}';
-
-        trap 'exec 1>&-; exec 2>&-' EXIT;
-
-        while :; do
-            cat '${POSIX_NEXUS_STDIN}';
-        done
-
-    " 1> /dev/null 2>&1 &
 }
 
 _awk() {
@@ -850,7 +812,7 @@ _shell() {
 
 _shell && _awk;
 if try -I "efr = $(cd "$(dirname "${0}")" && pwd)/main/sh/lib/posix-nexus.sh"; then
-    main "$(cd "$(dirname "${0}")" && pwd)" "${@}";
+    startPosixNexus "$(cd "$(dirname "${0}")" && pwd)";
 else
     case "$(cd "$(dirname "${0}")" && pwd)" in
         */test/*)

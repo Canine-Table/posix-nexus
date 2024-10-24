@@ -52,4 +52,3 @@ iterator() {
 
     return 0;
 }
-
