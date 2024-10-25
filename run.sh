@@ -1,6 +1,5 @@
 #!/bin/sh
 
-
 cmd() {
 
     while [ ${#@} -gt 0 ]; do
@@ -803,8 +802,10 @@ _shell() {
 }
 
 _shell && _awk;
-if try -I "efr = $(cd "$(dirname "${0}")" && pwd)/main/sh/lib/posix-nexus.sh"; then
-    startPosixNexus "$(cd "$(dirname "${0}")" && pwd)";
+if [ -e "$(cd "$(dirname "${0}")" && pwd)/main/sh/lib/posix-nexus.sh" ]; then
+    try -I "fr = $(cd "$(dirname "${0}")" && pwd)/main/sh/lib/posix-nexus.sh" && {
+        startPosixNexus "$(cd "$(dirname "${0}")" && pwd)";
+    } || exit;
 else
     case "$(cd "$(dirname "${0}")" && pwd)" in
         */test/*)
@@ -819,4 +820,3 @@ else
             };;
     esac
 fi
-
