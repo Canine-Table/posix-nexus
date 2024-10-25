@@ -403,7 +403,6 @@ try() {
         # G: Pattern search (grep) failed
         # O: Change owner (chown) failed
 
-
         case "${KEY}" in
             # Handle command checks
             C)
