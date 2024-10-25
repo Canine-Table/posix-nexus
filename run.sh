@@ -747,10 +747,14 @@ startPosixNexus() {
             _import $(_posixNexusLinker sh);
 
             cat "${POSIX_NEXUS_ROOT}/main/sh/lib/posix-nexus.sh";
-        )
+            echo posixNexusDaemon;
+        ) &
 
-     " 1> /dev/null 2>&1 & printf "%d" $! > "${POSIX_NEXUS_PID}" && {
-        try -C "U = ${0}, L = ${0}";
+        wait;
+        trap 'kill -$!; exit' EXIT INT TERM;
+
+    " 1> /dev/null 2>&1 & printf "%d" $! > "${POSIX_NEXUS_PID}" && {
+        tty -s && try -C "U = ${0}, L = ${0}";
     }
 
 }
@@ -815,3 +819,4 @@ else
             };;
     esac
 fi
+
