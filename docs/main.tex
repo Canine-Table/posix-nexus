@@ -1,0 +1,56 @@
+\documentclass[a4paper]{article}
+\usepackage{fancyhdr}
+\usepackage{tocloft}
+\usepackage{titlesec}
+\usepackage{listings}
+\usepackage{color}
+\usepackage{hyperref}
+\usepackage{graphicx} % For including graphics (images)
+\usepackage{amsfonts} % For using additional math fonts
+\usepackage[table]{xcolor} % For coloring tables
+\usepackage{pagecolor} % For setting the background color of the page
+\usepackage{comment} % For including multi-line comments
+\usepackage{amsmath} % For advanced mathematical typesetting
+\usepackage{tcolorbox} % For creating colored and framed text boxes
+\usepackage{tikz} % For creating graphics programmatically
+\usepackage{multicol} % For creating multi-column layouts
+%\usepackage[british]{babel} % For setting the document language to British English
+\usepackage[left = 2cm, right = 2cm, top = 3cm, bottom = 3cm]{geometry} % For setting page margins
+\usepackage{marvosym} % For providing icons for contact details
+\usepackage{enumitem} % For redefining spacing in lists
+\usepackage{FiraSans} % For changing the document font to Fira Sans
+\usepackage{pgfplots} % For creating plots and graphs
+\usepackage{paracol} % For typesetting columns of text in parallel
+\usepackage{calc} % For performing calculations in LaTeX
+\usepackage{pgffor} % For using loops in LaTeX
+\usepackage{ifthen} % Provides the \ifthenelse command, which allows you to evaluate logical expressions and execute different code paths based on whether the expression is true or false.
+\usepackage{xparse}
+\usepackage{expl3}
+\usepackage{bchart}
+\usepackage{ulem}
+\input{definitions/colors.tex}
+\fancyhf{}
+\fancyhead[L]{POSIX-Nexus Documentation}
+\fancyhead[R]{\thepage}
+\fancyfoot[C]{\textbf{POSIX-Nexus}}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+\pagestyle{fancy}
+\titleformat{\section}[block]{\Large\bfseries}{\thesection}{1em}{}
+\titleformat{\subsection}[block]{\large\bfseries}{\thesubsection}{1em}{}
+\titleformat{\subsubsection}[block]{\normalsize\bfseries}{\thesubsubsection}{1em}{}
+\title{
+    \includegraphics[width=0.5\textwidth]{images/posix-nexus-logo.jpeg}\\[1cm]
+    \textbf{POSIX-Nexus: Enhancing POSIX Shell Performance}
+}
+
+\author{Canine-Table}
+\date{\today}
+\begin{document}
+\input{sections/title.tex}
+\input{sections/introduction.tex}
+\input{sections/about.tex}
+\input{sections/usage.tex}
+\input{sections/contribution.tex}
+\input{sections/submission.tex}
+\end{document}

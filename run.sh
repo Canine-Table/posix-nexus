@@ -1,27 +1,36 @@
 #!/bin/sh
 
+# Function to check if any given commands exist in the system's PATH
 cmd() {
 
     while [ ${#@} -gt 0 ]; do
+
+        # Check if the command exists
         command -v "${1}" && return;
+
+        # Move to the next command
         shift;
     done
 
+    # Return failure if no commands are found
     return 1;
 }
 
+# Function to convert a string to lowercase using AWK
 tolower() {
     echo -n $* | ${AWK} '{
         printf("%s", tolower($0));
     }';
 }
 
+# Function to convert a string to uppercase using AWK
 toupper() {
     echo -n $* | ${AWK} '{
         printf("%s", toupper($0));
     }';
 }
 
+# Function to format a message by replacing placeholders with provided values
 format() {
     echo "${1}:" | ${AWK} -v msg="${2}" '
     function format() {
@@ -37,6 +46,7 @@ format() {
                     sub("<>", param["cur"], param["msg"]);
                 }
 
+            # Repeat until no delimiter found
             } while ((i = index(param["str"], "\x3a")));
         }
     }
@@ -46,6 +56,8 @@ format() {
     } {
         param["str"] = param["str"] "" $0;
         format();
+
+        # Final whitespace trim
         gsub(/(^[[:space:]]+)|([[:space:]]+$)/, "", param["msg"]);
         print param["msg"];
         delete param;
@@ -53,6 +65,8 @@ format() {
     }';
 }
 
+
+# Function to parse and process key-value arguments from a string
 kwargs() {
     echo $*"," | ${AWK} '
     function kwargs() {
@@ -98,6 +112,8 @@ kwargs() {
 
 }
 
+
+# Function to dereference and echo the value of a variable
 ref() {
     eval "eval echo -en '\$${1}'";
 }
@@ -153,6 +169,7 @@ try() {
         echo $*;
     }
 
+    # Function to apply styling based on message type and enable color if specified
     _style() {
 
         # Check if color setting is enabled
@@ -185,10 +202,13 @@ try() {
         )";
     }
 
+    # Function to expand a given value using the format function
     _expand() {
+        # Evaluate the formatted value using AWK and format it with the provided template
         eval "$(format "$(awk -v value="${1}" 'BEGIN { print value; }')" "${2}")";
     }
 
+    # Function to manage status file operations
     _status() {
 
         case "${1}" in
@@ -213,6 +233,7 @@ try() {
 
     }
 
+    # Function to handle various exception cases and provide feedback
     _exceptionC() {
 
         _missing() {
@@ -261,8 +282,11 @@ try() {
         return 0;
     }
 
+
+    # Function to handle various item exceptions and check directory or file properties
     _exceptionI() {
 
+        # Function to check if the key path exists in the root directory
         _item() {
             # Check if the key path exists in the root directory
             [ -${KEY} "${WORKING_DIRECTORY}${VALUE}" ] || {
@@ -270,6 +294,7 @@ try() {
             }
         }
 
+        # Function to echo formatted error message
         _output() {
             # Echo formatted error message
             _error "The path to '${VALUE}' ${WORKING_DIRECTORY:+"within '${WORKING_DIRECTORY}' "}is not ${1}.";
@@ -346,9 +371,11 @@ try() {
 
     }
 
+    # Function to handle value errors and validate variable states
     _exceptionV() {
         # Value Errors
 
+        # Function to check if the variable's value matches the key condition
         _variable() {
             [ -${KEY} "$(ref VALUE)" ] || {
                 return 1;
@@ -369,6 +396,7 @@ try() {
         esac
     }
 
+    # Function to handle regex errors and validate naming conventions
     _exceptionR() {
         # RegexErrors
 
@@ -383,6 +411,7 @@ try() {
         esac
     }
 
+    # Function to handle various operations and log errors accordingly
     _exceptionO() {
 
         # Error descriptions:
@@ -517,6 +546,7 @@ try() {
         esac
     }
 
+    # Function template to handle various exceptions and provide feedback based on provided flags
     _exceptionTemplate() {
 
         (
@@ -534,8 +564,8 @@ try() {
 
             # Initialize the index
             INDEX=0;
-            # Iterate through the provided arguments, delimited by , and =
 
+            # Iterate through the provided arguments, delimited by , and =
             for VALUE in $(kwargs "${2}"); do
                 INDEX=$((INDEX + 1));
 
@@ -564,7 +594,8 @@ try() {
                     }
 
                 else
-
+                    
+                    # For even indexed elements, evaluate the function with key and value
                     for KEY in $(
                         ${AWK} 'BEGIN {
                         for (i = 1; i <= length(ENVIRON["KEYS"]); i++) {
@@ -579,6 +610,7 @@ try() {
 
             done
 
+            # Check the status and exit if necessary
             case "$(_status G)" in
                 *11) exit 11;;
             esac
@@ -631,9 +663,12 @@ try() {
 
 }
 
-# Any function defined beyond startPosixNexus will NOT be included in the daemons environment
+# Any function defined beyond startPosixNexus will NOT be included in the daemon's environment.
+
+# Main function to initialize and start POSIX Nexus.
 startPosixNexus() {
 
+    # Import function for loading additional scripts
     _import() {
         echo -n $* | ${AWK} -F ',' '{
             for(i = 1; i < NF; ++i) {
@@ -648,6 +683,7 @@ startPosixNexus() {
 
     }
     
+    # Function to link required utilities for POSIX Nexus
     _posixNexusLinker() {
 
         # Ensure POSIX_NEXUS_ROOT is set, or return an error
@@ -731,6 +767,7 @@ startPosixNexus() {
         " || exit;
     }
 
+    # Start the daemon process in a new session
     setsid nohup ${SHELL} -c "
 
         eval $(
@@ -757,6 +794,8 @@ startPosixNexus() {
 
 }
 
+
+# Function to find and set the fastest an AWK variant
 _awk() {
 
     # Attempt to find and set an awk variant, prioritizing common and lightweight versions
@@ -774,6 +813,7 @@ _awk() {
     }
 }
 
+# Function to find and set the fastest an shell variant
 _shell() {
 
     # Attempt to find and set a POSIX-compliant shell, prioritizing speed
@@ -800,8 +840,13 @@ _shell() {
 
 }
 
+# Ensure AWK and SHELL variants are set
 _shell && _awk;
+
+# Define the path to posix-nexus.sh
 if [ -e "$(cd "$(dirname "${0}")" && pwd)/main/sh/lib/posix-nexus.sh" ]; then
+    
+    # Import posix-nexus.sh if it exists
     try -I "fr = $(cd "$(dirname "${0}")" && pwd)/main/sh/lib/posix-nexus.sh" && {
         startPosixNexus "$(cd "$(dirname "${0}")" && pwd)";
     } || exit;
