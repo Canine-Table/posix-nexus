@@ -52,3 +52,36 @@ iterator() {
 
     return 0;
 }
+
+join() {
+    echo -n $* | ${AWK} '{
+        printf("%s\x20", $0);
+    }';
+}
+
+unQuote() {
+
+    echo -n $* | ${AWK} '{
+        # Remove leading and trailing whitespace
+        gsub(/(^[[:space:]]+)|([[:space:]]+$)/, "", $0);
+
+        # Get the first character of the input
+        start_of_record = substr($0, 1, 1);
+        
+        # Get the last character of the input
+        end_of_record = substr($0, length($0));
+
+        # Check if the input starts and ends with the same quote character
+        if ((start_of_record == "\x27" || start_of_record == "\x22") && start_of_record == end_of_record) {
+            # Remove the quotes
+            printf("%s", substr($0, 2, length($0) - 2));
+
+        } else {
+            # Print the input as-is
+            printf("%s", $0);                
+
+        }
+
+    }';
+
+}

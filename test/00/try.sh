@@ -120,9 +120,23 @@ tryN5() {
         R = /tmp/tryN5b
     ';
 
+    try -O "
+        C = basename,
+        C = dirname,
+        C = mkdir,
+        C = touch,
+        C = ln,
+        C = nohup,
+        C = mkdir,
+        C = touch,
+        C = cat,
+        C = grep
+    " || exit;
+
     try -C 'D=tryN5';
 
 }
+
 
 # tryN1;
 # tryN2;
