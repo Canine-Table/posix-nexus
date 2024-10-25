@@ -1,11 +1,10 @@
-posixNexusDaemon() {
+trap 'kill -- -$$' EXIT INT TERM;
 
-    trap 'kill -- 0' EXIT INT TERM;
+posixNexusDaemon() {
 
     while ! ps -A -o pid | ${AWK} '{ gsub(/(^[[:space:]]+)|([[:space:]]+$)/, ""); print; }' | grep -q "^$(cat "${POSIX_NEXUS_PID}")$"; do
         :;
     done
-
 
     # Set file creation mask
     umask 027;
@@ -32,15 +31,11 @@ posixNexusDaemon() {
 
     try -O "
         F = ${POSIX_NEXUS_STDIN},
-        S = ${POSIX_NEXUS_DAEMON_ROOT} : ${POSIX_NEXUS_LINK},
+        S = ${POSIX_NEXUS_DAEMON_ROOT} : ${POSIX_NEXUS_LINK}
     ";
 
     while :; do
         cat "${POSIX_NEXUS_STDIN}";
     done
 
-    wait;
-
 }
-
-posixNexusDaemon;
