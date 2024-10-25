@@ -1,5 +1,6 @@
 #!/bin/sh
 
+
 cmd() {
 
     while [ ${#@} -gt 0 ]; do
@@ -10,39 +11,6 @@ cmd() {
     return 1;
 }
 
-unQuote() {
-
-    echo -n $* | ${AWK} '{
-        # Remove leading and trailing whitespace
-        gsub(/(^[[:space:]]+)|([[:space:]]+$)/, "", $0);
-
-        # Get the first character of the input
-        start_of_record = substr($0, 1, 1);
-        
-        # Get the last character of the input
-        end_of_record = substr($0, length($0));
-
-        # Check if the input starts and ends with the same quote character
-        if ((start_of_record == "\x27" || start_of_record == "\x22") && start_of_record == end_of_record) {
-            # Remove the quotes
-            printf("%s", substr($0, 2, length($0) - 2));
-
-        } else {
-            # Print the input as-is
-            printf("%s", $0);                
-
-        }
-
-    }';
-
-}
-
-join() {
-    echo -n $* | ${AWK} '{
-        printf("%s\x20", $0);
-    }';
-}
-
 tolower() {
     echo -n $* | ${AWK} '{
         printf("%s", tolower($0));
@@ -50,13 +18,13 @@ tolower() {
 }
 
 toupper() {
-    echo -n  $* | ${AWK} '{
+    echo -n $* | ${AWK} '{
         printf("%s", toupper($0));
     }';
 }
 
 format() {
-    echo -en "${1}:" | ${AWK} -v msg="${2}" '
+    echo "${1}:" | ${AWK} -v msg="${2}" '
     function format() {
 
         if ((i = index(param["str"], "\x3a"))) {
@@ -65,7 +33,7 @@ format() {
                 gsub(/(^[[:space:]]+)|([[:space:]]+$)/, "", param["cur"]);
                 param["str"] = substr(param["str"], i + 1);
                 param["idx"] = param["idx"] + 1;
-                
+
                 if (! gsub("<" param["idx"] ">", param["cur"], param["msg"])) {
                     sub("<>", param["cur"], param["msg"]);
                 }
@@ -87,7 +55,7 @@ format() {
 }
 
 kwargs() {
-    echo $*, | ${AWK} '
+    echo $*"," | ${AWK} '
     function kwargs() {
         # Set the initial character to equal sign if not set
         if (!(char in param)) {
@@ -218,6 +186,10 @@ try() {
         )";
     }
 
+    _expand() {
+        eval "$(format "$(awk -v value="${1}" 'BEGIN { print value; }')" "${2}")";
+    }
+
     _status() {
 
         case "${1}" in
@@ -274,8 +246,6 @@ try() {
             }');
         }
 
-
-        echo $VALUE
         # Handle different exception cases
         case "${KEY-${1}}" in
             R) _error "Please execute the '${VALUE-${2}}' script to initialize the POSIX Nexus environment or ensure the correct file path is specified.";;
@@ -283,8 +253,8 @@ try() {
             I) _error $(format "${KEY-${1}} : ${VALUE-${2}}" "The '-<1>' flag of the '<2>' subroutine requires an argument.");;
             F)  _invalid $(format "${KEY-${1}} : ${VALUE-${2}}" "'<1>' '<2>' <3>");;
             D) _debug "$(basename "${2}") tests completed!";;
-            L) _info "Location: $(cd "$(dirname "${VALUE-${2}}")" && pwd)";;
-            U) _success "The posix-nexus daemon '${VALUE-${2}}' has started.";;
+            L) _info "Location: '$(cd "$(dirname "${VALUE-${2}}")" && pwd)'";;
+            U) _success "The posix-nexus daemon '$(basename ${VALUE-${2}})' has started.";;
             M) _missing "${VALUE-${2}}";;
             *) _invalid "${KEY-${1}} : _exceptionC : REIMFDUL";;
         esac
@@ -434,6 +404,7 @@ try() {
         # G: Pattern search (grep) failed
         # O: Change owner (chown) failed
 
+
         case "${KEY}" in
             # Handle command checks
             C)
@@ -469,8 +440,8 @@ try() {
             M)
                 {
                     # Execute the formatted move command
-                    eval $(format "${VALUE}" "mv '<>' '<>'") 2> /dev/null || {
-                        _error "Failed to move $(format "${VALUE}" "'<>' to '<>'"). Please ensure the destination directory exists and you have the necessary permissions.";
+                    _expand "${VALUE}" "mv '<>' '<>'" 2> /dev/null || {
+                        _error "Failed to move $(_expand "${VALUE}" "'<>' to '<>'"). Please ensure the destination directory exists and you have the necessary permissions.";
                     }
                 };;
 
@@ -484,43 +455,43 @@ try() {
 
             # Handle symbolic link operation
             S)
-                eval "$(format "${VALUE}" "ln -s '<>' '<>'")" 2> /dev/null || {
-                    _error "Failed to create a link using command '$(format "${VALUE}" "from '<>' to '<>'"). Please ensure the source and target directories exist and you have the necessary permissions.";
+                _expand "${VALUE}" "ln -s '<>' '<>'" 2> /dev/null || {
+                    _error "Failed to create a link using command $(_expand  "${VALUE}" "from '<>' to '<>'"). Please ensure the source and target directories exist and you have the necessary permissions.";
                 };;
 
             # Handle hard link creation
             H)
                 # Execute the formatted hardlink link command (ln)
-                eval $(format "${VALUE}" "ln '<>' '<>'") 2> /dev/null || {
-                    _error "Failed to create a hard link using command $(format "${VALUE}" "ln '<>' '<>'"). Please ensure the source and target directories exist and you have the necessary permissions.";
+                _expand "${VALUE}" "ln '<>' '<>'" 2> /dev/null || {
+                    _error "Failed to create a hard link using command $(_expand "${VALUE}" "ln '<>' '<>'"). Please ensure the source and target directories exist and you have the necessary permissions.";
                 };;
 
             # Handle change mode operation
             P)
 
                 # Execute the formatted chmod command
-                eval $(format "${VALUE}" "chmod '<>' '<>'") 2> /dev/null || {
-                    _error "Failed to change mode $(format "${VALUE}" "'<>' on '<>'"). Please ensure you have the necessary permissions.";
+                _expand "${VALUE}" "chmod '<>' '<>'" 2> /dev/null || {
+                    _error "Failed to change mode $(_expand "${VALUE}" "'<>' on '<>'"). Please ensure you have the necessary permissions.";
                 };;
 
             # Handle change group operation
             G)
                 # Execute the formatted chgrp command
-                eval $(format "${VALUE}" "chgrp '<>' '<>'") 2> /dev/null || {
-                    _error "Failed to change group to $(format "${VALUE}" "'<>' on '<>'"). Please ensure you have the necessary permissions.";
+                _expand "${VALUE}" "chgrp '<>' '<>'" 2> /dev/null || {
+                    _error "Failed to change group to $(_expand "${VALUE}" "'<>' on '<>'"). Please ensure you have the necessary permissions.";
                 };;
 
             # Handle copy operation
             W)
                 # Execute the formatted copy command
-                eval $(format "${VALUE}" "cp -R '<>' '<>'") 2> /dev/null || {
-                    _error "Failed to copy $(format "${VALUE}" "from '<>' to '<>'"). Please ensure the source and destination directories exist and you have the necessary permissions."
+                _expand "${VALUE}" "cp -R '<>' '<>'" 2> /dev/null || {
+                    _error "Failed to copy $(_expand "${VALUE}" "from '<>' to '<>'"). Please ensure the source and destination directories exist and you have the necessary permissions."
                 };;
 
             # Handle kill operation
             K)
                 # Execute the formatted kill command
-                kill "${VALUE}" 2> /dev/null  || {
+                kill "${VALUE}" 2> /dev/null || {
                     _error "Failed to kill process '${VALUE}'. Please ensure the process ID is valid and you have the necessary permissions.";
                 };;
 
@@ -535,15 +506,15 @@ try() {
             A)
 
                 # Execute the formatted tar command
-                eval $(format "${VALUE}" "tar -cf '<>' '<>'") 2> /dev/null || {
-                    _error "Failed to archive $(format "${VALUE}" "'<>' to '<>'"). Please ensure the source directory exists and you have the necessary permissions.";
+                _expand "${VALUE}" "tar -cf '<>' '<>'" 2> /dev/null || {
+                    _error "Failed to archive $(_expand "${VALUE}" "'<>' to '<>'"). Please ensure the source directory exists and you have the necessary permissions.";
                 };;
 
             # Handle change owner operation
             O)
                 # Execute the formatted chown command
-                eval $(format "${VALUE}" "chown '<>:<>' '<>'") 2> /dev/null || {
-                    _error "Failed to change owner $(format "${VALUE}" "from '<>' to '<>' on '<>'"). Please ensure you have the necessary permissions.";
+                _expand "${VALUE}" "chown '<>:<>' '<>'" 2> /dev/null || {
+                    _error "Failed to change owner $(_expand "${VALUE}" "from '<>' to '<>' on '<>'"). Please ensure you have the necessary permissions.";
                 };;
         esac
     }
@@ -621,14 +592,20 @@ try() {
     (
 
         # Ensure the terminal is reset on exit and retrieve the status
-        trap '_status R; echo -en "${C_SET:+\\x1b[0m}"; exec 1>&-' EXIT;
+        trap '_status R; exec 1>&-' EXIT;
 
         # Redirecting standard output to standard error, commonly done for logging
         exec 1>&2;
 
         # Check the terminal type and enable color if it matches one of the listed types
-        case "${TERM}" in
-            screen*|Eterm*|alacritty*|aterm*|foot*|gnome*|konsole*|kterm*|putty*|rxvt*|tmux*|xterm*) C_SET=true;;
+        tty -s && case "${TERM}" in
+            screen*|Eterm*|alacritty*|aterm*|foot*|gnome*|konsole*|kterm*|putty*|rxvt*|tmux*|xterm*)
+
+                {
+                    C_SET=true;
+                    trap '_status R; echo -en "${C_SET:+\\x1b[0m}"; exec 1>&-' EXIT;
+                };;
+
         esac
 
         # Dispatch to the appropriate error handling function based on the first argument
@@ -660,19 +637,16 @@ try() {
 startPosixNexus() {
 
     _import() {
-
-        eval "$(
-            echo -n $* | ${AWK} -F ',' '{
-                for(i = 1; i < NF; ++i) {
-                    while ((getline line < $i) > 0) {
-                        print line;
-                    }
-
-                    close($i);
+        echo -n $* | ${AWK} -F ',' '{
+            for(i = 1; i < NF; ++i) {
+                while ((getline line < $i) > 0) {
+                    print line;
                 }
 
-            }'
-        )";
+                close($i);
+            }
+
+        }'
 
     }
     
@@ -711,11 +685,7 @@ startPosixNexus() {
 
     # Check various paths and files using the try function
     # Ensures all necessary directories and files exist and are accessible
-    try -Q -O "
-        C = nohup,
-        C = mkdir,
-        C = touch
-    " -E -I "
+    try -E -I "
         R = ${1},
         edx = main
     " -I "
@@ -728,8 +698,7 @@ startPosixNexus() {
         efr = lib/awk-interpreter.awk
     " -I "
         R = ${1}/main/sh,
-        edxr = lib,
-        efr = lib/posix-nexus.sh
+        edxr = lib
     " -I "
         R = /var,
         edx = run,
@@ -739,9 +708,9 @@ startPosixNexus() {
         D = /var/tmp/posix-nexus,
         T = /var/run/posix-nexus/posix-nexus.pid
     " -I "
-        w = /var/run/posix-nexus,
-        w = /var/tmp/posix-nexus,
-        wr = /var/run/posix-nexus/posix-nexus.pid
+        dw = /var/run/posix-nexus,
+        dw = /var/tmp/posix-nexus,
+        fwr = /var/run/posix-nexus/posix-nexus.pid
     " || exit;
 
     # Set the root directory for POSIX Nexus
@@ -754,19 +723,35 @@ startPosixNexus() {
 
     # Set required run files
     export POSIX_NEXUS_PID="/var/run/posix-nexus/posix-nexus.pid";
-    kill "$(cat "${POSIX_NEXUS_PID}")" 2> /dev/null;
+    kill -TERM $(cat "${POSIX_NEXUS_PID}") 2> /dev/null;
 
     export POSIX_NEXUS_LINK="/var/run/posix-nexus/posix-nexus-directory";
 
     [ -h "${POSIX_NEXUS_LINK}" ] && {
-        try -Q -O "
-            C = unlink,
+        try -O "
             U = ${POSIX_NEXUS_LINK}
         " || exit;
     }
 
-    nohup "${SHELL}" "${POSIX_NEXUS_ROOT}/main/sh/lib/posix-nexus.sh" "$(basename "${0}")" \
-        1> /dev/null 2>&1 & printf "%d" $! > "${POSIX_NEXUS_PID}";
+    setsid nohup ${SHELL} -c "
+
+        eval $(
+            cat "${POSIX_NEXUS_ROOT}/$(basename ${0})" | ${AWK} '{
+                if ($0 !~ /^[[:space:]]*startPosixNexus[[:space:]]*\(\)[[:space:]]*\{/) {
+                    print $0;
+                } else {
+                    exit 0;
+                }
+            }'
+
+            _import $(_posixNexusLinker sh);
+
+            cat "${POSIX_NEXUS_ROOT}/main/sh/lib/posix-nexus.sh";
+        )
+
+     " 1> /dev/null 2>&1 & printf "%d" $! > "${POSIX_NEXUS_PID}" && {
+        try -C "U = ${0}, L = ${0}";
+    }
 
 }
 
@@ -825,7 +810,7 @@ else
             };;
         *)
             {
-                try -C 'R=run.sh';
+                try -C "R=${0}";
                 exit 1;
             };;
     esac
