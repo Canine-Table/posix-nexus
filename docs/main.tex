@@ -4,7 +4,6 @@
 \usepackage{titlesec}
 \usepackage{listings}
 \usepackage{color}
-\usepackage{hyperref}
 \usepackage{graphicx} % For including graphics (images)
 \usepackage{amsfonts} % For using additional math fonts
 \usepackage[table]{xcolor} % For coloring tables
@@ -14,7 +13,7 @@
 \usepackage{tcolorbox} % For creating colored and framed text boxes
 \usepackage{tikz} % For creating graphics programmatically
 \usepackage{multicol} % For creating multi-column layouts
-%\usepackage[british]{babel} % For setting the document language to British English
+\usepackage[british]{babel} % For setting the document language to British English
 \usepackage[left = 2cm, right = 2cm, top = 3cm, bottom = 3cm]{geometry} % For setting page margins
 \usepackage{marvosym} % For providing icons for contact details
 \usepackage{enumitem} % For redefining spacing in lists
@@ -28,6 +27,8 @@
 \usepackage{expl3}
 \usepackage{bchart}
 \usepackage{ulem}
+\usepackage[colorlinks = true, urlcolor = white, linkcolor = white]{hyperref} % For creating hyperlinks with colored text
+
 \input{definitions/colors.tex}
 \fancyhf{}
 \fancyhead[L]{POSIX-Nexus Documentation}
@@ -40,7 +41,7 @@
 \titleformat{\subsection}[block]{\large\bfseries}{\thesubsection}{1em}{}
 \titleformat{\subsubsection}[block]{\normalsize\bfseries}{\thesubsubsection}{1em}{}
 \title{
-    \includegraphics[width=0.5\textwidth]{images/posix-nexus-logo.jpeg}\\[1cm]
+    \includegraphics[width=0.5\textwidth]{images/posix-nexus-icon.png}\\[1cm]
     \textbf{POSIX-Nexus: Enhancing POSIX Shell Performance}
 }
 
