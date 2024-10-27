@@ -1,0 +1,16 @@
+\newcommand{\seq}[3]{
+
+    \IfInteger{#1}{%
+    \def\x{#1}%
+    }{\def\x{1}}
+    \IfInteger{#2}{%
+    \def\y{#2}%
+    }{\def\y{2}}
+    \IfInteger{#3}{%
+    \def\z{#3}%
+    }{\def\z{3}}
+
+    \foreach \i in {\x, \y,...,\z} {
+      \i\n
+    }
+}

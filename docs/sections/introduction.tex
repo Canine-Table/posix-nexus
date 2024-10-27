@@ -9,11 +9,12 @@ POSIX, an acronym for Portable Operating System Interface, is a set of standards
 These standards define interfaces and utilities that provide a consistent environment for software development and execution. By adhering to POSIX standards, developers can write applications that are more likely to run smoothly on a variety of platforms, reducing the need for extensive modifications or customizations.
 \\
 POSIX standards cover a wide range of functionalities, including: 
-\begin{itemize} \item \textbf{File system and directory operations}: Ensuring consistent behavior across different systems. 
+\begin{itemize} 
+    \item \textbf{File system and directory operations}: Ensuring consistent behavior across different systems. 
     \item \textbf{Process management}: Defining how processes are created, managed, and terminated. 
     \item \textbf{Input/output operations}: Standardizing the way data is read from and written to files and devices. 
     \item \textbf{Shell and utilities}: Providing a common set of command-line tools and scripting capabilities. 
-    \item \textbf{Network operations}: Standardizing network communication interfaces. 
+    \item \textbf{Network operations}: Standardizing network communication interfaces.
 \end{itemize}
 
 The significance of POSIX lies in its ability to promote interoperability and reduce the fragmentation caused by differing system implementations. By providing a common set of standards, POSIX enables developers to create software that is portable and reliable, fostering a more unified and efficient computing ecosystem.
@@ -46,11 +47,7 @@ Our key objectives include:
 \end{itemize}
 
 By prioritizing these goals and objectives, POSIX-Nexus aims to provide a reliable, efficient, and universally compatible set of tools for the modern computing landscape.
-
-
-
-
-
+\\
 The POSIX-Nexus project was born out of necessity and ambition. While working across various systems, it became apparent that the portability of scripts was hindered by the reliance on Bash-specific and glibc-specific features. These limitations were particularly evident on systems like Alpine Linux with musl libc, Cygwin, and iSH. The challenge was clear: to create a robust, portable solution that would work seamlessly across different environments without sacrificing functionality or performance.
 \\
 
@@ -65,21 +62,4 @@ This codebase enhances the performance of the POSIX shell by offloading data man
 \end{itemize}
 
 Your contributions and feedback are invaluable as we continue to refine and expand the capabilities of POSIX-Nexus. If you encounter any issues or find that it does not work on your specific system, please let us know. Together, we can overcome the challenges of portability and build a tool that stands the test of time across any platform.
-
-\newpage
-\subsection{Overview}
-
-The \texttt{run.sh} script initiates the POSIX Nexus daemon, which encompasses the following functionalities:
-
-\begin{itemize}
-    \item Database Management
-    \item SSH Authentication
-    \item Command Distribution across specified Nexuses
-    \item Webserver functionalities akin to Cockpit, applicable to any system, not limited to \texttt{systemd}
-    \item Comprehensive security measures ensuring information sharing among Nexuses and connected machines via multicast groups, authenticated through SSH keys
-    \item Interactive menu for managing IP addresses of child machines, enabling secure connections through public keys
-    \item Dual authentication mechanism ensuring both Nexus and group member validation, with an automatic ejection of any machine posing a security risk detected by multiple systems
-\end{itemize}
-
-The POSIX Nexus aims to create a robust network that prioritizes security without compromising usability. Routine tasks are handled via AWK, while advanced features are developed using the C90 standard library.
-\newpage
+\\
