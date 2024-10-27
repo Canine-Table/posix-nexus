@@ -2,6 +2,8 @@
 **.tex linguist-language=TeX
 **.sty linguist-language=TeX
 **.cls linguist-language=TeX
+**.tex linguist-language=TeX
+docs/main.tex linguist-language=TeX
 
 # Treat all .awk files as AWK scripts
 *.awk linguist-language=Awk
