@@ -1,0 +1,18 @@
+\section{Components}
+
+\subsection{Overview} \texttt{run.sh} script initiates the POSIX Nexus daemon, which encompasses the following functionalities:
+
+\begin{itemize}
+    \item Database Management
+    \item SSH Authentication
+    \item Command Distribution across specified Nexuses
+    \item Web server functionalities akin to Cockpit, applicable to any system, not limited to \texttt{systemd}
+    \item Comprehensive security measures ensuring information sharing among Nexuses and connected machines via multicast groups, authenticated through SSH keys
+    \item Interactive menu for managing IP addresses of child machines, enabling secure connections through public keys
+    \item Dual authentication mechanism ensuring both Nexus and group member validation, with an automatic ejection of any machine posing a security risk detected by multiple systems
+\end{itemize}
+
+The POSIX Nexus aims to create a robust network that prioritizes security without compromising usability. Routine tasks are handled via AWK, while advanced features are developed using the C90 standard library.
+
+\include{sections/components/exceptions.tex}
+\include{sections/components/strings}
