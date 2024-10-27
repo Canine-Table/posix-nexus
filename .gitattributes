@@ -1,3 +1,8 @@
+# Treat all .tex, .sty, and .cls files as LaTeX
+**.tex linguist-language=TeX
+**.sty linguist-language=TeX
+**.cls linguist-language=TeX
+
 # Treat all .awk files as AWK scripts
 *.awk linguist-language=Awk
 
@@ -12,11 +17,6 @@ run.sh linguist-language=Awk
 
 # Treat all .sed files as Sed scripts
 *.sed linguist-language=Sed
-
-# Treat all .tex, .sty, and .cls files as LaTeX
-*.tex linguist-language=TeX
-*.sty linguist-language=TeX
-*.cls linguist-language=TeX
 
 # Treat all .c and .h files as C
 *.c linguist-language=C
