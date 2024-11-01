@@ -668,52 +668,6 @@ try() {
 # Main function to initialize and start POSIX Nexus.
 startPosixNexus() {
 
-    # Import function for loading additional scripts
-    _import() {
-        echo -n $* | ${AWK} -F ',' '{
-            for(i = 1; i < NF; ++i) {
-                while ((getline line < $i) > 0) {
-                    print line;
-                }
-
-                close($i);
-            }
-
-        }'
-
-    }
-    
-    # Function to link required utilities for POSIX Nexus
-    _posixNexusLinker() {
-
-        # Ensure POSIX_NEXUS_ROOT is set, or return an error
-        # Validate the first argument to ensure it's a valid variable name
-        try -V '
-            n = POSIX_NEXUS_ROOT
-        ' -R "
-            N = ${1}
-        " || exit 1;
-
-        # Export linker variable
-        export "POSIX_NEXUS_$(toupper "${1}")_LINKER"="$(
-            LINKER_PROCESS_IDS="";
-            # Iterate over files in the specified directory that match the pattern
-            for POSIX_NEXUS_LOCATION in "${POSIX_NEXUS_ROOT}/main/${1}/lib/"*"-utilities.${1}"; do
-                {
-                    try -I "
-                        efr = ${POSIX_NEXUS_LOCATION}
-                    "  && echo -n "${POSIX_NEXUS_LOCATION},";
-                } & LINKER_PROCESS_IDS="${LINKER_PROCESS_IDS} $!";
-            done
-
-            wait ${LINKER_PROCESS_IDS};
-        )";
-
-        ref "POSIX_NEXUS_$(toupper "${1}")_LINKER";
-
-        return 0;
-    }
-
     # Set file creation mask
     umask 027;
 
@@ -751,10 +705,6 @@ startPosixNexus() {
     export POSIX_NEXUS_ROOT="${1}";
     shift;
 
-    # Functions to export
-    export -f _import;
-    export -f _posixNexusLinker;
-
     # Set required run files
     export POSIX_NEXUS_PID="/var/run/posix-nexus/posix-nexus.pid";
     kill -TERM $(cat "${POSIX_NEXUS_PID}") 2> /dev/null;
@@ -771,6 +721,52 @@ startPosixNexus() {
     setsid nohup ${SHELL} -c "
 
         eval $(
+            # Import function for loading additional scripts
+            _import() {
+                echo -n $* | ${AWK} -F ',' '{
+                    for(i = 1; i < NF; ++i) {
+                        while ((getline line < $i) > 0) {
+                            print line;
+                        }
+
+                        close($i);
+                    }
+
+                }'
+
+            }
+    
+            # Function to link required utilities for POSIX Nexus
+            _posixNexusLinker() {
+
+                # Ensure POSIX_NEXUS_ROOT is set, or return an error
+                # Validate the first argument to ensure it's a valid variable name
+                try -V '
+                    n = POSIX_NEXUS_ROOT
+                ' -R "
+                    N = ${1}
+                " || exit 1;
+
+                # Export linker variable
+                export "POSIX_NEXUS_$(toupper "${1}")_LINKER"="$(
+                    LINKER_PROCESS_IDS="";
+                    # Iterate over files in the specified directory that match the pattern
+                    for POSIX_NEXUS_LOCATION in "${POSIX_NEXUS_ROOT}/main/${1}/lib/"*"-utilities.${1}"; do
+                        {
+                            try -I "
+                                efr = ${POSIX_NEXUS_LOCATION}
+                            "  && echo -n "${POSIX_NEXUS_LOCATION},";
+                        } & LINKER_PROCESS_IDS="${LINKER_PROCESS_IDS} $!";
+                    done
+
+                    wait ${LINKER_PROCESS_IDS};
+                )";
+
+                ref "POSIX_NEXUS_$(toupper "${1}")_LINKER";
+
+                return 0;
+            }
+
             cat "${POSIX_NEXUS_ROOT}/$(basename ${0})" | ${AWK} '{
                 if ($0 !~ /^[[:space:]]*startPosixNexus[[:space:]]*\(\)[[:space:]]*\{/) {
                     print $0;

@@ -1,16 +1,20 @@
 \pgfplotsset{compat=1.18}
+
 \titleformat{\section}[block]{\Large\bfseries}{\thesection}{1em}{}
 \titleformat{\subsection}[block]{\large\bfseries}{\thesubsection}{1em}{}
 \titleformat{\subsubsection}[block]{\normalsize\bfseries}{\thesubsubsection}{1em}{}
-\fancyhf{}
+\setlength{\headheight}{14.49998pt}
+\fancyhf{\addtolength{\topmargin}{-2.49998pt}}
+
 \fancyhead[L]{POSIX-Nexus Documentation}
 \fancyhead[R]{\thepage}
 \fancyfoot[C]{\textbf{POSIX-Nexus}}
 \renewcommand{\headrulewidth}{0.4pt}
 \renewcommand{\footrulewidth}{0.4pt}
+\renewcommand{\contentsname}{}
 \pagestyle{fancy}
-\title{
-    \includegraphics[width=0.5\textwidth]{images/posix-nexus-icon.png}\\[1cm]
-    \textbf{POSIX-Nexus: Enhancing POSIX Shell Performance}
-}
+
+\tcbuselibrary{listings,listingsutf8}
+\tcbset{listing engine=listings}
+\usetikzlibrary {shadows,shapes.symbols,math}
 
