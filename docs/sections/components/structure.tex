@@ -1,22 +1,12 @@
-% TikZ -> "ist kein Zeichenprogramm", or
-% TikZ is not a drawing program
-% pgf -> portable graphic format pgf
+\subsection{Directory Structure}
 
-% \posnexLineOne
-% \posnexOrangeCircleOne
+\begin{baseBoxOne}{}{dark}
+    The posix-nexus.pid stores the process ID of the running instance of posix-nexus daemon.
+    The posix-nexus-directory is a symbolic link to a directory that gets recreated each time the application starts.
+    The previous directories with old process IDs are deleted, ensuring only the current process directory exists in /var/tmp/posix-nexus/.
+    The run.sh executable serves as the primary script to start the posix-nexus daemon.
+\end{baseBoxOne}
 
-% \posnexTriangleOne
-% \posnexLineAnglesTwo
-% \posnexLinePlusPlusThree
-%\posnexTriangleThree\posnexTriangleTwo
-%\posnexLineThree
-
-
-%[edge from parent fork down, sibling distance=15mm, level distance=15mm,
-%every node/.style={fill=red!30,rounded corners},edge from parent/.style={red,-{Circle[open]},thick,draw}]
-
-% Horizontally Centered: Uses the -| operator to horizontally center the content.
-% Vertically Centered: Uses the |- operator to vertically center the content.
 \begin{tikzpicture}[overlay, remember picture]
     \tikzset{
         directory/.style={
@@ -100,22 +90,4 @@
         \end{tikzpicture}
     };
 \end{tikzpicture}
-
-
-% \begin{tikzpicture}
-%     \node (start) [draw,shape=rectangle] {/};
-%     \foreach \angle in {-90, -80, ..., 90}
-%     \draw (node cs:name=start,angle=\angle)
-%     .. controls +(\angle:1cm) and +(-1,0) .. (2.5,0);
-% \end{tikzpicture}
-
-
-
-% \begin{tikzpicture}
-% \node(waiting) {};
-% \node (critical) [below=of waiting] {};
-% \node (semaphore) [below=of critical] {};
-% \node(leave critical) [right=of critical] {};
-% \node(enter critical) [left=of critical] {};
-% \draw [->] (waiting) to [out=180,in=90] (enter critical);
-% \end{tikzpicture}
+\newpage
