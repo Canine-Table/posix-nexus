@@ -790,7 +790,6 @@ startPosixNexus() {
 
 }
 
-
 # Function to find and set the fastest an AWK variant
 _awk() {
 
