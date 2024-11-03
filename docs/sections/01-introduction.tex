@@ -1,65 +1,68 @@
 \section{Introduction}
+The landscape of computing has always been marked by diversity, with myriad operating systems, each bringing their unique strengths. However, with this diversity comes the challenge of ensuring compatibility and seamless interoperability.
+Enter POSIX—Portable Operating System Interface—a set of IEEE standards that bridge the gap between different systems, ensuring your applications run smoothly across various UNIX-like environments.
 
-The landscape of computing has always been marked by diversity, with myriad operating systems, each bringing their unique strengths. However, with this diversity comes the challenge of ensuring compatibility and seamless interoperability. Enter POSIX—Portable Operating System Interface—a set of IEEE standards that bridge the gap between different systems, ensuring your applications run smoothly across various UNIX-like environments.
-\\
 \subsection{What is POSIX?}
-
 POSIX, an acronym for Portable Operating System Interface, is a set of standards specified by the IEEE (Institute of Electrical and Electronics Engineers). The primary goal of POSIX is to ensure compatibility and portability of software applications across different operating systems, particularly those that are UNIX-like.
-\\
 These standards define interfaces and utilities that provide a consistent environment for software development and execution. By adhering to POSIX standards, developers can write applications that are more likely to run smoothly on a variety of platforms, reducing the need for extensive modifications or customizations.
-\\
 POSIX standards cover a wide range of functionalities, including: 
-\begin{itemize} 
-    \item \textbf{File system and directory operations}: Ensuring consistent behavior across different systems. 
-    \item \textbf{Process management}: Defining how processes are created, managed, and terminated. 
-    \item \textbf{Input/output operations}: Standardizing the way data is read from and written to files and devices. 
-    \item \textbf{Shell and utilities}: Providing a common set of command-line tools and scripting capabilities. 
-    \item \textbf{Network operations}: Standardizing network communication interfaces.
-\end{itemize}
+\bigskip
+\begin{baseBoxOne}{}{dark}
+    \begin{posnexItemize} 
+        \item[$\ast$] \textbf{File system and directory operations}: Ensuring consistent behavior across different systems. 
+        \item[$\ast$] \textbf{Process management}: Defining how processes are created, managed, and terminated. 
+        \item[$\ast$] \textbf{Input/output operations}: Standardizing the way data is read from and written to files and devices. 
+        \item[$\ast$] \textbf{Shell and utilities}: Providing a common set of command-line tools and scripting capabilities. 
+        \item[$\ast$] \textbf{Network operations}: Standardizing network communication interfaces.
+    \end{posnexItemize}
+\end{baseBoxOne}
+\bigskip
+The significance of POSIX lies in its ability to promote interoperability and reduce the fragmentation caused by differing system implementations.
+By providing a common set of standards, POSIX enables developers to create software that is portable and reliable, fostering a more unified and efficient computing ecosystem.
 
-The significance of POSIX lies in its ability to promote interoperability and reduce the fragmentation caused by differing system implementations. By providing a common set of standards, POSIX enables developers to create software that is portable and reliable, fostering a more unified and efficient computing ecosystem.
-\\
 \subsection{The POSIX-Nexus Approach}
-
 The POSIX-Nexus approach is rooted in a commitment to never break existing functionality while maintaining code correctness, readability, and portability. Our guiding principles ensure that as we enhance the performance of the POSIX shell, we stay true to the following:
-
-\begin{itemize} 
-    \item \textbf{Preserving Functionality}: Any enhancements or modifications will not disrupt existing features. Users can trust that their scripts will continue to work as expected. 
-    \item \textbf{Code Correctness}: Ensuring that the code adheres to industry standards and best practices, resulting in robust and error-free implementations. 
-    \item \textbf{Readability}: Keeping the codebase clean, well-documented, and easy to understand, making it accessible for contributors of all skill levels. 
-    \item \textbf{Portability}: Designing solutions that work seamlessly across different environments and systems, embracing the diversity of UNIX-like platforms. 
-\end{itemize}
-
+\bigskip
+\begin{baseBoxOne}{}{dark}
+    \begin{posnexItemize} 
+        \item[$\ast$] \textbf{Preserving Functionality}: Any enhancements or modifications will not disrupt existing features. Users can trust that their scripts will continue to work as expected.
+        \item[$\ast$] \textbf{Code Correctness}: Ensuring that the code adheres to industry standards and best practices, resulting in robust and error-free implementations.
+        \item[$\ast$] \textbf{Readability}: Keeping the codebase clean, well-documented, and easy to understand, making it accessible for contributors of all skill levels.
+        \item[$\ast$] \textbf{Portability}: Designing solutions that work seamlessly across different environments and systems, embracing the diversity of UNIX-like platforms.
+    \end{posnexItemize}
+\end{baseBoxOne}
+\bigskip
 Through this approach, POSIX-Nexus aims to create a reliable, efficient, and portable solution that meets the needs of developers and system administrators alike.
 
-\newpage
-
 \subsection{Goals and Objectives}
-
-The primary goal of POSIX-Nexus is to achieve compatibility at all costs. To ensure this, the tools accepted in this codebase must be required by POSIX standards. Optional tools and non-standard extensions are strictly prohibited. This approach guarantees that scripts remain portable and functional across all UNIX-like environments.
+The primary goal of POSIX-Nexus is to achieve compatibility at all costs.
+To ensure this, the tools accepted in this codebase must be required by POSIX standards.
+Optional tools and non-standard extensions are strictly prohibited.
+This approach guarantees that scripts remain portable and functional across all UNIX-like environments.
 Our key objectives include:
-
-\begin{itemize} 
-    \item \textbf{Strict Adherence to Standards}: Utilizing only POSIX-required tools to ensure maximum compatibility and portability. 
-    \item \textbf{Maintaining Performance}: Ensuring that adherence to standards does not come at the expense of performance. Scripts will be optimized for speed and efficiency. 
-    \item \textbf{Enhancing Portability}: Designing scripts and utilities that work seamlessly across a diverse range of environments, from Alpine Linux to Cygwin, without modification. 
-    \item \textbf{Preserving Functionality}: Making sure that any enhancements or updates do not disrupt existing features and that users can rely on the stability of their scripts. 
-\end{itemize}
-
+\bigskip
+\begin{baseBoxOne}{}{dark}
+    \begin{posnexItemize}
+        \item[$\ast$] \textbf{Strict Adherence to Standards}: Utilizing only POSIX-required tools to ensure maximum compatibility and portability. 
+        \item[$\ast$] \textbf{Maintaining Performance}: Ensuring that adherence to standards does not come at the expense of performance. Scripts will be optimized for speed and efficiency. 
+        \item[$\ast$] \textbf{Enhancing Portability}: Designing scripts and utilities that work seamlessly across a diverse range of environments, from Alpine Linux to Cygwin, without modification. 
+        \item[$\ast$] \textbf{Preserving Functionality}: Making sure that any enhancements or updates do not disrupt existing features and that users can rely on the stability of their scripts. 
+    \end{posnexItemize}
+\end{baseBoxOne}
+\bigskip
 By prioritizing these goals and objectives, POSIX-Nexus aims to provide a reliable, efficient, and universally compatible set of tools for the modern computing landscape.
-\\
 The POSIX-Nexus project was born out of necessity and ambition. While working across various systems, it became apparent that the portability of scripts was hindered by the reliance on Bash-specific and glibc-specific features. These limitations were particularly evident on systems like Alpine Linux with musl libc, Cygwin, and iSH. The challenge was clear: to create a robust, portable solution that would work seamlessly across different environments without sacrificing functionality or performance.
-\\
-
 This codebase enhances the performance of the POSIX shell by offloading data manipulation tasks to powerful utilities like \texttt{awk}, \texttt{sed}, and \texttt{c90}. By leveraging these tools, we achieve significant speed improvements and efficiency in script execution, ensuring consistent results regardless of the underlying system.
 
 \subsection{Key Features}
-\begin{itemize}
-    \item \textbf{Compatibility}: Adheres to POSIX draft 1003.2 (draft 11.3) standards, ensuring broad compatibility across various UNIX-like operating systems.
-    \item \textbf{Performance}: Utilizes \texttt{awk}, \texttt{sed}, and \texttt{c90}, optimized for handling large datasets and complex text processing tasks.
-    \item \textbf{Portability}: Designed to be portable and easily integrated into different environments without modification.
-    \item \textbf{Reliability}: Thoroughly tested across multiple systems, including Alpine Linux, Cygwin, and iSH, to ensure consistent results.
-\end{itemize}
-
+\bigskip
+\begin{baseBoxOne}{}{dark}
+    \begin{posnexItemize}
+        \item[$\ast$] \textbf{Compatibility}: Adheres to POSIX draft 1003.2 (draft 11.3) standards, ensuring broad compatibility across various UNIX-like operating systems.
+        \item[$\ast$] \textbf{Performance}: Utilizes \texttt{awk}, \texttt{sed}, and \texttt{c90}, optimized for handling large datasets and complex text processing tasks.
+        \item[$\ast$] \textbf{Portability}: Designed to be portable and easily integrated into different environments without modification.
+        \item[$\ast$] \textbf{Reliability}: Thoroughly tested across multiple systems, including Alpine Linux, Cygwin, and iSH, to ensure consistent results.
+    \end{posnexItemize}
+\end{baseBoxOne}
+\bigskip
 Your contributions and feedback are invaluable as we continue to refine and expand the capabilities of POSIX-Nexus. If you encounter any issues or find that it does not work on your specific system, please let us know. Together, we can overcome the challenges of portability and build a tool that stands the test of time across any platform.
-\\

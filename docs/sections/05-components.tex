@@ -1,20 +1,20 @@
 \section{Components}
-
-\subsection{Overview} \texttt{run.sh} script initiates the POSIX Nexus daemon, which encompasses the following functionalities:
-
-\begin{itemize}
-    \item Database Management
-    \item SSH Authentication
-    \item Command Distribution across specified Nexuses
-    \item Web server functionalities akin to Cockpit, applicable to any system, not limited to \texttt{systemd}
-    \item Comprehensive security measures ensuring information sharing among Nexuses and connected machines via multicast groups, authenticated through SSH keys
-    \item Interactive menu for managing IP addresses of child machines, enabling secure connections through public keys
-    \item Dual authentication mechanism ensuring both Nexus and group member validation, with an automatic ejection of any machine posing a security risk detected by multiple systems
-\end{itemize}
-
+\texttt{run.sh} script initiates the POSIX Nexus daemon, which encompasses the following functionalities:
+\bigskip
+\begin{baseBoxOne}{}{dark}
+    \begin{posnexItemize}
+        \item[$\ast$] Database Management
+        \item[$\ast$] SSH Authentication
+        \item[$\ast$] Command Distribution across specified Nexuses
+        \item[$\ast$] Web server functionalities akin to Cockpit, applicable to any system, not limited to \texttt{systemd}
+        \item[$\ast$] Comprehensive security measures ensuring information sharing among Nexuses and connected machines via multicast groups, authenticated through SSH keys
+        \item[$\ast$] Interactive menu for managing IP addresses of child machines, enabling secure connections through public keys
+        \item[$\ast$] Dual authentication mechanism ensuring both Nexus and group member validation, with an automatic ejection of any machine posing a security risk detected by multiple systems
+    \end{posnexItemize}
+\end{baseBoxOne}
+\bigskip
 The POSIX Nexus aims to create a robust network that prioritizes security without compromising usability. Routine tasks are handled via AWK, while advanced features are developed using the C90 standard library.
 
-\newpage
 \input{sections/components/structure.tex}
-% \input{sections/components/exceptions.tex}
-\input{sections/components/sandbox.tex}
+%\input{sections/components/exceptions.tex}
+%\input{sections/components/sandbox.tex}

@@ -1,11 +1,9 @@
 \subsection{Directory Structure}
 
-\begin{baseBoxOne}{}{dark}
-    The posix-nexus.pid stores the process ID of the running instance of posix-nexus daemon.
-    The posix-nexus-directory is a symbolic link to a directory that gets recreated each time the application starts.
-    The previous directories with old process IDs are deleted, ensuring only the current process directory exists in /var/tmp/posix-nexus/.
-    The run.sh executable serves as the primary script to start the posix-nexus daemon.
-\end{baseBoxOne}
+The posix-nexus.pid stores the process ID of the running instance of posix-nexus daemon.
+The posix-nexus-directory is a symbolic link to a directory that gets recreated each time the application starts.
+The previous directories with old process IDs are deleted, ensuring only the current process directory exists in /var/tmp/posix-nexus/.
+The run.sh executable serves as the primary script to start the posix-nexus daemon.
 
 \begin{tikzpicture}[overlay, remember picture]
     \tikzset{
