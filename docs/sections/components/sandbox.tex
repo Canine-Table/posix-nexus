@@ -1,33 +1,92 @@
-\section{Sandbox}
+% \section{Sandbox}
 
-\begin{tikzpicture}[overlay, remember picture]
-    % Define the number of columns and rows
-    \def\cols{6}
-    \def\rows{9}
-    % Define the width and height of each node
-    \pgfmathsetlengthmacro\nodewidth{\paperwidth/\cols}
-    \pgfmathsetlengthmacro\nodeheight{\paperheight/\rows}
-    \foreach \col in {1,...,14} {
-        \foreach \row in {1,...,\rows} {
-            \node[
-                transform shape,
-                xslant=0.7,
-                rotate=-10, 
-                anchor=north west,
-                inner sep=0pt,
-                outer sep=0pt,
-                minimum width=\nodewidth, minimum height=\nodeheight, xshift=(\col-1)*\nodewidth, yshift=-(\row-1)*\nodeheight
-                ] at (0,10) {
-                \includegraphics[width=\nodewidth,height=\nodeheight]{setup/images/posix-nexus-image-\posnexModulus{\col+\row}{10}.jpeg}
-            };
-        }
-    }
-\end{tikzpicture}
-    \begin{baseBoxOne}{}{dark}
+% \begin{tikzpicture}[overlay, remember picture]
+%     % Define the number of columns and rows
+%     \def\cols{6}
+%     \def\rows{9}
+%     % Define the width and height of each node
+%     \pgfmathsetlengthmacro\nodewidth{\paperwidth/\cols}
+%     \pgfmathsetlengthmacro\nodeheight{\paperheight/\rows}
+%     \foreach \col in {1,...,15} {
+%         \foreach \row in {1,...,10} {
+%             \node[
+%                 transform shape,
+%                 xslant=0.7,
+%                 rotate=-10, 
+%                 anchor=north west,
+%                 inner sep=0pt,
+%                 outer sep=0pt,
+%                 minimum width=\nodewidth, minimum height=\nodeheight, xshift=(\col-1)*\nodewidth, yshift=-(\row-1)*\nodeheight
+%                 ] at (-1,10) {
+%                 \includegraphics[width=\nodewidth,height=\nodeheight]{setup/images/posix-nexus-image-\posnexModulus{\col+\row}{10}.jpeg}
+%             };
+%         }
+%     }
+% \end{tikzpicture}
+    
+% \begin{baseBoxOne}{}{dark}
+%     \title{
+%         \includegraphics[width=0.5\textwidth]{setup/images/posix-nexus-icon.png}\\[1cm]
+%         \textbf{POSIX-Nexus}: First Edition
+%     }
 
-    \begin{abstract}
-        This manual provides comprehensive guidance on using POSIX-Nexus, a cutting-edge daemon that leverages the speed of awk and the parsing power of LaTeX's expl3 syntax to deliver exceptional performance.
-        The manual outlines the goals and objectives of POSIX-Nexus, highlights its key features, and offers detailed instructions to help you harness its capabilities to achieve unparalleled speed and efficiency in your scripts and applications.
-        \bigskip
-    \end{abstract}
-\end{baseBoxOne}
+%     \author{Canine-Table}
+%     \date{\today}
+%     \maketitle
+
+%     \begin{abstract}
+%         This manual provides comprehensive guidance on using POSIX-Nexus, a cutting-edge daemon that leverages the speed of awk and the parsing power of LaTeX's expl3 syntax to deliver exceptional performance.
+%         The manual outlines the goals and objectives of POSIX-Nexus, highlights its key features, and offers detailed instructions to help you harness its capabilities to achieve unparalleled speed and efficiency in your scripts and applications.
+%         \bigskip
+%     \end{abstract}
+% \end{baseBoxOne}
+
+% \newpage
+% % \begin{tikzpicture}[decoration=Koch curve type 1]
+% %         \draw decorate{ decorate{ decorate{ (0,-3) -- (3,-3) }}};
+% % \end{tikzpicture}
+% % \begin{tikzpicture}[decoration=Koch curve type 2]
+% %     \draw decorate{ decorate{ decorate{ (0,-3) -- (3,-3) }}};
+% % \end{tikzpicture}
+% % \begin{tikzpicture}[decoration=Koch snowflake]
+% %     \draw decorate{ decorate{ decorate{ decorate{ (0,-3) -- (3,-3) }}}};
+% % \end{tikzpicture}
+
+% % \begin{tikzpicture}[decoration=Koch snowflake,draw=blue,fill=blue!20,thick]
+% %     \filldraw decorate{ decorate{ (0,-2.5) -- ++(60:1) -- ++(-60:1) -- cycle }};
+% % \end{tikzpicture}
+
+% % \begin{tikzpicture}[decoration=]
+% %     \draw[decorate, decoration={zigzag, amplitude=5pt, segment length=10pt}] (0,0) -- (10,0); 
+% % \end{tikzpicture}
+
+% Some text.
+% \begin{posnexItemize}
+% \item Alpha
+% \item Beta
+% \item Gamma
+% \end{posnexItemize}
+% More text.
+% \begin{tikzpicture}[overlay, remember picture]
+%     % Define the number of columns and rows
+%     \def\cols{6}
+%     \def\rows{9}
+%     % Define the width and height of each node
+%     \pgfmathsetlengthmacro\nodewidth{\paperwidth/\cols}
+%     \pgfmathsetlengthmacro\nodeheight{\paperheight/\rows}
+%     \foreach \col in {1,...,15} {
+%         \foreach \row in {1,...,10} {
+%             \node[
+%                 transform shape,
+%                 xslant=0.7,
+%                 rotate=-10, 
+%                 anchor=north west,
+%                 inner sep=0pt,
+%                 outer sep=0pt,
+%                 minimum width=\nodewidth, minimum height=\nodeheight, xshift=(\col-1)*\nodewidth, yshift=-(\row-1)*\nodeheight
+%                 ] at (-1,10) {
+%                 \includegraphics[width=\nodewidth,height=\nodeheight]{setup/images/posix-nexus-image-\posnexModulus{\col+\row}{10}.jpeg}
+%             };
+%         }
+%     }
+% \end{tikzpicture}

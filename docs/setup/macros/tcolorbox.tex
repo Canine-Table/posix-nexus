@@ -33,7 +33,7 @@
     colbacktitle=palette.#3.title,
     coltext=palette.#3.text,
     attach boxed title to top center={yshift=-2mm},
-    title=\thetcbcounter:#2,
+    title=#2,
     #1
 }
 
@@ -91,4 +91,16 @@
     attach boxed title to top center={yshift=-2mm},
     title={#2},
     #1
+}
+
+\newenvironment{posnexItemize}{%
+    \begin{itemize}
+}{%
+    \end{itemize}
+}
+
+\tcolorboxenvironment{posnexItemize}{
+    blanker,
+    coltext=white,
+    borderline west={3mm}{0pt}{palette.dark.frame,}
 }
