@@ -1,0 +1,30 @@
+\fvset{
+    formatcom=\color{shellFunctions},
+}
+
+\newminted[posnex]{bash}{
+    linenos,
+    frame=lines, % (none | leftline | topline | bottomline | lines | single)
+    numberblanklines=true,
+    texcomments=true,
+    mathescape=true,
+    rulecolor=\color{palette.dark.frame!50!white},
+    framesep=3mm,
+    style=dracula,
+    encoding=UTF-8,
+    escapeinside=@@,
+    tabsize=4,
+    fontsize=\footnotesize,
+    keywordcase=lower, % (lower | upper | capitalize | none)
+    numbers=left, % (left | right | both | none)
+    breaklines,
+    breakautoindent=false,
+    breaksymbolleft=\raisebox{0.8ex}{
+        \small\reflectbox{\carriagereturn}
+    },
+    breaksymbolindentleft=0pt,
+    breaksymbolsepleft=0pt,
+    breaksymbolright=\small\carriagereturn,
+    breaksymbolindentright=0pt,
+    mathescape,
+}

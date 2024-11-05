@@ -306,12 +306,12 @@ try() {
                 {
                     # Check if the working directory is a directory and executable
                     if [ -n "$(_exceptionTemplate "_exceptionI" "edx = ${VALUE}")" ]; then
-                       _warning "The root directory '${VALUE}' will be skipped as it does not meet the requirements.";
-                       unset WORKING_DIRECTORY;
+                        _warning "The root directory '${VALUE}' will be skipped as it does not meet the requirements.";
+                        unset WORKING_DIRECTORY;
                     else
                         export WORKING_DIRECTORY="$(cd "${VALUE}" && pwd)/";
                     fi
- 
+
                     return 0;
                 };;
 
