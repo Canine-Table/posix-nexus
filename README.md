@@ -18,7 +18,7 @@ Ensure your environment supports POSIX-compliant `awk` and `sed`. Detailed instr
 
 ## Contributions
 
-Contributions are welcome! See `CONTRIBUTING.md` for guidelines.
+Contributions are welcome! See `docs` for guidelines.
 
 ## License
 
