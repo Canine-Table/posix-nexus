@@ -164,7 +164,22 @@
     \IfBooleanT{#1}{
         \posnexTCListGet{#4}{D}
     }
+}
 
+\NewDocumentCommand{\posnexShell}{m}{
+
+    \str_new:N \l_tmpc_str
+    \ior_new:N \l_posnex_shell_ior
+    \ior_open:Nn \l_posnex_shell_ior {sections/examples/#1}
+
+    \group_begin:
+        \ior_map_variable:NNn \l_posnex_shell_ior \l_tmpc_str {
+            \par\str_use:N \l_tmpc_str
+        }
+    
+    \group_end:
+    
+    \ior_close:N \l_posnex_shell_ior
 }
 
 \ExplSyntaxOff

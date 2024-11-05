@@ -1,16 +1,12 @@
-% ++: Moves to a relative position from the last point and updates the current position
-% +: Moves to a relative position from the last point without updating the current position.
-
-% Triangles
-\def\posnexTriangleOne{\tikz\draw[line width=2pt,color=red] (0,0) -- (1,0) -- (1,1) -- cycle;}
-% (10pt,10pt) is your starting point, then you move 90pt to the right to (100pt,10pt), and finally 90pt up to (10pt,100pt).
-\def\posnexTriangleTwo{\tikz\fill[green] (10pt,10pt) -- +(90pt,0pt) -- +(0pt,90pt);}
-\def\posnexTriangleThree{\tikz\fill[yellow] (10pt,10pt) -- ++(90pt,0pt) -- ++(0pt,90pt);}
-
-% CIrcles
-\def\posnexOrangeCircleOne{\tikz\fill[orange] (1ex,1ex) circle (1ex);}
-
-% Lines
-\def\posnexLineOne{\tikz\draw (0pt,0pt) -- (20pt,6pt);}
-\def\posnexLineAnglesTwo{\tikz\draw (0pt,0pt) -- (180:60pt);}
-\def\posnexLineThree{\tikz\draw[line width=2pt,color=pink] (0,0) node {texts} -- (1,1);}
+\newcommand{\sA}{\textbf{$\ast$}}
+\newcommand{\sO}[1]{\textcolor{shellOptargs}{#1}}
+\newcommand{\sF}[1]{\textcolor{shellFunctions}{#1}}
+\newcommand{\sC}[1]{\textcolor{shellComments}{#1}}
+\newcommand{\sV}[1]{\textcolor{shellVariables}{#1}}
+\newcommand{\sD}[1]{\textcolor{shellDigits}{#1}}
+\newcommand{\sS}[1]{\textcolor{shellStrings}{#1}}
+\newcommand{\sK}[1]{\textcolor{shellStrings}{#1}}
+\newcommand{\sTE}[1]{\textcolor{shellFunctions}{\texttt{\textbf{#1}}}}
+\newcommand{\sT}[1]{\textcolor{shellFunctions}{\texttt{#1}}}
+\newcommand{\sE}[1]{\textcolor{shellFunctions}{\textbf{#1}}}
+\newcommand{\sB}[1]{\textcolor{shellStrings}{#1}}

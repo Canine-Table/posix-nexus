@@ -6,14 +6,20 @@
 \setlength{\headheight}{14.49998pt}
 \fancyhf{\addtolength{\topmargin}{-2.49998pt}}
 
-\fancyhead[L]{POSIX-Nexus Documentation}
-\fancyhead[R]{\thepage}
-\fancyfoot[C]{\textbf{POSIX-Nexus}}
+\fancyhead[L]{\sTE{POSIX-Nexus Documentation}}
+\fancyhead[R]{\sD{\textbf{\thepage}}}
+\fancyfoot[C]{\sTE{POSIX-Nexus}}
 \renewcommand{\headrulewidth}{0.4pt}
 \renewcommand{\footrulewidth}{0.4pt}
 \renewcommand{\contentsname}{}
+\renewcommand{\theFancyVerbLine}{
+    \sffamily\textcolor{shellDigits}{
+        \scriptsize\oldstylenums{
+            \textbf{\arabic{FancyVerbLine}~}
+        }
+    }
+}
 \pagestyle{fancy}
-
 \tcbuselibrary{listings,listingsutf8}
 \tcbset{listing engine=listings}
-\usetikzlibrary {decorations.fractals,shadows,shapes.symbols,,math,scopes,arrows.meta,trees,positioning,backgrounds,mindmap,shadings}
+\usetikzlibrary {decorations.fractals,shadows,shapes.symbols,math,scopes,arrows.meta,trees,positioning,backgrounds,mindmap,shadings}
