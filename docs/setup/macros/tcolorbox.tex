@@ -42,6 +42,8 @@
     before skip=2mm,
     after skip=2mm,
     boxrule=0.2mm,
+    right=5mm,
+    left=5mm,
     colback=palette.#3.back!30!palette.dark.back,
     colframe=palette.#3.frame,
     fonttitle=\bfseries,
@@ -103,4 +105,34 @@
     blanker,
     coltext=white,
     borderline west={2.3mm}{0pt}{palette.dark.frame,}
+}
+
+\newtcbox{\baseTcBoxOne}[1]{
+    on line,
+    colback=palette.#1.back,
+    colframe=palette.#1.frame,
+    coltext=palette.#1.text,
+    arc=7pt,
+    before upper={\rule[-3pt]{0pt}{10pt}},
+    boxrule=1pt,
+    boxsep=0pt,
+    left=6pt,
+    right=6pt,
+    top=2pt,
+    bottom=2pt,
+}
+
+\newtcbox{\baseTcBoxTwo}[1]{
+    on line,
+    colback=palette.#1.back!30!palette.dark.back,
+    colframe=palette.#1.frame,
+    coltext=palette.#1.text,
+    arc=7pt,
+    before upper={\rule[-3pt]{0pt}{10pt}},
+    boxrule=1pt,
+    boxsep=0pt,
+    left=6pt,
+    right=6pt,
+    top=2pt,
+    bottom=2pt,
 }

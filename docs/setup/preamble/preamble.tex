@@ -15,11 +15,13 @@
 \renewcommand{\theFancyVerbLine}{
     \sffamily\textcolor{shellDigits}{
         \scriptsize\oldstylenums{
-            \textbf{\arabic{FancyVerbLine}~}
+            \textbf{~~\arabic{FancyVerbLine}}
         }
     }
 }
+
 \pagestyle{fancy}
+\setlength{\parindent}{0pt}
 \tcbuselibrary{listings,listingsutf8}
 \tcbset{listing engine=listings}
 \usetikzlibrary {decorations.fractals,shadows,shapes.symbols,math,scopes,arrows.meta,trees,positioning,backgrounds,mindmap,shadings}

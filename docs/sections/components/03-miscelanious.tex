@@ -1,0 +1,35 @@
+\subsection{Miscelanious Functions}
+\label{sec:component:sub:misc}
+\begin{baseBoxThree}{\sL{cmd}}{dark}
+    \bigskip
+    \sE{Purpose}: This function checks if any given commands exist in the system's \sTE{PATH}.
+    It iterates through a list of commands and returns the path of the first command it finds.
+    If no command is found, it returns (1) failure.
+    \\
+
+    \begin{baseBoxThree}{Correct}{success}
+        \begin{posnex}
+    # Example 1: Check for the presence of an awk variant
+    AWK=$(cmd mawk nawk awk gawk) && echo "${AWK} is available" || echo "awk is not available";
+
+    # Example 2: Locates the first command in the PATH and executes it with the provided parameters
+    $(cmd curl wget) 'https://example.com'
+    # Output: Executes the first available command (curl or wget) to retrieve 'https://example.com'
+
+    # Example 3: Check for the presence of `sh`, `dash`, `ash`, or `bash` and execute a command
+    cmd sh dash ash bash -c "echo ${0}" 
+    # Output: The path to the first shell found or false
+    \end{posnex}
+    \end{baseBoxThree}
+
+    \begin{baseBoxThree}{Incorrect}{error}
+        \begin{posnex}
+    # Incorrect: Not passing any command to check
+    cmd && echo "One of the commands is available" || echo "None of the commands are available"
+
+    # Incorrect: Using commands that are not commonly found in PATH
+    cmd someRandomCommand anotherRandomCommand && echo "One of the commands is available" || echo "None of the commands are available"
+        \end{posnex}
+    \end{baseBoxThree}
+\end{baseBoxThree}
+\bigskip

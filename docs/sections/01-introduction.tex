@@ -7,6 +7,7 @@ Enter POSIX—Portable Operating System Interface—a set of IEEE standards that
 \label{sec:introduction:sub:what}
 \sTE{POSIX}, an acronym for Portable Operating System Interface, is a set of standards specified by the \sTE{IEEE} (Institute of Electrical and Electronics Engineers).
 The primary goal of POSIX is to ensure compatibility and portability of software applications across different operating systems, particularly those that are UNIX-like. These standards define interfaces and utilities that provide a consistent environment for software development and execution.
+\\
 
 By adhering to POSIX standards, developers can write applications that are more likely to run smoothly on a variety of platforms, reducing the need for extensive modifications or customizations.
 POSIX standards cover a wide range of functionalities, including:
@@ -62,8 +63,9 @@ The POSIX-Nexus project was born out of necessity and ambition.
 While working across various systems, it became apparent that the portability of scripts was hindered by the reliance on Bash-specific and glibc-specific features.
 These limitations were particularly evident on systems like Alpine Linux with musl libc, Cygwin, and iSH.
 The challenge was clear: to create a robust, portable solution that would work seamlessly across different environments without sacrificing functionality or performance.
+\\
 
-This codebase enhances the performance of the POSIX shell by offloading data manipulation tasks to powerful utilities like \sTE{awk}, \sTE{sed}, and \sTE{c90}.
+This codebase enhances the performance of the POSIX shell by offloading data manipulation tasks to powerful utilities like \sTE{awk}, \sTE{sed}, and \sTE{C90}.
 By leveraging these tools, we achieve significant speed improvements and efficiency in script execution, ensuring consistent results regardless of the underlying system.
 
 \subsection{Key Features}
@@ -72,7 +74,7 @@ By leveraging these tools, we achieve significant speed improvements and efficie
 \begin{baseBoxOne}{}{dark}
     \begin{posnexItemize}
         \item[\sA] \sE{Compatibility}: Adheres to POSIX draft 1003.2 (draft 11.3) standards, ensuring broad compatibility across various UNIX-like operating systems.
-        \item[\sA] \sE{Performance}: Utilizes \sTE{awk}, \sTE{sed}, and \sTE{c90}, optimized for handling large datasets and complex text processing tasks.
+        \item[\sA] \sE{Performance}: Utilizes \sTE{awk}, \sTE{sed}, and \sTE{C90}, optimized for handling large datasets and complex text processing tasks.
         \item[\sA] \sE{Portability}: Designed to be portable and easily integrated into different environments without modification.
         \item[\sA] \sE{Reliability}: Thoroughly tested across multiple systems, including Alpine Linux, Cygwin, and iSH, to ensure consistent results.
     \end{posnexItemize}

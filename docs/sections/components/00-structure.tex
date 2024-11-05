@@ -1,11 +1,15 @@
 \subsection{Directory Structure}
-
-The posix-nexus.pid stores the process ID of the running instance of posix-nexus daemon.
-The posix-nexus-directory is a symbolic link to a directory that gets recreated each time the application starts.
-The previous directories with old process IDs are deleted, ensuring only the current process directory exists in /var/tmp/posix-nexus/.
-The run.sh executable serves as the primary script to start the posix-nexus daemon.
-
-\begin{tikzpicture}[overlay, remember picture]
+\label{sec:component:directorystructure}
+\bigskip
+\begin{baseBoxOne}{}{dark}
+    \begin{posnexItemize}
+        \item[\sA] \sE{posix-nexus.pid}: This file stores the process ID of the running instance of the posix-nexus daemon. It is essential for managing and monitoring the daemon's lifecycle.
+        \item[\sA] \sE{posix-nexus-directory}: This is a symbolic link to a directory that gets recreated each time the application starts. Previous directories with old process IDs are deleted, ensuring that only the current process directory exists in /var/tmp/posix-nexus/.
+        \item[\sA] \sE{run.sh}: This executable serves as the primary script to start the posix-nexus daemon. It initializes the necessary components and ensures that the daemon runs smoothly.
+    \end{posnexItemize}
+\end{baseBoxOne}
+\bigskip
+\begin{tikzpicture}
     \tikzset{
         directory/.style={
             text=white, % Text color
@@ -30,7 +34,7 @@ The run.sh executable serves as the primary script to start the posix-nexus daem
         }
     }
 
-    \node at (current page.center) {
+    \node at (0,0) {
         \begin{tikzpicture}[
             sibling distance=2cm,
             level distance=1cm,
@@ -87,4 +91,3 @@ The run.sh executable serves as the primary script to start the posix-nexus daem
         \end{tikzpicture}
     };
 \end{tikzpicture}
-\newpage
