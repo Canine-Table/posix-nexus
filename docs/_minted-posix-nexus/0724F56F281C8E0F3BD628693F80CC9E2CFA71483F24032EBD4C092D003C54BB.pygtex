@@ -1,0 +1,4 @@
+\begin{Verbatim}[commandchars=\\\{\},codes={\catcode`\$=3\catcode`\^=7\catcode`\_=8\relax}]
+\PYG{+w}{    }toupper\PYG{+w}{ }\PYG{l+s+s2}{\PYGZdq{}hello world\PYGZdq{}}
+\PYG{+w}{    }\PYG{c+c1}{\PYGZsh{} Output: HELLO WORLD}
+\end{Verbatim}

@@ -166,11 +166,11 @@
     }
 }
 
-\NewDocumentCommand{\posnexShell}{m}{
+\NewDocumentCommand{\posnexRead}{mO{sections/examples/}}{
 
     \str_new:N \l_tmpc_str
     \ior_new:N \l_posnex_shell_ior
-    \ior_open:Nn \l_posnex_shell_ior {sections/examples/#1}
+    \ior_open:Nn \l_posnex_shell_ior {#2#1}
 
     \group_begin:
         \ior_map_variable:NNn \l_posnex_shell_ior \l_tmpc_str {
@@ -183,3 +183,29 @@
 }
 
 \ExplSyntaxOff
+
+\NewDocumentCommand{\posnexInline}{m}{
+    \setminted{
+        linenos,
+        frame=lines, % (none | leftline | topline | bottomline | lines | single)
+        numberblanklines=true,
+        texcomments=true,
+        mathescape=true,
+        rulecolor=\color{palette.dark.frame!50!white},
+        framesep=3mm,
+        style=dracula,
+        encoding=UTF-8,
+        escapeinside=@@,
+        tabsize=4,
+        fontsize=\footnotesize,
+        keywordcase=lower, % (lower | upper | capitalize | none)
+        numbers=left, % (left | right | both | none)
+        breaklines,
+        breakautoindent=false,
+        breaksymbolindentleft=0pt,
+        breaksymbolsepleft=0pt,
+        breaksymbolindentright=0pt,
+        mathescape,
+    }
+    \mintinline{bash}|#1|
+}
