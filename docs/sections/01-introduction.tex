@@ -5,9 +5,11 @@ Enter POSIX—Portable Operating System Interface—a set of IEEE standards that
 
 \subsection{What is POSIX?}
 \label{sec:introduction:sub:what}
-POSIX, an acronym for Portable Operating System Interface, is a set of standards specified by the IEEE (Institute of Electrical and Electronics Engineers). The primary goal of POSIX is to ensure compatibility and portability of software applications across different operating systems, particularly those that are UNIX-like.
-These standards define interfaces and utilities that provide a consistent environment for software development and execution. By adhering to POSIX standards, developers can write applications that are more likely to run smoothly on a variety of platforms, reducing the need for extensive modifications or customizations.
-POSIX standards cover a wide range of functionalities, including: 
+\sTE{POSIX}, an acronym for Portable Operating System Interface, is a set of standards specified by the \sTE{IEEE} (Institute of Electrical and Electronics Engineers).
+The primary goal of POSIX is to ensure compatibility and portability of software applications across different operating systems, particularly those that are UNIX-like. These standards define interfaces and utilities that provide a consistent environment for software development and execution.
+
+By adhering to POSIX standards, developers can write applications that are more likely to run smoothly on a variety of platforms, reducing the need for extensive modifications or customizations.
+POSIX standards cover a wide range of functionalities, including:
 \bigskip
 \begin{baseBoxOne}{}{dark}
     \begin{posnexItemize} 
@@ -24,7 +26,8 @@ By providing a common set of standards, POSIX enables developers to create softw
 
 \subsection{The POSIX-Nexus Approach}
 \label{sec:introduction:sub:approach}
-The POSIX-Nexus approach is rooted in a commitment to never break existing functionality while maintaining code correctness, readability, and portability. Our guiding principles ensure that as we enhance the performance of the POSIX shell, we stay true to the following:
+The POSIX-Nexus approach is rooted in a commitment to maintaining existing functionality while ensuring code correctness, readability, and portability.
+Our guiding principles guarantee that as we enhance the performance of the POSIX shell, we remain dedicated to the following:
 \bigskip
 \begin{baseBoxOne}{}{dark}
     \begin{posnexItemize} 
@@ -55,8 +58,13 @@ Our key objectives include:
 \end{baseBoxOne}
 \bigskip
 By prioritizing these goals and objectives, POSIX-Nexus aims to provide a reliable, efficient, and universally compatible set of tools for the modern computing landscape.
-The POSIX-Nexus project was born out of necessity and ambition. While working across various systems, it became apparent that the portability of scripts was hindered by the reliance on Bash-specific and glibc-specific features. These limitations were particularly evident on systems like Alpine Linux with musl libc, Cygwin, and iSH. The challenge was clear: to create a robust, portable solution that would work seamlessly across different environments without sacrificing functionality or performance.
-This codebase enhances the performance of the POSIX shell by offloading data manipulation tasks to powerful utilities like \sTE{awk}, \sTE{sed}, and \sTE{c90}. By leveraging these tools, we achieve significant speed improvements and efficiency in script execution, ensuring consistent results regardless of the underlying system.
+The POSIX-Nexus project was born out of necessity and ambition.
+While working across various systems, it became apparent that the portability of scripts was hindered by the reliance on Bash-specific and glibc-specific features.
+These limitations were particularly evident on systems like Alpine Linux with musl libc, Cygwin, and iSH.
+The challenge was clear: to create a robust, portable solution that would work seamlessly across different environments without sacrificing functionality or performance.
+
+This codebase enhances the performance of the POSIX shell by offloading data manipulation tasks to powerful utilities like \sTE{awk}, \sTE{sed}, and \sTE{c90}.
+By leveraging these tools, we achieve significant speed improvements and efficiency in script execution, ensuring consistent results regardless of the underlying system.
 
 \subsection{Key Features}
 \label{sec:introduction:sub:feature}
@@ -70,4 +78,6 @@ This codebase enhances the performance of the POSIX shell by offloading data man
     \end{posnexItemize}
 \end{baseBoxOne}
 \bigskip
-Your contributions and feedback are invaluable as we continue to refine and expand the capabilities of POSIX-Nexus. If you encounter any issues or find that it does not work on your specific system, please let us know. Together, we can overcome the challenges of portability and build a tool that stands the test of time across any platform.
+Your contributions and feedback are invaluable as we continue to refine and expand the capabilities of POSIX-Nexus.
+If you encounter any issues or find that it does not work on your specific system, please let us know.
+Together, we can overcome the challenges of portability and build a tool that stands the test of time across any platform.
