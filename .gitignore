@@ -1,0 +1,64 @@
+# LaTeX auxiliary files
+*.aux
+*.lof
+*.log
+*.lot
+*.fls
+*.out
+*.toc
+*.fmt
+*.fot
+*.cb
+*.cb2
+*.lb
+
+# Intermediate files
+*.dvi
+*.bbl
+*.bcf
+*.blg
+*.run.xml
+
+# PDF files
+*.ps
+*.synctex.gz
+
+# Other backup and auxiliary files
+*.fdb_latexmk
+*.spl
+*.brf
+*~
+*.bak
+
+# Directory specific
+docs/*.aux
+docs/*.lof
+docs/*.log
+docs/*.lot
+docs/*.fls
+docs/*.out
+docs/*.toc
+docs/*.fdb_latex
+docs/*.synctex.gz
+docs/*.bbl
+docs/*.blg
+
+# C files in main/c/
+main/c/*.o
+main/c/*.a
+main/c/*.so
+main/c/*.d
+main/c/*.out
+main/c/*.log
+main/c/*.exe
+main/c/*.obj
+main/c/*.dll
+main/c/*.pdb
+main/c/*~
+
+# IDE specific
+.vscode/
+.idea/
+*.swp
+*.swo
+*.DS_Store

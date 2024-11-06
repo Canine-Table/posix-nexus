@@ -1,0 +1,115 @@
+\section{Getting Started}
+\label{sec:start}
+To get started with POSIX-Nexus, follow these steps:
+\bigskip
+\begin{baseBoxOne}{}{dark}
+    \begin{posnexItemize}
+        \item[\sA] \sE{Clone the Repository}: To obtain the latest version of POSIX-Nexus, clone the repository from GitHub:\smallskip
+        \begin{baseBoxThree}{}{dark}
+            \posnexInline{git clone "https://github.com/Canine-Table/posix-nexus.git"}
+        \end{baseBoxThree}\smallskip
+        \item[\sA] \sE{Navigate to the Project Directory}: Change into the newly created directory:\smallskip
+        \begin{baseBoxThree}{}{dark}\smallskip
+            \posnexInline{cd "posix-nexus"}
+        \end{baseBoxThree}\smallskip
+        \item[\sA] \sE{Start the Daemon}: Use the provided \sTE{run.sh} script to start the POSIX-Nexus daemon. The daemon runs under the shell name specified in your configuration:\smallskip
+        \begin{baseBoxThree}{}{dark}
+            \posnexInline{./run.sh}
+        \end{baseBoxThree}\smallskip
+        \item[\sA] \sE{Verify the Daemon}: The script will automatically verify if the daemon has started successfully. If there are any issues, it will provide detailed information about what went wrong and how to fix it.
+        \item[\sA] \sE{Manage the Daemon}: Use the provided interactive menu to manage the IP addresses of child machines and ensure secure connections through public keys.
+    \end{posnexItemize}
+\end{baseBoxOne}
+
+\subsection{Documentation}
+\label{sec:start:sub:document}
+If your contribution includes new features or changes to existing functionality, please update the documentation accordingly.
+Documentation files are located in the \sTE{docs} directory.
+\bigskip
+\begin{baseBoxThree}{Note}{info}
+    \sE{For Contributors Not Familiar with \LaTeX}: If you are not comfortable with \LaTeX~, you can still contribute by providing clear and detailed descriptions of your changes or new features in plain text or a Markdown file. This information can be added to a temporary file in the docs directory or included as part of your pull request. Our team will take care of integrating your documentation into the \LaTeX~ files.\smallskip
+\end{baseBoxThree}
+
+\subsection{Contribution Guidelines}
+\label{sec:start:sub:guidelines}
+We welcome contributions from the community to help improve the project. Here are some guidelines to help you get started:
+\bigskip
+
+\begin{baseBoxOne}{}{dark}
+    \begin{posnexItemize}
+        \item[\sA] \sE{Fork and Clone}: Start by forking the repository and cloning it to your local machine.
+        \item[\sA] \sE{Create a Branch}: Create a new branch for your feature or bug fix.
+        \item[\sA] \sE{Make Changes}: Make your changes in the new branch. Ensure that your code adheres to the project's coding standards.
+        \item[\sA] \sE{Document Changes}: Provide clear and detailed descriptions of any new features or changes in plain text or Markdown if you are not familiar with \\LaTeX~.
+        \item[\sA] \sE{Commit and Push}: Commit your changes with a descriptive commit message and push the branch to your fork.
+        \item[\sA] \sE{Create a Pull Request}: Open a pull request to the main repository. Provide a detailed description of your changes and the motivation behind them.
+        \item[\sA] \sE{Code Review}: Be prepared to engage in a code review process. Address any feedback or requested changes promptly.
+        \item[\sA] \sE{Merge}: Once approved, your pull request will be merged into the main branch.
+    \end{posnexItemize}
+\end{baseBoxOne}
+
+\subsection{Deployment Strategy}
+\label{sec:start:sub:deployment}
+Deployment will be executed incrementally, targeting supported systems and eventually expanding to all systems.
+This approach ensures thorough testing and stability, akin to Debian's release cycle methodology.
+\bigskip
+\begin{baseBoxOne}{}{dark}
+    \begin{posnexItemize}
+        \item[\sA] \sE{Initial Deployment}: Begin with a subset of supported systems, such as popular UNIX-like environments like Alpine Linux, Cygwin, and iSH.
+        \item[\sA] \sE{Containerization}: Deploy on container platforms like Docker to ensure consistency across different environments.
+        \item[\sA] \sE{Incremental Rollout}: Gradually expand deployment to additional systems based on feedback and testing results.
+        \item[\sA] \sE{Continuous Monitoring}: Monitor deployed instances for performance and stability issues. Address any issues promptly to ensure a smooth user experience.
+        \item[\sA] \sE{Feedback Loop}: Encourage users to provide feedback on the deployment process and address any reported issues.
+    \end{posnexItemize}
+\end{baseBoxOne}
+
+\subsection{Testing and Validation}
+\label{sec:start:sub:valid}
+Testing will be conducted methodically, addressing each component individually to guarantee seamless integration and performance.
+\bigskip
+\begin{baseBoxOne}{}{dark}
+    \begin{posnexItemize}
+        \item[\sA] \sE{Unit Testing}: Write and execute unit tests for individual components to ensure they function as expected.
+        \item[\sA] \sE{Integration Testing}: Conduct integration tests to verify that different components work together seamlessly.
+        \item[\sA] \sE{System Testing}: Perform system tests to validate the overall functionality and performance of the entire system.
+        \item[\sA] \sE{Performance Testing}: Test the system under various load conditions to ensure it meets performance requirements.
+        \item[\sA] \sE{Regression Testing}: Run regression tests to ensure that new changes do not introduce any new issues.
+    \end{posnexItemize}
+\end{baseBoxOne}
+
+\subsection{Reporting Issues}
+\label{sec:start:sub:report}
+If you encounter any issues or have suggestions for improvements, please open an issue on our GitHub Issues page.
+Provide a clear and descriptive title, detailed description, steps to reproduce the issue, and any relevant logs or screenshots.
+\bigskip
+\begin{baseBoxOne}{}{dark}
+    \begin{posnexItemize}
+        \item[\sA] \sE{Title}: Use a concise and descriptive title for the issue.
+        \item[\sA] \sE{Description}: Provide a detailed description of the issue, including the expected and actual behavior.
+        \item[\sA] \sE{Steps to Reproduce}: List the steps to reproduce the issue, including any relevant configuration or input data.
+        \item[\sA] \sE{Logs and Screenshots}: Attach any relevant logs or screenshots that can help diagnose the issue.
+        \item[\sA] \sE{Environment Details}: Include details about your environment, such as the operating system, software versions, and any specific configurations.
+    \end{posnexItemize}
+\end{baseBoxOne}
+\bigskip
+Your contributions and feedback are invaluable as we continue to refine and expand the capabilities of POSIX-Nexus.
+Together, we can overcome the challenges of portability and build a tool that stands the test of time across any platform
+
+\subsection{Tool Restrictions}
+\label{sec:start:sub:restrict}
+To maintain compatibility and portability, it is prohibited to use any tools not explicitly required by POSIX.
+Ensure your scripts and contributions adhere strictly to POSIX standards.
+
+\subsection{Contact Us}
+\label{sec:start:sub:contact}
+We are here to help and support the community.
+If you have any questions, concerns, or suggestions, please don't hesitate to reach out to us.
+Your feedback is invaluable in helping us improve and grow.
+\bigskip
+\begin{baseBoxOne}{}{dark}
+    \begin{posnexItemize}
+        \item[\sA] \sE{Discord}: Join our  community on Discord for real-time discussions, support, and collaboration. [\href{https://discord.gg/GB9twwpCNM}{Discord Invite Link}]
+        \item[\sA] \sE{GitHub Issues}: Report issues, request features, and track progress on our GitHub Issues page. [\href{https://github.com/Canine-Table/posix-nexus/issues}{GitHub Issues Link}]
+        \item[\sA] \sE{Email}: For more detailed inquiries, feel free to email us at posix-nexus@duck.com.
+    \end{posnexItemize}
+\end{baseBoxOne}

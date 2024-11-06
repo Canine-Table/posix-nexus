@@ -1,7 +1,7 @@
 split() {
     # Process the input string using Awk with the specified delimiters
     echo -n "${*}" | awk -v delimeters="${1}" '{
-        
+
         # Remove the delimiters from the start of the string
         string = substr($0, length(delimeters) + 1);
         
@@ -39,7 +39,7 @@ split() {
 iterator() {
 
     # Process the input string using Awk with the specified field separator (FS)
-    echo -n "${*}" | awk -v FS="${1}" '{
+    echo -n $* | awk -v FS="${1}" '{
         for (i = 1; i <= NF; ++i) {
             # Remove leading and trailing whitespace from each field
             gsub(/(^[[:space:]]+)|([[:space:]]+$)/, "", $i);
@@ -53,16 +53,15 @@ iterator() {
     return 0;
 }
 
+join() {
+    echo -n $* | ${AWK} '{
+        printf("%s\x20", $0);
+    }';
+}
+
 unQuote() {
 
-    # Check if arguments are provided
-    [ -n "${*}" ] || {
-        # Return 255 if the arguments are not provided
-        return 255;
-
-    }
-
-    echo -n "${*}" | awk '{
+    echo -n $* | ${AWK} '{
         # Remove leading and trailing whitespace
         gsub(/(^[[:space:]]+)|([[:space:]]+$)/, "", $0);
 
