@@ -1,0 +1,12 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{c+c1}{\PYGZsh{} Example 1: Check for the presence of an awk variant}
+\PYG{n+nv}{AWK}\PYG{o}{=}\PYG{k}{\PYGZdl{}(}cmd\PYG{+w}{ }mawk\PYG{+w}{ }nawk\PYG{+w}{ }awk\PYG{+w}{ }gawk\PYG{k}{)}\PYG{+w}{ }\PYG{o}{\PYGZam{}\PYGZam{}}\PYG{+w}{ }\PYG{n+nb}{echo}\PYG{+w}{ }\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+si}{\PYGZdl{}\PYGZob{}}\PYG{n+nv}{AWK}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s2}{ is available\PYGZdq{}}\PYG{+w}{ }\PYG{o}{||}\PYG{+w}{ }\PYG{n+nb}{echo}\PYG{+w}{ }\PYG{l+s+s2}{\PYGZdq{}awk is not available\PYGZdq{}}\PYG{p}{;}
+
+\PYG{c+c1}{\PYGZsh{} Example 2: Locates the first command in the PATH and executes it with the provided parameters}
+\PYG{k}{\PYGZdl{}(}cmd\PYG{+w}{ }curl\PYG{+w}{ }wget\PYG{k}{)}\PYG{+w}{ }\PYG{l+s+s1}{\PYGZsq{}https://example.com\PYGZsq{}}
+\PYG{c+c1}{\PYGZsh{} Output: Executes the first available command (curl or wget) to retrieve \PYGZsq{}https://example.com\PYGZsq{}}
+
+\PYG{c+c1}{\PYGZsh{} Example 3: Check for the presence of `sh`, `dash`, `ash`, or `bash` and execute a command}
+cmd\PYG{+w}{ }sh\PYG{+w}{ }dash\PYG{+w}{ }ash\PYG{+w}{ }bash\PYG{+w}{ }\PYGZhy{}c\PYG{+w}{ }\PYG{l+s+s2}{\PYGZdq{}echo }\PYG{l+s+si}{\PYGZdl{}\PYGZob{}}\PYG{n+nv}{0}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s2}{\PYGZdq{}}
+\PYG{c+c1}{\PYGZsh{} Output: The path to the first shell found or false}
+\end{Verbatim}

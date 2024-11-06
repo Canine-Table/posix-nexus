@@ -65,7 +65,6 @@ tryN3() {
         H="hello"
         try -V "z = H, n = H";
         try -R 'N=*ree';
-
     )
 
     try -C 'D=tryN3';
@@ -140,7 +139,7 @@ tryN5() {
 
 # tryN1;
 # tryN2;
-# tryN3;
+tryN3;
 # tryN4;
-tryN5;
+# tryN5;
 #rm -rf /tmp/tryN*;

@@ -1,0 +1,27 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{c+c1}{\PYGZsh{} Example 1:}
+\PYG{c+c1}{\PYGZsh{} Missing equal sign between key and value}
+\PYG{k}{for}\PYG{+w}{ }I\PYG{+w}{ }\PYG{k}{in}\PYG{+w}{ }\PYG{k}{\PYGZdl{}(}kwargs\PYG{+w}{ }\PYG{l+s+s2}{\PYGZdq{}key1value1, key2=value2\PYGZdq{}}\PYG{k}{)}\PYG{p}{;}\PYG{+w}{ }\PYG{k}{do}
+\PYG{+w}{    }\PYG{n+nb}{echo}\PYG{+w}{ }\PYGZhy{}e\PYG{+w}{ }\PYG{n+nv}{\PYGZdl{}I}\PYG{p}{;}
+\PYG{k}{done}
+\PYG{c+c1}{\PYGZsh{} key1value1, key2}
+\PYG{c+c1}{\PYGZsh{} value2}
+
+\PYG{c+c1}{\PYGZsh{} Example 2:}
+\PYG{c+c1}{\PYGZsh{} Misformatted string with multiple equal signs in key\PYGZhy{}value pairs}
+\PYG{k}{for}\PYG{+w}{ }I\PYG{+w}{ }\PYG{k}{in}\PYG{+w}{ }\PYG{k}{\PYGZdl{}(}kwargs\PYG{+w}{ }\PYG{l+s+s2}{\PYGZdq{}key1=value1=extra, key2=value2\PYGZdq{}}\PYG{k}{)}\PYG{p}{;}\PYG{+w}{ }\PYG{k}{do}
+\PYG{+w}{    }\PYG{n+nb}{echo}\PYG{+w}{ }\PYGZhy{}e\PYG{+w}{ }\PYG{l+s+si}{\PYGZdl{}\PYGZob{}}\PYG{n+nv}{I}\PYG{l+s+si}{\PYGZcb{}}
+\PYG{k}{done}
+\PYG{c+c1}{\PYGZsh{} key1}
+\PYG{c+c1}{\PYGZsh{} value1=extra}
+\PYG{c+c1}{\PYGZsh{} key2}
+\PYG{c+c1}{\PYGZsh{} value2}
+
+\PYG{c+c1}{\PYGZsh{} Example 3:}
+\PYG{c+c1}{\PYGZsh{} Missing comma between key\PYGZhy{}value pairs}
+\PYG{k}{for}\PYG{+w}{ }I\PYG{+w}{ }\PYG{k}{in}\PYG{+w}{ }\PYG{k}{\PYGZdl{}(}kwargs\PYG{+w}{ }\PYG{l+s+s2}{\PYGZdq{}key1=value1 key2=value2\PYGZdq{}}\PYG{k}{)}\PYG{p}{;}\PYG{+w}{ }\PYG{k}{do}
+\PYG{+w}{    }\PYG{n+nb}{echo}\PYG{+w}{ }\PYGZhy{}e\PYG{+w}{ }\PYG{l+s+si}{\PYGZdl{}\PYGZob{}}\PYG{n+nv}{I}\PYG{l+s+si}{\PYGZcb{}}
+\PYG{k}{done}
+\PYG{c+c1}{\PYGZsh{} key1}
+\PYG{c+c1}{\PYGZsh{} value1 key2=value2}
+\end{Verbatim}
