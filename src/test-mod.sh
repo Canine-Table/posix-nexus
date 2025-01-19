@@ -22,7 +22,8 @@ get_test_diff() {
 			#print reverse_str("hello world")
 			#print modulus_range(tmpa, tmpb, tmpc)
 			split("0,1,2,3,4,5,6,7,8,9,a,b,c,d,e,f", hex, ",")
-			remove_indexed_item(hex, "back", 2, 0, 7, 5)
+			#remove_indexed_item(hex, "back", 2, 0, 7, 5)
+			remove_indexed_item(hex, "front", 2, 0, 7, 5)
 
 			#for (i in hex)
 			#	print hex[i]

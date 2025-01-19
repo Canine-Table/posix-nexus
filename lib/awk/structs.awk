@@ -38,13 +38,12 @@ function remove_indexed_item(V, M, N1, N2, N3, N4,	i, j)
 			N3 = -N3
 		}
 		while (N4-- > 0) {
-			print i " = " V[i]
 			delete V[i]
-			i = (i + N3) % N2
-			if (M == "front" && i < N1)
-				i = (i + N1) % N2 + N1
-			else if (M == "back" && i < N1)
-				i = N1 + i + N2
+			i = i + N3
+			if (i < N1)
+				i = N1 + (i - N1 + N2) % (N2 - N1 + 1)
+			else if (i > N2)
+				i = N1 + (i - N1) % (N2 - N1 + 1)
 		}
 		return i
 	}
