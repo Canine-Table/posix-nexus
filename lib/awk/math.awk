@@ -52,7 +52,7 @@ function absolute(N)
 
 function ceiling(N)
 {
-if (N != int(N))
+	if (N != int(N))
                 return int(N) + 1
         return N
 }
@@ -60,6 +60,11 @@ if (N != int(N))
 function round(N)
 {
         return int(N + 0.5)
+}
+
+function distribution(N1, N2, N3)
+{
+	return ceiling((N1 - N3) / (N2 - N3))
 }
 
 function euclidean(N1, N2)
@@ -86,7 +91,7 @@ function modulus_range(N1, N2, N3)
 
 function fibonacci(N, B,	n1, n2)
 {
-	if (is_integral(N) && N > 0) {
+	if (__is_index(N)) {
 		if (+N == 1)
 			return 0
 		else if (! int(n2))

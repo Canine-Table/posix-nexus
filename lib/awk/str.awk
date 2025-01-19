@@ -28,6 +28,18 @@ function append_str(N, D, B,	s)
 	return D
 }
 
+function reverse_str(D, 	i, v)
+{
+	if ((i = split(D, v, "")) > 1) {
+		D = ""
+		do {
+			D = D v[i]
+		} while (--i)
+	}
+	delete v
+	return D
+}
+
 # DA:   The main string to be formatted.
 # DB:   The format string containing placeholders.
 # S:    The delimiter used to split the format string.

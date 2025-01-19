@@ -1,29 +1,53 @@
-# V: The hashmap.
-# N: The current index.
-# D: The data to append.
-# S: The delimiter for splitting the data D.
-function __append_indexed_hashmap(V, N, D, S,		v, i)
+# V: The array.
+# N1:	starting index
+# N2:	end index
+# N3:	skip value 
+# D: 	the data to split into an array
+# S:	the separator 
+function insert_indexed_item(V, D, S, N1, N2, N3,	v, l, i, j)
 {
-	if (is_integral(N)) {
-		N = int(N)
-		for (i = 1; i <= trim_split(D, v, S); i++) {
-			V[++N] = v[i]
-			delete v[i]
+	if (EQTL__(is_array(V), D, 1)) {
+		N1 = __return_value(N1, size(V) + 1)
+		N2 = __return_value(N2, 0)
+		N3 = __return_value(N3, 1)
+		j = N1
+		for (i = 1; i <= trim_split(D, v, __return_value(S, ",")); i++) {
+			V[j] = v[i]
+			j = j + N3
+			if (N2) {
+				j = j % N2
+				if (j < N1)
+					j = j + N1
+			}
 		}
 		delete v
-		return N
+		return j
 	}
 }
 
-
-function __loop_indexed_hashmap(N1, N2, N3, V, D, S,	i, j, v)
+function remove_indexed_item(V, M, N1, N2, N3, N4,	i, j)
 {
-	for (i = 1; i <= trim_split(D, v, S); i++) {
-		V[modulus_range(N1, N2, N3 + i - N2)] = v[i]
-		delete v[i]
+	if (is_array(V) && (M = match_option(M, "front, back"))) {
+		N1 = __return_value(N1, 1)
+		N2 = __return_value(N2, size(V))
+		N3 = __return_value(absolute(N3), 1)
+		N4 = __return_value(N4, 1)
+		i = N1
+		if (M == "back") {
+			i = N2
+			N3 = -N3
+		}
+		while (N4-- > 0) {
+			print i " = " V[i]
+			delete V[i]
+			i = (i + N3) % N2
+			if (M == "front" && i < N1)
+				i = (i + N1) % N2 + N1
+			else if (M == "back" && i < N1)
+				i = N1 + i + N2
+		}
+		return i
 	}
-	delete v
-	return modulus_range(N1, N2, N3 + i - N2)
 }
 
 # V: The hashmap.
@@ -55,6 +79,7 @@ function __join_array(V, S,	i, s)
 	return s
 }
 
+# V: The array.
 function size(V,	i, n)
 {
 	for (i in V)
@@ -62,6 +87,7 @@ function size(V,	i, n)
 	return +n
 }
 
+# V: The array.
 function is_array(V) {
 	for (i in V)
 		return 1
@@ -75,75 +101,48 @@ function __is_index(N)
 	return 0
 }
 
-# N1:	new size
-# N2:	start at
-function resize(V, N1, N2, N3, SD,	n1, n2, n3, i, s, j)
+function resize_indexed_hashmap(V, N1, N2, S, D,	crsz, nsz, s, i, j)
 {
 	if (is_array(V)) {
-		if (N1 = __is_index(N1)) {
-			if (! (N3 = __is_index(N3)))
-				N3 = size(V)
-			if (! (N2 = __is_index(N2)))
-				N2 = 1
-			n2 = N2 - 1
-			n1 = N1 - N2
-			if (N3 > n1) {
-				if (n1) {
-					n3 = ceiling((N3 - n2) / (N1 - N2))
-					S = __return_value(SD, ",")
-					for (i = N2; i <= N3; i++) {
-						s = __join_str(s, V[i], S)
-						delete V[i]
-						if (ORFT__(j++ % n3, i == N3)) {
-							V[N2++] = s
-							s = ""
-						}
+		if (__is_index(N1)) {
+			crsz = size(V)
+			if (N1 < crsz) {
+				if (__is_index(N2)) {
+					if (N1 - N2 <= 0)
+						N2 = N1 - 1
+				}
+				nsz = ceiling((crsz - N2) / (N1 - N2))
+				S = __return_value(S, ",")
+				j = N2
+				for (i = 1; i <= crsz - N2; i++) {
+					s = __join_str(s, V[i + N2], S)
+					delete V[i + N2]
+					if (! (i % nsz) || i == crsz - N2) {
+						V[++j] = s
+						s = ""
 					}
-
-				} else {
-					for (i = N3; i > N1; i--)
-						delete V[i]
 				}
 			} else {
-				SD = __return_value(SD, 0)
-				for (i = N3; i <= N1; i++)
-				     V[i + 1] = SD
+				j = crsz
 			}
+			if (j < N1) {
+				D = __return_value(D, "0")
+				do {
+					V[++j] = D
+				} while (j < N1)
+			}
+			return j
 		}
 	}
 }
 
-function resize_indexed_hashmap(V, N1, N2, DM, S,	n1, n2, i, j, s)
+function reverse_indexed_hashmap(V, N1, N2,	i)
 {
-	if (n1 = size(V)) {
-		S = __return_value(S, ",")
-		if (is_integral(N1)) {
-			N1 = int(N1)
-			if (! is_integral(N2))
-				N2 = 1
-			N2 = int(N2)
-			n2 = N1 + N2
-			if (n1 > n2) {
-				if (DM) {
-					for (i = n2; i >= n1; i--)
-						delete V[i]
-				} else {
-					for (i = N2; i <= n1; i++) {
-						s = __join_str(s, V[i], S)
-						delete V[i]
-						if (ORFT__(i % N1, i == n1)) {
-							V[++N2] = s
-							s = ""
-						}
-					}
-				}
-			} else if (n1 < n2) {
-				DM = __return_value(DM, 0)
-				for (i = n1 + 1; i <= n2; i++)
-				     V[i] = DM
-			}
-		}
-		return size(V)
+	if ((i = size(V)) > 1) {
+		N1 = __return_value(N1, 1)
+		N2 = __return_value(N2, i)
+		while (N1 < N2)
+			__swap(V, N1++, N2--)
 	}
 }
 
@@ -155,8 +154,11 @@ function stack(V, M, D, S,	c)
 {
 	if (M = match_option(M, "push, pop, peek, isempty")) {
 		if (EQTL__(M == "push", D, 1)) {
-			S = __return_value(S, ",")
-			V[0] = __append_indexed_hashmap(V, int(V[0]), D, S)
+			if (! is_array(V)) {
+				split("", V, "")
+	    			V[0] = 1
+			}
+			V[0] = insert_indexed_item(V, D, __return_value(S, ","), int(V[0]))
 		} else if (M == "isempty") {
 			if (V[0])
 				return 0

@@ -19,43 +19,24 @@ get_test_diff() {
 		)
 	"'
 		BEGIN {
-			#print 
-			x = diffie_hellman()
-			print x
-			print diffie_hellman(tmpa, tmpb, x)
-			#, arr, "\n")
-			#print x
-			#for (i = 1; i <= 10; i++)
-			#	print random_prime(i)
-			#print modular_exponentiation(tmpa, tmpb, tmpc)
-			#print euclidean(tmpa, tmpb)
-			#print lcd(tmpa, tmpb)
-			#split("a,b,c,d,e,f,g", arr, ",")
-			#resize(arr, 10)
-			#resize(arr,2, tmpa)
-			#resize(arr, 16)
-			#for (i = 1; i <= size(arr); i++)
-			#	print arr[i]
-			#
-			#resize_indexed_hashmap(arr, 2, 10)
-			#for (i = 1; i <= 10; i++)
-			#	print arr[i]
-			#resize_indexed_hashmap(arr, 3, 2)
-			#for (i = 1; i <= 3; i++)
-			#	print arr[i]
-			#queue(arr, "size", 3, 2)
-			#queue(arr, "enqueue", "a,b,c,d,e,f,g")
-			#for (i in arr)
-			#	print arr[i]
-			#print queue(arr, "dequeue")
-			#print queue(arr, "dequeue")
+			#print reverse_str("hello world")
 			#print modulus_range(tmpa, tmpb, tmpc)
-			#stack(arr, "push", "a,b,c,d")
-			#stack(arr, "push", "a,b,c,d")
-			#while(! stack(arr, "isempty"))
-			#	print stack(arr, "pop")
-			#	
-			#print compare_arrays(tmpa, tmpb, tmpc)
+			split("0,1,2,3,4,5,6,7,8,9,a,b,c,d,e,f", hex, ",")
+			remove_indexed_item(hex, "back", 2, 0, 7, 5)
+
+			#for (i in hex)
+			#	print hex[i]
+			#stack(stk, "push", "A,B")
+			#stack(stk, "push", "A,B")
+			#stack(stk, "push", "A,B")
+			#print stack(stk, "pop")
+			#reverse_indexed_hashmap(hex)
+
+			#insert_indexed_item(hex, "A,B,C,D", ",", tmpa, tmpb, tmpc)
+
+			#resize_indexed_hashmap(hex, tmpa, tmpb)
+			#for (i = 1; i < stk[0]; i++)
+			#	print stk[i]
 		}
 	'
 }
