@@ -25,10 +25,10 @@ function insert_indexed_item(V, D, S, N1, N2, N3,	v, l, i, j)
 	}
 }
 
-function remove_indexed_item(V, M, N1, N2, N3, N4,	i, j)
+function remove_indexed_item(V, M, N1, N2, N3, N4, B,	i, j)
 {
 	if (is_array(V) && (M = match_option(M, "front, back"))) {
-		N1 = __return_value(N1, 1)
+		N1 = __return_value(N1, 0)
 		N2 = __return_value(N2, size(V))
 		N3 = __return_value(absolute(N3), 1)
 		N4 = __return_value(N4, 1)
@@ -38,12 +38,10 @@ function remove_indexed_item(V, M, N1, N2, N3, N4,	i, j)
 			N3 = -N3
 		}
 		while (N4-- > 0) {
+			if (B)
+				print "[" i "] = " V[i]
 			delete V[i]
-			i = i + N3
-			if (i < N1)
-				i = N1 + (i - N1 + N2) % (N2 - N1 + 1)
-			else if (i > N2)
-				i = N1 + (i - N1) % (N2 - N1 + 1)
+			i = modulus_range(i + N3, N1, N2)
 		}
 		return i
 	}
@@ -110,7 +108,7 @@ function resize_indexed_hashmap(V, N1, N2, S, D,	crsz, nsz, s, i, j)
 					if (N1 - N2 <= 0)
 						N2 = N1 - 1
 				}
-				nsz = ceiling((crsz - N2) / (N1 - N2))
+				nsz = distribution(crsz, N1, N2)
 				S = __return_value(S, ",")
 				j = N2
 				for (i = 1; i <= crsz - N2; i++) {

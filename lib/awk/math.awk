@@ -36,11 +36,39 @@ function twos_compliment(N,     l, b, c, t) {
 	}
 }
 
-function range(N, A, B)
+function __trim_precision(N1, N2)
 {
-        if ((length(A) && +N < +A) || (length(B) && +N > +B))
-                return
-        return N
+	if (is_integral(N1 = __return_value(N1, 32)) && is_digit(N2, 1)) {
+		N1 = sprintf("%." N1 "f", N2)
+		gsub(/(00+$|^00+)/,  "", N1)
+		return N1
+	}
+}
+
+function pi(N)
+{
+	return __trim_precision(N, atan2(0, -1))
+}
+
+function tau(N)
+{
+	return __trim_precision(N, 2 * atan2(0, -1))
+}
+
+function factoral(N, B,		n)
+{
+	if (is_integral(N) && is_integral(+n)) {
+		if (N < 2)
+			return 1
+		else if (! length(n) || n  > 0) {
+			if (! n)
+				n = N - 1
+			if (B)
+				printf("%.f * %.f = %.f\n", N, n, N * n)
+			return sprintf("%.f", factoral(N * n, B, n - 1))
+		} else 
+			return N
+	}
 }
 
 function absolute(N)
@@ -86,7 +114,12 @@ function lcd(N1, N2)
 
 function modulus_range(N1, N2, N3)
 {
-	return N3 % N2 + N1
+	if (N1 < N2) {
+		N1 = N2 + (N1 - N2 + N3) % (N3 - N2 + 1)
+	} else if (N1 > N2) {
+		N1 = N2 + (N1 - N2) % (N3 - N2 + 1)
+	}
+	return N1
 }
 
 function fibonacci(N, B,	n1, n2)
@@ -111,6 +144,7 @@ function fibonacci(N, B,	n1, n2)
 function modular_exponentiation(N1, N2, N3,     r)
 {
     	r = 1
+	N3 = __return_value(N3, 100000007)
     	while (N2 > 0) {
         	if (N2 % 2 == 1)
             		r = (r * N1) % N3
@@ -118,6 +152,29 @@ function modular_exponentiation(N1, N2, N3,     r)
         	N2 = int(N2 / 2)
 	}
 	return r
+}
+
+function fermats_little_theorm(N, 	v, i, p)
+{
+	if (is_integral(N)) {
+		for (i = 1; i <= split("2,3,5,7,11,13,17,19,23,29,31,37,41,43,47,53", v, ","); i++) { 
+			if (! divisible(N, v[i], N)) {
+				p = v[i]
+				break
+			}
+		}
+		delete v
+		if (p) {
+			return (p ** (N - 1)) % N
+		}
+	}
+}
+
+function divisible(N1, N2)
+{
+	if (is_integral(N1, 1) && is_integral(N2, 1)) {
+		return ! is_float(N1 / N2, 1)
+	}
 }
 
 # N:	Number to test
@@ -132,7 +189,7 @@ function miller_rabin(N, T, S,   bases, t, d, s, a, x, i, j)
     		if (N <= 3)
         		return 1
 		# Use Fermat's Little Theorem as an initial filter
-    		if (! (N % 2 && N % 3) && (2 ** (N - 1) % N) != 1)
+    		if (! (N % 2 && N % 3) && fermats_little_theorm(N) == 0)
 			return 0
     		# Rewrite (N - 1) as d * 2^s
     		d = N - 1

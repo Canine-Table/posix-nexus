@@ -1,6 +1,6 @@
-function __is_signed(D)
+function __is_signed(N)
 {
-	return D ~ /^([-]|[+])/
+	return N ~ /^([-]|[+])/
 }
 
 function __get_sign(N)
@@ -17,37 +17,37 @@ function is_integral(N, B,	e)
 	return e
 }
 
-function is_signed_integral(I,		e)
+function is_signed_integral(N,		e)
 {
-	if (__is_signed(I) && is_integral(I, 1))
+	if (__is_signed(N) && is_integral(N, 1))
 		e = 1
 	return e
 }
 
-function is_float(I, S,		e)
+function is_float(N, B,		e)
 {
-	if ((S && I ~ /^([-]|[+])?[0-9]+[.][0-9]+/) || (! S && I ~ /^[0-9]+[.][0-9]+/))
+	if ((B && N ~ /^([-]|[+])?[0-9]+[.][0-9]+/) || (! B && N ~ /^[0-9]+[.][0-9]+/))
 		e = 1
 	return e
 }
 
-function is_signed_float(I,		e)
+function is_signed_float(N,		e)
 {
-	if (__is_signed(I) && is_float(I, 1))
+	if (__is_signed(N) && is_float(N, 1))
 		e = 1
 	return e
 }
 
-function is_digit(I, S,		e)
+function is_digit(N, B,		e)
 {
-	if (is_integral(I, S) || is_float(I, S))
+	if (is_integral(N, B) || is_float(N, B))
 		e = 1
 	return e
 }
 
-function is_signed_digit(I, 	e)
+function is_signed_digit(N, 	e)
 {
-	if (__is_signed(I) && is_digit(I, 1))
+	if (__is_signed(N) && is_digit(N, 1))
 		e = 1
 	return e
 }
