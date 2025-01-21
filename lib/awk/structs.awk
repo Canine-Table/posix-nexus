@@ -3,22 +3,30 @@
 # N2:	end index
 # N3:	skip value 
 # D: 	the data to split into an array
-# S:	the separator 
-function insert_indexed_item(V, D, S, N1, N2, N3,	v, l, i, j)
+# S:	the separator
+function insert_indexed_item(V, D, S, N1, N2, N3, B,	v, l, i, j)
 {
 	if (EQTL__(is_array(V), D, 1)) {
-		N1 = __return_value(N1, size(V) + 1)
-		N2 = __return_value(N2, 0)
-		N3 = __return_value(N3, 1)
-		j = N1
+		if (! is_integral(N1))
+			N1 = size(V) 
+		if ((N2 = __return_value(N2, 0)) && __is_index(N2) && N2 > N1)
+			j = modulus_range(N1, N1, N2)
+		else
+			j = N1
+		if (! __is_index(N3))
+		    N3 = 1
 		for (i = 1; i <= trim_split(D, v, __return_value(S, ",")); i++) {
-			V[j] = v[i]
-			j = j + N3
-			if (N2) {
-				j = j % N2
-				if (j < N1)
-					j = j + N1
+			if (B) {
+				printf("[%s] = ", j)
+				if (length(V[j]))
+					printf("%s -> ", V[j])
+				printf("%s\n", v[i])
 			}
+			V[j] = v[i]
+			if (N2)
+				j = modulus_range(j + N3, N1, N2)
+			else
+				j = j + N3
 		}
 		delete v
 		return j
@@ -28,18 +36,23 @@ function insert_indexed_item(V, D, S, N1, N2, N3,	v, l, i, j)
 function remove_indexed_item(V, M, N1, N2, N3, N4, B,	i, j)
 {
 	if (is_array(V) && (M = match_option(M, "front, back"))) {
-		N1 = __return_value(N1, 0)
-		N2 = __return_value(N2, size(V))
-		N3 = __return_value(absolute(N3), 1)
-		N4 = __return_value(N4, 1)
-		i = N1
+		if (! is_integral(N1))
+			N1 = 0
+		if (! __is_index(N2) || N2 < N1)
+			N2 = size(V)
+		if (! is_index(N3 = absolute(N3)))
+			N3 = 1
+		if (! __is_index(N4))
+		    N4 = 1
 		if (M == "back") {
-			i = N2
+			i = modulus_range(N2, N1, N2)
 			N3 = -N3
+		} else {
+			i = modulus_range(N1, N1, N2)
 		}
 		while (N4-- > 0) {
 			if (B)
-				print "[" i "] = " V[i]
+				printf("[%s] = %s\n", i, V[i])
 			delete V[i]
 			i = modulus_range(i + N3, N1, N2)
 		}

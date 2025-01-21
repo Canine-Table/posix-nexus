@@ -14,23 +14,22 @@ get_test_diff() {
 			"$G_NEX_MOD_LIB/awk/str.awk" \
 			"$G_NEX_MOD_LIB/awk/structs.awk" \
 			"$G_NEX_MOD_LIB/awk/algor.awk" \
-			"$G_NEX_MOD_LIB/awk/trig.awk" \
 			"$G_NEX_MOD_LIB/awk/bases.awk" \
 			"$G_NEX_MOD_LIB/awk/math.awk" \
 		)
 	"'
 		BEGIN {
-		print modular_exponentiation(tmpa, tmpb)
-			#print factoral(tmpa, 1)
-			#print cos(tmpa)
-			#print cosine(tmpa)
-			#print pi(tmpa)
-			#print tau(tmpa)
-			#print divisible(tmpa, tmpb)
-			#print fermats_little_theorm(tmpa)
-			#print reverse_str("hello world")
-			#print modulus_range(tmpa, tmpb, tmpc)
-			split("0,1,2,3,4,5,6,7,8,9,a,b,c,d,e,f", hex, ",")
+			split("aijer,eri,rej,re,erw,ew,er,erlw", arr, ",")
+
+			quick_sort(arr, 1, size(arr), tmpa, tmpb)
+			for (i = 1; i <= size(arr); i++)
+				print arr[i]
+			#print LOR__(tmpa, tmpb, 1, tmpc)
+			#print LOR__(tmpa, tmpb, 0, tmpc)
+			#split("0,1,2,3,4,5,6,7,8,9,a,b,c,d,e,f", hex, ",")
+			#insert_indexed_item(hex, "A,B,C,D,E,F", ",", tmpa, tmpb, tmpc, 1)
+			#print NULL__(tmpa)
+			#print FULL__(tmpa)
 			#remove_indexed_item(hex, "back", 1, 0, 7, 5, 1)
 			#remove_indexed_item(hex, "front", 2, 0, 7, 5, 1)
 			#remove_indexed_item(hex, "front", 1, 0, 7, 5, 1)

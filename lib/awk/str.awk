@@ -1,11 +1,11 @@
-# DA:	The first string.
-# DB:	The second string to be appended to the first.
-# S:	The separator to be used between DA and DB if DA is not empty.
-function __join_str(DA, DB, S)
+# D1:	The first string.
+# D2:	The second string to be appended to the first.
+# S:	The separator to be used between D1 and D2 if D1 is not empty.
+function __join_str(D1, D2, S)
 {
-	if (DA)
-		DA = DA S
-	return DA DB
+	if (D1)
+		D1 = D1 S
+	return D1 D2
 }
 
 # N:  The number of times to append the string D.
@@ -14,9 +14,8 @@ function __join_str(DA, DB, S)
 # s:  Temporary string used for the append operation.
 function append_str(N, D, B,	s)
 {
-	if (is_integral(N) && (N = int(N)) > 0) {
-		if (! D)
-			D = " "
+	if (is_integral(N) && __is_index(N = int(N))) {
+		D = __return_value(D, " ")
 		do {
 			if (B)
 				s = s D
@@ -40,41 +39,41 @@ function reverse_str(D, 	i, v)
 	return D
 }
 
-# DA:   The main string to be formatted.
-# DB:   The format string containing placeholders.
+# D1:   The main string to be formatted.
+# D2:   The format string containing placeholders.
 # S:    The delimiter used to split the format string.
 # L:    The left tag delimiter to identify placeholders.
 # R:    The right tag delimiter to identify placeholders.
 # B:    A flag indicating whether to remove unmatched placeholders.
-function format_str(DA, DB, S, L, R, B, 	dlm, fmt)
+function format_str(D1, D2, S, L, R, B, 	dlm, fmt)
 {
 	__load_delim(dlm, S, "NULL")
 	__load_tag(dlm, L, R)
-	for (i = 1; i <= trim_split(DB, fmt, dlm["s"]); i++) {
-		if (! gsub(dlm["l"] i dlm["r"], fmt[i], DA)) {
-			sub(dlm["l"] dlm["r"], fmt[i], DA)
+	for (i = 1; i <= trim_split(D2, fmt, dlm["s"]); i++) {
+		if (! gsub(dlm["l"] i dlm["r"], fmt[i], D1)) {
+			sub(dlm["l"] dlm["r"], fmt[i], D1)
 		}
 	}
 	if (! B)
-		gsub(dlm["l"] dlm["r"], "", DA)
+		gsub(dlm["l"] dlm["r"], "", D1)
 	delete dlm
 	delete fmt
-	return DA
+	return D1
 }
 
-# I:   The input string to be processed.
+# D:   The input string to be processed.
 # C:   The character used to determine the split point in the input string.
 # B1:  A flag indicating which half of the string to return (1 for the first half, 0 for the second half).
 # B2:  The number of characters to adjust around the split point.
-function __get_half(I, C, B1, B2, i) {
+function __get_half(D, C, B1, B2, i) {
     if (C = substr(C, 1, 1)) {  # Extract the first character of C
-        if (i = index(I, C)) {  # Find the position of C in the input string I
+        if (i = index(D, C)) {  # Find the position of C in the input string I
             if (! length(B2))
                 B2 = 1  # Default B2 to 1 if not provided 
             if (B1)
-                return substr(I, 1, i - B2)  # Return the substring from the start to just before the split point
+                return substr(D, 1, i - B2)  # Return the substring from the start to just before the split point
             else
-                return substr(I, i + B2)  # Return the substring from just after the split point to the end
+                return substr(D, i + B2)  # Return the substring from just after the split point to the end
         }
     }
 }
@@ -84,17 +83,19 @@ function __get_half(I, C, B1, B2, i) {
 # B:   A flag indicating what to return if no substring is found.
 function __first_index(D, V, B,		i, j, c)
 {
-        for (i in V) {  # Iterate over each element in array V
-                if (j = index(D, V[i])) {  # Find the position of V[i] in D
-                        if (! c)
-                                c = j  # If c is not set, assign j to c
-                        else if (c > j)
-                                c = j  # If j is less than the current c, update c to j
-                }
-        }
-        if (B && ! c)
-                c = length(D)  # If B is set and no match is found, set c to the length of D
-        return c  # Return the position of the first match or the length of D
+	is_array(V) {
+        	for (i in V) {  # Iterate over each element in array V
+                	if (j = index(D, V[i])) {  # Find the position of V[i] in D
+                        	if (! c)
+                                	c = j  # If c is not set, assign j to c
+                        	else if (c > j)
+                        	        c = j  # If j is less than the current c, update c to j
+                	}
+        	}
+        	if (B && ! c)
+                	c = length(D)  # If B is set and no match is found, set c to the length of D
+        	return c  # Return the position of the first match or the length of D
+	}
 }
 
 function __load_quotes(V)
@@ -137,7 +138,7 @@ function __compare_lengths(V, B,	i, l, ln)
                 l = length(i)  # Get the length of the current element
                 if (! ln)
                         ln = l  # Initialize ln with the length of the first element
-                else if (__compare(l, ln, B))
+                else if (LOR__(l, ln, B))
                         ln = l  # Update ln based on the comparison
         }
         return ln  # Return the final length
@@ -197,6 +198,7 @@ function totitle(D,     i, s, esc_map)
 		s = s toupper(substr(D, 1, 1)) tolower(substr(D, 2, i - 1))
 		D = substr(D, i + 1)
 	}
+	delete esc_map
 	return s
 }
 
@@ -221,7 +223,7 @@ function match_length(D, B, S, O, 	dlm, c, v, i, l, j, k, s)
                 if (! l) {
                         l = j
                         k = i
-                } else if (__compare(j, l, B)) {
+                } else if (LOR__(j, l, B)) {
                         l = j
                         delete v[k]  # Delete the previous element if its length doesn't match the criteria
                         k = i
@@ -236,19 +238,19 @@ function match_length(D, B, S, O, 	dlm, c, v, i, l, j, k, s)
         return s  # Return the joined string of matched elements
 }
 
-# DA:   The boundary substring to match.
-# DB:   The input string to search within.
+# D1:   The boundary substring to match.
+# D2:   The input string to search within.
 # B:    A flag indicating whether to match the end (1) or the start (0) of the strings.
 # S:    The delimiter for splitting the input string.
 # O:    The output delimiter for joining matched strings.
-function match_boundary(DA, DB, B, S, 	O, v, i, l, dlm, s)
+function match_boundary(D1, D2, B, S, 	O, v, i, l, dlm, s)
 {
-    if (DA && DB) {
+    if (D1 && D2) {
         __load_delim(dlm, S, O)  # Load the delimiter mappings
-        array(DB, v, dlm["s"])  # Split the input string DB into array v using delimiter S
-        l = length(DA)  # Get the length of the boundary substring DA
+        array(D2, v, dlm["s"])  # Split the input string DB into array v using delimiter S
+        l = length(D1)  # Get the length of the boundary substring DA
         for (i in v) {
-            if ((B && DA != substr(i, length(i) + 1 - l)) || (! B && DA != substr(i, 1, l))) {
+            if ((B && D1 != substr(i, length(i) + 1 - l)) || (! B && D1 != substr(i, 1, l))) {
                 # Delete element if it doesn't match the boundary condition
                 delete v[i]
             } else {
@@ -257,21 +259,22 @@ function match_boundary(DA, DB, B, S, 	O, v, i, l, dlm, s)
             }
         }
         delete v
+        delete dlm
         # Return the joined string of matched elements
         return s
     }
 }
 
-# DA:   The boundary substring to match.
-# DB:   The input string to search within.
+# D1:   The boundary substring to match.
+# D2:   The input string to search within.
 # S:    The delimiter for splitting the input string.
 # O:    The output delimiter for joining matched strings.
 # B1:   Verbose
 # B2:   A flag indicating whether to match the end (1) or the start (0) of the strings.
 # B3:   A flag indicating the sorting order (1 for ascending, 0 for descending).
-function match_option(DA, DB, S, O, B1, B2, B3, 		dlm, s) {
+function match_option(D1, D2, S, O, B1, B2, B3, 		dlm, s) {
         __load_delim(dlm, S, O)  # Load the delimiter mappings
-	if (s = match_length(match_boundary(DA, DB, B2, dlm["s"], dlm["s"]), B3, dlm["s"], dlm["o"])) {
+	if (s = match_length(match_boundary(D1, D2, B2, dlm["s"], dlm["s"]), B3, dlm["s"], dlm["o"])) {
 		if (s ~ dlm["o"] && ! B1)
 			s = ""
 	}
@@ -279,27 +282,27 @@ function match_option(DA, DB, S, O, B1, B2, B3, 		dlm, s) {
 	return s
 }
 
-# DA: The input string to search within.
-# DB: The pattern to search for within the input string.
-# DC: A substring to be removed from the matched elements (if specified).
+# D1: The input string to search within.
+# D2: The pattern to search for within the input string.
+# D3: A substring to be removed from the matched elements (if specified).
 # N: An offset for selecting elements relative to the matched position.
 # B: A flag indicating whether to perform a global substitution (1) or a single substitution (0) for removing DC.
 # S: The delimiter for splitting the input string.
 # O: The output delimiter for joining matched elements.
-function anchor_search(DA, DB, DC, N, B, S, O,		rcd, dlm, i, s, c, tk) {
-	if (DA && DB) {
+function anchor_search(D1, D2, D3, N, B, S, O,		rcd, dlm, i, s, c, tk) {
+	if (D1 && D2) {
 		__load_delim(dlm, S, O)  
-		c = split(DA, rcd, dlm["s"])
-		rcd[0] = DA
+		c = split(D1, rcd, dlm["s"])
+		rcd[0] = D1
 		for (i = 1; i <= c + 1; i++) {
-			if (rcd[i] ~ DB) {
+			if (rcd[i] ~ D2) {
 				tk = absolute((i + N) % c)
 				if (length(rcd[tk])) {
-					if (length(DC)) {
+					if (length(D3)) {
 						if (B)
-							gsub(DC, "", rcd[tk])
+							gsub(D3, "", rcd[tk])
 						else
-							sub(DC, "", rcd[tk])
+							sub(D3, "", rcd[tk])
 					}
 					s = __join_str(s, rcd[tk], dlm["o"])
 					delete rcd[tk]
@@ -310,8 +313,8 @@ function anchor_search(DA, DB, DC, N, B, S, O,		rcd, dlm, i, s, c, tk) {
 		delete dlm
 		if (s)
 			print s
-	} else if (DA) {
-		print DA
+	} else if (D1) {
+		print D1
 	}
 }
 

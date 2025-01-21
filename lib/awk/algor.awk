@@ -7,35 +7,6 @@ function __pivot(L, R)
 	}
 }
 
-# DA: The first value to compare.
-# DB: The second value to compare.
-# B:  A flag indicating the comparison direction (1 for greater than, 0 for less than).
-# M:  A mode indicating the type of comparison (e.g., "length" for length comparison, "default" for default comparison).
-function __compare(DA, DB, B, M)
-{
-	if (M ~ /^(l(e(n(g(t(h)?)?)?)?)?)$/) {  # Check if mode M is a variant of "length"
-		if (B)
-			return length(DA) > length(DB)  # Compare lengths if B is true
-		else
-			return length(DA) < length(DB)  # Compare lengths if B is false
-	} else if (M ~ /^(d(e(f(a(u(l(t)?)?)?)?)?)?)$/) {  # Check if mode M is a variant of "default"
-		if (B)
-			  return DA > DB  # Compare values if B is true
-		else
-			return DA < DB  # Compare values if B is false
-	} else if ((is_digit(DA) && is_digit(DB)) && M !~ /^(s(t(r(i(n(g)?)?)?)?)?)$/) {  # Check if both DA and DB are digits, and M is not "string"
-		if (B)
-			return +DA > +DB  # Compare numeric values if B is true
-		else
-			return +DA < +DB  # Compare numeric values if B is false
-	} else {
-		if (B)
-			return "a" DA > "a" DB  # Compare strings if B is true
-		else
-			return "a" DA < "a" DB  # Compare strings if B is false
-	}
-}
-
 # V:  The array in which the elements are to be swapped.
 # DA: The index of the first element to swap.
 # DB: The index of the second element to swap.
@@ -51,17 +22,17 @@ function __swap(V, DA, DB, ta)
 # R:   The ending index of the partition.
 # B:   A flag indicating the comparison direction (1 for greater than, 0 for less than).
 # M:   A mode indicating the type of comparison (e.g., "length" for length comparison).
-function __hoares_partition(V, L, R, B, M, v, c, pv, md, lft, rgt)
+function __hoares_partition(V, L, R, B, M, 	v, c, pv, md, lft, rgt)
 {
 	md = V[pv = __pivot(L, R)]  # Select the pivot element using the __pivot function
 	lft = L - 1, rgt = R + 1  # Initialize left and right pointers
 	while (1) {
 		do {
 			lft++  # Increment the left pointer
-		} while (__compare(V[lft], md, B, M))  # Move left pointer until an element greater than or equal to pivot is found
+		} while (LOR__(V[lft], md, B, M))  # Move left pointer until an element greater than or equal to pivot is found
 		do {
 			rgt--  # Decrement the right pointer
-		} while(__compare(md, V[rgt], B, M))  # Move right pointer until an element less than or equal to pivot is found
+		} while(LOR__(md, V[rgt], B, M))  # Move right pointer until an element less than or equal to pivot is found
 		if (lft >= rgt)  # If pointers cross, partitioning is done
 			return rgt  # Return the partition index
 		__swap(V, lft, rgt)  # Swap the elements at the left and right pointers

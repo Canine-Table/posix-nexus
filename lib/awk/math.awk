@@ -38,9 +38,9 @@ function twos_compliment(N,     l, b, c, t) {
 
 function __trim_precision(N1, N2)
 {
-	if (is_integral(N1 = __return_value(N1, 32)) && is_digit(N2, 1)) {
+	if (is_integral(N1 = __return_value(N1, 10)) && is_digit(N2, 1)) {
 		N1 = sprintf("%." N1 "f", N2)
-		gsub(/(00+$|^00+)/,  "", N1)
+		gsub(/(00+$)/,  "", N1)
 		return N1
 	}
 }
@@ -90,9 +90,13 @@ function round(N)
         return int(N + 0.5)
 }
 
+# DA: The lower bound of the range
+# DB: The upper bound of the range
+# DC: The value to be distributed within the range
 function distribution(N1, N2, N3)
 {
-	return ceiling((N1 - N3) / (N2 - N3))
+        # Calculate the distribution value by dividing the difference between N1 and N3 by the difference between N2 and N3
+        return ceiling((N1 - N3) / (N2 - N3))
 }
 
 function euclidean(N1, N2)
@@ -112,15 +116,21 @@ function lcd(N1, N2)
 		return (N1 * N2) / euclidean(N1, N2)
 }
 
+# DA: The lower bound of the range
+# DB: The upper bound of the range
+# DC: The modulus value to adjust the lower bound
 function modulus_range(N1, N2, N3)
 {
-	if (N1 < N2) {
-		N1 = N2 + (N1 - N2 + N3) % (N3 - N2 + 1)
-	} else if (N1 > N2) {
-		N1 = N2 + (N1 - N2) % (N3 - N2 + 1)
-	}
-	return N1
+        # If N1 is less than N2, adjust N1 to be within the range [N2, N3]
+        if (N1 < N2)
+                N1 = N2 + (N1 - N2 + N3) % (N3 - N2 + 1)
+        # If N1 is greater than N3, adjust N1 similarly
+        else if (N1 > N3)
+                N1 = N2 + (N1 - N2) % (N3 - N2 + 1)
+        # Return the adjusted value of N1
+        return N1
 }
+
 
 function fibonacci(N, B,	n1, n2)
 {
