@@ -108,7 +108,7 @@ function add(N1, N2, B,		f1, f2, v1, v2, sn, sn1, sn2, t, tl, tn, f, fl, n, nl, 
 	}
 }
 
-function subtract(N1, N2, B,	f1, f2, t)
+function subtract(N1, N2, B,	f1, f2, t, tl, sn)
 {
 	if (is_digit(N1, 1) && is_digit(N2, 1)) {
 		if (sn1 = __get_sign(N1))
@@ -116,8 +116,22 @@ function subtract(N1, N2, B,	f1, f2, t)
 		if (sn2 = __get_sign(N2))
 			N2 = substr(N2, 2)
 		if (__return_value(sn1, "+") == __return_value(sn2, "+")) {
-			# TODO
+			if ((tl = length(N1) - length(N2)) > 0) {
+				N2 = append_str(tl, "0") N2
+			} else if (tl) {
+				t = append_str(absolute(tl), "0") N1
+				N1 = N2
+				N2 = t
+				sn = "-"
+			}
+			t = add(N1, tens_compliment(N2))
+			n = substr(t, length(t) - length(N1) + 1)
 		}
+		if (sn == "+" && ! B)
+			sn = ""
+		if (n)
+			sub(/^0+/, "", n)
+		return sn n
 	}
 }
 

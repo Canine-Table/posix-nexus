@@ -20,7 +20,7 @@ get_test_diff() {
 		)
 	"'
 		BEGIN {
-			print add(tmpa, tmpb)
+			print subtract(tmpa, tmpb)
 			#print nines_compliment(tmpa)
 			#print tens_compliment(tmpa)
 			#split("aijer,eri,rej,re,erw,ew,er,erlw", arr, ",")
