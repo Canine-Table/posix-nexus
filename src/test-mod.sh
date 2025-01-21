@@ -16,14 +16,18 @@ get_test_diff() {
 			"$G_NEX_MOD_LIB/awk/algor.awk" \
 			"$G_NEX_MOD_LIB/awk/bases.awk" \
 			"$G_NEX_MOD_LIB/awk/math.awk" \
+			"$G_NEX_MOD_LIB/awk/prec.awk"
 		)
 	"'
 		BEGIN {
-			split("aijer,eri,rej,re,erw,ew,er,erlw", arr, ",")
-
-			quick_sort(arr, 1, size(arr), tmpa, tmpb)
-			for (i = 1; i <= size(arr); i++)
-				print arr[i]
+			print add(tmpa, tmpb)
+			#print nines_compliment(tmpa)
+			#print tens_compliment(tmpa)
+			#split("aijer,eri,rej,re,erw,ew,er,erlw", arr, ",")
+			#
+			#quick_sort(arr, 1, size(arr), tmpa, tmpb)
+			#for (i = 1; i <= size(arr); i++)
+			#	print arr[i]
 			#print LOR__(tmpa, tmpb, 1, tmpc)
 			#print LOR__(tmpa, tmpb, 0, tmpc)
 			#split("0,1,2,3,4,5,6,7,8,9,a,b,c,d,e,f", hex, ",")

@@ -31,7 +31,7 @@ function is_signed_integral(N,          e)
 # Check if N is a floating-point number (decimal number)
 function is_float(N, B,         e)
 {
-        if ((B && N ~ /^([-]|[+])?[0-9]+[.][0-9]+/) || (! B && N ~ /^[0-9]+[.][0-9]+/))
+        if ((B && N ~ /^([-]|[+])?[0-9]+[.][0-9]+$/) || (! B && N ~ /^[0-9]+[.][0-9]+$/))
                 e = 1
         return e
 }

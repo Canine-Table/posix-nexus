@@ -83,7 +83,7 @@ function __get_half(D, C, B1, B2, i) {
 # B:   A flag indicating what to return if no substring is found.
 function __first_index(D, V, B,		i, j, c)
 {
-	is_array(V) {
+	if (is_array(V)) {
         	for (i in V) {  # Iterate over each element in array V
                 	if (j = index(D, V[i])) {  # Find the position of V[i] in D
                         	if (! c)
