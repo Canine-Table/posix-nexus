@@ -1,9 +1,21 @@
-function __return_value(DA, DB)
+function __return_value(D1, D2)
 {
-	if (DA)
-		return DA
-	return DB
+	if (D1)
+		return D1
+	return D2
 }
+
+function __return_if_value(D1, D2, B)
+{
+	if (D1) {
+		if (B)
+			D1 = D2 D1
+		else
+			D1 = D1 D2
+		return D1
+	}
+}
+
 
 function __load_value(V, K, DA, DB)
 {

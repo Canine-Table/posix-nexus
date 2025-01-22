@@ -113,3 +113,85 @@ function convert_base(N, F, T, 	base_map, sn, l, f, n, c, cv)
 	}
 }
 
+function add_base(N1, N2, N3, B1, B2,         f1, f2, v1, v2, sn, sn1, sn2, t, tl, tn, f, fl, n, nb, nl, i, c, base_map)
+{
+	if ((N3 = __return_value(N3, 10)) <= 10) {
+		if (0 N1 ~ __base_regex(N3 - 1, base_map, 1) && 0 N2 ~ __base_regex(N3 - 1, base_map)) {
+                	if (sn1 = __get_sign(N1))
+                	        N1 = substr(N1, 2)
+                	if (sn2 = __get_sign(N2))
+                	        N2 = substr(N2, 2)
+                	if (__return_value(sn1, "+") == __return_value(sn2, "+")) {
+                	        if((substr(sn1 sn2, 1, 1) == "+" || B1) && ! (length(B1) && B1 == 0))
+                	                sn = "+"
+				else if (substr(sn1 sn2, 1, 1) == "-")
+					sn = "-"
+                        	if (f1 = __get_half(N1, "."))
+                        	        N1 = __get_half(N1, ".", 1)
+                        	if (f2 = __get_half(N2, "."))
+                        	        N2 = __get_half(N2, ".", 1)
+                        	if (fl = absolute(length(f1) - length(f2))) {
+                        	        t = match_length(f1  "," f2, 1)
+                        	        tl = length(t)
+                        		f = substr(t, 1, tl - fl)
+                                	if (tn = t == f1)
+                                	        f1 = f
+                                	else
+                                	        f2 = f
+                                	f = substr(t, tl - fl + 1)
+                        	}
+				if (f) {
+					if (B2)
+						tl = f
+                        		split(f1, v1, "")
+                        		for (i = split(f2, v2, ""); i > 0; i--) {
+                       	        		if ((t = c + v1[i] + v2[i]) > (N3 - 1)) {
+                                        		f = int(t % N3) f
+                        	                	c = int(t / N3)
+                                		} else {
+                                        		f = t f
+                                        		c = 0
+                                		}
+                        		}
+					if (B2) {
+						if (tn)
+							f1 = f1 tl
+						else
+							f2 = f2 tl
+					}
+				}
+				N1 = __return_value(N1, "0")
+				N2 = __return_value(N2, "0")
+                        	if (tl = absolute(length(N1) - length(N2))) {
+                        	        tn = substr(match_length(N1 "," N2, 1), 1, tl)
+                        	}
+                        	split(reverse_str(N1), v1, "")
+                        	split(reverse_str(N2), v2, "")
+				i = 1
+                        	do {
+                        	        if ((t = c + v1[i] + v2[i]) > (N3 - 1)) {
+                        	                n = int(t % N3) n
+                        	                c = int(t / N3)
+                        	        } else {
+                        	                n = t n
+                        	                c = 0
+                        	        }
+                                	i++
+                        	} while ((length(v1[i]) && length(v2[i])) || c)
+                	} else {
+                        	# TODO
+                        	# N1 + -N2
+                        	# -N1 + N2
+                	}
+                        delete v1
+                        delete v2
+		}
+                delete base_map
+                if (n = sn tn n __return_if_value(f, ".", 1)) {
+			if (B2)
+				printf("%s + %s = %s\n", sn1 N1 __return_if_value(f1, ".", 1), sn2 N2 __return_if_value(f2, ".", 1), n)
+                	return n
+		}
+        }
+}
+
