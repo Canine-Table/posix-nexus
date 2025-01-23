@@ -21,7 +21,7 @@ get_test_diff() {
 	"'
 		BEGIN {
 			#print split("", fa, "")
-			print subtract(tmpa, tmpb)
+			print add_base(tmpa, tmpb, tmpc)
 			#print nines_compliment(tmpa)
 			#print tens_compliment(tmpa)
 			#split("aijer,eri,rej,re,erw,ew,er,erlw", arr, ",")

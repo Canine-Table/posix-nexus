@@ -48,7 +48,9 @@ function __load_upper_map(V,        i)
 
 function __get_base(D, V)
 {
-	if (D ~ /^[a-zA-Z]$/) 
+	if (! is_array(V))
+		__load_upper_map(V)
+	if (D ~ /^[a-zA-Z]$/)
 		D = V[D]
 	return D
 }
@@ -58,7 +60,6 @@ function __get_base(D, V)
 # T: The base to convert the number N to.
 function convert_base(N, F, T, 	base_map, sn, l, f, n, c, cv)
 {
-	__load_upper_map(base_map)
 	F = int(__get_base(F, base_map))
 	T = int(__get_base(T, base_map))
 	if (T >= 2 && T <= 62) {
@@ -115,8 +116,13 @@ function convert_base(N, F, T, 	base_map, sn, l, f, n, c, cv)
 
 function add_base(N1, N2, N3, B1, B2,         f1, f2, v1, v2, sn, sn1, sn2, t, tl, tn, f, fl, n, nb, nl, i, c, base_map)
 {
-	if ((N3 = __return_value(N3, 10)) <= 10) {
-		if (0 N1 ~ __base_regex(N3 - 1, base_map, 1) && 0 N2 ~ __base_regex(N3 - 1, base_map)) {
+	N3 = int(__get_base(__return_value(N3, 10), base_map))
+	if (N3 >= 2 && N3 <= 62 ) {
+		if (N3 > 9 && N3 < 36) {
+			N1 = tolower(N1)
+			N2 = tolower(N2)
+		}
+		if (0 N1 ~ __base_regex(N3 - 1, base_map) && 0 N2 ~ __base_regex(N3 - 1, base_map)) {
                 	if (sn1 = __get_sign(N1))
                 	        N1 = substr(N1, 2)
                 	if (sn2 = __get_sign(N2))
@@ -145,11 +151,11 @@ function add_base(N1, N2, N3, B1, B2,         f1, f2, v1, v2, sn, sn1, sn2, t, t
 						tl = f
                         		split(f1, v1, "")
                         		for (i = split(f2, v2, ""); i > 0; i--) {
-                       	        		if ((t = c + v1[i] + v2[i]) > (N3 - 1)) {
-                                        		f = int(t % N3) f
+                       	        		if ((t = c + base_map[v1[i]] + base_map[v2[i]]) > (N3 - 1)) {
+                                        		f = base_map[int(t % N3)] f
                         	                	c = int(t / N3)
                                 		} else {
-                                        		f = t f
+                                        		f = base_map[t] f
                                         		c = 0
                                 		}
                         		}
@@ -169,11 +175,11 @@ function add_base(N1, N2, N3, B1, B2,         f1, f2, v1, v2, sn, sn1, sn2, t, t
                         	split(reverse_str(N2), v2, "")
 				i = 1
                         	do {
-                        	        if ((t = c + v1[i] + v2[i]) > (N3 - 1)) {
-                        	                n = int(t % N3) n
+                        	        if ((t = c + base_map[v1[i]] + base_map[v2[i]]) > (N3 - 1)) {
+                        	                n = base_map[int(t % N3)] n
                         	                c = int(t / N3)
                         	        } else {
-                        	                n = t n
+                        	                n = base_map[t] n
                         	                c = 0
                         	        }
                                 	i++
