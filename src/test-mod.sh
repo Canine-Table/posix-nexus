@@ -16,12 +16,12 @@ get_test_diff() {
 			"$G_NEX_MOD_LIB/awk/algor.awk" \
 			"$G_NEX_MOD_LIB/awk/bases.awk" \
 			"$G_NEX_MOD_LIB/awk/math.awk" \
-			"$G_NEX_MOD_LIB/awk/prec.awk"
 		)
 	"'
 		BEGIN {
 			#print split("", fa, "")
-			print add_base(tmpa, tmpb, tmpc)
+			print base_compliment(tmpa, tmpb)
+			#print add_base(tmpa, tmpb, tmpc)
 			#print nines_compliment(tmpa)
 			#print tens_compliment(tmpa)
 			#split("aijer,eri,rej,re,erw,ew,er,erlw", arr, ",")

@@ -1,41 +1,3 @@
-function ones_compliment(N,     i, b, s) {
-	if (N ~ __base_regex(1, "", 1)) {
-		for (i = 1; i <= length(N); i++) {
-                	s = substr(N, i ,1)
-                	if (s ~ /[01]/) {
-                		if (int(s))
-                        		b = b "0"
-                		else
-                        		b = b "1"
-			} else {
-                        	b = b s
-			}
-        	}
-        	return b
-	}
-}
-
-function twos_compliment(N,     l, b, c, t) {
-        if (l = length(N = ones_compliment(N))) {
-        	c = 1
-        	do {
-                	b = substr(N, l)
-			N = substr(N, 1, l - 1)
-                	if (b ~ /[01]/) {
-                		if (int(c + b) == 2) {
-                        		t = "0" t
-                		} else {
-                        		t = N c t
-                        		c = 0
-				}
-                        } else {
-				t = b t
-                	}
-        	} while (c && --l)
-        	return t
-	}
-}
-
 function __trim_precision(N1, N2)
 {
 	if (is_integral(N1 = __return_value(N1, 10)) && is_digit(N2, 1)) {
@@ -53,6 +15,22 @@ function pi(N)
 function tau(N)
 {
 	return __trim_precision(N, 2 * atan2(0, -1))
+}
+
+function fibonacci(N, B,	n1, n2)
+{
+	if (__is_index(N)) {
+		if (+N == 1)
+			return 0
+		else if (! int(n2))
+			n2 = 1
+		if (B)
+			printf("%.f + %.f = %.f\n", 0 + n1, n2, n1 + n2)
+		if (--N > 1)
+			return fibonacci(N, b, n2, n2 + n1)
+		else
+			return sprintf("%.f", n1 + n2)
+	}
 }
 
 function factoral(N, B,		n)
@@ -129,23 +107,6 @@ function modulus_range(N1, N2, N3)
                 N1 = N2 + (N1 - N2) % (N3 - N2 + 1)
         # Return the adjusted value of N1
         return N1
-}
-
-
-function fibonacci(N, B,	n1, n2)
-{
-	if (__is_index(N)) {
-		if (+N == 1)
-			return 0
-		else if (! int(n2))
-			n2 = 1
-		if (B)
-			printf("%.f + %.f = %.f\n", 0 + n1, n2, n1 + n2)
-		if (--N > 1)
-			return fibonacci(N, b, n2, n2 + n1)
-		else
-			return sprintf("%.f", n1 + n2)
-	}
 }
 
 # N1:	base

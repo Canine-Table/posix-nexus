@@ -63,7 +63,7 @@ function convert_base(N, F, T, 	base_map, sn, l, f, n, c, cv)
 	F = int(__get_base(F, base_map))
 	T = int(__get_base(T, base_map))
 	if (T >= 2 && T <= 62) {
-		if (F > 9 && F < 36)
+		if (F > 10 && F < 37)
 			N = tolower(N)
 		if (N ~ __base_regex(F - 1, base_map)) {
 			if (F == T)
@@ -114,11 +114,34 @@ function convert_base(N, F, T, 	base_map, sn, l, f, n, c, cv)
 	}
 }
 
+function base_compliment(N1, N2,	i, base_map, v, n, sn)
+{
+	N2 = int(__get_base(__return_value(N2, 10), base_map))
+	if (N2 >= 2 && N2 <= 62) {
+                N2 = N2 - 1
+		if (N2 > 9 && N2 < 36)
+			N1 = tolower(N1)
+		if (sn = __get_sign(N1))
+                	N1 = substr(N1, 2)
+		if (N1 ~ __base_regex(N2, base_map)) {
+			for (i = 1; i <= split(N1, v, ""); i++) {
+				if (v[i] == ".")
+					n = n "."
+				else
+					n = n base_map[N2 - base_map[v[i]]]
+			}
+			delete v
+		}
+	}
+	delete base_map
+	return sn n
+}
+
 function add_base(N1, N2, N3, B1, B2,         f1, f2, v1, v2, sn, sn1, sn2, t, tl, tn, f, fl, n, nb, nl, i, c, base_map)
 {
 	N3 = int(__get_base(__return_value(N3, 10), base_map))
 	if (N3 >= 2 && N3 <= 62 ) {
-		if (N3 > 9 && N3 < 36) {
+		if (N3 > 10 && N3 < 37) {
 			N1 = tolower(N1)
 			N2 = tolower(N2)
 		}
@@ -199,5 +222,46 @@ function add_base(N1, N2, N3, B1, B2,         f1, f2, v1, v2, sn, sn1, sn2, t, t
                 	return n
 		}
         }
+}
+
+function base_subtract(N1, N2, N3, B,    f1, f2, t, tl, sn, base_map)
+{
+	N3 = int(__get_base(__return_value(N3, 10), base_map))
+	if (N3 >= 2 && N3 <= 62 ) {
+		if (N3 > 10 && N3 < 37) {
+			N1 = tolower(N1)
+			N2 = tolower(N2)
+		}
+		if (0 N1 ~ __base_regex(N3 - 1, base_map) && 0 N2 ~ __base_regex(N3 - 1, base_map)) {
+                	if (sn1 = __get_sign(N1))
+                	        N1 = substr(N1, 2)
+                	if (sn2 = __get_sign(N2))
+                        	N2 = substr(N2, 2)
+                	if (XNOR__(sn1 == "-", __return_value(sn2, "+") != "-"))
+                        	return sn1 add_base(N1, N2, N3)
+                	# TODO
+                	if (__return_value(sn1, "+") == __return_value(sn2, "+")) {
+                        	if (sn1 == "-")
+                                	sn = "-"
+                        	else 
+                                	sn = substr(sn1 sn2, 1, 1)
+					if (N3 != 2) {
+                        			N1 = convert_base(N1, N3, 2)
+                        			N2 = convert_base(N2, N3, 2)
+					}
+                        	if ((tl = length(N1) - length(N2)) > 0) {
+                        	        N2 = append_str(tl, "0") N2
+                        	} else if (tl) {
+                        	        t = append_str(absolute(tl), "0") N1
+                        	        N1 = N2
+                        	        N2 = t
+                        	        if (sn != "-")
+                                	        sn = "-"
+                                	else
+                                        	sn = substr(sn1 sn2, 1, 1)
+                        	}
+                	}
+        	}
+	}
 }
 
