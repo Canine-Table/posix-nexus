@@ -2,6 +2,42 @@
 
 ###:( get ):##################################################################################
 
+get_test_bases3() {
+	$(get_cmd_awk) \
+		-v tmpa="$1" \
+		-v tmpb="$2" \
+		-v tmpc="$3" "
+		$(cat \
+			"$G_NEX_MOD_LIB/awk/misc.awk" \
+			"$G_NEX_MOD_LIB/awk/bool.awk" \
+			"$G_NEX_MOD_LIB/awk/types.awk" \
+			"$G_NEX_MOD_LIB/awk/str.awk" \
+			"$G_NEX_MOD_LIB/awk/structs.awk" \
+			"$G_NEX_MOD_LIB/awk/algor.awk" \
+			"$G_NEX_MOD_LIB/awk/bases.awk" \
+			"$G_NEX_MOD_LIB/awk/math.awk" \
+		)
+	"'
+		BEGIN {
+			#print 
+			arr["n1"] = 93120
+			arr["n2"] = 932322389
+			#print 
+			print __numbers_length(arr, "n1", "n2")
+			print arr["n1"]
+			print arr["n2"]
+			#print __add_base(tmpa, tmpb, tmpc)
+			#print base_compliment(tmpa, tmpb)
+			#print convert_base(tmpa, tmpb, tmpc)
+
+			#__load_number_map(arr, tmpa, tmpb)
+			#print arr["n1"]
+			#print arr["f1"]
+		}
+	'
+}
+
+
 get_test_diff() {
 	$(get_cmd_awk) \
 		-v tmpa="$1" \
@@ -21,7 +57,7 @@ get_test_diff() {
 		BEGIN {
 			#print split("", fa, "")
 			#print __bit_width(tmpa)
-			print __pad_bits(tmpa, tmpb)
+			#print __pad_bits(tmpa, tmpb)
 
 			#print base_compliment(tmpa, tmpb)
 			#print add_base(tmpa, tmpb, tmpc)
