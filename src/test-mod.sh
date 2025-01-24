@@ -20,7 +20,10 @@ get_test_diff() {
 	"'
 		BEGIN {
 			#print split("", fa, "")
-			print base_compliment(tmpa, tmpb)
+			#print __bit_width(tmpa)
+			print __pad_bits(tmpa, tmpb)
+
+			#print base_compliment(tmpa, tmpb)
 			#print add_base(tmpa, tmpb, tmpc)
 			#print nines_compliment(tmpa)
 			#print tens_compliment(tmpa)

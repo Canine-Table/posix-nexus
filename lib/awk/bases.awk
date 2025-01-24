@@ -31,19 +31,19 @@ function __load_num_map(V,  i)
 function __load_lower_map(V,        i)
 {
 	__load_num_map(V)
-        for (i = 10; i < 36; i++) {
-                V[i] = sprintf("%c", i + 87)
-                V[V[i]] = i
+	for (i = 10; i < 36; i++) {
+		V[i] = sprintf("%c", i + 87)
+		V[V[i]] = i
         }
 }
 
 function __load_upper_map(V,        i)
 {
-        __load_lower_map(V)
-        for (i = 36; i < 62; i++) {
-                V[i] = sprintf("%c", i + 29)
-                V[V[i]] = i
-        }
+	__load_lower_map(V)
+	for (i = 36; i < 62; i++) {
+		V[i] = sprintf("%c", i + 29)
+		V[V[i]] = i
+	}
 }
 
 function __get_base(D, V)
@@ -53,6 +53,23 @@ function __get_base(D, V)
 	if (D ~ /^[a-zA-Z]$/)
 		D = V[D]
 	return D
+}
+
+function __base_logarithm(N1, N2)
+{
+	return log(N1) / log(N2)
+}
+
+function __bit_width(N)
+{
+	return ceiling(__base_logarithm(N, 2))
+}
+
+function __pad_bits(N1, N2)
+{
+	if (+N2 > 1)
+		N1 = append_str(length(N1) % __bit_width(N2), "0") N1
+	return N1
 }
 
 # N: The number to be converted.
@@ -123,7 +140,7 @@ function base_compliment(N1, N2,	i, base_map, v, n, sn)
 			N1 = tolower(N1)
 		if (sn = __get_sign(N1))
                 	N1 = substr(N1, 2)
-		if (N1 ~ __base_regex(N2, base_map)) {
+		if (0 N1 ~ __base_regex(N2, base_map)) {
 			for (i = 1; i <= split(N1, v, ""); i++) {
 				if (v[i] == ".")
 					n = n "."
@@ -239,20 +256,17 @@ function base_subtract(N1, N2, N3, B,    f1, f2, t, tl, sn, base_map)
                         	N2 = substr(N2, 2)
                 	if (XNOR__(sn1 == "-", __return_value(sn2, "+") != "-"))
                         	return sn1 add_base(N1, N2, N3)
-                	# TODO
                 	if (__return_value(sn1, "+") == __return_value(sn2, "+")) {
                         	if (sn1 == "-")
                                 	sn = "-"
-                        	else 
+                        	else
                                 	sn = substr(sn1 sn2, 1, 1)
-					if (N3 != 2) {
-                        			N1 = convert_base(N1, N3, 2)
-                        			N2 = convert_base(N2, N3, 2)
-					}
+                        	N1 = __pad_bits(convert_base(N1, N3, 2), N3)
+                		N2 = __pad_bits(convert_base(N2, N3, 2), N3)
                         	if ((tl = length(N1) - length(N2)) > 0) {
-                        	        N2 = append_str(tl, "0") N2
+                        	        N2 = append_str(tl - sub(/[.]/, "&", N2), "0") N2
                         	} else if (tl) {
-                        	        t = append_str(absolute(tl), "0") N1
+                        	        t = append_str(absolute(tl) - sub(/[.]/, "&", N1), "0") N1
                         	        N1 = N2
                         	        N2 = t
                         	        if (sn != "-")
@@ -261,6 +275,7 @@ function base_subtract(N1, N2, N3, B,    f1, f2, t, tl, sn, base_map)
                                         	sn = substr(sn1 sn2, 1, 1)
                         	}
                 	}
+                	# TODO
         	}
 	}
 }
