@@ -19,13 +19,14 @@ get_test_bases3() {
 		)
 	"'
 		BEGIN {
+			print __add_base(tmpa, tmpb, tmpc)
 			#print 
-			arr["n1"] = 93120
-			arr["n2"] = 932322389
+			#arr["n1"] = tmpa
+			#arr["n2"] = tmpb
 			#print 
-			print __numbers_length(arr, "n1", "n2")
-			print arr["n1"]
-			print arr["n2"]
+			#print even_lengths(arr, "n1", "n2", tmpc)
+			#print arr["n1"]
+			#print arr["n2"]
 			#print __add_base(tmpa, tmpb, tmpc)
 			#print base_compliment(tmpa, tmpb)
 			#print convert_base(tmpa, tmpb, tmpc)

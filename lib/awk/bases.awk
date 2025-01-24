@@ -23,12 +23,11 @@ function __load_number_map(V1, N1, V2, N2, 	idx)
                         if (0 N1 0 ~ __base_regex(N2 - 1, V2)) {
                                 V1[0] = idx
                                 V1["bs" idx] = N2
-                                # Store the integer part of N1
-                                if (! (V1["n" idx] = __return_value(__get_half(N1, ".", 1), 0)))
-                                        V1["n" idx] = N1
                                 # Store the fractional part of N1, if it exists
+                                if (V1["f" idx] = __get_half(N1, "."))
+					V1["n" idx] = __return_value(__get_half(N1, ".", 1), 0)
                                 else
-                                        V1["f" idx] = __get_half(N1, ".")
+					V1["n" idx] = N1
                         }
 		}
         } else {
@@ -184,40 +183,16 @@ function base_compliment(N1, N2,	base_map, num_map, i, v, n)
 			delete v
 			delete base_map
 			return n
-		}
-	}
+		}	}
 }
 
-function __numbers_length(V, N1, N2,	t1, t2, t3, t4)
-{
-	if (t1 = absolute(length(V[N1]) - length(V[N2]))) {
-                t2 = match_length(V[N1] "," V[N2], 1)
-		t3 = length(t2)
-		t4 = substr(t2, 1, t3 - t1)
-		if (t2 == V[N1])
-			V[N1] = t4
-		else
-			V[N2] = t4
-		return substr(t2, t3 - t1 + 1)
-	}
-}
-
-function __add_base(N1, N2, N3, B1, B2,         num_map, base_map, sn, f, n, c, t1, t2, t3, t4, v1, v2, i)
+function __add_base(N1, N2, N3,         num_map, base_map, sn, f, n, c, t1, t2, v1, v2, i)
 {
 	if (N3 = int(__return_value(__get_base(N3, base_map), 10))) {
 		if (__load_number_map(num_map, N1, base_map, N3) && __load_number_map(num_map, N2, base_map, N3)) {
                 	if (__return_value(num_map["sn1"], "+") == __return_value(num_map["sn2"], "+")) {
 				sn = substr(num_map["sn1"] num_map["sn2"], 1, 1)
-                        	if (t1 = absolute(length(num_map["f1"]) - length(num_map["f2"]))) {
-                        	        t2 = match_length(num_map["f1"] "," num_map["f2"], 1)
-                        	        t3 = length(t2)
-                        		f = substr(t2, 1, t3 - t1)
-                                	if (t4 = t2 == t1)
-                                	        num_map["f1"] = f
-                                	else
-                                		num_map["f2"] = f
-                                	f = substr(t2, t3 - t1 + 1)
-				}
+				f = even_lengths(num_map, "f1", "f2")
 				if (split(num_map["f1"], v1, "")) {
                         		for (i = split(num_map["f2"], v2, ""); i > 0; i--) {
                        	        		if ((t1 = c + base_map[v1[i]] + base_map[v2[i]]) > (N3 - 1)) {
@@ -229,14 +204,16 @@ function __add_base(N1, N2, N3, B1, B2,         num_map, base_map, sn, f, n, c, 
                                 		}
                         		}
 				}
-                        	if (t1 = absolute(length(num_map["n1"]) - length(Nnum_map["n1"])))
-                        	        t2 = substr(match_length(num_map["n1"] "," num_map["n2"], 1), 1, t1)
+				if (absolute(length(num_map["n1"]) - length(num_map["n2"])))
+                        		t2 = match_length(num_map["n1"] "," num_map["n2"], 1)
 				else
 					t2 = ""
-				i = 1
                         	split(reverse_str(num_map["n1"]), v1, "")
 				split(reverse_str(num_map["n2"]), v2, "")
-                        	do {
+				num_map["n1"] = __return_value(num_map["n1"], 0)
+				num_map["n2"] = __return_value(num_map["n2"], 0)
+				i = 1
+				do {
                         		if ((t1 = c + base_map[v1[i]] + base_map[v2[i]]) > (N3 - 1)) {
                         	                n = base_map[int(t1 % N3)] n
                         	                c = int(t1 / N3)
@@ -246,101 +223,25 @@ function __add_base(N1, N2, N3, B1, B2,         num_map, base_map, sn, f, n, c, 
                         	        }
                                 	i++
                         	} while ((length(v1[i]) && length(v2[i])) || c)
+				n = sn substr(t2, 1, length(t2) - length(n)) n __return_if_value(f, ".", 1)
+			} else {
+				# TODO
+				# -N1 + N2
+				# N1 + -N2
+				# callback after compliment method 
 			}
-			return sn t2 n __return_if_value(f, ".", 1)
+			delete v1
+			delete v2
 		}
+		delete num_map
 	}
-}
-
-function add_base(N1, N2, N3, B1, B2,         f1, f2, v1, v2, sn, sn1, sn2, t, tl, tn, f, fl, n, nb, nl, i, c, base_map)
-{
-	N3 = int(__get_base(__return_value(N3, 10), base_map))
-	if (N3 >= 2 && N3 <= 62 ) {
-		if (N3 > 10 && N3 < 37) {
-			N1 = tolower(N1)
-			N2 = tolower(N2)
-		}
-		if (0 N1 ~ __base_regex(N3 - 1, base_map) && 0 N2 ~ __base_regex(N3 - 1, base_map)) {
-                	if (sn1 = __get_sign(N1))
-                	        N1 = substr(N1, 2)
-                	if (sn2 = __get_sign(N2))
-                	        N2 = substr(N2, 2)
-                	if (__return_value(sn1, "+") == __return_value(sn2, "+")) {
-                	        if((substr(sn1 sn2, 1, 1) == "+" || B1) && ! (length(B1) && B1 == 0))
-                	                sn = "+"
-				else if (substr(sn1 sn2, 1, 1) == "-")
-					sn = "-"
-                        	if (f1 = __get_half(N1, "."))
-                        	        N1 = __get_half(N1, ".", 1)
-                        	if (f2 = __get_half(N2, "."))
-                        	        N2 = __get_half(N2, ".", 1)
-                        	if (fl = absolute(length(f1) - length(f2))) {
-                        	        t = match_length(f1  "," f2, 1)
-                        	        tl = length(t)
-                        		f = substr(t, 1, tl - fl)
-                                	if (tn = t == f1)
-                                	        f1 = f
-                                	else
-                                	        f2 = f
-                                	f = substr(t, tl - fl + 1)
-                        	}
-				if (f) {
-					if (B2)
-						tl = f
-                        		split(f1, v1, "")
-                        		for (i = split(f2, v2, ""); i > 0; i--) {
-                       	        		if ((t = c + base_map[v1[i]] + base_map[v2[i]]) > (N3 - 1)) {
-                                        		f = base_map[int(t % N3)] f
-                        	                	c = int(t / N3)
-                                		} else {
-                                        		f = base_map[t] f
-                                        		c = 0
-                                		}
-                        		}
-					if (B2) {
-						if (tn)
-							f1 = f1 tl
-						else
-							f2 = f2 tl
-					}
-				}
-				N1 = __return_value(N1, "0")
-				N2 = __return_value(N2, "0")
-                        	if (tl = absolute(length(N1) - length(N2))) {
-                        	        tn = substr(match_length(N1 "," N2, 1), 1, tl)
-                        	}
-                        	split(reverse_str(N1), v1, "")
-                        	split(reverse_str(N2), v2, "")
-				i = 1
-                        	do {
-                        	        if ((t = c + base_map[v1[i]] + base_map[v2[i]]) > (N3 - 1)) {
-                        	                n = base_map[int(t % N3)] n
-                        	                c = int(t / N3)
-                        	        } else {
-                        	                n = base_map[t] n
-                        	                c = 0
-                        	        }
-                                	i++
-                        	} while ((length(v1[i]) && length(v2[i])) || c)
-                	} else {
-                        	# TODO
-                        	# N1 + -N2
-                        	# -N1 + N2
-                	}
-                        delete v1
-                        delete v2
-		}
-                delete base_map
-                if (n = sn tn n __return_if_value(f, ".", 1)) {
-			if (B2)
-				printf("%s + %s = %s\n", sn1 N1 __return_if_value(f1, ".", 1), sn2 N2 __return_if_value(f2, ".", 1), n)
-                	return n
-		}
-        }
+	delete base_map
+	return n
 }
 
 function base_subtract(N1, N2, N3, B,    f1, f2, t, tl, sn, base_map)
 {
+	# TODO, all of it needs to be re-done
 	N3 = int(__get_base(__return_value(N3, 10), base_map))
 	if (N3 >= 2 && N3 <= 62 ) {
 		if (N3 > 10 && N3 < 37) {

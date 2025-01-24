@@ -282,6 +282,29 @@ function match_option(D1, D2, S, O, B1, B2, B3, 		dlm, s) {
 	return s
 }
 
+# even_lengths: Ensure the lengths of V[D1] and V[D2] are even by trimming the longer string
+function even_lengths(V, D1, D2, B, 	t1, t2, t3, t4)
+{
+	if (is_array(V)) {
+        	# Calculate the absolute difference in lengths between V[D1] and V[D2]
+        	if (t1 = absolute(length(V[D1]) - length(V[D2]))) {
+                	t2 = match_length(V[D1] "," V[D2], 1)
+                	t3 = length(t2) 
+			if (B)
+				t4 = substr(t2, t1 + 1)
+			else
+				t4 = substr(t2, 1, t3 - t1)
+                	if (t2 == V[D1]) 
+                        	V[D1] = t4
+                	else
+                        	V[D2] = t4
+			if (B)
+				return substr(t2, 1, t1)
+			return substr(t2, t3 - t1 + 1)
+        	}
+	}
+}
+
 # D1: The input string to search within.
 # D2: The pattern to search for within the input string.
 # D3: A substring to be removed from the matched elements (if specified).
