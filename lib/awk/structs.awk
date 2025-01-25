@@ -2,7 +2,7 @@
 # N1:	starting index
 # N2:	end index
 # N3:	skip value 
-# D: 	the data to split into an array
+# D:	the data to split into an array
 # S:	the separator
 function insert_indexed_item(V, D, S, N1, N2, N3, B,	v, l, i, j)
 {
@@ -63,20 +63,20 @@ function remove_indexed_item(V, M, N1, N2, N3, N4, B,	i, j)
 # V: The hashmap.
 # N: The current index.
 # M: The mode indicating whether to delete from the front or the back.
-function __delete_indexed_hashmap(V, N, M, 	n)
+function __delete_indexed_hashmap(V, N, M,	n)
 {
 	if (is_integral(N)) {
 		N = int(N)
-        	if (N == 0) {
-                	delete N
-        	} else if (M = match_option(M, "front, back")) {
-                	if (M == "front") {
-                        	delete V[N++]
+		if (N == 0) {
+			delete N
+		} else if (M = match_option(M, "front, back")) {
+			if (M == "front") {
+				delete V[N++]
 			} else if (M == "back") {
-                        	delete V[N--]
+				delete V[N--]
 			}
-        	}
-        	return N
+		}
+		return N
 	}
 }
 
@@ -166,7 +166,7 @@ function stack(V, M, D, S,	c)
 		if (EQTL__(M == "push", D, 1)) {
 			if (! is_array(V)) {
 				split("", V, "")
-	    			V[0] = 1
+				V[0] = 1
 			}
 			V[0] = insert_indexed_item(V, D, __return_value(S, ","), int(V[0]))
 		} else if (M == "isempty") {
@@ -187,7 +187,7 @@ function stack(V, M, D, S,	c)
 # M: The operation mode (enqueue, dequeue, peek, isempty).
 # D: The data to enqueue (if M is enqueue).
 # S: The delimiter for splitting the data.
-function queue(V, M, D, S, 	c, idx)
+function queue(V, M, D, S,	c, idx)
 {
 	if (M = match_option(M, "enqueue, dequeue, peek, isempty, size")) {
 		if (NOR__(0 in V, 1 in V)) {

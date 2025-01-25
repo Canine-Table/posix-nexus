@@ -2,7 +2,7 @@ function __trim_precision(N1, N2)
 {
 	if (is_integral(N1 = __return_value(N1, 10)) && is_digit(N2, 1)) {
 		N1 = sprintf("%." N1 "f", N2)
-		gsub(/(00+$)/,  "", N1)
+		gsub(/(00+$)/,	"", N1)
 		return N1
 	}
 }
@@ -51,21 +51,21 @@ function factoral(N, B,		n)
 
 function absolute(N)
 {
-        if (N < 0)
-                return N * -1
-        return N
+	if (N < 0)
+		return N * -1
+	return N
 }
 
 function ceiling(N)
 {
 	if (N != int(N))
-                return int(N) + 1
-        return N
+		return int(N) + 1
+	return N
 }
 
 function round(N)
 {
-        return int(N + 0.5)
+	return int(N + 0.5)
 }
 
 # DA: The lower bound of the range
@@ -73,8 +73,8 @@ function round(N)
 # DC: The value to be distributed within the range
 function distribution(N1, N2, N3)
 {
-        # Calculate the distribution value by dividing the difference between N1 and N3 by the difference between N2 and N3
-        return ceiling((N1 - N3) / (N2 - N3))
+	# Calculate the distribution value by dividing the difference between N1 and N3 by the difference between N2 and N3
+	return ceiling((N1 - N3) / (N2 - N3))
 }
 
 function euclidean(N1, N2)
@@ -99,33 +99,33 @@ function lcd(N1, N2)
 # DC: The modulus value to adjust the lower bound
 function modulus_range(N1, N2, N3)
 {
-        # If N1 is less than N2, adjust N1 to be within the range [N2, N3]
-        if (N1 < N2)
-                N1 = N2 + (N1 - N2 + N3) % (N3 - N2 + 1)
-        # If N1 is greater than N3, adjust N1 similarly
-        else if (N1 > N3)
-                N1 = N2 + (N1 - N2) % (N3 - N2 + 1)
-        # Return the adjusted value of N1
-        return N1
+	# If N1 is less than N2, adjust N1 to be within the range [N2, N3]
+	if (N1 < N2)
+		N1 = N2 + (N1 - N2 + N3) % (N3 - N2 + 1)
+	# If N1 is greater than N3, adjust N1 similarly
+	else if (N1 > N3)
+		N1 = N2 + (N1 - N2) % (N3 - N2 + 1)
+	# Return the adjusted value of N1
+	return N1
 }
 
 # N1:	base
 # N2:	exponent
 # N3:	modulus
-function modular_exponentiation(N1, N2, N3,     r)
+function modular_exponentiation(N1, N2, N3,	r)
 {
-    	r = 1
+	r = 1
 	N3 = __return_value(N3, 100000007)
-    	while (N2 > 0) {
-        	if (N2 % 2 == 1)
-            		r = (r * N1) % N3
-        	N1 = (N1 * N1) % N3
-        	N2 = int(N2 / 2)
+	while (N2 > 0) {
+		if (N2 % 2 == 1)
+			r = (r * N1) % N3
+		N1 = (N1 * N1) % N3
+		N2 = int(N2 / 2)
 	}
 	return r
 }
 
-function fermats_little_theorm(N, 	v, i, p)
+function fermats_little_theorm(N,	v, i, p)
 {
 	if (is_integral(N)) {
 		for (i = 1; i <= split("2,3,5,7,11,13,17,19,23,29,31,37,41,43,47,53", v, ","); i++) { 
@@ -150,45 +150,45 @@ function divisible(N1, N2)
 
 # N:	Number to test
 # T:	Trials to test number
-# S: 	Separator of trial numbers to test number
-function miller_rabin(N, T, S,   bases, t, d, s, a, x, i, j)
+# S:	Separator of trial numbers to test number
+function miller_rabin(N, T, S,	 bases, t, d, s, a, x, i, j)
 {
 	if (is_integral(N)) {
 		N = int(N)
 		if (N < 2)
-        		return 0
-    		if (N <= 3)
-        		return 1
-		# Use Fermat's Little Theorem as an initial filter
-    		if (! (N % 2 && N % 3) && fermats_little_theorm(N) == 0)
 			return 0
-    		# Rewrite (N - 1) as d * 2^s
-    		d = N - 1
-    		s = 0
-    		while (d % 2 == 0) {
-        		d = d / 2
-        		s++
-    		}
-    		# Load prime bases based on the range of N or T
+		if (N <= 3)
+			return 1
+		# Use Fermat's Little Theorem as an initial filter
+		if (! (N % 2 && N % 3) && fermats_little_theorm(N) == 0)
+			return 0
+		# Rewrite (N - 1) as d * 2^s
+		d = N - 1
+		s = 0
+		while (d % 2 == 0) {
+			d = d / 2
+			s++
+		}
+		# Load prime bases based on the range of N or T
 		t = trim_split(__return_value(T, __load_primes(N, S)), bases, S)
-    		# Perform Miller-Rabin test for each base in bases
-    		for (i = 1; i <= t; i++) {
-        		a = bases[i]
-        		x = modular_exponentiation(a, d, N)
+		# Perform Miller-Rabin test for each base in bases
+		for (i = 1; i <= t; i++) {
+			a = bases[i]
+			x = modular_exponentiation(a, d, N)
 			if (x == 1 || x == N - 1)
-            			continue
-        		for (j = 1; j < s; j++) {
-            			x = (x * x) % N
-            			if (x == N - 1)
-                			break
-        		}
-        		if (x != N - 1) {
-				delete bases
-            			return 0
+				continue
+			for (j = 1; j < s; j++) {
+				x = (x * x) % N
+				if (x == N - 1)
+					break
 			}
-    		}
+			if (x != N - 1) {
+				delete bases
+				return 0
+			}
+		}
 		delete bases
-    		return 1
+		return 1
 	}
 }
 
@@ -229,8 +229,8 @@ function __load_primes(N, S)
 function random_prime(N, n)
 {
 	if (is_integral(N)) {
-	    	if (N > 8)
-	    		N = 8
+		if (N > 8)
+			N = 8
 		N = int(N)
 		do {
 			n = substr(entropy(N), 1, N)
