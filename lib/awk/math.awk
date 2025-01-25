@@ -17,6 +17,13 @@ function tau(N)
 	return __trim_precision(N, 2 * atan2(0, -1))
 }
 
+function remainder(N1, N2)
+{
+	if ((N1 = (1 - (0 __return_if_value(__get_half(N1 / N2, "."), ".", 1))) * N2) < N2)
+		return round(N1)
+	return 0
+}
+
 function fibonacci(N, B,	n1, n2)
 {
 	if (__is_index(N)) {

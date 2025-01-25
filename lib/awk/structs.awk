@@ -8,7 +8,7 @@ function insert_indexed_item(V, D, S, N1, N2, N3, B,	v, l, i, j)
 {
 	if (EQTL__(is_array(V), D, 1)) {
 		if (! is_integral(N1))
-			N1 = size(V) 
+			N1 = size(V)
 		if ((N2 = __return_value(N2, 0)) && __is_index(N2) && N2 > N1)
 			j = modulus_range(N1, N1, N2)
 		else
@@ -33,6 +33,15 @@ function insert_indexed_item(V, D, S, N1, N2, N3, B,	v, l, i, j)
 	}
 }
 
+function unique_indexed_array(D, V, S,		v, s)
+{
+	S = __return_value(S, ",")
+	array(D, v, S)
+	s = __join_array(v, S)
+	delete v
+	return split(s, V, S)
+}
+
 function remove_indexed_item(V, M, N1, N2, N3, N4, B,	i, j)
 {
 	if (is_array(V) && (M = match_option(M, "front, back"))) {
@@ -40,7 +49,7 @@ function remove_indexed_item(V, M, N1, N2, N3, N4, B,	i, j)
 			N1 = 0
 		if (! __is_index(N2) || N2 < N1)
 			N2 = size(V)
-		if (! is_index(N3 = absolute(N3)))
+		if (! __is_index(N3 = absolute(N3)))
 			N3 = 1
 		if (! __is_index(N4))
 		    N4 = 1
@@ -168,16 +177,16 @@ function stack(V, M, D, S,	c)
 				split("", V, "")
 				V[0] = 1
 			}
-			V[0] = insert_indexed_item(V, D, __return_value(S, ","), int(V[0]))
+			V[0] = insert_indexed_item(V, D, __return_value(S, ","), V[0])
 		} else if (M == "isempty") {
-			if (V[0])
+			if (V[0] > 1)
 				return 0
 			else
 				return 1
-		} else if (V[0]) {
-			c = V[V[0]]
+		} else if (V[0] > 1) {
+			c = V[V[0] - 1]
 			if (M == "pop")
-				V[0] = __delete_indexed_hashmap(V, int(V[0]), "back")
+				V[0] = remove_indexed_item(V, "back", 1, V[0], 1, 1)
 			return c
 		}
 	}
@@ -269,15 +278,6 @@ function split_parameters(D, V, S1, S2,		i, j, v, k)
 		delete v[i]
 	}
 	delete v
-}
-
-function unique_indexed_array(D, V, S,		v, s)
-{
-	S = __return_value(S, ",")
-	array(D, v, S)
-	s = __join_array(v, S)
-	delete v
-	return split(s, V, S)
 }
 
 function compare_arrays(DA, DB, M, S, O,	dlm, va, vb, s)

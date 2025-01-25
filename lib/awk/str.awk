@@ -22,9 +22,9 @@ function append_str(N, D, B,	s)
 			else
 				s = D s
 		} while (--N)
-		D = s
-	}
-	return D
+		return s
+	} else if (length(B) && B == 0)
+		return D
 }
 
 function reverse_str(D,		i, v)

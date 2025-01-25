@@ -1,5 +1,5 @@
 # __load_number_map: Load numbers into a map V1 based on the specified base N2 and value N1
-function __load_number_map(V1, N1, V2, N2,	idx)
+function __load_number_map(V1, N1, V2, N2, N3,		idx)
 {
 	if (N1) {
 		# Initialize V1[0] to 0 if not already set
@@ -7,10 +7,13 @@ function __load_number_map(V1, N1, V2, N2,	idx)
 			split("", V1, "")
 			V1[0] = 0
 		}
+		if (__is_index(N3))
+			idx = N3
 		# Increment index for storing new number
-		idx = V1[0] + 1
+		else
+			idx = V1[0] + 1
 		# Convert N2 to an integer base
-		N2 = int(__get_base(__return_value(N2, 10), V2))
+		N2 = __set_base(N2, V2)
 		# Check if N2 is within a valid range (2 to 62)
 		if (N2 >= 2 && N2 <= 62) {
 			# Convert N1 to lowercase if base is between 11 and 36
@@ -21,7 +24,8 @@ function __load_number_map(V1, N1, V2, N2,	idx)
 				N1 = substr(N1, 2)
 			# Check if N1 is a valid number in the given base
 			if (0 N1 0 ~ __base_regex(N2 - 1, V2)) {
-				V1[0] = idx
+				if (! __is_index(N3))
+					V1[0] = idx
 				V1["bs" idx] = N2
 				# Store the fractional part of N1, if it exists
 				if (V1["f" idx] = __get_half(N1, "."))
@@ -41,9 +45,24 @@ function __load_number_map(V1, N1, V2, N2,	idx)
 	}
 }
 
+function __construct_number(V, N, B1, B2, B3,	t)
+{
+	if (0 in V && V[0] >= N) {
+		if (B1)
+			t = __return_value(V["n" N], 0)
+		if (B2)
+			t = __return_value(t, 0) __return_if_value(V["f" N], ".", 1)
+		if (B3)
+			t = __return_value(V["sn" N], "+") t
+		else if (length(B3))
+			t = V["sn" N] t
+		return t
+	}
+}
+
 function __get_base(D, V)
 {
-	if (! is_array(V))
+	if (! (is_array(V) && is_integral(D)))
 		__load_upper_map(V)
 	if (D ~ /^[a-zA-Z]$/)
 		D = V[D]
@@ -51,17 +70,21 @@ function __get_base(D, V)
 		return D
 }
 
+function __set_base(N, V)
+{
+	return int(__return_value(__get_base(N, V), 10))
+}
+
 # N:   The base for which the regular expression is to be generated.
 # V:   A mapping array used for generating the regular expression.
 # B:   A flag indicating whether to load the number, lower, or upper map.
-function __base_regex(N, V, B, rg)
+function __base_regex(N, V, B, 		rg)
 {
-	if (is_integral(N)) {  # Check if N is an integral value
-		N = int(N)
+	if (N = __set_base(N, V)) {  # Check if N is an integral value
 		if (N < 10) {
 			if (B)
 				__load_num_map(V)  # Load number map if B is true
-			rg = "[0-" V[N] "]+"  # Generate regex for base less than 10
+			rg = "[0-" N "]+"  # Generate regex for base less than 10
 		} else if (N < 36) {
 			if (B)
 				__load_lower_map(V)  # Load lower map if B is true
@@ -109,11 +132,16 @@ function __bit_width(N)
 	return ceiling(__base_logarithm(N, 2))
 }
 
-function __pad_bits(N1, N2)
+function __pad_bits(V, N1, N2)
 {
-	if (+N2 > 1)
-		N1 = append_str(length(N1) % __bit_width(N2), "0") N1
-	return N1
+	if (+N2 > 1 && __construct_number(V, N1, 1, 1) ~ __base_regex(1)) {
+		N2 = __bit_width(N2)
+		if (IN__(V, "n" N1))
+			V["n" N1] = append_str(remainder(length(V["n" N1]), N2), "0") V["n" N1]
+		if (IN__(V, "f" N1))
+			V["f" N1] = V["f" N1] append_str(remainder(length(V["f" N1]), N2), "0")
+		return __construct_number(V, N1, 1, 1)
+	}
 }
 
 # N1: The number to be converted.
@@ -123,7 +151,7 @@ function __pad_bits(N1, N2)
 function convert_base(N1, N2, N3, N4,	base_map, num_map, n, cv, i, v, j)
 {
 	# Ensure the target base N3 is between 2 and 62
-	if (N3 = int(__return_value(__get_base(N3, base_map), 10))) {
+	if (N3 = __set_base(N3, base_map)) {
 		# Ensure input base is valid to prevent
 		if (cv = __load_number_map(num_map, N1, base_map, N2)) {
 			# No conversion needed if ibase equals obase
@@ -171,9 +199,10 @@ function convert_base(N1, N2, N3, N4,	base_map, num_map, n, cv, i, v, j)
 
 function base_compliment(N1, N2,	base_map, num_map, i, v, n)
 {
-	if (N2 = int(__return_value(__get_base(N2, base_map), 10))) {
+	if (N3 = __set_base(N3, base_map)) {
 		if (N1 = __load_number_map(num_map, N1, base_map, N2)) {
 			delete num_map
+			N2 = N2 - 1
 			for (i = 1; i <= split(N1, v, ""); i++) {
 				if (v[i] ~ /[.]|[+]|[-]/)
 					n = n v[i]
@@ -183,12 +212,13 @@ function base_compliment(N1, N2,	base_map, num_map, i, v, n)
 			delete v
 			delete base_map
 			return n
-		}	}
+		}
+	}
 }
 
-function __add_base(N1, N2, N3,		num_map, base_map, sn, f, n, c, t1, t2, v1, v2, i)
+function add_base(N1, N2, N3,		num_map, base_map, sn, f, n, c, t1, t2, v1, v2, i)
 {
-	if (N3 = int(__return_value(__get_base(N3, base_map), 10))) {
+	if (N3 = __set_base(N3, base_map)) {
 		if (__load_number_map(num_map, N1, base_map, N3) && __load_number_map(num_map, N2, base_map, N3)) {
 			if (__return_value(num_map["sn1"], "+") == __return_value(num_map["sn2"], "+")) {
 				sn = substr(num_map["sn1"] num_map["sn2"], 1, 1)
@@ -215,7 +245,7 @@ function __add_base(N1, N2, N3,		num_map, base_map, sn, f, n, c, t1, t2, v1, v2,
 				i = 1
 				do {
 					if ((t1 = c + base_map[v1[i]] + base_map[v2[i]]) > (N3 - 1)) {
-	n = base_map[int(t1 % N3)] n
+						n = base_map[int(t1 % N3)] n
 						c = int(t1 / N3)
 					} else {
 						n = base_map[t1] n
@@ -232,44 +262,6 @@ function __add_base(N1, N2, N3,		num_map, base_map, sn, f, n, c, t1, t2, v1, v2,
 			}
 			delete v1
 			delete v2
-		}
-		delete num_map
-	}
-	delete base_map
-	return n
-}
-
-function base_subtract(N1, N2, N3,	 base_map, num_map, sn, n, t1, t2)
-{
-	if (N3 = int(__return_value(__get_base(N3, base_map), 10))) {
-		if (__load_number_map(num_map, N1, base_map, N3) && __load_number_map(num_map, N2, base_map, N3)) {
-			if (__return_value(num_map["sn1"], "+") == __return_value(num_map["sn2"], "+")) {
-				if (num_map["sn1"] == "-")
-					sn = "-"
-				else
-					sn = substr(num_map["sn1"] num_map["sn2"], 1, 1)
-				N1 = __return_value(num_map["n1"], 0) __return_if_value(num_map["f1"])
-				N2 = __return_value(num_map["n2"], 0) __return_if_value(num_map["f2"])
-				if (XNOR__(num_map["sn1"] == "-", __return_value(num_map["sn2"], "+") != "-")) {
-					n = sn add_base(N1, N2, N3)
-				} else {
-					N1 = __pad_bits(convert_base(N1, N3, 2), N3)
-					N2 = __pad_bits(convert_base(N2, N3, 2), N3)
-					# TODO all of it needs to be re-done
-					# TODO work in progress
-					if ((t1 = length(N1) - length(N2)) > 0) {
-						N2 = append_str(t1 - sub(/[.]/, "&", N2), "0") N2
-					} else if (t1) {
-						t2 = append_str(absolute(t1) - sub(/[.]/, "&", N1), "0") N1
-						N1 = N2
-						N2 = t2
-						if (sn != "-")
-							sn = "-"
-						else
-							sn = substr(num_map["sn1"] num_map["sn2"], 1, 1)
-					}
-				}
-			}
 		}
 		delete num_map
 	}

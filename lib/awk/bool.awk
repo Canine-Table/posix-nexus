@@ -26,6 +26,11 @@ function TRUE__(D, B)
 	return 0
 }
 
+function IN__(V, D, B)
+{
+	return D in V && TRUE__(V[D], B)
+}
+
 # FALSE__: Return the logical NOT of TRUE__(D, B)
 function FALSE__(D, B)
 {

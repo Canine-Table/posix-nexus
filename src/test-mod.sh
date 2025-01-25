@@ -19,21 +19,18 @@ get_test_bases3() {
 		)
 	"'
 		BEGIN {
-			print __add_base(tmpa, tmpb, tmpc)
-			#print 
-			#arr["n1"] = tmpa
-			#arr["n2"] = tmpb
-			#print 
-			#print even_lengths(arr, "n1", "n2", tmpc)
-			#print arr["n1"]
-			#print arr["n2"]
-			#print __add_base(tmpa, tmpb, tmpc)
-			#print base_compliment(tmpa, tmpb)
-			#print convert_base(tmpa, tmpb, tmpc)
-
-			#__load_number_map(arr, tmpa, tmpb)
-			#print arr["n1"]
-			#print arr["f1"]
+			stack(arr, "push", "a,b,c,d")
+			print stack(arr, "pop")
+			print stack(arr, "pop")
+			stack(arr, "push", "e")
+			stack(arr, "push", "e")
+			stack(arr, "push", "e")
+			stack(arr, "push", "e")
+			print stack(arr, "pop")
+			print stack(arr, "pop")
+			print stack(arr, "isempty")
+			print stack(arr, "pop")
+			print stack(arr, "isempty")
 		}
 	'
 }
