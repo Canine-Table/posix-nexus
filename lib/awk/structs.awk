@@ -1,20 +1,26 @@
-# V: The array.
+# V:	The array.
 # N1:	starting index
 # N2:	end index
 # N3:	skip value 
 # D:	the data to split into an array
 # S:	the separator
-function insert_indexed_item(V, D, S, N1, N2, N3, B,	v, l, i, j)
+# insert_indexed_item: Insert elements into array V based on conditions
+function insert_indexed_item(V, D, S, N1, N2, N3, B,		v, l, i, j)
 {
+	# Check if V is an array and D is true using EQTL__
 	if (EQTL__(is_array(V), D, 1)) {
+		# If N1 is not an integral, set it to size of V
 		if (! is_integral(N1))
 			N1 = size(V)
+		# Verify N2 is a valid index and greater than N1
 		if ((N2 = __return_value(N2, 0)) && __is_index(N2) && N2 > N1)
 			j = modulus_range(N1, N1, N2)
 		else
 			j = N1
+		# Set N3 to 1 if it's not a valid index
 		if (! __is_index(N3))
-		    N3 = 1
+			N3 = 1
+		# Loop through elements split from D based on S
 		for (i = 1; i <= trim_split(D, v, __return_value(S, ",")); i++) {
 			if (B) {
 				printf("[%s] = ", j)
@@ -23,6 +29,7 @@ function insert_indexed_item(V, D, S, N1, N2, N3, B,	v, l, i, j)
 				printf("%s\n", v[i])
 			}
 			V[j] = v[i]
+			# Update j using modulus range if N2 is valid, otherwise increment by N3
 			if (N2)
 				j = modulus_range(j + N3, N1, N2)
 			else
@@ -42,50 +49,38 @@ function unique_indexed_array(D, V, S,		v, s)
 	return split(s, V, S)
 }
 
-function remove_indexed_item(V, M, N1, N2, N3, N4, B,	i, j)
+# remove_indexed_item: Remove elements from array V based on conditions
+function remove_indexed_item(V, M, N1, N2, N3, N4, B, 		i, j)
 {
+	# Check if V is an array and match M with "front" or "back" option
 	if (is_array(V) && (M = match_option(M, "front, back"))) {
-		if (! is_integral(N1))
+		# Set N1 to 0 if it is not an integral
+		if (!is_integral(N1))
 			N1 = 0
-		if (! __is_index(N2) || N2 < N1)
+		# Validate N2 and set it to the size of V if necessary
+		if (!__is_index(N2) || N2 < N1)
 			N2 = size(V)
-		if (! __is_index(N3 = absolute(N3)))
+		# Set N3 to 1 if it is not a valid index and absolute value
+		if (!__is_index(N3 = absolute(N3)))
 			N3 = 1
-		if (! __is_index(N4))
-		    N4 = 1
+		# Set N4 to 1 if it is not a valid index
+		if (!__is_index(N4))
+			N4 = 1
+		# Determine starting point for removal based on "front" or "back" option
 		if (M == "back") {
 			i = modulus_range(N2, N1, N2)
-			N3 = -N3
-		} else {
+			N3 = -N3 # Negative step for backward iteration
+		} else { # Default to "front"
 			i = modulus_range(N1, N1, N2)
 		}
+		# Loop to remove N4 items
 		while (N4-- > 0) {
-			if (B)
+			if (B) # Print removed item if B is true
 				printf("[%s] = %s\n", i, V[i])
-			delete V[i]
-			i = modulus_range(i + N3, N1, N2)
+			delete V[i] # Remove the item at index i
+			i = modulus_range(i + N3, N1, N2) # Update index i
 		}
-		return i
-	}
-}
-
-# V: The hashmap.
-# N: The current index.
-# M: The mode indicating whether to delete from the front or the back.
-function __delete_indexed_hashmap(V, N, M,	n)
-{
-	if (is_integral(N)) {
-		N = int(N)
-		if (N == 0) {
-			delete N
-		} else if (M = match_option(M, "front, back")) {
-			if (M == "front") {
-				delete V[N++]
-			} else if (M == "back") {
-				delete V[N--]
-			}
-		}
-		return N
+		return i # Return the last index used
 	}
 }
 
@@ -120,37 +115,49 @@ function __is_index(N)
 	return 0
 }
 
-function resize_indexed_hashmap(V, N1, N2, S, D,	crsz, nsz, s, i, j)
+# resize_indexed_hashmap: Resize an indexed hashmap V based on conditions
+function resize_indexed_hashmap(V, N1, N2, S, D, 	crsz, nsz, s, i, j)
 {
+	# Check if V is an array
 	if (is_array(V)) {
+		# Confirm N1 is a valid index
 		if (__is_index(N1)) {
-			crsz = size(V)
+			crsz = size(V) # Get the current size of V
+			# Proceed if N1 is less than current size
 			if (N1 < crsz) {
+				# Validate N2 and set it appropriately
 				if (__is_index(N2)) {
 					if (N1 - N2 <= 0)
 						N2 = N1 - 1
 				}
-				nsz = distribution(crsz, N1, N2)
-				S = __return_value(S, ",")
+				nsz = distribution(crsz, N1, N2) # Calculate new size distribution
+				S = __return_value(S, ",") # Set separator S with default value ","
 				j = N2
+				# Loop through the array to resize and join elements
 				for (i = 1; i <= crsz - N2; i++) {
-					s = __join_str(s, V[i + N2], S)
-					delete V[i + N2]
+					s = __join_str(s, V[i + N2], S) # Join elements with separator S
+					delete V[i + N2] # Delete old elements
+					# Insert joined string into V[j] and reset s
 					if (! (i % nsz) || i == crsz - N2) {
 						V[++j] = s
 						s = ""
 					}
 				}
 			} else {
-				j = crsz
+				j = crsz # Set j to current size if N1 is not less
 			}
+			# Fill remaining elements with default value D if necessary
 			if (j < N1) {
-				D = __return_value(D, "0")
+				D = __return_value(D, "0") # Default value for D
 				do {
 					V[++j] = D
 				} while (j < N1)
+			} else if (j > N1) {
+				for (; j > N1; j--) {
+					delete V[j]
+				}
 			}
-			return j
+			return j # Return new size of V
 		}
 	}
 }
@@ -280,30 +287,30 @@ function split_parameters(D, V, S1, S2,		i, j, v, k)
 	delete v
 }
 
-function compare_arrays(DA, DB, M, S, O,	dlm, va, vb, s)
+function compare_arrays(D1, D2, M, S, O,	dlm, v1, v2, s)
 {
 	__load_delim(dlm, S, O)
 	if (M = match_option(M, "left, right, intersect, difference")) {
 		if (M == "right") {
-			array(DB, va, dlm["s"])
-			array(DA, vb, dlm["s"])
+			array(D2, v1, dlm["s"])
+			array(D1, v2, dlm["s"])
 		} else {
-			array(DA, va, dlm["s"])
-			array(DB, vb, dlm["s"])
+			array(D1, v1, dlm["s"])
+			array(D2, v2, dlm["s"])
 		}
-		for (i in va) {
-			if (EQTT__(i in vb, M == "intersect"))
+		for (i in v1) {
+			if (EQTT__(i in v2, M == "intersect"))
 				s = __join_str(s, i, dlm["o"])
 		}
 		if (M == "difference") {
-			for (i in vb) {
-				if (! (i in va)) {
+			for (i in v2) {
+				if (! (i in v1)) {
 					s = __join_str(s, i, dlm["o"])
 				}
 			}
 		}
-		delete va
-		delete vb
+		delete v1
+		delete v2
 	}
 	delete dlm
 	return s
