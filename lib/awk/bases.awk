@@ -185,7 +185,7 @@ function convert_base(N1, N2, N3, N4,	base_map, num_map, n, cv, i, v, j)
 					num_map["n1"] = n
 					if (num_map["f1"] = __return_if_value(num_map["f1"], "0.", 1)) {
 						n = ""
-						j = __return_value(int(N4), 32)
+						j = __return_value(int(N4), 3)
 						do {
 							n = n base_map[i = int(num_map["f1"] = num_map["f1"] * N3)]
 						} while((num_map["f1"] = num_map["f1"] - i) > 0.01 && --j)
@@ -217,7 +217,7 @@ function compliment(N1, N2,	base_map, num_map, i, v, n)
 					n = n base_map[N2 - v[i]]
 			}
 			delete v
-		delete base_map
+			delete base_map
 			return n
 		}
 	}
@@ -240,23 +240,25 @@ function base_compliment(N1, N2, N3, N4, D, B,		base_map, num_map, f, t1, t2, t3
 		if (B)
 			D = __return_value(D, "+")
 		N4 = int(absolute(N4))
-		if (__load_number_map(num_map, convert_base(N1, N3, 2, N4), base_map, 2) && __load_number_map(num_map, convert_base(N2, N3, 2, N4), base_map, 2)) {
+		if (__load_number_map(num_map, N1, base_map, N3) && __load_number_map(num_map, N2, base_map, N3)) {
+			if (IN__(num_map, "f1") || IN__(num_map, "f2")) {
+				if ((t1 = length(num_map["f1"]) - length(num_map["f2"])) > 0)
+					num_map["f2"] = num_map["f2"] append_str(t1, "0")
+				else if (t1)
+					num_map["f1"] = num_map["f1"] append_str(absolute(t1), "0")
+			}
+			__load_number_map(num_map, convert_base(__construct_number(num_map, 1, 1, 1), N3, 2, N4), base_map, 2, 1)
+			__load_number_map(num_map, convert_base(__construct_number(num_map, 2, 1, 1), N3, 2, N4), base_map, 2, 2)
 			__pad_bits(num_map, 1, N3)
 			__pad_bits(num_map, 2, N3)
 			num_map["n2"] = compliment(append_str(length(num_map["n1"]) - length(num_map["n2"]), "0") num_map["n2"], 2)
-			if (IN__(num_map, "f2")) {
-				if ((t1 = length(num_map["f1"]) - length(num_map["f2"])) > 0)
-					num_map["f1"] = num_map["f1"] append_str(absolute(t1), "0")
-				else if (t1)
-					num_map["f2"] = num_map["f2"] append_str(t1, "0")
+			if (IN__(num_map, "f2"))
 				num_map["f2"] = compliment(num_map["f2"], 2)
-			}
-			N1 = num_map["n1"] __return_if_value(num_map["f1"], ".", 1)
-			N2 = add_base(num_map["n2"] __return_if_value(num_map["f2"], ".", 1), 1, 2)
+
+			N1 = __construct_number(num_map, 1, 1, 1)
+			N2 = add_base(__construct_number(num_map, 2, 1, 1), 1, 2)
 			t2 = add_base(N1, N2, 2)
 			__load_number_map(num_map, t2, base_map, 2)
-			print num_map["n3"]
-			print num_map["n1"]
 			if ((t3 = length(num_map["n1"]) - length(num_map["n3"])) < 0)
 				t2 = substr(t2, 1 + absolute(t3))
 			else if (t3)
@@ -333,7 +335,7 @@ function add_base(N1, N2, N3, N4, B,		num_map, base_map, sn, f, n, c, t1, t2, v1
 					sn = __return_value(sn, "+")
 				n = sn substr(t2, 1, length(t2) - length(n)) n __return_if_value(f, ".", 1)
 			} else {
-				n = subtract_base(num_map["n1"] __return_if_value(num_map["f1"], ".", 1), num_map["n2"] __return_if_value(num_map["f2"], ".", 1), N3, N4, B)
+				n = subtract_base(__construct_number(num_map, 1, 1, 1), __construct_number(num_map, 2, 1, 1), N3, N4, B)
 				if (num_map["sn1"] == "-")
 					n = "-" n
 			}
