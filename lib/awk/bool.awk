@@ -134,24 +134,28 @@ function NCMP__(B1, B2, B3, B4)
 	return NOT__(CMP__(B1, B2, B3, B4))
 }
 
-function LOR__(B1, B2, B3, M,	     t)
+# LOR__: Compare two values B1 and B2 based on modes specified in M
+function LOR__(B1, B2, B3, M, t)
 {
-	if (M ~ /^(l(e(n(g(t(h)?)?)?)?)?)$/) 
+	# Determine mode based on M pattern: length or default
+	if (M ~ /^(l(e(n(g(t(h)?)?)?)?)?)$/) # Regex for 'length'
 		t = 0
-	else if (M ~ /^(d(e(f(a(u(l(t)?)?)?)?)?)?)$/) 
-		t = 1
+	else if (M ~ /^(d(e(f(a(u(l(t)?)?)?)?)?)?)$/) # Regex for 'default'
+		t = 1	     
+	# Full comparison based on t
 	if (FULL__(t)) {
 		if (B3)
-			return GT__(B1, B2, t)
+			return GT__(B1, B2, t) # Use greater than comparison
 		else
-			return LT__(B1, B2, t)
+			return LT__(B1, B2, t) # Use less than comparison
 	} else {
+		# Check if B1 and B2 are digits or if M is 'string'
 		if (! (is_digit(B1, 1) && is_digit(B2, 1)) || M ~ /^(s(t(r(i(n(g)?)?)?)?)?)$/) 
-			t = "a"
+			t = "a" # Set t to 'a' for ASCII comparison
 		if (B3)
-			return GT__(t B1, t B2)
+			return GT__(t B1, t B2) # Concatenate t with B1 and B2, then compare
 		else
-			return LT__(t B1, t B2)
+			return LT__(t B1, t B2) # Concatenate t with B1 and B2, then compare
 	}
 }
 

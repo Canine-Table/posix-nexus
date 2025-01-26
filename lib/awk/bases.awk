@@ -45,6 +45,13 @@ function __load_number_map(V1, N1, V2, N2, N3,		idx)
 	}
 }
 
+function __load_signs(V)
+{
+	V[""] = "-"
+	V["+"] = "-"
+	V["-"] = "+"
+}
+
 function __construct_number(V, N, B1, B2, B3,	t)
 {
 	if (0 in V && V[0] >= N) {
@@ -197,9 +204,9 @@ function convert_base(N1, N2, N3, N4,	base_map, num_map, n, cv, i, v, j)
 	return cv
 }
 
-function base_compliment(N1, N2,	base_map, num_map, i, v, n)
+function compliment(N1, N2,	base_map, num_map, i, v, n)
 {
-	if (N3 = __set_base(N3, base_map)) {
+	if (N2 = __set_base(N2, base_map)) {
 		if (N1 = __load_number_map(num_map, N1, base_map, N2)) {
 			delete num_map
 			N2 = N2 - 1
@@ -207,11 +214,70 @@ function base_compliment(N1, N2,	base_map, num_map, i, v, n)
 				if (v[i] ~ /[.]|[+]|[-]/)
 					n = n v[i]
 				else
-					n = n base_map[N2 - base_map[v[i]]]
+					n = n base_map[N2 - v[i]]
 			}
 			delete v
-			delete base_map
+		delete base_map
 			return n
+		}
+	}
+}
+
+function base_compliment(N1, N2, N3, D, B,		base_map, num_map, f, t1, t2, t3)
+{
+	if (N3 = __set_base(N3, base_map)) {
+		if (! __is_signed(D))
+			D = ""
+		if (LOR__(N1, N2, 0, "length") || (EQ__(N1, N2, 0) && LT__(N1, N2))) {
+			if (__return_value(D, "+") == "+")
+				D = "-"
+			else
+				D = ""
+			t1 = N1
+			N1 = N2
+			N2 = t1
+		}
+		if (B)
+			D = __return_value(D, "+")
+		N1 = convert_base(N1, N3, 2)
+		N2 = convert_base(N2, N3, 2)
+		if (__load_number_map(num_map, N1, base_map, N3) && __load_number_map(num_map, N2, base_map, N3)) {
+			__pad_bits(num_map, 1, N3)
+			num_map["n2"] = compliment(append_str(length(num_map["n1"]) - length(num_map["n2"]), "0") num_map["n2"], 2)
+			if (IN__(num_map, "f2"))
+				num_map["f2"] = compliment(num_map["f2"], 2)
+			N1 = num_map["n1"] __return_if_value(num_map["f1"], ".", 1)
+			N2 = add_base(num_map["n2"] __return_if_value(num_map["f2"], ".", 1), 1, N3)
+			delete base_map
+			delete num_map
+			t2 = add_base(N1, N2, 2)
+			if ((t3 = length(N1) - length(t2)) < 0)
+				t2 = substr(t2, 1 + absolute(t3))
+			else if (t3)
+				t2 = append_str(t3, "0") t2
+			if ((t2 = convert_base(t2, 2, N3)) != 0)
+				t2 = D t2
+			return t2
+		}
+	}
+}
+
+function base_subtract_base(N1, N2, N3,	 	base_map, num_map, sn, n, sn1, sn2)
+{
+	if (N3 = __set_base(N3, base_map)) {
+		if (sn1 = __get_sign(N1))
+			N1 = substr(N1, 2)
+		if (sn2 = __get_sign(N2))
+			N2 = substr(N2, 2)
+		if (__return_value(sn1, "+") == __return_value(sn2, "+"))
+			sn = substr(sn1 sn2, 1, 1)
+		else
+			sn = sn1
+		if (XNOR__(sn1 == "-", __return_value(sn2, "+") != "-")) {
+			if (n = add_base(N1, N2, N3))
+				return sn n
+		} else {
+			return base_compliment(N1, N2, sn1)
 		}
 	}
 }
@@ -255,6 +321,7 @@ function add_base(N1, N2, N3,		num_map, base_map, sn, f, n, c, t1, t2, v1, v2, i
 				} while ((length(v1[i]) && length(v2[i])) || c)
 				n = sn substr(t2, 1, length(t2) - length(n)) n __return_if_value(f, ".", 1)
 			} else {
+				print N1 "  +  " N2
 				# TODO
 				# -N1 + N2
 				# N1 + -N2

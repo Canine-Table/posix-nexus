@@ -19,18 +19,10 @@ get_test_bases3() {
 		)
 	"'
 		BEGIN {
-			stack(arr, "push", "a,b,c,d")
-			print stack(arr, "pop")
-			print stack(arr, "pop")
-			stack(arr, "push", "e")
-			stack(arr, "push", "e")
-			stack(arr, "push", "e")
-			stack(arr, "push", "e")
-			print stack(arr, "pop")
-			print stack(arr, "pop")
-			print stack(arr, "isempty")
-			print stack(arr, "pop")
-			print stack(arr, "isempty")
+			#print subtract_base(tmpa, tmpb, tmpc)
+			print add_base(tmpa, tmpb, tmpc)
+			#print base_compliment(tmpa, tmpb, 10)
+			#print add_base(tmpa, tmpb, tmpc)
 		}
 	'
 }
