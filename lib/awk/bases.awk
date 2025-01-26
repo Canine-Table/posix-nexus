@@ -223,7 +223,7 @@ function compliment(N1, N2,	base_map, num_map, i, v, n)
 	}
 }
 
-function base_compliment(N1, N2, N3, D, B,		base_map, num_map, f, t1, t2, t3)
+function base_compliment(N1, N2, N3, N4, D, B,		base_map, num_map, f, t1, t2, t3)
 {
 	if (N3 = __set_base(N3, base_map)) {
 		if (! __is_signed(D))
@@ -239,30 +239,38 @@ function base_compliment(N1, N2, N3, D, B,		base_map, num_map, f, t1, t2, t3)
 		}
 		if (B)
 			D = __return_value(D, "+")
-		N1 = convert_base(N1, N3, 2)
-		N2 = convert_base(N2, N3, 2)
-		if (__load_number_map(num_map, N1, base_map, N3) && __load_number_map(num_map, N2, base_map, N3)) {
+		N4 = int(absolute(N4))
+		if (__load_number_map(num_map, convert_base(N1, N3, 2, N4), base_map, 2) && __load_number_map(num_map, convert_base(N2, N3, 2, N4), base_map, 2)) {
 			__pad_bits(num_map, 1, N3)
+			__pad_bits(num_map, 2, N3)
 			num_map["n2"] = compliment(append_str(length(num_map["n1"]) - length(num_map["n2"]), "0") num_map["n2"], 2)
-			if (IN__(num_map, "f2"))
+			if (IN__(num_map, "f2")) {
+				if ((t1 = length(num_map["f1"]) - length(num_map["f2"])) > 0)
+					num_map["f1"] = num_map["f1"] append_str(absolute(t1), "0")
+				else if (t1)
+					num_map["f2"] = num_map["f2"] append_str(t1, "0")
 				num_map["f2"] = compliment(num_map["f2"], 2)
+			}
 			N1 = num_map["n1"] __return_if_value(num_map["f1"], ".", 1)
-			N2 = add_base(num_map["n2"] __return_if_value(num_map["f2"], ".", 1), 1, N3)
-			delete base_map
-			delete num_map
+			N2 = add_base(num_map["n2"] __return_if_value(num_map["f2"], ".", 1), 1, 2)
 			t2 = add_base(N1, N2, 2)
-			if ((t3 = length(N1) - length(t2)) < 0)
+			__load_number_map(num_map, t2, base_map, 2)
+			print num_map["n3"]
+			print num_map["n1"]
+			if ((t3 = length(num_map["n1"]) - length(num_map["n3"])) < 0)
 				t2 = substr(t2, 1 + absolute(t3))
 			else if (t3)
 				t2 = append_str(t3, "0") t2
 			if ((t2 = convert_base(t2, 2, N3)) != 0)
 				t2 = D t2
-			return t2
 		}
+		delete num_map
 	}
+	delete base_map
+	return t2
 }
 
-function base_subtract_base(N1, N2, N3,	 	base_map, num_map, sn, n, sn1, sn2)
+function subtract_base(N1, N2, N3, N4, B,	base_map, num_map, sn, n, sn1, sn2)
 {
 	if (N3 = __set_base(N3, base_map)) {
 		if (sn1 = __get_sign(N1))
@@ -273,16 +281,18 @@ function base_subtract_base(N1, N2, N3,	 	base_map, num_map, sn, n, sn1, sn2)
 			sn = substr(sn1 sn2, 1, 1)
 		else
 			sn = sn1
+		if (B)
+			sn = __return_value(sn, "+")
 		if (XNOR__(sn1 == "-", __return_value(sn2, "+") != "-")) {
 			if (n = add_base(N1, N2, N3))
 				return sn n
 		} else {
-			return base_compliment(N1, N2, sn1)
+			return base_compliment(N1, N2, N3, N4, sn1, B)
 		}
 	}
 }
 
-function add_base(N1, N2, N3,		num_map, base_map, sn, f, n, c, t1, t2, v1, v2, i)
+function add_base(N1, N2, N3, N4, B,		num_map, base_map, sn, f, n, c, t1, t2, v1, v2, i)
 {
 	if (N3 = __set_base(N3, base_map)) {
 		if (__load_number_map(num_map, N1, base_map, N3) && __load_number_map(num_map, N2, base_map, N3)) {
@@ -319,13 +329,13 @@ function add_base(N1, N2, N3,		num_map, base_map, sn, f, n, c, t1, t2, v1, v2, i
 					}
 					i++
 				} while ((length(v1[i]) && length(v2[i])) || c)
+				if (B)
+					sn = __return_value(sn, "+")
 				n = sn substr(t2, 1, length(t2) - length(n)) n __return_if_value(f, ".", 1)
 			} else {
-				print N1 "  +  " N2
-				# TODO
-				# -N1 + N2
-				# N1 + -N2
-				# callback after compliment method 
+				n = subtract_base(num_map["n1"] __return_if_value(num_map["f1"], ".", 1), num_map["n2"] __return_if_value(num_map["f2"], ".", 1), N3, N4, B)
+				if (num_map["sn1"] == "-")
+					n = "-" n
 			}
 			delete v1
 			delete v2
