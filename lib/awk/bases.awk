@@ -212,11 +212,10 @@ function compliment(N1, N2,	base_map, num_map, i, v, n)
 					n = n base_map[N2 - v[i]]
 			}
 			delete v
-			delete base_map
-
-			return n
 		}
 	}
+	delete base_map
+	return n
 }
 
 function base_compliment(N1, N2, N3, N4, D, B, 	num_map, base_map, t1)
