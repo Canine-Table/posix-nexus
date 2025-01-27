@@ -45,13 +45,6 @@ function __load_number_map(V1, N1, V2, N2, N3,		idx)
 	}
 }
 
-function __load_signs(V)
-{
-	V[""] = "-"
-	V["+"] = "-"
-	V["-"] = "+"
-}
-
 function __construct_number(V, N, B1, B2, B3,	t)
 {
 	if (0 in V && V[0] >= N) {
@@ -154,7 +147,7 @@ function __pad_bits(V, N1, N2)
 # N1: The number to be converted.
 # N2: The base of the input number N.
 # N3: The base to convert the number N to.
-# N4: The precision (default: 32)
+# N4: The precision (default: 64)
 function convert_base(N1, N2, N3, N4,	base_map, num_map, n, cv, i, v, j)
 {
 	# Ensure the target base N3 is between 2 and 62
@@ -170,12 +163,13 @@ function convert_base(N1, N2, N3, N4,	base_map, num_map, n, cv, i, v, j)
 					}
 					num_map["n1"] = n
 					n = 0
-					for (i = 1; i <= split(num_map["f1"], v, ""); i++) {
-						n = sprintf("%.501f", n + base_map[v[i]] * (num_map["bs1"] ** -i))
+					if (IN__(num_map, "f1")) {
+						for (i = 1; i <= split(num_map["f1"], v, ""); i++) {
+							n = sprintf("%.64f", n + base_map[v[i]] * (num_map["bs1"] ** -i))
+						}
+						sub(/0+$/, "", n)
+						num_map["f1"] = substr(n, 3)
 					}
-					sub(/0+$/, "", n)
-					num_map["f1"] = substr(n, 3)
-					n = ""
 				}
 				if (N3 != 10) {
 					do {
@@ -183,9 +177,10 @@ function convert_base(N1, N2, N3, N4,	base_map, num_map, n, cv, i, v, j)
 						num_map["n1"] = num_map["n1"] / N3
 					} while (int(num_map["n1"]))
 					num_map["n1"] = n
-					if (num_map["f1"] = __return_if_value(num_map["f1"], "0.", 1)) {
+					if (IN__(num_map, "f1")) {
+						num_map["f1"] = __construct_number(num_map, 1, 0, 1)
 						n = ""
-						j = __return_value(int(N4), 3)
+						j = __return_value(int(N4), 64)
 						do {
 							n = n base_map[i = int(num_map["f1"] = num_map["f1"] * N3)]
 						} while((num_map["f1"] = num_map["f1"] - i) > 0.01 && --j)
@@ -193,7 +188,7 @@ function convert_base(N1, N2, N3, N4,	base_map, num_map, n, cv, i, v, j)
 					}
 				}
 				delete v
-				cv = __load_number_map(num_map)
+				cv = __construct_number(num_map, 1, 1, 1)
 			}
 		} else {
 			cv = ""
@@ -218,58 +213,52 @@ function compliment(N1, N2,	base_map, num_map, i, v, n)
 			}
 			delete v
 			delete base_map
+
 			return n
 		}
 	}
 }
 
-function base_compliment(N1, N2, N3, N4, D, B,		base_map, num_map, f, t1, t2, t3)
+function base_compliment(N1, N2, N3, N4, D, B, 	num_map, base_map, t1)
 {
 	if (N3 = __set_base(N3, base_map)) {
-		if (! __is_signed(D))
-			D = ""
-		if (LOR__(N1, N2, 0, "length") || (EQ__(N1, N2, 0) && LT__(N1, N2))) {
-			if (__return_value(D, "+") == "+")
-				D = "-"
-			else
-				D = ""
-			t1 = N1
-			N1 = N2
-			N2 = t1
-		}
-		if (B)
-			D = __return_value(D, "+")
-		N4 = int(absolute(N4))
-		if (__load_number_map(num_map, N1, base_map, N3) && __load_number_map(num_map, N2, base_map, N3)) {
+		if (__load_number_map(num_map, convert_base(N1, N3, 2), base_map, N3) && __load_number_map(num_map, convert_base(N2, N3, 2), base_map, N3)) {
+			if (LOR__(num_map["n1"], num_map["n2"], 0, "length") || (EQ__(N1, N2, 0) && LT__(N1, N2))) {
+				if (__return_value(D, "+") == "+")
+					D = "-"
+				else
+					D = ""
+				flip_map(num_map, 1, 2, "n,f")
+			}
+			if (B)
+				D = __return_value(D, "+")
+			__pad_bits(num_map, 1, N3)
+			__pad_bits(num_map, 2, N3)
+			num_map["n2"] = add_base(num_map["n1"], add_base(compliment(append_str(length(num_map["n1"]) - length(num_map["n2"]), "0") num_map["n2"], 2), 1, 2), 2)
+			if ((t1 = length(num_map["n1"]) - length(num_map["n2"])) < 0)
+				num_map["n2"] = substr(num_map["n2"], 1 + absolute(t1))
+			else if (t1)
+				num_map["n2"] = append_str(t1, "0") num_map["n2"]
 			if (IN__(num_map, "f1") || IN__(num_map, "f2")) {
 				if ((t1 = length(num_map["f1"]) - length(num_map["f2"])) > 0)
 					num_map["f2"] = num_map["f2"] append_str(t1, "0")
 				else if (t1)
 					num_map["f1"] = num_map["f1"] append_str(absolute(t1), "0")
+				num_map["f2"] = add_base(num_map["f1"], add_base(compliment(num_map["f2"], 2), 1, 2), 2)
+				if ((t1 = length(num_map["f1"]) - length(num_map["f2"])) < 0)
+					num_map["f2"] = substr(num_map["f2"], 1 + absolute(t1))
+				else if (t1)
+					num_map["f2"] = append_str(t1, "0") num_map["f2"]
+				num_map["f2"] = substr(num_map["f2"], 1, __return_value(int(N4), 8))
 			}
-			__load_number_map(num_map, convert_base(__construct_number(num_map, 1, 1, 1), N3, 2, N4), base_map, 2, 1)
-			__load_number_map(num_map, convert_base(__construct_number(num_map, 2, 1, 1), N3, 2, N4), base_map, 2, 2)
-			__pad_bits(num_map, 1, N3)
-			__pad_bits(num_map, 2, N3)
-			num_map["n2"] = compliment(append_str(length(num_map["n1"]) - length(num_map["n2"]), "0") num_map["n2"], 2)
-			if (IN__(num_map, "f2"))
-				num_map["f2"] = compliment(num_map["f2"], 2)
-
-			N1 = __construct_number(num_map, 1, 1, 1)
-			N2 = add_base(__construct_number(num_map, 2, 1, 1), 1, 2)
-			t2 = add_base(N1, N2, 2)
-			__load_number_map(num_map, t2, base_map, 2)
-			if ((t3 = length(num_map["n1"]) - length(num_map["n3"])) < 0)
-				t2 = substr(t2, 1 + absolute(t3))
-			else if (t3)
-				t2 = append_str(t3, "0") t2
-			if ((t2 = convert_base(t2, 2, N3)) != 0)
-				t2 = D t2
+			t1 = convert_base(__construct_number(num_map, 2, 1, 1), 2, N3)
+			if (tl != 0)
+				tl = D tl
 		}
 		delete num_map
 	}
 	delete base_map
-	return t2
+	return t1
 }
 
 function subtract_base(N1, N2, N3, N4, B,	base_map, num_map, sn, n, sn1, sn2)
@@ -283,15 +272,17 @@ function subtract_base(N1, N2, N3, N4, B,	base_map, num_map, sn, n, sn1, sn2)
 			sn = substr(sn1 sn2, 1, 1)
 		else
 			sn = sn1
-		if (B)
-			sn = __return_value(sn, "+")
 		if (XNOR__(sn1 == "-", __return_value(sn2, "+") != "-")) {
+			if (B)
+				sn = __return_value(sn, "+")
 			if (n = add_base(N1, N2, N3))
-				return sn n
+				n = sn n
 		} else {
-			return base_compliment(N1, N2, N3, N4, sn1, B)
+			n = base_compliment(N1, N2, N3, N4, sn1, B)
 		}
 	}
+	delete base_map
+	return n
 }
 
 function add_base(N1, N2, N3, N4, B,		num_map, base_map, sn, f, n, c, t1, t2, v1, v2, i)
@@ -331,14 +322,16 @@ function add_base(N1, N2, N3, N4, B,		num_map, base_map, sn, f, n, c, t1, t2, v1
 					}
 					i++
 				} while ((length(v1[i]) && length(v2[i])) || c)
-				if (B)
-					sn = __return_value(sn, "+")
-				n = sn substr(t2, 1, length(t2) - length(n)) n __return_if_value(f, ".", 1)
+				n = substr(t2, 1, length(t2) - length(n)) n __return_if_value(f, ".", 1)
 			} else {
 				n = subtract_base(__construct_number(num_map, 1, 1, 1), __construct_number(num_map, 2, 1, 1), N3, N4, B)
 				if (num_map["sn1"] == "-")
-					n = "-" n
+					sn = "-"
 			}
+			if (B)
+				sn = __return_value(sn, "+")
+			if (n != 0)
+				n = sn n
 			delete v1
 			delete v2
 		}

@@ -50,7 +50,7 @@ function unique_indexed_array(D, V, S,		v, s)
 }
 
 # remove_indexed_item: Remove elements from array V based on conditions
-function remove_indexed_item(V, M, N1, N2, N3, N4, B, 		i, j)
+function remove_indexed_item(V, M, N1, N2, N3, N4, B,		i, j)
 {
 	# Check if V is an array and match M with "front" or "back" option
 	if (is_array(V) && (M = match_option(M, "front, back"))) {
@@ -93,6 +93,18 @@ function __join_array(V, S,	i, s)
 	return s
 }
 
+function flip_map(V, D1, D2, D3, S,   i, v)
+{
+	if (is_array(V) && FULL__(D3) && (FULL__(D1) || FULL__(D2))) {
+		for (i = 1; i <= trim_split(D3, v, S); i++) {
+			if (IN__(V, v[i] D1) || IN__(V, v[i] D2)) {
+				__swap(V, v[i] D1, v[i] D2)
+			}
+		}
+		delete v
+	}
+}
+
 # V: The array.
 function size(V,	i, n)
 {
@@ -116,7 +128,7 @@ function __is_index(N)
 }
 
 # resize_indexed_hashmap: Resize an indexed hashmap V based on conditions
-function resize_indexed_hashmap(V, N1, N2, S, D, 	crsz, nsz, s, i, j)
+function resize_indexed_hashmap(V, N1, N2, S, D,	crsz, nsz, s, i, j)
 {
 	# Check if V is an array
 	if (is_array(V)) {

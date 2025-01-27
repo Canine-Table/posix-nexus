@@ -19,8 +19,8 @@ get_test_bases3() {
 		)
 	"'
 		BEGIN {
-			#print subtract_base(tmpa, tmpb, tmpc)
-			print add_base(tmpa, tmpb, tmpc)
+			print subtract_base(tmpa, tmpb, tmpc)
+			#print add_base(tmpa, tmpb, tmpc)
 			#print base_compliment(tmpa, tmpb, 10)
 			#print add_base(tmpa, tmpb, tmpc)
 		}
