@@ -1,41 +1,24 @@
-# V:	The array.
-# N1:	starting index
-# N2:	end index
-# N3:	skip value 
-# D:	the data to split into an array
-# S:	the separator
-# insert_indexed_item: Insert elements into array V based on conditions
-function insert_indexed_item(V, D, S, N1, N2, N3, B,		v, l, i, j)
+function insert_indexed_item(V, D, S, N1, N2, N3, j)
 {
-	# Check if V is an array and D is true using EQTL__
-	if (EQTL__(is_array(V), D, 1)) {
-		# If N1 is not an integral, set it to size of V
+	if (TRUE__(D, 1)) {
+		if (! is_array(V))
+			split("", V, "")
 		if (! is_integral(N1))
 			N1 = size(V)
-		# Verify N2 is a valid index and greater than N1
-		if ((N2 = __return_value(N2, 0)) && __is_index(N2) && N2 > N1)
-			j = modulus_range(N1, N1, N2)
-		else
-			j = N1
-		# Set N3 to 1 if it's not a valid index
+		if (LT__(+N2, N1))
+			N2 = 0
 		if (! __is_index(N3))
 			N3 = 1
-		# Loop through elements split from D based on S
-		for (i = 1; i <= trim_split(D, v, __return_value(S, ",")); i++) {
-			if (B) {
-				printf("[%s] = ", j)
-				if (length(V[j]))
-					printf("%s -> ", V[j])
-				printf("%s\n", v[i])
-			}
-			V[j] = v[i]
-			# Update j using modulus range if N2 is valid, otherwise increment by N3
+		j = N1
+		for (i = 1; i <= trim_split(D, v, S); i++) {
 			if (N2)
-				j = modulus_range(j + N3, N1, N2)
-			else
-				j = j + N3
+				j = modulus_range(j, N1, N2)
+			V[j] = v[i]
+			j = j + N3
 		}
 		delete v
+		if (N2)
+			return modulus_range(j, N1, N2)
 		return j
 	}
 }
@@ -49,38 +32,26 @@ function unique_indexed_array(D, V, S,		v, s)
 	return split(s, V, S)
 }
 
-# remove_indexed_item: Remove elements from array V based on conditions
-function remove_indexed_item(V, M, N1, N2, N3, N4, B,		i, j)
+function remove_indexed_item(V, N1, N2, N3, N4,		i)
 {
-	# Check if V is an array and match M with "front" or "back" option
-	if (is_array(V) && (M = match_option(M, "front, back"))) {
-		# Set N1 to 0 if it is not an integral
-		if (!is_integral(N1))
-			N1 = 0
-		# Validate N2 and set it to the size of V if necessary
-		if (!__is_index(N2) || N2 < N1)
-			N2 = size(V)
-		# Set N3 to 1 if it is not a valid index and absolute value
-		if (!__is_index(N3 = absolute(N3)))
+	if (is_array(V)) {
+		if (! is_integral(N1))
+			N1 = 1
+		if (! is_integral(N2) || N2 > (i = size(V)) + N1)
+			N2 = i
+		if (! __is_index(absolute(N3)))
 			N3 = 1
-		# Set N4 to 1 if it is not a valid index
-		if (!__is_index(N4))
+		if (! __is_index(N4))
 			N4 = 1
-		# Determine starting point for removal based on "front" or "back" option
-		if (M == "back") {
+		if (N3 < 0)
 			i = modulus_range(N2, N1, N2)
-			N3 = -N3 # Negative step for backward iteration
-		} else { # Default to "front"
+		else
 			i = modulus_range(N1, N1, N2)
-		}
-		# Loop to remove N4 items
-		while (N4-- > 0) {
-			if (B) # Print removed item if B is true
-				printf("[%s] = %s\n", i, V[i])
-			delete V[i] # Remove the item at index i
-			i = modulus_range(i + N3, N1, N2) # Update index i
-		}
-		return i # Return the last index used
+		do {
+			delete V[i]
+			i = modulus_range(i + N3, N1, N2)
+		} while (--N4)
+		return i
 	}
 }
 
@@ -110,7 +81,7 @@ function size(V,	i, n)
 {
 	for (i in V)
 		++n
-	return +n
+	return n
 }
 
 # V: The array.
@@ -127,6 +98,12 @@ function __is_index(N)
 	return 0
 }
 
+
+# V: 	The array (hashmap) to be resized.
+# N1: 	The target size for the array. Determines the number of elements V should have after resizing.
+# N2: 	N2 is the starting index for element distribution when resizing the array.
+# S: 	Separator used when joining elements as part of the resizing process. Default value is ",".
+# D:	Default value for new elements if the array size N1 is increased.
 # resize_indexed_hashmap: Resize an indexed hashmap V based on conditions
 function resize_indexed_hashmap(V, N1, N2, S, D,	crsz, nsz, s, i, j)
 {
@@ -147,7 +124,8 @@ function resize_indexed_hashmap(V, N1, N2, S, D,	crsz, nsz, s, i, j)
 				j = N2
 				# Loop through the array to resize and join elements
 				for (i = 1; i <= crsz - N2; i++) {
-					s = __join_str(s, V[i + N2], S) # Join elements with separator S
+					if (V[i + N2])
+						s = __join_str(s, V[i + N2], S) 
 					delete V[i + N2] # Delete old elements
 					# Insert joined string into V[j] and reset s
 					if (! (i % nsz) || i == crsz - N2) {
@@ -156,20 +134,16 @@ function resize_indexed_hashmap(V, N1, N2, S, D,	crsz, nsz, s, i, j)
 					}
 				}
 			} else {
-				j = crsz # Set j to current size if N1 is not less
+				j = crsz - N2# Set j to current size if N1 is not less
 			}
 			# Fill remaining elements with default value D if necessary
 			if (j < N1) {
 				D = __return_value(D, "0") # Default value for D
 				do {
-					V[++j] = D
+					V[j+=1] = D
 				} while (j < N1)
-			} else if (j > N1) {
-				for (; j > N1; j--) {
-					delete V[j]
-				}
 			}
-			return j # Return new size of V
+			return j 
 		}
 	}
 }
@@ -211,44 +185,33 @@ function stack(V, M, D, S,	c)
 	}
 }
 
-# V: The queue, represented as an indexed hashmap.
-# M: The operation mode (enqueue, dequeue, peek, isempty).
-# D: The data to enqueue (if M is enqueue).
-# S: The delimiter for splitting the data.
-function queue(V, M, D, S,	c, idx)
+function __queue(V, M, D1, S, D2)
 {
-	if (M = match_option(M, "enqueue, dequeue, peek, isempty, size")) {
-		if (NOR__(0 in V, 1 in V)) {
+	if (M = match_option(M, "enqueue, dequeue, isempty, size, resize")) {
+		if (! (IN__(V, 0) || IN__(V, 1))) {
+			split("", V, "")
 			V[0] = 3
 			V[1] = 3
-			if (M == "size" && is_integral(D)) {
-				if (D = int(absolute(D)))
-					V[2] = D
-				return D
+			if (M == "size") {
+				if (is_integral(D1))
+					V[2] = D1 + V[0] - 1
+				return
 			}
 		}
-		if (EQTL__(M == "enqueue", D, 1)) {
-			S = __return_value(S, ",")
-			if (2 in V)
-				V[1] = __loop_indexed_hashmap(V[0], V[2], V[1], V, D, S)
-			else
-				V[1] = __append_indexed_hashmap(V, V[1], D, S)
+		if (M == "enqueue" && FULL__(D1)) {
+			V[1] = insert_indexed_item(V, D1, __return_value(S, ","), V[0], V[2], 1)
+		} else if (M == "resize" && is_integral(D1)) {
+			V[2] = resize_indexed_hashmap(V, D1, V[0] - 1, S, D2)
 		} else if (M == "isempty") {
-			if (V[1] - V[0] > 0)
-				return 1
-			else
-				return 0
-		} else if (! queue(V, "isempty")){
-			if (2 in V) {
-				idx = (V[1], V[2], V[0])
-
-			} else {
-				idx = V[0]
-				c = V[idx + 1]
+			return ! FULL__(V[V[0]])
+		} else {
+			D2 = V[V[0]]
+			if (M == "dequeue" && ! __queue(V, "isempty")) {
+				if (V[2])
+					V[2]++
+				V[0] = remove_indexed_item(V, V[0], __return_value(V[2], V[1]), 1, 1)
 			}
-			if (M == "dequeue")
-				V[0] = __delete_indexed_hashmap(V, idx, "front")
-			return c
+			return D2
 		}
 	}
 }

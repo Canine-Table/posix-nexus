@@ -16,6 +16,11 @@ function __return_if_value(D1, D2, B)
 	}
 }
 
+function __return_else_value(D1, D2, B)
+{
+	if (TRUE__(D1, B))
+		return D2
+}
 
 function __load_value(V, K, DA, DB)
 {

@@ -19,14 +19,42 @@ get_test_bases3() {
 		)
 	"'
 		BEGIN {
-			print subtract_base(tmpa, tmpb, tmpc)
+			__queue(arr, "enqueue", "a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z")
+			#resize_indexed_hashmap(arr, 5)
+
+			#__queue(arr, "size", 313)
+			#__queue(arr, "enqueue", "a,b,c,d")
+			#__queue(arr, "enqueue", "e,f,g,h")
+			#queue(arr, "resizee", 5)
+			#print __queue(arr, "peek")
+			__queue(arr, "resize", 60, ",", "NULL")
+			__queue(arr, "resize", 6)
+			
+			print __queue(arr, "dequeue")
+			print __queue(arr, "dequeue")
+			print __queue(arr, "dequeue")
+			print __queue(arr, "dequeue")
+			print __queue(arr, "dequeue")
+			print __queue(arr, "dequeue")
+			print __queue(arr, "dequeue")
+
+			
+			#__queue(arr, "enqueue", "i,j,k,l")
+			#for (i = arr[0]; i <= __return_value(arr[2], arr[1]); i++)
+			#	print arr[i]
+
+			#print arr[0]
+			#print arr[1]
+			#print arr[2]
+			#print arr[2]
+
+			#print subtract_base(tmpa, tmpb, tmpc)
 			#print add_base(tmpa, tmpb, tmpc)
 			#print base_compliment(tmpa, tmpb, 10)
 			#print add_base(tmpa, tmpb, tmpc)
 		}
 	'
 }
-
 
 get_test_diff() {
 	$(get_cmd_awk) \
