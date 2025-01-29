@@ -65,7 +65,8 @@ function format_str(D1, D2, S, L, R, B,		dlm, fmt)
 # C:   The character used to determine the split point in the input string.
 # B1:  A flag indicating which half of the string to return (1 for the first half, 0 for the second half).
 # B2:  The number of characters to adjust around the split point.
-function __get_half(D, C, B1, B2, i) {
+function __get_half(D, C, B1, B2, i)
+{
     if (C = substr(C, 1, 1)) {	# Extract the first character of C
 	if (i = index(D, C)) {	# Find the position of C in the input string I
 	    if (! length(B2))
@@ -191,7 +192,7 @@ function random_str(N, C, S, B,		str_map, s, v, i, rg, line)
 	}
 }
 
-function totitle(D,	i, s, esc_map) 
+function totitle(D,	i, s, esc_map)
 {
 	__load_esc_map(esc_map)
 	while (i = __first_index(D, esc_map, 1)) {
@@ -272,7 +273,8 @@ function match_boundary(D1, D2, B, S,	O, v, i, l, dlm, s)
 # B1:	Verbose
 # B2:	A flag indicating whether to match the end (1) or the start (0) of the strings.
 # B3:	A flag indicating the sorting order (1 for ascending, 0 for descending).
-function match_option(D1, D2, S, O, B1, B2, B3,			dlm, s) {
+function match_option(D1, D2, S, O, B1, B2, B3,		dlm, s)
+{
 	__load_delim(dlm, S, O)  # Load the delimiter mappings
 	if (s = match_length(match_boundary(D1, D2, B2, dlm["s"], dlm["s"]), B3, dlm["s"], dlm["o"])) {
 		if (s ~ dlm["o"] && ! B1)

@@ -5,11 +5,11 @@
 get_str_locate() {
 	(
 		while getopts :f:r:s:o:n:g OPT; do
-                        case $OPT in
-                                f|n|s|r|o|g) eval "$OPT"="'${OPTARG:-true}'";;
-                        esac
-                done
-                shift $((OPTIND - 1))
+			case $OPT in
+				f|n|s|r|o|g) eval "$OPT"="'${OPTARG:-true}'";;
+			esac
+		done
+		shift $((OPTIND - 1))
 		eval "$*" | $(get_cmd_awk) \
 			-v glbl="$g" \
 			-v sep="$s" \
@@ -18,12 +18,12 @@ get_str_locate() {
 			-v rpl="$r" \
 			-v num="$n" "
 			$(cat \
-                        	"$G_NEX_MOD_LIB/awk/misc.awk" \
-                        	"$G_NEX_MOD_LIB/awk/algor.awk" \
-                        	"$G_NEX_MOD_LIB/awk/structs.awk" \
-                        	"$G_NEX_MOD_LIB/awk/types.awk" \
-                        	"$G_NEX_MOD_LIB/awk/math.awk" \
-                        	"$G_NEX_MOD_LIB/awk/str.awk"
+				"$G_NEX_MOD_LIB/awk/misc.awk" \
+				"$G_NEX_MOD_LIB/awk/algor.awk" \
+				"$G_NEX_MOD_LIB/awk/structs.awk" \
+				"$G_NEX_MOD_LIB/awk/types.awk" \
+				"$G_NEX_MOD_LIB/awk/math.awk" \
+				"$G_NEX_MOD_LIB/awk/str.awk"
 			)
 		"'
 			BEGIN {
@@ -43,17 +43,18 @@ get_str_locate() {
 set_str_case() {
 	(
 		while getopts ult OPT; do
-                        case $OPT in
+			case $OPT in
 				u|l|t) c="$OPT";;
-                        esac
-                done
-                shift $((OPTIND - 1))
+			esac
+		done
+		shift $((OPTIND - 1))
 		$(get_cmd_awk) \
 			-v inpt="$*" \
 			-v strcase="$c" "
 			$(cat \
-                        	"$G_NEX_MOD_LIB/awk/algor.awk" \
-                        	"$G_NEX_MOD_LIB/awk/str.awk"
+				"$G_NEX_MOD_LIB/awk/algor.awk" \
+				"$G_NEX_MOD_LIB/awk/structs.awk" \
+				"$G_NEX_MOD_LIB/awk/str.awk"
 			)
 		"'
 			BEGIN {
@@ -64,27 +65,27 @@ set_str_case() {
 				else if (strcase == "l")
 					print tolower(inpt)
 				else
-                			print inpt
-        		}
+					print inpt
+			}
 		'
 	)
 }
 
 set_str_format() {
 	(
-                while getopts :i:s:f:l:r:k OPT; do
-                        case $OPT in
-                                i|s|f|l|r|k) eval "$OPT"="'${OPTARG:-true}'";;
-                        esac
-                done
-                shift $((OPTIND - 1))
+		while getopts :i:s:f:l:r:k OPT; do
+			case $OPT in
+				i|s|f|l|r|k) eval "$OPT"="'${OPTARG:-true}'";;
+			esac
+		done
+		shift $((OPTIND - 1))
 		[ -n "$f" ] || { 
 			f="$1"
 			shift
 		}
-                $(get_cmd_awk) \
+		$(get_cmd_awk) \
 			-v fmt="$f" \
-                        -v inpt="${i:-"$*"}" \
+			-v inpt="${i:-"$*"}" \
 			-v sep="$s" \
 			-v lft="$l" \
 			-v rgt="$r" \
@@ -93,39 +94,41 @@ set_str_format() {
 				"$G_NEX_MOD_LIB/awk/misc.awk" \
 				"$G_NEX_MOD_LIB/awk/str.awk" \
 				"$G_NEX_MOD_LIB/awk/structs.awk"
-                        )
-                "'
-                        BEGIN {
-				format_str(fmt, inpt, sep, lft, rgt, kp)
-                        }
-                '
-        )
+			)
+		"'
+			BEGIN {
+				print format_str(fmt, inpt, sep, lft, rgt, kp)
+			}
+		'
+	)
 }
 
 ###:( add ):##################################################################################
 
 add_str_append() {
-        (
-                while getopts :c:n:e OPT; do
-                        case $OPT in
-                                n|c|e) eval "$OPT"="'${OPTARG:-true}'";;
-                        esac
-                done
-                shift $((OPTIND - 1))
-                $(get_cmd_awk) \
+	(
+		while getopts :c:n:e OPT; do
+			case $OPT in
+				n|c|e) eval "$OPT"="'${OPTARG:-true}'";;
+			esac
+		done
+		shift $((OPTIND - 1))
+		$(get_cmd_awk) \
 			-v ed="$e" \
-                        -v num="${n:-"$1"}" \
+			-v num="${n:-"$1"}" \
 			-v char="${c:-"$2"}" "
-                        $(cat \
+			$(cat \
+					"$G_NEX_MOD_LIB/awk/misc.awk" \
+					"$G_NEX_MOD_LIB/awk/structs.awk" \
 					"$G_NEX_MOD_LIB/awk/types.awk" \
 					"$G_NEX_MOD_LIB/awk/str.awk" \
-                        )
-                "'
-                	BEGIN {
+			)
+		"'
+			BEGIN {
 				print append_str(num, char, ed)
-                        }
-                '
-        )
+			}
+		'
+	)
 }
 
 ##:( del ):##################################################################################

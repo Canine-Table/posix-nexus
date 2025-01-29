@@ -1,15 +1,18 @@
-get_content_trim() {
+get_content_trim()
+{
 	echo "$*" | sed 's|\./|/|g; s|/\+|/|g; s|/\+$||'
 }
 
-get_content_leaf() {
+get_content_leaf()
+{
 	(
 		b="$(get_content_container "$*")" || exit 2
 		echo "$*" | sed 's|/\+$||; s|.*/||'
 	)
 }
 
-get_content_container() {
+get_content_container()
+{
 	(
 		if [ -d "$*/." ]; then
 			d="$*/."
@@ -22,14 +25,16 @@ get_content_container() {
 	)
 }
 
-get_content_path() {
+get_content_path()
+{
 	(
 		p="$(get_content_leaf "$*")" || exit 3
 		get_content_trim "$(cd $(dirname "$*") && pwd)/$p"
 	)
 }
 
-get_content_list() {
+get_content_list()
+{
 	(
 		for i in "$@"; do
 			j="$(get_content_path "$i")" && {
@@ -40,23 +45,24 @@ get_content_list() {
 	)
 }
 
-get_content_filter_list() {
+get_content_filter_list()
+{
 	(
-                while getopts DdFfCcBbPpSsHhRrWwXx OPT; do
-                        case $OPT in
-                                d|f|c|b|p|s|h) f="$f${f:+,}$OPT";;
-                                D|F|C|B|P|S|H|R|W|X) F="$F${F:+,}$OPT";;
-                                r|w|x) p="$p${p:+}$OPT";;
-                        esac
-                done
-                shift $((OPTIND - 1))
+		while getopts DdFfCcBbPpSsHhRrWwXx OPT; do
+			case $OPT in
+				d|f|c|b|p|s|h) f="$f${f:+,}$OPT";;
+				D|F|C|B|P|S|H|R|W|X) F="$F${F:+,}$OPT";;
+				r|w|x) p="$p${p:+}$OPT";;
+			esac
+		done
+		shift $((OPTIND - 1))
 		template="$(
 			$(get_cmd_awk) \
 				-v pis="$p" \
 				-v fis="$f" \
 				-v fnot="$F" "
 				$(
-                        	        cat "$G_NEX_MOD_LIB/awk/struct.awk"
+					cat "$G_NEX_MOD_LIB/awk/struct.awk"
 				)
 			"'
 				BEGIN {
@@ -172,8 +178,13 @@ export G_NEX_ROOT="/usr/local/bin/nex"
 export G_NEX_MOD_SRC="$G_NEX_ROOT/src"
 export G_NEX_MOD_LIB="$G_NEX_ROOT/lib"
 
+export VIMINIT='source $G_NEX_MOD_LIB/viml/init.vim'
 export LESS='-R'
 export COLORFGBG=';0'
 
 add_content_modules
+export PAGER="$(get_cmd_pager)"
+export EDITOR="$(get_cmd_editor)"
+export SHELL="$(get_cmd_shell)"
+export AWK="$(get_cmd_awk)"
 

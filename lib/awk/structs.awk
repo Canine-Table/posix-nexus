@@ -23,13 +23,21 @@ function insert_indexed_item(V, D, S, N1, N2, N3, j)
 	}
 }
 
-function unique_indexed_array(D, V, S,		v, s)
+function unique_indexed_array(D, V, S, O, B,		v, s, dlm)
 {
-	S = __return_value(S, ",")
-	array(D, v, S)
-	s = __join_array(v, S)
+	__load_delim(dlm, S, O)
+	array(D, v, dlm["s"])
+	if (B)
+		dlm["s"] = dlm["o"]
+	s = __join_array(v, dlm["s"])
 	delete v
-	return split(s, V, S)
+	S = dlm["s"]
+	delete dlm
+	if (B)
+		delete V
+	else
+		return split(s, V, S)
+	return s
 }
 
 function remove_indexed_item(V, N1, N2, N3, N4,		i)
@@ -61,6 +69,13 @@ function __join_array(V, S,	i, s)
 {
 	for (i in V)
 		s =__join_str(s, i, S)
+	return s
+}
+
+function __join_indexed_array(V, S,	i, s)
+{
+	for (i = 1; i <= size(V); i++)
+		s =__join_str(s, V[i], S)
 	return s
 }
 
@@ -97,7 +112,6 @@ function __is_index(N)
 		return N
 	return 0
 }
-
 
 # V: 	The array (hashmap) to be resized.
 # N1: 	The target size for the array. Determines the number of elements V should have after resizing.
@@ -148,13 +162,20 @@ function resize_indexed_hashmap(V, N1, N2, S, D,	crsz, nsz, s, i, j)
 	}
 }
 
-function reverse_indexed_hashmap(V, N1, N2,	i)
+function reverse_indexed_hashmap(V, N1, N2, D, S, O,	i)
 {
+	if (! is_array(V) && FULL__(D))
+		trim_split(D, V, S)
 	if ((i = size(V)) > 1) {
 		N1 = __return_value(N1, 1)
 		N2 = __return_value(N2, i)
 		while (N1 < N2)
 			__swap(V, N1++, N2--)
+		if (length(O)) {
+			i = __join_indexed_array(V, O)
+			delete V
+			return i
+		}
 	}
 }
 
@@ -185,7 +206,7 @@ function stack(V, M, D, S,	c)
 	}
 }
 
-function __queue(V, M, D1, S, D2)
+function queue(V, M, D1, S, D2)
 {
 	if (M = match_option(M, "enqueue, dequeue, isempty, size, resize")) {
 		if (! (IN__(V, 0) || IN__(V, 1))) {
