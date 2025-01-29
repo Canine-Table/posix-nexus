@@ -124,49 +124,6 @@ get_content_filter_list()
 	)
 }
 
-get_content_count() {
-	$(get_cmd_awk) '
-		BEGIN {
-			split("", f, "")
-		} {
-			if (FILENAME) {
-				if (! (FILENAME in f)) {
-					if (l in f) {
-						fl = fl " "
-						if (lna) {
-							lna = lna ","
-							lgtl = lgtl ","
-						}
-						lna = lna l ":" NR
-						lgtl = lgtl l ":" lgt
-						totl = totl + NR
-					}
-					l = FILENAME
-					fl = fl "\x27" l "\x27"
-					NR = 1
-					lgt = 0
-					f[l] = 1
-				}
-				if (length($0) > lgt)
-					lgt = length($0)
-			}
-		} END {
-			if (l in f) {
-				if (lna) {
-					lna = lna ","
-					lgtl = lgtl ","
-				}
-				printf("L_FILENAMES=\x22%s\x22\n", fl)
-				printf("L_LINE_MAP=\x22%s\x22\n", lna l ":" NR)
-				printf("L_LONGEST_MAP=\x22%s\x22\n", lgtl l ":" lgt)
-				printf("L_TOTAL_LINES=\x22%s\x22\n", totl + NR)
-				printf("L_TOTAL_FILES=\x22%d\x22\n", length(f))
-			}
-			delete f
-		}
-		' $(get_content_filter_list -Dfr $*) /dev/null
-}
-
 add_content_modules() {
 	for f in "$(get_content_path "$G_NEX_MOD_SRC")/"*"-mod.sh"; do
 		[ -f "$f" -a -r "$f" -a "$(get_content_leaf "$f")" != 'content-mod.sh' ] && . "$f"
@@ -187,4 +144,6 @@ export PAGER="$(get_cmd_pager)"
 export EDITOR="$(get_cmd_editor)"
 export SHELL="$(get_cmd_shell)"
 export AWK="$(get_cmd_awk)"
+export PDF_VIEWER="$(get_cmd_pdf_viewer)"
+export TEX_COMPILER="$(get_cmd_pdf_viewer)"
 

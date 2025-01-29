@@ -1,6 +1,5 @@
 function! Main()
 	filetype plugin indent on
-	colorscheme industry
 	set number textwidth=0 encoding=utf-8
 	set incsearch ignorecase smartcase hlsearch
 	set tabstop=8 softtabstop=0 shiftwidth=8 noexpandtab autoindent
@@ -11,7 +10,9 @@ function! Main()
 	set title
 	set hidden
 	set belloff=all
-	call CallFile("types.vim","str.vim", "LaTeX.vim")
+	call CallFile("types.vim", "str.vim", "LaTeX.vim")
+	call SetupPlugins()
+	call ColorTheme()
 endfunction
 
 function! CallFile(...)
@@ -31,17 +32,25 @@ function! CallFile(...)
 	endfor
 endfunction
 
-function VimRC()
-	edit $MYVIMRC
+function! SetupPlugins()
+	let l:tmpa = glob('~/.local/share/nvim/site/autoload/plug.vim')
+	if filereadable(l:tmpa)
+		unlet! l:tmpa
+		silent! mkdir -p ~/.config/nvim/plugged
+		call CallFile("plugins.vim")
+	else
+		silent! curl -fLo ~/.vim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+		autocmd VimEnter * PluginInstall --sync | source $VIMINIT
+		call SetupPlugins()
+	endif
 endfunction
 
-function! SetupPlugins()
-	
-	"if filereadable('~/.local/share/nvim/site/autoload/plug.vim')
-		
-		echo getenv(HOME)
-		"its the truth"
-	"endif
+function! ColorTheme()
+	try
+		colorscheme dracula
+	catch /^Vim\%((\a\+)\)\=:E185/
+		colorscheme industry
+	endtry
 endfunction
 
 call Main()
