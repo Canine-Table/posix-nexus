@@ -10,7 +10,13 @@ function! Main()
 	set title
 	set hidden
 	set belloff=all
-	call CallFile("types.vim", "str.vim", "LaTeX.vim")
+	call CallFile(
+		\"types.vim",
+		\"str.vim",
+		\"LaTeX.vim",
+		\"mappings.vim",
+		\"plugins.vim"
+	\)
 	call SetupPlugins()
 	call ColorTheme()
 endfunction

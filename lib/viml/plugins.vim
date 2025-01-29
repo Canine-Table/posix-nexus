@@ -1,3 +1,7 @@
+function! PlugUpdateUpgrade()
+	PlugUpdate
+	PlugUpgrade
+endfunction
 
 call plug#begin('~/.config/nvim/plugged')
 

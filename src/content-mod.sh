@@ -147,3 +147,6 @@ export AWK="$(get_cmd_awk)"
 export PDF_VIEWER="$(get_cmd_pdf_viewer)"
 export TEX_COMPILER="$(get_cmd_pdf_viewer)"
 
+alias reload_nex='. "$G_NEX_MOD_SRC/content-mod.sh"'
+alias vi='$EDITOR'
+
