@@ -1,5 +1,25 @@
 \documentclass[a4paper,12pt]{article}
+\input{latex/packages.tex}
+\input{latex/colors.tex}
+\input{basic.tex}
+\input{boxes.tex}
+
 
 \begin{document}
+
+%\newFrameBox{contentbox}{}
+%\newFrameBox{contentbox}{\hbox{Some stuff}}
+\newBox{contentbox}{\hbox{And other Some stuff}}
+
+%\checkdef{contentbsox}{its true}
+
+%\setbox\contentbox=\hbox{Some dynamic content}
+\framebox{\hbox to \wd\contentbox{\hfil\box\contentbox\hfil}}
+
+
+
+
+	hello world
+
 \end{document}
 

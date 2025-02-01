@@ -1,0 +1,15 @@
+\long\def\centerHBox#1{\sloppy\hbox to \hsize{\hfil\hbox{#1}\hfil}}
+\long\def\centerVBox#1{\sloppy\vbox to \vsize{\vfil\centerHBox{#1}\vfil}}
+\long\def\newBox#1#2{%
+	\defCheck{#1}{%
+		\ifx#2\relax\else%
+			\expandafter\setbox\csname#1\endcsname=\expandafter#2\relax%
+		\fi%
+	}{%
+		\ifx#1\relax\else%
+			\expandafter\newbox\csname#1\endcsname\relax%
+			\newBox{#1}{#2}%
+		\fi%
+	}%
+}
+

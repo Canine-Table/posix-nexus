@@ -135,7 +135,7 @@ export G_NEX_ROOT="/usr/local/bin/nex"
 export G_NEX_MOD_SRC="$G_NEX_ROOT/src"
 export G_NEX_MOD_LIB="$G_NEX_ROOT/lib"
 
-export VIMINIT='source $G_NEX_MOD_LIB/viml/init.vim'
+#export VIMINIT='source $G_NEX_MOD_LIB/viml/init.vim'
 export LESS='-R'
 export COLORFGBG=';0'
 

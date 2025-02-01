@@ -25,7 +25,7 @@ function! CallFile(...)
 	if ! exists('g:nex_mod_viml') && exists(getenv($G_NEX_MOD_LIB))
 		let l:tmpa = $G_NEX_MOD_LIB . "/viml"
 		if isdirectory(l:tmpa)
-			let g:nex_mod_viml = l:tmpa
+			let g:nex_mod_viml = l:tmpa . "/"
 		endif
 		unlet! l:tmpa
 	endif
@@ -42,12 +42,11 @@ function! SetupPlugins()
 	let l:tmpa = glob('~/.local/share/nvim/site/autoload/plug.vim')
 	if filereadable(l:tmpa)
 		unlet! l:tmpa
-		silent! mkdir -p ~/.config/nvim/plugged
+		silent !mkdir -p ~/.config/nvim/plugged
 		call CallFile("plugins.vim")
 	else
-		silent! curl -fLo ~/.vim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-		autocmd VimEnter * PluginInstall --sync | source $VIMINIT
-		call SetupPlugins()
+		silent !curl -fLo ~/.local/share/nvim/site/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+		PlugInstall
 	endif
 endfunction
 
