@@ -1,23 +1,13 @@
-\def\NewCount#1{\SetRegister{1}{#1}}
-\def\ExprCount#1#2{%
-	\CheckDef{#1}{
-		\csname#1\endcsname=\expandafter\numexpr#2\relax%
-	}{%
-		\AddCount{#2}{0}
-		\ExprCount{#1}{#2}
-	}%
-}
-
-\def\@My@Count#1#2{
+\def\NewCount#1{\SelectRegister{#1}1\PickFirstOfOne}
+\def\ExprCount#1{\the\numexpr#1\relax}
+\def\AddCount#1{\UseCount{advance}{#1}}
+\def\MultiCount#1{\UseCount{multiply}{#1}}
+\def\DivCount#1{\UseCount{divide}{#1}}
+\def\UseCount#1#2{
 	\CheckDef{#2}{%
 		\expandafter\csname#1\endcsname\csname#2\endcsname by\expandafter\PickFirstOfOne%
 	}{%
-		\NewCount{#2}
+		\NewCount{#2}%
 	}%
 }
 
-\MakeAtEnv
-\def\AddCount#1{\@My@Count{advance}{#1}}
-\def\MultiCount#1{\@My@Count{multiply}{#1}}
-\def\DivCount#1{\@My@Count{divide}{#1}}
-\EndAtEnv

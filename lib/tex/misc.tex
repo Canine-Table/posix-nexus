@@ -1,0 +1,8 @@
+\def\EncodingMap{%
+	\AddCount{encodingmap}{0}\par%
+	\loop\unless\ifnum\the\encodingmap>127%
+		[\the\encodingmap =\char\the\encodingmap]%
+		\AddCount{encodingmap}{1}%
+	\repeat\par%
+}
+

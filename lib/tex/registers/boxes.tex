@@ -1,6 +1,16 @@
-\def\NewBox#1{\SetRegister{4}{#1}}
-\long\def\centerHBox#1{\sloppy\hbox to \hsize{\hfil\hbox{#1}\hfil}}
-\long\def\centerVBox#1{\sloppy\vbox to \vsize{\vfil\centerHBox{#1}\vfil}}
-\long\def\pageBox#1{\vbox to \vsize{\hbox to \hsize{\hfil\parbox{\hsize}{#1}\hfil}\vfil}}
-\long\def\frameBox#1{\hbox to \hsize{\framebox{\expandafter\box\csname#1\endcsname\relax\hfil}}}
+\def\NewBox#1{\NewRegister{4}{#1}}
+
+
+
+
+
+
+
+
+
+
+%\long\def\centerHBox#1{\sloppy\hbox to \hsize{\hfil\hbox{#1}\hfil}}
+%\long\def\centerVBox#1{\sloppy\vbox to \vsize{\vfil\centerHBox{#1}\vfil}}
+%\long\def\pageBox#1{\vbox to \vsize{\hbox to \hsize{\hfil\parbox{\hsize}{#1}\hfil}\vfil}}
+%\long\def\frameBox#1{\hbox to \hsize{\framebox{\expandafter\box\csname#1\endcsname\relax\hfil}}}
 
