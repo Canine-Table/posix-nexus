@@ -1,0 +1,58 @@
+\long\def\Group#1{\begingroup{#1}\endgroup}
+\long\def\MakeAtEnv#1\EndAtEnv{\makeatletter#1\makeatother}
+\long\def\MakeDigitEnv#1\EndDigitEnv{\makedigitletter#1\makedigitother}
+
+\edef\MakeDigitLetter{%
+	\catcode`0=11%
+	\catcode`1=11%
+	\catcode`2=11%
+	\catcode`3=11%
+	\catcode`4=11%
+	\catcode`5=11%
+	\catcode`6=11%
+	\catcode`7=11%
+	\catcode`8=11%
+	\catcode`9=11%
+}
+
+\edef\MakeDigitOther{%
+	\catcode`0=\the\catcode`0\relax%
+	\catcode`1=\the\catcode`1\relax%
+	\catcode`2=\the\catcode`2\relax%
+	\catcode`3=\the\catcode`3\relax%
+	\catcode`4=\the\catcode`4\relax%
+	\catcode`5=\the\catcode`5\relax%
+	\catcode`6=\the\catcode`6\relax%
+	\catcode`7=\the\catcode`7\relax%
+	\catcode`8=\the\catcode`8\relax%
+	\catcode`9=\the\catcode`9\relax%
+}
+
+\def\NewTok#1{%
+	\def\AddTok##1{##1}%
+	\def\LoopTok##1{%
+		\ifx##1\relax\else%
+			\expandafter\AddTok\expandafter{##1}\expandafter\LoopTok%
+		\fi%
+	}%
+	\expandafter\LoopTok\expandafter#1\relax%
+}
+
+\MakeAtEnv
+\def\CheckDef#1{%
+	\expandafter\ifx\csname#1\endcsname\relax%
+		\expandafter\PickSecondOfTwo%
+	\else%
+		\expandafter\PickFirstOfTwo%
+	\fi%
+}
+\EndAtEnv
+
+\def\IfCatCode#1#2{%
+	\expandafter\ifnum\the\catcode`#1=#2\relax%
+		\expandafter\PickSecondOfTwo%
+	\else%
+		\expandafter\PickFirstOfTwo%
+	\fi%
+}
+

@@ -1,25 +1,29 @@
 \documentclass[a4paper,12pt]{article}
 \input{latex/packages.tex}
 \input{latex/colors.tex}
-\input{basic.tex}
+\input{param.tex}
+\input{stream.tex}
+\input{plain.tex}
 \input{boxes.tex}
-
+\input{registers.tex}
 
 \begin{document}
-
-%\newFrameBox{contentbox}{}
-%\newFrameBox{contentbox}{\hbox{Some stuff}}
-\newBox{contentbox}{\hbox{And other Some stuff}}
-
-%\checkdef{contentbsox}{its true}
-
-%\setbox\contentbox=\hbox{Some dynamic content}
-\framebox{\hbox to \wd\contentbox{\hfil\box\contentbox\hfil}}
-
-
-
+\NewCount{mycount}{2}
+\MultiCount{mycount}{22}
+\MultiCount{mycount}{22}
+\DivCount{mycount}{3}
+\DivCount{mycount}{3}
+\ExprCount{mycount}{3+3/39}
+\the\mycount
+%\newcount\mycount
+%\def\abc{hello}
+%\CheckDef{mycount}{true}{false}
+%\ReadFile{/etc/passwd}
+%\CheckEmpty{}{true}{false}
+%{yes}{no}
+%\mycount=3\relax
+%\the\mycount
 
 	hello world
-
 \end{document}
 

@@ -1,0 +1,33 @@
+\def\New@Register#1#2{%
+	\ifcase#1%
+		\let\TempRegister=\newdimen% Case 0: Dimension register
+	\or%
+		\let\TempRegister=\newcount% Case 1: Count register
+	\or%
+		\let\TempRegister=\newskip% Case 2: Glue register (skip)
+	\or%
+		\let\TempRegister=\newmuskip% Case 3: Math glue register (muskip)
+	\or%
+		\let\TempRegister=\newbox% Case 4: Box register
+	\else%
+		\let\TempRegister=\relax% Default case: Do nothing
+	\fi%
+	\CheckDef{TempRegister}{%
+		\expandafter\TempRegister\csname#2\endcsname\relax%
+		\SetRegister{}{#2}%
+	}{}%
+}
+
+\MakeAtEnv
+\def\SetRegister#1#2{%
+	\CheckDef{#2}{%
+		\csname#2\endcsname=\expandafter\PickFirstOfOne%
+	}{%
+		\New@Register{#1}{#2}%
+	}%
+}
+\EndAtEnv
+
+\input{registers/counters.tex}
+\input{registers/dimentions.tex}
+\input{registers/boxes.tex}
