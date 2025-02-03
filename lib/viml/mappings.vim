@@ -35,6 +35,7 @@ function! MapNex()
 	nnoremap <Leader>ll :VimtexCompile<CR>
 	nnoremap <Leader>lq :VimtexStop<CR>
 	noremap <Leader>lm :VimtexToggleMain<CR>
+	noremap <leader>wc <Cmd>VimtexCountWords<CR>
 	echo "Nexus Mapping: enabled"
 endfunction
 

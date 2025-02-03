@@ -1,11 +1,27 @@
-
+" Main LaTeX settings function
 function! LaTeXSettings(args)
-	call Constant("g:vimtex_view_method", get(a:args, "view", "zathura"))
-	call Constant("g:vimtex_compiler_method", get(a:args, "compiler", "latexmk"))
-	call Constant("g:tex_flavor", get(a:args, 'flavor', "latex"))
+
 endfunction
 
-autocmd Filetype tex call LaTeXSettings({
-	\ "view": getenv($PDF_VIEWER),
-	\ "compiler": getenv($TEX_COMPILER)
-\})
+" Helper function for PDFLaTeX configuration
+function! s:ConfigureLaTeXMK()
+
+endfunction
+
+" Helper function for LuaTeX configuration
+function! s:ConfigureLuaTeX()
+
+endfunction
+
+" Helper function for LatexMK configuration
+function! s:ConfigurePDFLaTeX()
+
+endfunction
+
+" Helper function for XeLaTeX configuration
+function! s:ConfigureXeLaTeX()
+
+endfunction
+
+" Call the main function to set up all configurations
+autocmd Filetype tex call LaTeXSettings()

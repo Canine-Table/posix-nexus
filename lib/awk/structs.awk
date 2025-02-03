@@ -152,7 +152,6 @@ function resize_indexed_hashmap(V, N1, N2, S, D,	crsz, nsz, s, i, j)
 			}
 			# Fill remaining elements with default value D if necessary
 			if (j < N1) {
-				D = __return_value(D, "0") # Default value for D
 				do {
 					V[j+=1] = D
 				} while (j < N1)

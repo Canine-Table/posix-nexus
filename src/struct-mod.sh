@@ -71,17 +71,9 @@ get_struct_compare()
 	)
 }
 
-get_struct_noexpand() {
-	(
-		get_struct_clist $* | while read -r var; do
-			set_str_noexpand "$var"
-		done
-	)
-}
-
 get_struct_list() {
 	(
-		while getopts :s:d:o:cru OPT; do
+		while getopts :s:o:cru OPT; do
 			case $OPT in
 				c|s|o) eval "$OPT"="'$OPTARG'";;
 				r|u) t="$OPT";;
@@ -90,7 +82,6 @@ get_struct_list() {
 		shift $((OPTIND - 1))
 		$(get_cmd_awk) \
 			-v inpt="$(echo $*)" \
-			-v dft="$d" \
 			-v sep="$s" \
 			-v osep="$o" \
 			-v typ="$t" \
@@ -134,7 +125,59 @@ get_struct_list() {
 }
 
 ###:( new ):##################################################################################
+
+new_struct_task()
+{
+	(
+		while getopts :s:t:ueob OPT; do
+			case $OPT in
+				t|s|ueob) eval "$OPT"="'${OPTARG:-true}'";;
+			esac
+		done
+		shift $((OPTIND - 1))
+		"${e:-false}" && e='/dev/null' || e='/dev/stderr'
+		"${o:-false}" && o='/dev/null' || o='/dev/stdout'
+		"${b:-false}" && b='&' || unset b
+		[ -n "$t" ] && for i in $(get_struct_list ${u:+-u} -s ${s:-" "} "$@"); do
+			eval '$t $i 2>"$e" 1>"$o" $b'
+		done
+	)
+}
+
 ###:( set ):##################################################################################
+
+set_struct_noexpand()
+{
+	[ ${#@} -gt 0 ] && {
+		$AWK \
+			-v var="$1" \
+			-v val="$(get_struct_ref $1)" "
+			$(cat \
+				"$G_NEX_MOD_LIB/awk/misc.awk" \
+				"$G_NEX_MOD_LIB/awk/types.awk" \
+				"$G_NEX_MOD_LIB/awk/structs.awk" \
+				"$G_NEX_MOD_LIB/awk/str.awk"
+			)
+		"'
+			BEGIN {
+				if (var && length(val)) {
+					gsub(" ", "\\x20", val)
+					arr["b"] = "x08"
+					arr["t"] = "x09"
+					arr["n"] = "x0a"
+					arr["v"] = "x0b"
+					arr["f"] = "x0c"
+					for (i in arr)
+						gsub("\x5c" i, "\x5c" arr[i], val) 
+					delete arr
+					print var "=\x22" val "\x22"
+				}
+			}
+		'
+		shift
+		set_struct_noexpand $@
+	}
+}
 
 set_struct_opt()
 {

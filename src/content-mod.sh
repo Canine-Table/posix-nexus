@@ -134,19 +134,20 @@ add_content_modules() {
 export G_NEX_ROOT="/usr/local/bin/nex"
 export G_NEX_MOD_SRC="$G_NEX_ROOT/src"
 export G_NEX_MOD_LIB="$G_NEX_ROOT/lib"
-
-#export VIMINIT='source $G_NEX_MOD_LIB/viml/init.vim'
-export LESS='-R'
-export COLORFGBG=';0'
+export G_NEX_MOD_DOCS="$G_NEX_ROOT/docs"
 
 add_content_modules
+export LESS='-R'
+export COLORFGBG=';0'
 export PAGER="$(get_cmd_pager)"
 export EDITOR="$(get_cmd_editor)"
-export SHELL="$(get_cmd_shell)"
+#export SHELL="$(get_cmd_shell)"
 export AWK="$(get_cmd_awk)"
-export PDF_VIEWER="$(get_cmd_pdf_viewer)"
-export TEX_COMPILER="$(get_cmd_pdf_viewer)"
+export PKGMGR="$(get_cmd_pkgmgr)"
 
-alias reload_nex='. "$G_NEX_MOD_SRC/content-mod.sh"'
+alias nex='. "$G_NEX_MOD_SRC/content-mod.sh"'
 alias vi='$EDITOR'
+alias pgr='$PAGER'
+alias pkgmgr='$PKGMGR'
+
 

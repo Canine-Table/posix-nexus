@@ -99,7 +99,7 @@ function __first_index(D, V, B,		i, j, c)
 	}
 }
 
-function __load_quotes(V)
+function __load_quote_map(V)
 {
 	V["sq"] = "\x27"
 	V["dq"] = "\x22"
