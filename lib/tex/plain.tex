@@ -1,7 +1,7 @@
 \long\def\Group#1{\begingroup{#1}\endgroup}
 \long\def\MakeAtEnv#1\EndAtEnv{\makeatletter#1\makeatother}
 \long\def\MakeDigitEnv#1\EndDigitEnv{\makedigitletter#1\makedigitother}
-%\def\ConsumeCs{\def\CsName##1{\CheckDef{##1}{\csname##1\endcsname}{##1}\CsName}
+\long\def\ConsumeCsOrTok{\def\CsOrTok##1{\CheckDef{##1}{\csname##1\endcsname}{##1}}\CsOrTok}
 \edef\MakeDigitLetter{%
 	\catcode`0=11%
 	\catcode`1=11%
@@ -38,8 +38,17 @@
 	\expandafter\LoopTok\expandafter#1\relax%
 }
 
+\long\def\DefaultValue#1{%
+	\expandafter\ifx#1\relax%
+		\expandafter\DefaultValue\expandafter\PickFirstOfOne%
+	\else%
+		\expandafter#1\expandafter\PickNoneOfOne%
+	\fi%
+}
+
 \MakeAtEnv
 \def\CheckDef#1{%
+	\Group{\expandafter\expandafter\expandafter}%
 	\expandafter\ifx\csname#1\endcsname%
 		\expandafter\PickSecondOfTwo%
 	\else%

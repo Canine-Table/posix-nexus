@@ -1,0 +1,92 @@
+\def\ColorTheme#1{%
+	\ifcase#1%
+		dark%
+	\or%
+		light%
+	\or
+		success%
+	\or%
+		info%
+	\or%
+		warning%
+	\or%
+		error%
+	\or%
+		primary%
+	\else
+		secondary%
+	\fi
+}
+\def\StyleTheme#1{
+	\ifcase#1%
+		\tcbset{%
+			arc=7pt,%
+			before upper={\rule[-3pt]{0pt}{10pt}},%
+			attach boxed title to top center={yshift=-2mm}%
+		}%
+	\or%
+		\tcbset{%
+			attach boxed title to top center={%
+				yshift=-0.25mm-\tcboxedtitleheight/2,%
+				yshifttext=2mm-\tcboxedtitleheight/2%
+			},%
+			boxed title style={%
+				boxrule=0.5mm,%
+				frame code={%
+					\path[tcb fill frame] ([xshift=-4mm]frame.west)%
+					-- (frame.north west) -- (frame.north east) -- ([xshift=4mm]frame.east)%
+					-- (frame.south east) -- (frame.south west) -- cycle; },%
+					interior code={ \path[tcb fill interior] ([xshift=-2mm]interior.west)%
+					-- (interior.north west) -- (interior.north east)%
+					-- ([xshift=2mm]interior.east) -- (interior.south east) -- (interior.south west)%
+					-- cycle;%
+				}%
+			}%
+		}%
+	\or%
+		\tcbset{%
+			attach boxed title to top left={xshift=1cm,yshift*=1mm-\tcboxedtitleheight},%
+			boxed title style={%
+				frame code={%
+					\path[fill=tcbcolback!30!black]%
+					([yshift=-1mm,xshift=-1mm]frame.north west) arc[start angle=0,end angle=180,radius=1mm]%
+					([yshift=-1mm,xshift=1mm]frame.north east) arc[start angle=180,end angle=0,radius=1mm];%
+					\path[%
+						left color=tcbcolback!60!black,%
+						right color=tcbcolback!60!black,%
+						middle color=tcbcolback!80!black%
+					] ([xshift=-2mm]frame.north west) -- ([xshift=2mm]frame.north east)%
+					[rounded corners=1mm]-- ([xshift=1mm,yshift=-1mm]frame.north east)%
+					-- (frame.south east) -- (frame.south west)%
+					-- ([xshift=-1mm,yshift=-1mm]frame.north west)%
+					[sharp corners]-- cycle;%
+				},%
+				interior engine=empty%
+			}%
+		}%
+	\fi%
+}
+
+\NewDocumentEnvironment{ColorThemedBox}{O{0}oom}{
+	\def\tmpa{\ColorTheme{#1}}
+	\IfValueT{#3}{\StyleTheme{#3}}
+	\begin{tcolorbox}[
+		enhanced,
+		on line,
+		colback=palette.\tmpa.back,
+		colframe=palette.\tmpa.frame,
+		colupper=palette.\tmpa.frame,
+		fonttitle=\bfseries,
+		colbacktitle=palette.\tmpa.title,
+		fonttitle=\bfseries,
+		IfValueT={#2}{title={#2}},
+		coltext=palette.\tmpa.text,
+		boxrule=1pt,
+		boxsep=3pt,
+		left=6pt,
+		right=6pt,
+		top=0pt,
+		bottom=4pt
+	]{#4}%
+}{\end{tcolorbox}}
+

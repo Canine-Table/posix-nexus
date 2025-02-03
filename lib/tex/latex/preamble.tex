@@ -1,0 +1,27 @@
+\input{latex/packages.tex}
+\input{latex/environments.tex}
+\input{latex/colors.tex}
+\input{latex/tcolorboxes.tex}
+\usetikzlibrary{decorations.fractals}
+\pagecolor{palette.light.back}
+\pagestyle{fancy}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+\fancyhf{\addtolength{\topmargin}{-2.49998pt}}
+\setlength{\parindent}{0pt}
+\setlength{\headheight}{15pt}%
+\addtolength{\topmargin}{-5pt}%
+\fancyhead[C]{\ReadFile{contents.env/name.txt}}
+\renewcommand\headrule{%
+	\vspace{-0.75in}%
+	\hrulefill{%
+		\tikz[decoration=Koch snowflake]{%
+			\draw decorate{%
+				decorate{%
+					decorate{(0,-2) -- (3,-2)%
+					}%
+				}%
+			};%
+		}%
+	}%
+}
