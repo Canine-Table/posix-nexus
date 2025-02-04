@@ -16,6 +16,7 @@ function! Main()
 		\ 'LaTeX.vim',
 		\ 'mappings.vim',
 		\ 'plugins.vim',
+		\ 'misc.vim',
 		\ 'snippets.vim',
 	\)
 	call SetupPlugins()
