@@ -21,6 +21,8 @@ function! MapNex()
 	nnoremap <leader>t :tabnew<CR>
 	nnoremap <leader>w :write<CR>
 	nnoremap <leader>q :quit<CR>
+	nnoremap <leader>wq :wq<CR>
+	nnoremap <leader>wqa :wqall<CR>
 	nnoremap <Leader>e :Explore<CR>
 	nnoremap <Leader>r :retab!<CR>
 	nnoremap <leader>, :nohlsearch<CR>
@@ -36,6 +38,7 @@ function! MapNex()
 	nnoremap <Leader>lq :VimtexStop<CR>
 	noremap <Leader>lm :VimtexToggleMain<CR>
 	noremap <leader>wc <Cmd>VimtexCountWords<CR>
+	nnoremap <leader>u <Cmd>call UltiSnips#RefreshSnippets()<CR>
 	echo "Nexus Mapping: enabled"
 endfunction
 

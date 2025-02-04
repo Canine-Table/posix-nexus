@@ -1,4 +1,6 @@
 **/*.env/
+**/*.pdf
+
 # LaTeX auxiliary files
 *.aux
 *.lof

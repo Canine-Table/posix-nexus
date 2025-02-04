@@ -2,26 +2,16 @@
 \input{latex/environments.tex}
 \input{latex/colors.tex}
 \input{latex/tcolorboxes.tex}
+\input{latex/expl3.tex}
+\input{latex/svg.tex}
 \usetikzlibrary{decorations.fractals}
 \pagecolor{palette.light.back}
 \pagestyle{fancy}
 \renewcommand{\headrulewidth}{0.4pt}
 \renewcommand{\footrulewidth}{0.4pt}
-\fancyhf{\addtolength{\topmargin}{-2.49998pt}}
-\setlength{\parindent}{0pt}
-\setlength{\headheight}{25pt}%
-\addtolength{\topmargin}{-5pt}%
-\fancyhead[L]{\ColorThemedTCBox[0]{\ReadFile{contents.env/name.txt}}}
-\renewcommand\headrule{%
-	\vspace{-0.75in}%
-	\hrulefill{%
-		\tikz[decoration=Koch snowflake]{%
-			\draw decorate{%
-				decorate{%
-					decorate{(0,-2) -- (3,-2)%
-					}%
-				}%
-			};%
-		}%
-	}%
-}
+%\fancyhf{\addtolength{\topmargin}{10pt}}
+%\setlength{\headheight}{-20pt}%
+%\addtolength{\topmargin}{-20pt}%
+%\fancyhead[L]{\ColorThemedTCBox[0]{\ReadFile{contents.env/name.txt}}}
+\NoParIndent
+\SnowFlakeHeader

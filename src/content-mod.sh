@@ -45,85 +45,6 @@ get_content_list()
 	)
 }
 
-get_content_filter_list()
-{
-	(
-		while getopts DdFfCcBbPpSsHhRrWwXx OPT; do
-			case $OPT in
-				d|f|c|b|p|s|h) f="$f${f:+,}$OPT";;
-				D|F|C|B|P|S|H|R|W|X) F="$F${F:+,}$OPT";;
-				r|w|x) p="$p${p:+}$OPT";;
-			esac
-		done
-		shift $((OPTIND - 1))
-		template="$(
-			$(get_cmd_awk) \
-				-v pis="$p" \
-				-v fis="$f" \
-				-v fnot="$F" "
-				$(
-					cat "$G_NEX_MOD_LIB/awk/struct.awk"
-				)
-			"'
-				BEGIN {
-					if (fnot) {
-						array(tolower(fnot), nota, ",")
-						for (i in nota) {
-							if (nstr)
-								nstr = nstr "-a"
-							nstr = nstr " ! -" i " \x27<1>\x27 "
-						}
-						delete nota
-						if (nstr)
-							nstr = "[" nstr "]"
-					}
-					if (fis) {
-						array(fis, isa, ",")
-						for (i in isa) {
-							if (istr)
-								istr = istr "-o"
-							istr = istr " -" i " \x27<1>\x27 "
-						}
-						delete isa
-						if (istr) {
-							istr = "[" istr "]"
-							if  (nstr)
-								nstr = nstr " && "
-						}
-					}
-					if (pis) {
-						array(pis, isa, ",")
-						for (i in isa) {
-							if (pstr)
-								pstr = pstr "-a"
-							pstr = pstr " -" i " \x27<1>\x27 "
-						}
-						delete isa
-						if (pstr) {
-							pstr = "[" pstr "]"
-							if  (nstr || istr)
-								pstr = " && " pstr
-						}
-					}
-					print nstr istr pstr
-				}
-			'
-		)"
-		for i in "$@"; do
-			j=$(get_content_path "$i") && {
-				[ -z "$template" ] && {
-					k="$k${k:+,}$j"
-				} || {
-					eval "$(set_str_format -f "$j" "$template")" && {
-						k="$k${k:+,}$j"
-					}
-				}
-			}
-		done
-		get_struct_clist -u "$k"
-	)
-}
-
 add_content_modules() {
 	for f in "$(get_content_path "$G_NEX_MOD_SRC")/"*"-mod.sh"; do
 		[ -f "$f" -a -r "$f" -a "$(get_content_leaf "$f")" != 'content-mod.sh' ] && . "$f"
@@ -141,13 +62,13 @@ export LESS='-R'
 export COLORFGBG=';0'
 export PAGER="$(get_cmd_pager)"
 export EDITOR="$(get_cmd_editor)"
-#export SHELL="$(get_cmd_shell)"
+export SHELL="$(get_cmd_shell)"
 export AWK="$(get_cmd_awk)"
 export PKGMGR="$(get_cmd_pkgmgr)"
+export TEXCPL="$(get_cmd_tex_compiler)"
 
 alias nex='. "$G_NEX_MOD_SRC/content-mod.sh"'
 alias vi='$EDITOR'
 alias pgr='$PAGER'
 alias pkgmgr='$PKGMGR'
-
 

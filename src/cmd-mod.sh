@@ -1,4 +1,3 @@
-
 ###:( get ):##################################################################################
 
 get_cmd()
@@ -30,14 +29,9 @@ get_cmd_editor()
 	get_cmd nvim vim gvim emacs subl vi
 }
 
-get_cmd_pdf_viewer()
-{
-	get_cmd zathura evince okular mupdf
-}
-
 get_cmd_tex_compiler()
 {
-	get_cmd pdflatex lualatex 
+	get_cmd latexmk pdflatex lualatex xelatex
 }
 
 get_cmd_pkgmgr()

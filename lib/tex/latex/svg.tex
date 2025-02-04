@@ -1,0 +1,7 @@
+\long\def\ShowSvgBox#1#2{%
+	\def\PassSvgPath##1{%
+		\includesvg[width=32pt, height=32pt]{##1}%
+	}%
+	\ColorThemedTCBox[#1]{\CSList{PassSvgPath}{#2}}%
+}
+

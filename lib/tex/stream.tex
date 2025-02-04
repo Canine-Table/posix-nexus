@@ -7,7 +7,7 @@
 		\openin\stream={#1}%
 		\loop\unless\ifeof\stream%
 			\read\stream to\InLine%
-			\InLine\par
+			\InLine\par%
 		\repeat%
 		\closein\stream%
 	}%

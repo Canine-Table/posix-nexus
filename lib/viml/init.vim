@@ -11,11 +11,12 @@ function! Main()
 	set hidden
 	set belloff=all
 	call CallFile(
-		\"types.vim",
-		\"str.vim",
-		\"LaTeX.vim",
-		\"mappings.vim",
-		\"plugins.vim"
+		\ 'types.vim',
+		\ 'str.vim',
+		\ 'LaTeX.vim',
+		\ 'mappings.vim',
+		\ 'plugins.vim',
+		\ 'snippets.vim',
 	\)
 	call SetupPlugins()
 	call ColorTheme()
