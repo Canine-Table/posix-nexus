@@ -3,7 +3,7 @@
 \def\AddCount#1{\UseCount{advance}{#1}}
 \def\MultiCount#1{\UseCount{multiply}{#1}}
 \def\DivCount#1{\UseCount{divide}{#1}}
-\def\UseCount#1#2{
+\def\UseCount#1#2{%
 	\CheckDef{#2}{%
 		\expandafter\csname#1\endcsname\csname#2\endcsname by\expandafter\PickFirstOfOne%
 	}{%

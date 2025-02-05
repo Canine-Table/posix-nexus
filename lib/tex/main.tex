@@ -6,11 +6,46 @@
 \input{misc.tex}
 \input{latex/preamble.tex}
 
-
 \begin{document}
-\ReadFile{contents.env/tool.txt}
+	\begin{ColorThemedBox}[1][2][title=Contact Information]\relax
+		\begin{ColorThemedBox}[0][2]\relax
+			\input{contents.env/contacts.txt}
+		\end{ColorThemedBox}
+	\end{ColorThemedBox}
+	\\
 
-%\ShowSvgBox{0}{svg/mariadb.svg,svg/sqlite.svg,svg/mongo.svg}
-	hello world
+	\begin{ColorThemedBox}[1][2][title=Systems]\relax
+		\input{contents.env/os.txt}
+	\end{ColorThemedBox}
+	\\
+
+	\begin{ColorThemedBox}[1][2][title=Programming]\relax
+		\input{contents.env/lang.txt}
+	\end{ColorThemedBox}
+	\\
+
+	\begin{ColorThemedBox}[1][2][title=Tools and Technologies]\relax
+		\input{contents.env/tool.txt}
+	\end{ColorThemedBox}
+	\\
+
+	\begin{ColorThemedBox}[1][2][title=Databases and ORM Frameworks]\relax
+		\input{contents.env/db.txt}
+	\end{ColorThemedBox}
+	\\
+
+	\begin{ColorThemedBox}[1][2][title=Certifications]\relax
+		\input{contents.env/certs.txt}
+	\end{ColorThemedBox}
+	\\
+
+	\begin{ColorThemedBox}[1][2][title=Education]\relax
+		\input{contents.env/edu.txt}
+	\end{ColorThemedBox}
+	\\
+
+	\begin{ColorThemedBox}[1][2][title=Work Experience]\relax
+		\input{contents.env/work.txt}
+	\end{ColorThemedBox}
 \end{document}
 

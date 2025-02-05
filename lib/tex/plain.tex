@@ -2,7 +2,7 @@
 \long\def\MakeAtEnv#1\EndAtEnv{\makeatletter#1\makeatother}
 \long\def\MakeDigitEnv#1\EndDigitEnv{\makedigitletter#1\makedigitother}
 \long\def\ConsumeCsOrTok{\def\CsOrTok##1{\CheckDef{##1}{\csname##1\endcsname}{##1}}\CsOrTok}
-\edef\MakeDigitLetter{%
+\def\MakeDigitLetter{%
 	\catcode`0=11%
 	\catcode`1=11%
 	\catcode`2=11%
@@ -15,7 +15,7 @@
 	\catcode`9=11%
 }
 
-\edef\MakeDigitOther{%
+\def\MakeDigitOther{%
 	\catcode`0=\the\catcode`0\relax%
 	\catcode`1=\the\catcode`1\relax%
 	\catcode`2=\the\catcode`2\relax%
@@ -27,6 +27,7 @@
 	\catcode`8=\the\catcode`8\relax%
 	\catcode`9=\the\catcode`9\relax%
 }
+
 
 \def\NewTok#1{%
 	\def\AddTok##1{##1}%

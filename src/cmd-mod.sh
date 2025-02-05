@@ -34,6 +34,11 @@ get_cmd_tex_compiler()
 	get_cmd latexmk pdflatex lualatex xelatex
 }
 
+get_cmd_pdf_viewer()
+{
+	get_cmd zathura mupdf evince
+}
+
 get_cmd_pkgmgr()
 {
 	get_cmd pacman apk portage apt zypper dnf yum

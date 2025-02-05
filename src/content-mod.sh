@@ -66,6 +66,7 @@ export SHELL="$(get_cmd_shell)"
 export AWK="$(get_cmd_awk)"
 export PKGMGR="$(get_cmd_pkgmgr)"
 export TEXCPL="$(get_cmd_tex_compiler)"
+export VPDF="$(get_cmd_pdf_viewer)"
 
 alias nex='. "$G_NEX_MOD_SRC/content-mod.sh"'
 alias vi='$EDITOR'

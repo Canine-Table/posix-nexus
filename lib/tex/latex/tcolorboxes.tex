@@ -67,9 +67,9 @@
 	\fi%
 }
 
-\NewDocumentEnvironment{ColorThemedBox}{O{0}oom}{
-	\def\tmpa{\ColorTheme{#1}}
-	\IfValueT{#3}{\StyleTheme{#3}}
+\NewDocumentEnvironment{ColorThemedBox}{O{0}O{0}om}{
+	\def\tmpa{\ColorTheme{#1}}%
+	\expandafter\ifx#2\relax\else\StyleTheme{#2}\fi%
 	\begin{tcolorbox}[
 		enhanced,
 		on line,
@@ -78,34 +78,41 @@
 		fonttitle=\bfseries,
 		colbacktitle=palette.\tmpa.title,
 		fonttitle=\bfseries,
-		IfValueT={#2}{title={#2}},
+		IfValueT={#3}{#3},
 		coltext=palette.\tmpa.text,
 		boxrule=1pt,
 		boxsep=3pt,
 		left=6pt,
 		right=6pt,
-		top=0pt,
-		bottom=4pt
+		top=6pt,
+		bottom=2pt
 	]{#4}%
 }{\end{tcolorbox}}
 
-\NewDocumentCommand{\ColorThemedTCBox}{O{0}m}{%
-	\def\tmpa{\ColorTheme{#1}}
-	\tcbox[
-		colback=palette.\tmpa.back,
-		colframe=palette.\tmpa.frame,
-		fonttitle=\bfseries,
-		colbacktitle=palette.\tmpa.title,
-		fonttitle=\bfseries,
-		coltext=palette.\tmpa.text
-	]{#2}
+\long\def\ItemArrow#1{\item[\textcolor{palette.dark.frame!90!white}{\faArrowAltCircleRight}] #1}
+
+\newenvironment{Items}{%
+	\begin{itemize}
+}{%
+	\end{itemize}
 }
 
-%TotalTCBox{\myverb}{ O{red} v !O{} }
-%{ fontupper=\ttfamily,nobeforeafter,tcbox raise base,arc=0pt,outer arc=0pt,
-%top=0pt,bottom=0pt,left=0mm,right=0mm,
-%leftrule=0pt,rightrule=0pt,toprule=0.3mm,bottomrule=0.3mm,boxsep=0.5mm,
-%colback=#1!10!white,colframe=#1!50!black,#3}{#2}
+\tcolorboxenvironment{Items}{
+    blanker,
+    coltext=black,
+    borderline west={2.3mm}{0pt}{palette.dark.frame}
+}
 
+\NewDocumentCommand{\ColorThemedTCBox}{O{0}m}{%
+	\def\tmpa{\ColorTheme{#1}}%
+	\tcbox[%
+		colback=palette.\tmpa.back,%
+		colframe=palette.\tmpa.frame,%
+		fonttitle=\bfseries,%
+		colbacktitle=palette.\tmpa.title,%
+		fonttitle=\bfseries,%
+		coltext=palette.\tmpa.text,%
+	]{#2}%
+}
 
 

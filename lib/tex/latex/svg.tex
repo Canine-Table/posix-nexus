@@ -1,7 +1,9 @@
 \long\def\ShowSvgBox#1#2{%
 	\def\PassSvgPath##1{%
-		\includesvg[width=32pt, height=32pt]{##1}%
+		\hspace{5pt}\includesvg[width=32pt, height=32pt]{##1}\hspace{5pt}\vspace{1pt}%
 	}%
-	\ColorThemedTCBox[#1]{\CSList{PassSvgPath}{#2}}%
+	\begin{ColorThemedBox}[0][2]\relax
+		\CSList{PassSvgPath}{#2}%
+	\end{ColorThemedBox}
 }
 

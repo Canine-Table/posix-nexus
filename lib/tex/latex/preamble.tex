@@ -4,14 +4,14 @@
 \input{latex/tcolorboxes.tex}
 \input{latex/expl3.tex}
 \input{latex/svg.tex}
+\pagestyle{fancy}
 \usetikzlibrary{decorations.fractals}
 \pagecolor{palette.light.back}
-\pagestyle{fancy}
 \renewcommand{\headrulewidth}{0.4pt}
 \renewcommand{\footrulewidth}{0.4pt}
-%\fancyhf{\addtolength{\topmargin}{10pt}}
-%\setlength{\headheight}{-20pt}%
-%\addtolength{\topmargin}{-20pt}%
-%\fancyhead[L]{\ColorThemedTCBox[0]{\ReadFile{contents.env/name.txt}}}
+\fancyhead[L]{%
+	\tcbox[on line, size=fbox]{\ReadFile{contents.env/name.txt}}\hspace{5pt}%
+	\tcbox[on line, size=fbox]{\ReadFile{contents.env/title.txt}}%
+}
 \NoParIndent
 \SnowFlakeHeader

@@ -2,6 +2,7 @@
 function! LaTeXSettings()
 	let g:vimtex_compiler_method = BaseName($TEXCPL)
 	let g:vimtex_docs_directory = $G_NEX_MOD_DOCS
+	let g:vimtex_view_method = BaseName($VPDF)
 	" Define a dictionary mapping compiler methods to configuration functions
 	let l:compiler_config = {
 		\ 'pdflatex': 's:ConfigurePDFLaTeX',
@@ -10,15 +11,7 @@ function! LaTeXSettings()
 		\ 'xelatex': 's:ConfigureXeLaTeX'
 	\}
 	if has_key(l:compiler_config, g:vimtex_compiler_method)
-		if g:vimtex_compiler_method == 'pdftex'
-			call s:ConfigurePDFLaTeX()
-		elseif g:vimtex_compiler_method == 'latexmk'
-			call s:ConfigureLaTeXMK()
-		elseif g:vimtex_compiler_method == 'luatex'
-			call s:ConfigureLuaTeX()
-		else
-			call s:ConfigureLaTeX()
-		endif
+		call CallFunction(l:compiler_config[g:vimtex_compiler_method])
 		echo 'VimTeX Compiler:' g:vimtex_compiler_method
 	else
 		echo "Unknown compiler method:" g:vimtex_compiler_method
