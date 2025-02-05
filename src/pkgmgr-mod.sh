@@ -112,6 +112,44 @@ __get_pkgmgr_emerge()
 	esac
 }
 
+__get_pkgmgr_pkg()
+{
+    case $1 in
+	s) K='search';;
+	q) K='info';;
+	u) K="update && $PKGMGR upgrade";;
+	r) K='delete';;
+	i) K='install';;
+	c) K='clean';;
+    esac
+}
+
+__get_pkgmgr_brew()
+{
+	case $1 in
+		s) K='search';;
+		q) K='info';;
+		u) K="update && $PKGMGR upgrade";;
+		r) K='uninstall';;
+		i) K='install';;
+		c) K='cleanup';;
+	esac
+}
+
+__get_pkgmgr_port()
+{
+	case $1 in
+		s) K='search';;
+		q) K='info';;
+		u) K="selfupdate && $PKGMGR upgrade outdated";;
+		r) K='uninstall';;
+		i) K='install';;
+		c) K='clean --all';;
+	esac
+}
+
+alias get_pkgmgr_yay=get_pkgmgr_pacman
 alias get_pkgmgr_dnf=get_pkgmgr_yum
 alias get_pkgmgr_apt-get=get_pkgmgr_apt
+
 

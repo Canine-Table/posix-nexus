@@ -79,7 +79,7 @@ export VPDF="$(get_cmd_pdf_viewer)"
 alias nex='. "$G_NEX_MOD_SRC/content-mod.sh"'
 alias vi='$EDITOR'
 alias pgr='$PAGER'
-alias pkgmgr='$PKGMGR'
+alias pkgmgr='get_pkgmgr'
 
 ##############################################################################################
 
