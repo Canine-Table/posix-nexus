@@ -1,3 +1,7 @@
+#!/bin/sh
+
+##:( get ):##################################################################################
+
 get_content_trim()
 {
 	echo "$*" | sed 's|\./|/|g; s|/\+|/|g; s|/\+$||'
@@ -45,12 +49,16 @@ get_content_list()
 	)
 }
 
+###:( add ):##################################################################################
+
 add_content_modules() {
 	for f in "$(get_content_path "$G_NEX_MOD_SRC")/"*"-mod.sh"; do
 		[ -f "$f" -a -r "$f" -a "$(get_content_leaf "$f")" != 'content-mod.sh' ] && . "$f"
 	done
 	unset f
 }
+
+##############################################################################################
 
 export G_NEX_ROOT="/usr/local/bin/nex"
 export G_NEX_MOD_SRC="$G_NEX_ROOT/src"
@@ -72,4 +80,6 @@ alias nex='. "$G_NEX_MOD_SRC/content-mod.sh"'
 alias vi='$EDITOR'
 alias pgr='$PAGER'
 alias pkgmgr='$PKGMGR'
+
+##############################################################################################
 

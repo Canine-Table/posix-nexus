@@ -2,7 +2,8 @@
 
 ##:( get ):##################################################################################
 
-get_str_locate() {
+get_str_locate()
+{
 	(
 		while getopts :f:r:s:o:n:g OPT; do
 			case $OPT in
@@ -10,7 +11,7 @@ get_str_locate() {
 			esac
 		done
 		shift $((OPTIND - 1))
-		eval "$*" | $(get_cmd_awk) \
+		eval "$*" | ${AWK:-$(get_cmd_awk)} \
 			-v glbl="$g" \
 			-v sep="$s" \
 			-v osep="$o" \
@@ -40,7 +41,8 @@ get_str_locate() {
 
 ###:( set ):##################################################################################
 
-set_str_case() {
+set_str_case()
+{
 	(
 		while getopts ult OPT; do
 			case $OPT in
@@ -48,7 +50,7 @@ set_str_case() {
 			esac
 		done
 		shift $((OPTIND - 1))
-		$(get_cmd_awk) \
+		${AWK:-$(get_cmd_awk)} \
 			-v inpt="$*" \
 			-v strcase="$c" "
 			$(cat \
@@ -71,7 +73,8 @@ set_str_case() {
 	)
 }
 
-set_str_format() {
+set_str_format()
+{
 	(
 		while getopts :i:s:f:l:r:k OPT; do
 			case $OPT in
@@ -83,7 +86,7 @@ set_str_format() {
 			f="$1"
 			shift
 		}
-		$(get_cmd_awk) \
+		${AWK:-$(get_cmd_awk)} \
 			-v fmt="$f" \
 			-v inpt="${i:-"$*"}" \
 			-v sep="$s" \
@@ -105,7 +108,8 @@ set_str_format() {
 
 ###:( add ):##################################################################################
 
-add_str_append() {
+add_str_append()
+{
 	(
 		while getopts :c:n:e OPT; do
 			case $OPT in
@@ -113,7 +117,7 @@ add_str_append() {
 			esac
 		done
 		shift $((OPTIND - 1))
-		$(get_cmd_awk) \
+		${AWK:-$(get_cmd_awk)} \
 			-v ed="$e" \
 			-v num="${n:-"$1"}" \
 			-v char="${c:-"$2"}" "
@@ -121,7 +125,7 @@ add_str_append() {
 					"$G_NEX_MOD_LIB/awk/misc.awk" \
 					"$G_NEX_MOD_LIB/awk/structs.awk" \
 					"$G_NEX_MOD_LIB/awk/types.awk" \
-					"$G_NEX_MOD_LIB/awk/str.awk" \
+					"$G_NEX_MOD_LIB/awk/str.awk"
 			)
 		"'
 			BEGIN {
@@ -129,6 +133,14 @@ add_str_append() {
 			}
 		'
 	)
+}
+
+add_str_div()
+{
+	n="$(get_tty_prop -k "columns")"
+	[ -n "$(tty)" ] && {
+		add_str_append -n "$n" -c "─"
+	}
 }
 
 ##:( del ):##################################################################################
