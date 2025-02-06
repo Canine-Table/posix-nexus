@@ -150,6 +150,5 @@ __get_pkgmgr_port()
 
 alias get_pkgmgr_yay=get_pkgmgr_pacman
 alias get_pkgmgr_dnf=get_pkgmgr_yum
-alias get_pkgmgr_apt-get=get_pkgmgr_apt
 
 

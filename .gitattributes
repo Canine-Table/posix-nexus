@@ -6,9 +6,6 @@
 # Treat all .awk files as AWK scripts
 **/*.awk linguist-language=Awk
 
-# Manually specify files with embedded AWK code
-run.sh linguist-language=Awk
-
 # Treat all .sh files as Shell scripts
 **/*.sh linguist-language=Shell
 

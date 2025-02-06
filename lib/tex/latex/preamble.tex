@@ -4,14 +4,20 @@
 \input{latex/tcolorboxes.tex}
 \input{latex/expl3.tex}
 \input{latex/svg.tex}
+\pdftrailerid{}
 \pagestyle{fancy}
 \usetikzlibrary{decorations.fractals}
 \pagecolor{palette.light.back}
 \renewcommand{\headrulewidth}{0.4pt}
 \renewcommand{\footrulewidth}{0.4pt}
-\fancyhead[L]{%
-	\tcbox[on line, size=fbox]{\ReadFile{contents.env/name.txt}}\hspace{5pt}%
-	\tcbox[on line, size=fbox]{\ReadFile{contents.env/title.txt}}%
-}
 \NoParIndent
+\RomainFooter
 \SnowFlakeHeader
+\fancyhead[LO, RE]{%
+	\tcbox[on line, size=fbox]{\input{contents.env/name.txt}}\hspace{5pt}%
+	\tcbox[on line, size=fbox]{\input{contents.env/title.txt}}%
+}
+
+\fancyfoot[LE,RO]{\textsl{\rightmark}}
+\fancyfoot[LO,RE]{\textsl{\leftmark}}
+

@@ -9,17 +9,34 @@
 \def\SnowFlakeHeader{%
 	\global\renewcommand\headrule{%
 		\vspace{-0.75in}%
-		\hrulefill{%
+		\def\SnowFlake{%
 			\tikz[decoration=Koch snowflake]{%
 				\draw decorate{%
 					decorate{%
-						decorate{(0,-2) -- (3,-2)%
-						}%
+						decorate{(0,-2) -- (3,-2)}%
 					}%
 				};%
 			}%
 		}%
+		\ifodd\the\count0%
+			\hrulefill{\SnowFlake}%
+		\else%
+			\SnowFlake\hrulefill{}%
+		\fi%
 	}
 }
 
+\def\RomainFooter{%
+	\pagenumbering{Roman}%
+	\global\renewcommand\footrule{%
+		\hrulefill%
+		\raisebox{-2.1pt}{%
+			\quad\decofourleft\decotwo\decofourright\quad%
+		}%
+		\hrulefill%
+	}%
+}
+
 \def\NoParIndent{\setlength{\parindent}{0pt}}
+
+\long\def\bftext#1{\textbf{\underline{\textit{\emph#1}}}\hspace{3pt}}

@@ -106,12 +106,14 @@
 \NewDocumentCommand{\ColorThemedTCBox}{O{0}m}{%
 	\def\tmpa{\ColorTheme{#1}}%
 	\tcbox[%
+		on line,
+		size=fbox,
 		colback=palette.\tmpa.back,%
 		colframe=palette.\tmpa.frame,%
 		fonttitle=\bfseries,%
 		colbacktitle=palette.\tmpa.title,%
 		fonttitle=\bfseries,%
-		coltext=palette.\tmpa.text,%
+		coltext=palette.\tmpa.text%
 	]{#2}%
 }
 
