@@ -33,39 +33,6 @@
 *~
 *.bak
 
-# Directory specific
-docs/*.aux
-docs/*.lof
-docs/*.log
-docs/*.lot
-docs/*.fls
-docs/*.out
-docs/*.toc
-docs/*.fdb_latex
-docs/*.synctex.gz
-docs/*.bbl
-docs/*.blg
-
-# C files in main/c/
-main/c/*.o
-main/c/*.a
-main/c/*.so
-main/c/*.d
-main/c/*.out
-main/c/*.log
-main/c/*.exe
-main/c/*.obj
-main/c/*.dll
-main/c/*.pdb
-main/c/*~
-
-# IDE specific
-.vscode/
-.idea/
-*.swp
-*.swo
-*.DS_Store
-
 # Ignore
 **/_*_logs.json
 
@@ -87,11 +54,9 @@ dist/
 downloads/
 eggs/
 .eggs/
-lib/
 lib64/
 parts/
 sdist/
-var/
 wheels/
 share/python-wheels/
 *.egg-info/
@@ -217,10 +182,10 @@ venv.bak/
 dmypy.json
 
 # Pyre type checker
-.pyre/
+#.pyre/
 
 # pytype static type analyzer
-.pytype/
+#.pytype/
 
 # Cython debug symbols
 cython_debug/
