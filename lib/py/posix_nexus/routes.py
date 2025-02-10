@@ -4,5 +4,5 @@ from posix_nexus import nexus
 
 @nexus.app.route("/")
 def main():
-    return render_template("main.html")
+    return render_template("index.html")
 
