@@ -9,6 +9,8 @@ function! Main()
 	set wrap breakindent
 	set title
 	set hidden
+	set history=10000
+	set nowrap
 	set belloff=all
 	call CallFile(
 		\ 'types.vim',
