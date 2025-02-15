@@ -75,9 +75,9 @@ function round(N)
 	return int(N + 0.5)
 }
 
-# DA: The lower bound of the range
-# DB: The upper bound of the range
-# DC: The value to be distributed within the range
+# N1: The lower bound of the range
+# N2: The upper bound of the range
+# N3: The value to be distributed within the range
 function distribution(N1, N2, N3)
 {
 	# Calculate the distribution value by dividing the difference between N1 and N3 by the difference between N2 and N3
@@ -101,9 +101,9 @@ function lcd(N1, N2)
 		return (N1 * N2) / euclidean(N1, N2)
 }
 
-# DA: The lower bound of the range
-# DB: The upper bound of the range
-# DC: The modulus value to adjust the lower bound
+# N1: The lower bound of the range
+# N2: The upper bound of the range
+# N3: The modulus value to adjust the lower bound
 function modulus_range(N1, N2, N3)
 {
 	# If N1 is less than N2, adjust N1 to be within the range [N2, N3]
@@ -135,7 +135,7 @@ function modular_exponentiation(N1, N2, N3,	r)
 function fermats_little_theorm(N,	v, i, p)
 {
 	if (is_integral(N)) {
-		for (i = 1; i <= split("2,3,5,7,11,13,17,19,23,29,31,37,41,43,47,53", v, ","); i++) { 
+		for (i = 1; i <= split("2,3,5,7,11,13,17,19,23,29,31,37,41,43,47,53", v, ","); i++) {
 			if (! divisible(N, v[i], N)) {
 				p = v[i]
 				break
