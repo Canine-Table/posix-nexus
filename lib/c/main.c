@@ -5,7 +5,7 @@
 
 int main()
 {
-    printf("%s\n", nex_char_ext('u'));
+    printf("%s\n", nex_char('a'));
 	new_nex_t("Hello world");
 	return 0;
 }

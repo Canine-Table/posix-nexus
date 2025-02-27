@@ -16,6 +16,7 @@ function! Main()
 		\ 'types.vim',
 		\ 'str.vim',
 		\ 'LaTeX.vim',
+		\ 'xml.vim',
 		\ 'mappings.vim',
 		\ 'plugins.vim',
 		\ 'misc.vim',

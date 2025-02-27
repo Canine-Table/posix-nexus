@@ -38,26 +38,6 @@ char *nex_char(char c)
 	return arr;
 }
 
-char *nex_char_ext(char c, nex_char_t arr) {
-	switch (c) {
-		case 'a':
-			thisstruct.l = nex_char('l');
-			thisstruct.u = nex_char('u');
-			thisstruct.d = nex_char('d');
-		default:
-			return nex_char(c);
-	}
-/*
-	char* nex_char_ext(char c, CharSets* sets) {
-    switch (c) {
-        case 'a':
-            sets->lower_case_set = nex_char('l');
-            sets->upper_case_set = nex_char('u');
-            sets->digit_set = nex_char(
-			    */
-	return NULL;
-}
-
 void new_nex_t(void *ptr)
 {
 	char *arr = (char *)ptr;

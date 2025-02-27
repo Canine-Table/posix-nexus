@@ -8,14 +8,12 @@ typedef struct nex_t {
 } nex_t;
 
 typedef struct {
-	char *lower;
-	char *upper;
-	char *digit;
+	char size;
+	char *chars;
 } nex_char_t;
 
 void new_nex_t(void*);
 char *nex_char(char);
-char *nex_char_ext(char);
 
 #include "type.c"
 #endif

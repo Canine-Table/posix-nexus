@@ -6,3 +6,7 @@ from posix_nexus import nexus
 def main():
     return render_template("index.html")
 
+@nexus.app.route("/svg")
+def main_svg():
+    return render_template("index_svg.html")
+
