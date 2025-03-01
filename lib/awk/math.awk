@@ -51,7 +51,7 @@ function factoral(N, B,		n)
 			if (B)
 				printf("%.f * %.f = %.f\n", N, n, N * n)
 			return sprintf("%.f", factoral(N * n, B, n - 1))
-		} else
+		} else {
 			return N
 		}
 	}
