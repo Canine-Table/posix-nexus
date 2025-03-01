@@ -291,12 +291,12 @@ function even_lengths(V, D1, D2, B,	t1, t2, t3, t4)
 		# Calculate the absolute difference in lengths between V[D1] and V[D2]
 		if (t1 = absolute(length(V[D1]) - length(V[D2]))) {
 			t2 = match_length(V[D1] "," V[D2], 1)
-			t3 = length(t2) 
+			t3 = length(t2)
 			if (B)
 				t4 = substr(t2, t1 + 1)
 			else
 				t4 = substr(t2, 1, t3 - t1)
-			if (t2 == V[D1]) 
+			if (t2 == V[D1])
 				V[D1] = t4
 			else
 				V[D2] = t4
@@ -316,7 +316,7 @@ function even_lengths(V, D1, D2, B,	t1, t2, t3, t4)
 # O: The output delimiter for joining matched elements.
 function anchor_search(D1, D2, D3, N, B, S, O,		rcd, dlm, i, s, c, tk) {
 	if (D1 && D2) {
-		__load_delim(dlm, S, O)  
+		__load_delim(dlm, S, O)
 		c = split(D1, rcd, dlm["s"])
 		rcd[0] = D1
 		for (i = 1; i <= c + 1; i++) {
@@ -342,5 +342,4 @@ function anchor_search(D1, D2, D3, N, B, S, O,		rcd, dlm, i, s, c, tk) {
 		print D1
 	}
 }
-
 

@@ -27,7 +27,7 @@ get_struct_compare()
 			esac
 		done
 		shift $((OPTIND - 1))
-		$(get_cmd_awk) \
+		${AWK:-$(get_cmd_awk)} \
 			-v inptlst="${a:-"$1"}" \
 			-v reflst="${b:-"$2"}" \
 			-v mde="$m" \
@@ -80,7 +80,7 @@ get_struct_list() {
 			esac
 		done
 		shift $((OPTIND - 1))
-		$(get_cmd_awk) \
+		${AWK:-$(get_cmd_awk)} \
 			-v inpt="$(echo $*)" \
 			-v sep="$s" \
 			-v osep="$o" \
@@ -189,7 +189,7 @@ set_struct_opt()
 			esac
 		done
 		shift $((OPTIND - 1))
-		$(get_cmd_awk) \
+		${AWK:-$(get_cmd_awk)} \
 			-v inpt="${i:-"$1"}" \
 			-v reflst="${r:-"$2"}" \
 			-v lgt="$l" \

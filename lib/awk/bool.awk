@@ -135,13 +135,13 @@ function NCMP__(B1, B2, B3, B4)
 }
 
 # LOR__: Compare two values B1 and B2 based on modes specified in M
-function LOR__(B1, B2, B3, M, t)
+function LOR__(B1, B2, B3, M,	t)
 {
 	# Determine mode based on M pattern: length or default
 	if (M ~ /^(l(e(n(g(t(h)?)?)?)?)?)$/) # Regex for 'length'
 		t = 0
 	else if (M ~ /^(d(e(f(a(u(l(t)?)?)?)?)?)?)$/) # Regex for 'default'
-		t = 1	     
+		t = 1
 	# Full comparison based on t
 	if (FULL__(t)) {
 		if (B3)
@@ -150,7 +150,7 @@ function LOR__(B1, B2, B3, M, t)
 			return LT__(B1, B2, t) # Use less than comparison
 	} else {
 		# Check if B1 and B2 are digits or if M is 'string'
-		if (! (is_digit(B1, 1) && is_digit(B2, 1)) || M ~ /^(s(t(r(i(n(g)?)?)?)?)?)$/) 
+		if (! (is_digit(B1, 1) && is_digit(B2, 1)) || M ~ /^(s(t(r(i(n(g)?)?)?)?)?)$/)
 			t = "a" # Set t to 'a' for ASCII comparison
 		if (B3)
 			return GT__(t B1, t B2) # Concatenate t with B1 and B2, then compare
@@ -204,13 +204,13 @@ function GT__(B1, B2, B3)
 # LT__: Return true if B1 is less than B2 based on the condition B3
 function LT__(B1, B2, B3)
 {
-	return NOR__(GT__(B1, B2, B3, 1), EQ__(B1, B2, B3))
+	return NOR__(GT__(B1, B2, B3), EQ__(B1, B2, B3))
 }
 
 # LE__: Return true if B1 is less than or equal to B2 based on the condition B3
 function LE__(B1, B2, B3)
 {
-	return NOT__(GT__(B1, B2, B3, 1))
+	return NOT__(GT__(B1, B2, B3))
 }
 
 # GE__: Return true if B1 is greater than or equal to B2 based on the condition B3

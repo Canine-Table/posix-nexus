@@ -2,7 +2,7 @@ function __trim_precision(N1, N2)
 {
 	if (is_integral(N1 = __return_value(N1, 10)) && is_digit(N2, 1)) {
 		N1 = sprintf("%." N1 "f", N2)
-		gsub(/(00+$)/,	"", N1)
+		gsub(/(00+$)/, "", N1)
 		return N1
 	}
 }
@@ -43,16 +43,17 @@ function fibonacci(N, B,	n1, n2)
 function factoral(N, B,		n)
 {
 	if (is_integral(N) && is_integral(+n)) {
-		if (N < 2)
+		if (N < 2) {
 			return 1
-		else if (! length(n) || n  > 0) {
+		} else if (! length(n) || n  > 0) {
 			if (! n)
 				n = N - 1
 			if (B)
 				printf("%.f * %.f = %.f\n", N, n, N * n)
 			return sprintf("%.f", factoral(N * n, B, n - 1))
-		} else 
+		} else
 			return N
+		}
 	}
 }
 

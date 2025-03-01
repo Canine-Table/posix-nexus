@@ -10,11 +10,11 @@ function __pivot(L, R)
 # V:  The array in which the elements are to be swapped.
 # DA: The index of the first element to swap.
 # DB: The index of the second element to swap.
-function __swap(V, DA, DB, t)
+function __swap(V, DA, DB,	t)
 {
 	t = V[DA]  # Temporarily store the value at DA
 	V[DA] = V[DB]  # Assign the value at DB to DA
-	V[DB] = ta  # Assign the temporary value to DB
+	V[DB] = t  # Assign the temporary value to DB
 }
 
 # V:   The array to partition.

@@ -113,7 +113,7 @@ function __load_lower_map(V,	    i)
 	}
 }
 
-function __load_upper_map(V,	    i)
+function __load_upper_map(V,	i)
 {
 	__load_lower_map(V)
 	for (i = 36; i < 62; i++) {
@@ -218,7 +218,7 @@ function compliment(N1, N2,	base_map, num_map, i, v, n)
 	return n
 }
 
-function base_compliment(N1, N2, N3, N4, D, B, 	num_map, base_map, t1)
+function base_compliment(N1, N2, N3, N4, D, B,	num_map, base_map, t1)
 {
 	if (N3 = __set_base(N3, base_map)) {
 		if (__load_number_map(num_map, convert_base(N1, N3, 2), base_map, N3) && __load_number_map(num_map, convert_base(N2, N3, 2), base_map, N3)) {
@@ -284,7 +284,7 @@ function subtract_base(N1, N2, N3, N4, B,	base_map, num_map, sn, n, sn1, sn2)
 	return n
 }
 
-function add_base(N1, N2, N3, N4, B,		num_map, base_map, sn, f, n, c, t1, t2, v1, v2, i)
+function add_base(N1, N2, N3, N4, B,	num_map, base_map, sn, f, n, c, t1, t2, v1, v2, i)
 {
 	if (N3 = __set_base(N3, base_map)) {
 		if (__load_number_map(num_map, N1, base_map, N3) && __load_number_map(num_map, N2, base_map, N3)) {

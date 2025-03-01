@@ -22,12 +22,16 @@ body {
 	display: none;
 }
 
+.nav-link:hover {
+	animation: nex-pulse 3s linear infinite;
+}
+
 .nex-crawl {
 	display: flex;
 	justify-content: center;
 	position: relative;
 	line-height: 150%;
-	transform-origin: 150% 100%;
+	/*transform-origin: 150% 100%;*/
 	perspective: 400px;
 	animation: nex-crawl 30s linear infinite;
 }

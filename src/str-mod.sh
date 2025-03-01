@@ -82,7 +82,7 @@ set_str_format()
 			esac
 		done
 		shift $((OPTIND - 1))
-		[ -n "$f" ] || { 
+		[ -n "$f" ] || {
 			f="$1"
 			shift
 		}
