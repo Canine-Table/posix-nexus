@@ -1,0 +1,37 @@
+@charset "UTF-8";
+:root {
+    --bs-nav-pills-link-active-color: #123456;
+    --bs-nav-pills-link-active-bg: #0d6efd;
+}
+
+body {
+	overflow-y: auto;
+	overflow-x: hidden;
+	font-family: "Times New Roman", Times, serif;
+}
+
+.nex-container {
+	height: 100vh;
+	overflow-y: scroll;
+	overflow-x: hidden;
+	-ms-overflow-style: none;
+	scrollbar-width: none;
+}
+
+.nex-container::-webkit-scrollbar {
+	display: none;
+}
+
+.nex-crawl {
+	display: flex;
+	justify-content: center;
+	position: relative;
+	line-height: 150%;
+	transform-origin: 150% 100%;
+	perspective: 400px;
+	animation: nex-crawl 30s linear infinite;
+}
+
+.nex-svg-out {
+	color: var(--bs-body-color);
+}

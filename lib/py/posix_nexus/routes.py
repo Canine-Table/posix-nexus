@@ -8,5 +8,5 @@ def main():
 
 @nexus.app.route("/svg")
 def main_svg():
-    return render_template("index_svg.html")
+    return render_template("index.env/index_svg.html")
 

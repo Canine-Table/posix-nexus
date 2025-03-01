@@ -1,0 +1,65 @@
+
+@keyframes nex-glow {
+	50% {
+		box-shadow: 0 0 40px hsl(12, 100%, 60%);
+	}
+}
+
+@keyframes nex-pulse {
+	50% {
+		transform: scale(1.5);
+	}
+}
+
+@keyframes nex-fill {
+	50% {
+		transform: translateX(-5%);
+	}
+}
+
+@keyframes nex-glitch {
+	50% {
+		transform: skew(180deg);
+	}
+}
+
+@keyframes nex-blur {
+	50% {
+		filter: blur(20px);
+		transform: skew(45deg);
+	}
+}
+
+@keyframes nex-sheen {
+	100% {
+		transform: rotateZ(60deg) translate(1em, -9em);
+	}
+}
+
+@keyframes nex-rotate {
+	50%,
+	100% {
+		transform: rotate(900deg);
+	}
+}
+
+@keyframes nex-crawl {
+	0% {
+		opacity: 0;
+		top: 100%;
+		transform: rotateX(25deg) translateY(0) scale(1);
+	}
+	20% {
+		opacity: 1;
+	}
+	90% {
+		opacity: 1;
+	}
+	100% {
+		opacity: 0;
+		top: -100%;
+		transform: rotateX(25deg) translateY(100%) scale(0.1);
+	};
+}
+
+
