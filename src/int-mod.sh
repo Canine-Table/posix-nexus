@@ -113,8 +113,7 @@ get_int_comp()
 get_int_abs()
 {
 	${AWK:-$(get_cmd_awk)} \
-		-v num="$1" \
-		-v rnd="$2" "
+		-v num="$1" "
 		$(cat \
 			"$G_NEX_MOD_LIB/awk/types.awk" \
 			"$G_NEX_MOD_LIB/awk/math.awk"
