@@ -1,0 +1,23 @@
+\input{../lib/tex/latex/packages.tex}
+\input{../lib/tex/latex/environments.tex}
+\input{../lib/tex/latex/colors.tex}
+\input{../lib/tex/latex/tcolorboxes.tex}
+\input{../lib/tex/latex/expl3.tex}
+\input{../lib/tex/latex/svg.tex}
+\pdftrailerid{}
+\pagestyle{fancy}
+\usetikzlibrary{decorations.fractals}
+\pagecolor{palette.light.back}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+\NoParIndent
+\RomainFooter
+\SnowFlakeHeader
+\fancyhead[LO, RE]{%
+	\tcbox[on line, size=fbox]{\input{contents/resume/name.txt}}\hspace{5pt}%
+	\tcbox[on line, size=fbox]{\input{contents/resume/title.txt}}%
+}
+
+\fancyfoot[LE,RO]{\textsl{\rightmark}}
+\fancyfoot[LO,RE]{\textsl{\leftmark}}
+
