@@ -2,7 +2,7 @@ from flask import render_template
 from flask import Blueprint
 from posix_nexus import nexus
 
-@nexus.app.route("/")
+@nexus.app.route("/", methods=['GET','POST'])
 def main():
     return render_template("index.html")
 

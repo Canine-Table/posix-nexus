@@ -22,10 +22,6 @@ body {
 	display: none;
 }
 
-.nav-link:hover {
-	animation: nex-pulse 3s linear infinite;
-}
-
 .nex-crawl {
 	display: flex;
 	justify-content: center;
