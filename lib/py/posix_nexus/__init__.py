@@ -84,7 +84,7 @@ class PosixNexus(Networking):
         return self
 
     def run_app(self) -> object:
-        self.app.run(port = self.port, debug = self.debug, load_dotenv = self.dotenv)
+        self.app.run(host =  '0.0.0.0', port = self.port, debug = self.debug, load_dotenv = self.dotenv)
         return self
 
 nexus = PosixNexus(port = 5050, debug = True, dotenv = True)
