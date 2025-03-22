@@ -6,4 +6,7 @@ from posix_nexus import nexus
 def posix_nexus():
     return render_template("index_nex.html")
 
+@nexus.app.route("/sandbox", methods=['GET','POST'])
+def posix_nexus_sandbox():
+    return render_template("index.html")
 

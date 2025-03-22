@@ -1,23 +1,106 @@
-\def\ColorTheme#1{%
-	\ifcase#1%
-		dark%
-	\or%
-		light%
-	\or
-		success%
-	\or%
-		info%
-	\or%
-		warning%
-	\or%
-		error%
-	\or%
-		primary%
-	\else
-		secondary%
-	\fi
+\def\NexRoot{%
+	\pgfkeys{%
+		/nex/.unknown/.code={%
+			\pgfkeys{%
+				/nex/.undef%
+			}%
+			\typeout{/nex has been undefined and re-declared as a family.}%
+		},%
+		/nex/.is family,%
+		/nex/STATEnex/.initial=family%
+		/nex/palette/.unknown/.code={%
+			\pgfkeys{
+				/nex/palette/.undef%
+			}%
+			\typeout{/nex/palette has been undefined and re-declared as a family.}%
+		},%
+		/nex/palette/.is family,%
+		/nex/palette/STATEpalette/.initial=family,%
+		/nex/attr/.unknown/.code={%
+			\pgfkeys{
+				/nex/attr/.undef%
+			}%
+			\typeout{/nex/attr has been undefined and re-declared as a family.}%
+		},%
+		/nex/attr/.is family,%
+		/nex/attr/STATEattr/.initial=family,%
+		/nex/prop/.unknown/.code={%
+			\pgfkeys{
+				/nex/prop/.undef%
+			}%
+			\typeout{/nex/prop has been undefined and re-declared as a family.}%
+		},%
+		/nex/prop/.is family,%
+		/nex/prop/STATEprop/.initial=family%
+	}%
 }
-\def\StyleTheme#1{
+
+\def\NexPalette#1{
+	\def\tmpa{%
+		\ifcase#1%
+			dark%
+		\or%
+			light%
+		\or
+			success%
+		\or%
+			info%
+		\or%
+			warning%
+		\or%
+			error%
+		\or%
+			primary%
+		\else
+			secondary%
+		\fi
+	}%
+	\pgfkeys{%
+		/nex/palette/.cd,
+		/nex/palette/upper/.unknown/.code={%
+			\pgfkeys{%
+				/nex/palette/upper/.undef%
+			}%
+			\typeout{/nex/palette/upper has been undefined and re-declared as a leaf.}%
+		},%
+		/nex/palette/STATEupper/.initial=leaf,%
+		/nex/palette/upper/.initial=palette.\tmpa.back,%
+		/nex/palette/back/.unknown/.code={%
+			\pgfkeys{%
+				/nex/palette/back/.undef%
+			}%
+			\typeout{/nex/palette/back has been undefined and re-declared as a leaf.}%
+		},%
+		/nex/palette/STATEback/.initial=leaf,%
+		/nex/palette/back/.initial=palette.\tmpa.back,%
+		/nex/palette/title/.unknown/.code={%
+			\pgfkeys{%
+				/nex/palette/title/.undef%
+			}%
+			\typeout{/nex/palette/title has been undefined and re-declared as a leaf.}%
+		},%
+		/nex/palette/STATEtitle/.initial=leaf,%
+		/nex/palette/title/.initial=palette.\tmpa.title,%
+		/nex/palette/text/.unknown/.code={%
+			\pgfkeys{%
+				/nex/palette/text/.undef%
+			}%
+			\typeout{/nex/palette/text has been undefined and re-declared as a leaf.}%
+		},%
+		/nex/palette/STATEtext/.initial=leaf,%
+		/nex/palette/text/.initial=palette.\tmpa.text,%
+		/nex/palette/frame/.unknown/.code={%
+			\pgfkeys{%
+				/nex/palette/frame/.undef%
+			}%
+			\typeout{/nex/palette/frame has been undefined and re-declared as a leaf.}%
+		},%
+		/nex/palette/STATEframe/.initial=leaf,%
+		/nex/palette/frame/.initial=palette.\tmpa.frame,%
+	}%
+}
+
+\def\NexHeader#1{
 	\ifcase#1%
 		\tcbset{%
 			arc=7pt,%
@@ -45,7 +128,6 @@
 		}%
 	\or%
 		\tcbset{%
-			attach boxed title to top left={xshift=1cm,yshift*=1mm-\tcboxedtitleheight},%
 			boxed title style={%
 				frame code={%
 					\path[fill=tcbcolback!30!black]%
@@ -62,32 +144,127 @@
 					[sharp corners]-- cycle;%
 				},%
 				interior engine=empty%
+			},%
+			attach boxed title to top left={xshift=1cm,yshift*=1mm-\tcboxedtitleheight},%
+		}%
+	\or%
+		\tcbset{%
+			skin=enhancedlast jigsaw,
+			attach boxed title to top left={xshift=-4mm,yshift=-0.5mm},
+			boxed title style={empty,arc=0pt,outer arc=0pt,boxrule=0pt},
+			underlay boxed title={
+				\fill[tcbcolbacktitle!45!white] (title.north west) -- (title.north east)
+				-- +(\tcboxedtitleheight-1mm,-\tcboxedtitleheight+1mm)
+				-- ([xshift=4mm,yshift=0.5mm]frame.north east) -- +(0mm,-1mm)
+				-- (title.south west) -- cycle;
+				\fill[tcbcolbacktitle!45!white!50!black] ([yshift=-0.5mm]frame.north west)
+				-- +(-0.4,0) -- +(0,-0.3) -- cycle;
+				\fill[tcbcolbacktitle!45!white!50!black] ([yshift=-0.5mm]frame.north east)
+				-- +(0,-0.3) -- +(0.4,0) -- cycle;
+			}
+		}%
+	\or%
+		\tcbset{%
+			flip title={interior hidden}%
+		}%
+	\or%
+		\tcbset{%
+			skin=enhancedlast jigsaw,interior hidden,
+			boxsep=0pt,top=0pt,
+			attach boxed title to bottom center,
+			boxed title style={empty,boxrule=0.5mm},
+			varwidth boxed title=0.5\linewidth,
+			underlay boxed title={
+			\draw[white,line width=0.5mm]
+			([xshift=0.3mm-\tcboxedtitleheight*2,yshift=0.3mm]title.north west)
+				--([xshift=-0.3mm+\tcboxedtitleheight*2,yshift=0.3mm]title.north east);
+				\path[draw=tcbcolframe,top color=white,bottom color=tcbcolbacktitle!50!white,line width=0.5mm]
+				([xshift=0.25mm-\tcboxedtitleheight*2,yshift=0.25mm]title.north west)
+				cos +(\tcboxedtitleheight,-\tcboxedtitleheight/2)
+				sin +(\tcboxedtitleheight,-\tcboxedtitleheight/2)
+				-- ([xshift=0.25mm,yshift=0.25mm]title.south west)
+				-- ([yshift=0.25mm]title.south east)
+				cos +(\tcboxedtitleheight,\tcboxedtitleheight/2)
+				sin +(\tcboxedtitleheight,\tcboxedtitleheight/2);
 			}%
 		}%
 	\fi%
 }
 
-\NewDocumentEnvironment{ColorThemedBox}{O{0}O{0}om}{
-	\def\tmpa{\ColorTheme{#1}}%
-	\expandafter\ifx#2\relax\else\StyleTheme{#2}\fi%
+\def\NexShadow#1{%
+	\ifcase#1%
+		\tcbset{
+			lifted shadow={1mm}{-2mm}{3mm}{0.1mm}{black!50!white}
+		}%
+	\fi%
+}
+
+\def\NexCorner#1{%
+	\ifcase#1%
+		\ifodd\the\count0
+			\tcbset{%
+				arc=8pt,%
+				sharp corners=uphill
+			}%
+		\else
+			\tcbset{%
+				arc=8pt,%
+				sharp corners=downhill
+			}%
+		\fi
+	\fi%
+}
+
+\makeatletter
+\def\NexOverlay#1{%
+	\tcbset{%
+		frame hidden,
+		interior hidden,
+		overlay={%
+			\begin{tcbclipframe}
+				\node at (frame){%
+					\includegraphics[width=\tcb@width,height=\tcb@height]{#1}
+				};
+			\end{tcbclipframe}%
+			\begin{tcbclipinterior}%
+				\fill[tcbcolframe,opacity=0.95](frame.south west) rectangle (frame.north east);%
+			\end{tcbclipinterior}%
+		}%
+	}
+}
+\makeatother
+
+\ExplSyntaxOn
+\NewDocumentEnvironment{NexColorBox}{O{}O{}m}{
+	\NexRoot%
+	\IfBlankF{#1}{%
+		\prop_clear_new:N\l_nex_tmpa_prop%
+		\prop_clear_new:N\l_nex_prop%
+		\prop_set_from_keyval:Nn\l_nex_tmpa_prop{#1}%
+		\prop_map_inline:Nn\l_nex_tmpa_prop{%
+			\str_case:nn{##1}{%
+				{color}{\NexPalette{##2}}%
+				{header}{\NexHeader{##2}}%
+				{overlay}{\NexOverlay{##2}}%
+				{shadow}{\NexShadow{##2}}%
+				{corner}{\NexCorner{##2}}%
+			}
+		}
+	}%
+	\IfBlankT{\pgfkeysvalueof{/nex/palette/STATEpalette}}{\NexPalette{0}}%
 	\begin{tcolorbox}[
 		enhanced,
-		on line,
-		colback=palette.\tmpa.back,
-		colframe=palette.\tmpa.frame,
-		fonttitle=\bfseries,
-		colbacktitle=palette.\tmpa.title,
-		fonttitle=\bfseries,
-		IfValueT={#3}{#3},
-		coltext=palette.\tmpa.text,
-		boxrule=1pt,
-		boxsep=3pt,
-		left=6pt,
-		right=6pt,
-		top=6pt,
-		bottom=2pt
-	]{#4}%
-}{\end{tcolorbox}}
+		colback=\pgfkeysvalueof{/nex/palette/back},
+		colupper=\pgfkeysvalueof{/nex/palette/upper},
+		colframe=\pgfkeysvalueof{/nex/palette/frame},
+		colbacktitle=\pgfkeysvalueof{/nex/palette/title},
+		coltext=\pgfkeysvalueof{/nex/palette/text},
+		IfBlankF={#2}{#2}
+	]{#3}
+}{%
+	\end{tcolorbox}
+}
+\ExplSyntaxOff
 
 \long\def\ItemArrow#1{\item[\textcolor{palette.dark.frame!90!white}{\faArrowAltCircleRight}] #1}
 
