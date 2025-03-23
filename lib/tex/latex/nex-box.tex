@@ -1,0 +1,189 @@
+
+\def\NexUpRef#1{\hyperref[#1]{\textcolor{nex.dark.link}{\textbf{\faAngleUp~#1}}}}
+\def\NexDownRef#1{\hyperref[#1]{\textcolor{nex.dark.link}{\textbf{\faAngleDown~#1}}}}
+
+\NewTColorBox{NexMainBox}{O{}}{
+	enhanced,
+	autoparskip,
+	hyphenationfix,
+	crnA/.style={
+		arc=8pt,
+		if odd page={
+			sharp corners=downhill,
+			leftrule=3mm
+		}{
+			sharp corners=uphill,
+			rightrule=3mm
+		}
+	},
+	crnE/.style={
+		arc=8pt,
+		sharp corners,
+		rightrule=1.5mm,
+		rounded corners=east
+	},
+	crnW/.style={
+		arc=8pt,
+		sharp corners,
+		leftrule=1.5mm,
+		rounded corners=west
+	},
+	sdwA/.style={
+		lifted shadow={1mm}{-2mm}{3mm}{0.1mm}{black!50!white}
+	},
+	frmA/.style={
+		frame style={pattern=crosshatch dots light steel blue}
+	},
+	hdrA/.style={
+		boxed title style={%
+			frame code={%
+				\path[fill=tcbcolback!30!black]%
+				([yshift=-1mm,xshift=-1mm]frame.north west) arc[start angle=0,end angle=180,radius=1mm]%
+				([yshift=-1mm,xshift=1mm]frame.north east) arc[start angle=180,end angle=0,radius=1mm];%
+				\path[%
+					left color=tcbcolback!60!black,%
+					right color=tcbcolback!60!black,%
+					middle color=tcbcolback!80!black%
+				] ([xshift=-2mm]frame.north west) -- ([xshift=2mm]frame.north east)%
+				[rounded corners=1mm]-- ([xshift=1mm,yshift=-1mm]frame.north east)%
+				-- (frame.south east) -- (frame.south west)%
+				-- ([xshift=-1mm,yshift=-1mm]frame.north west)%
+				[sharp corners]-- cycle;%
+			},%
+			interior engine=empty%
+		},
+		attach boxed title to top left={xshift=1cm,yshift*=1mm-\tcboxedtitleheight},%
+	},
+	hdrB/.style={
+		attach boxed title to top center={%
+			yshift=-0.25mm-\tcboxedtitleheight/2,%
+			yshifttext=2mm-\tcboxedtitleheight/2%
+		},%
+		boxed title style={%
+			boxrule=0.5mm,%
+			frame code={%
+				\path[tcb fill frame] ([xshift=-4mm]frame.west)%
+				-- (frame.north west) -- (frame.north east) -- ([xshift=4mm]frame.east)%
+				-- (frame.south east) -- (frame.south west) -- cycle; },%
+				interior code={ \path[tcb fill interior] ([xshift=-2mm]interior.west)%
+				-- (interior.north west) -- (interior.north east)%
+				-- ([xshift=2mm]interior.east) -- (interior.south east) -- (interior.south west)%
+				-- cycle;%
+			}%
+		}%
+	},
+	hdrC/.style={
+		skin=enhancedlast jigsaw,
+		attach boxed title to top left={xshift=-4mm,yshift=-0.5mm},
+		boxed title style={empty,arc=0pt,outer arc=0pt,boxrule=0pt},
+		underlay boxed title={
+			\fill[tcbcolbacktitle!45!white] (title.north west) -- (title.north east)
+			-- +(\tcboxedtitleheight-1mm,-\tcboxedtitleheight+1mm)
+			-- ([xshift=4mm,yshift=0.5mm]frame.north east) -- +(0mm,-1mm)
+			-- (title.south west) -- cycle;
+			\fill[tcbcolbacktitle!45!white!50!black] ([yshift=-0.5mm]frame.north west)
+			-- +(-0.4,0) -- +(0,-0.3) -- cycle;
+			\fill[tcbcolbacktitle!45!white!50!black] ([yshift=-0.5mm]frame.north east)
+			-- +(0,-0.3) -- +(0.4,0) -- cycle;
+		}
+	},
+	hdrD/.style={
+		skin=enhancedlast jigsaw,interior hidden,
+		boxsep=0pt,top=0pt,
+		attach boxed title to bottom center,
+		boxed title style={empty,boxrule=0.5mm},
+		varwidth boxed title=0.5\linewidth,
+		underlay boxed title={
+		\draw[white,line width=0.5mm]
+		([xshift=0.3mm-\tcboxedtitleheight*2,yshift=0.3mm]title.north west)
+			--([xshift=-0.3mm+\tcboxedtitleheight*2,yshift=0.3mm]title.north east);
+			\path[draw=tcbcolframe,top color=white,bottom color=tcbcolbacktitle!50!white,line width=0.5mm]
+			([xshift=0.25mm-\tcboxedtitleheight*2,yshift=0.25mm]title.north west)
+			cos +(\tcboxedtitleheight,-\tcboxedtitleheight/2)
+			sin +(\tcboxedtitleheight,-\tcboxedtitleheight/2)
+			-- ([xshift=0.25mm,yshift=0.25mm]title.south west)
+			-- ([yshift=0.25mm]title.south east)
+			cos +(\tcboxedtitleheight,\tcboxedtitleheight/2)
+			sin +(\tcboxedtitleheight,\tcboxedtitleheight/2);
+		}%
+	},
+	dark/.style={
+		colframe=nex.dark.frame,
+		colback=nex.dark.back,
+		colbacktitle=nex.dark.back.title,
+		colbacklower=nex.dark.back.lower,
+		colupper=nex.dark.lower,
+		collower=nex.dark.upper,
+		coltitle=nex.dark.title,
+		coltext=nex.dark.text
+	},
+	light/.style={
+		colframe=nex.light.frame,
+		colback=nex.light.back,
+		colbacktitle=nex.light.back.title,
+		colbacklower=nex.light.back.lower,
+		colupper=nex.light.lower,
+		collower=nex.light.upper,
+		coltitle=nex.light.title,
+		coltext=nex.light.text
+	},
+	nexcols/.style={
+		nobeforeafter,
+		leftright skip=0mm,
+	},
+	coltwo/.style={
+		width=\linewidth/2-1pt
+	},
+	colthree/.style={
+		width=\linewidth/3-1pt
+	},
+	colnthree/.style={
+		width=\linewidth-\linewidth/3-3pt
+	},
+	colfour/.style={
+		width=\linewidth/4-1pt
+	},
+	colnfour/.style={
+		width=\linewidth-\linewidth/4-4pt
+	},
+	colfive/.style={
+		width=\linewidth/5-1pt
+	},
+	colnfive/.style={
+		width=\linewidth-\linewidth/5-5pt
+	},
+	IfBlankF={#1}{#1}
+}
+
+\newenvironment{NexListDark}{%
+	\begin{itemize}%
+}{%
+	\end{itemize}%
+}
+
+\long\def\NexItemDark#1{\item[\textcolor{nex.dark.frame}{\faArrowAltCircleRight}] #1}
+\tcolorboxenvironment{NexListDark}{
+	blanker,
+	before skip=1mm,
+	after skip=1mm,
+	borderline west={1mm}{0pt}{nex.dark.frame},
+	coltext=nex.dark.text,
+}
+
+
+\newenvironment{NexListLight}{%
+	\begin{itemize}%
+}{%
+	\end{itemize}%
+}
+
+\long\def\NexItemLight#1{\item[\textcolor{nex.light.frame}{\faArrowAltCircleRight}] #1}
+
+\tcolorboxenvironment{NexListLight}{
+	blanker,
+	before skip=6pt,
+	after skip=6pt,
+	borderline west={3mm}{0pt}{nex.light.frame},
+	coltext=nex.light.text,
+}
+

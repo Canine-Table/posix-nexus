@@ -1,23 +1,33 @@
-\input{latex/packages.tex}
-\input{latex/environments.tex}
-\input{latex/colors.tex}
-\input{latex/tcolorboxes.tex}
-\input{latex/expl3.tex}
-\input{latex/svg.tex}
 \pdftrailerid{}
 \pagestyle{fancy}
 \usetikzlibrary{decorations.fractals}
-\pagecolor{palette.light.back}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+\pdftrailerid{}
+\pagestyle{fancy}
+\usetikzlibrary{decorations.fractals}
 \renewcommand{\headrulewidth}{0.4pt}
 \renewcommand{\footrulewidth}{0.4pt}
 \NoParIndent
 \RomainFooter
 \SnowFlakeHeader
-\fancyhead[LO, RE]{%
-	\tcbox[on line, size=fbox]{\input{contents.env/resume/name.txt}}\hspace{5pt}%
-	\tcbox[on line, size=fbox]{\input{contents.env/resume/title.txt}}%
-}
-
+\usetikzlibrary{patterns}
 \fancyfoot[LE,RO]{\textsl{\rightmark}}
 \fancyfoot[LO,RE]{\textsl{\leftmark}}
+\setlength{\headheight}{20.97897pt}
+\AddToShipoutPictureBG{
+	\ifodd\the\count0
+		\AtPageLowerLeft{
+			\begin{tikzpicture}[remember picture, overlay]
+				\shade[top color=nex.light.body.secondary, bottom color=nex.light.body.primary](current page.south west) rectangle (current page.north east);
+			\end{tikzpicture}
+		}
+	\else
+		\AtPageLowerLeft{
+			\begin{tikzpicture}[remember picture, overlay]
+				\shade[top color=nex.light.body.primary, bottom color=nex.light.body.secondary](current page.south west) rectangle (current page.north east);
+			\end{tikzpicture}
+		}
+	\fi
+}
 

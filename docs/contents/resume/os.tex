@@ -1,26 +1,95 @@
-\begin{NexColorBox}[color=1, style=2, title=Systems]\relax
-	\ShowSvgBox{0}{%
-		../lib/svg/archlinux.svg,%
-		../lib/svg/freebsd.svg,%
-		../lib/svg/redhat.svg,%
-		../lib/svg/raspberrypi.svg,%
-		../lib/svg/opensuse.svg,%
-		../lib/svg/alpinelinux.svg,%
-		../lib/svg/debian.svg,%
-		../lib/svg/gentoos.svg,%
-		../lib/svg/openwrt.svg%
-	}
-	\begin{Items}
-		\ItemArrow{\bftext{Arch Linux:} Extensive experience in configuring and maintaining Arch Linux systems, including using the Arch User Repository (AUR) and managing packages with `pacman`.}%
-		\ItemArrow{\bftext{FreeBSD:} Skilled in installing, configuring, and managing FreeBSD systems, including using the ports collection and managing services with `rc.d`.}%
-		\ItemArrow{\bftext{Red Hat Enterprise Linux (RHEL):} Experienced in deploying and managing RHEL systems, including using `yum`/`dnf` for package management and configuring SELinux for security.}%
-		\ItemArrow{\bftext{Raspberry Pi OS:} Skilled in setting up and managing Raspberry Pi devices, including using GPIO for hardware projects and configuring software packages.}%
-		\ItemArrow{\bftext{openSUSE:} Experienced in installing and configuring openSUSE, including using YaST for system management and `zypper` for package management.}%
-		\ItemArrow{\bftext{Alpine Linux:} Skilled in configuring and managing Alpine Linux systems, including using `apk` for package management and creating secure, minimal Docker images.}%
-		\ItemArrow{\bftext{Debian:} Extensive experience in managing Debian systems, including using `apt` for package management and configuring system services.}%
-		\ItemArrow{\bftext{Gentoo:} Experienced in compiling and managing Gentoo systems, including using `emerge` for package management and customizing build configurations.}%
-		\ItemArrow{\bftext{OpenWRT:} Skilled in flashing and configuring OpenWRT on routers, including installing packages and customizing network settings.}%
-	\end{Items}
-\end{NexColorBox}
+\phantomsection{}
+\label{Operating Systems}
+\begin{NexMainBox}[light, hdrA, sdwA, crnA, title=Operating Systems]
+	\begin{NexMainBox}[nexcols, colfive, dark, crnW, equal height group=nexfreebsd, valign=center]
+		\includesvg[width=\linewidth]{../lib/svg/freebsd.svg}
+	\end{NexMainBox}
+	\begin{NexMainBox}[nexcols, colnfive, dark, crnE, equal height group=nexfreebsd]
+		\begin{NexListDark}
+			\NexItemDark{Specialized in leveraging FreeBSD jails to implement lightweight, secure, and isolated environments for applications and services.}
+			\NexItemDark{Automated jail creation, management, and resource allocation using POSIX-compliant scripts to streamline workflows and ensure high efficiency across deployments.}
+			\NexItemDark{Harnessed jails for advanced containerization and virtualized setups, benefiting from FreeBSD's native ability to restrict network, file system, and process access within individual jails.}
+			\NexItemDark{Focused on combining FreeBSD’s robust base system with modular scripting to optimize performance and enhance security in multi-jail architectures.}
+		\end{NexListDark}
+	\end{NexMainBox}
+	\\[0.5mm]
+	\begin{NexMainBox}[nexcols, colnfive, dark, crnW, equal height group=nexgentoos]
+		\begin{NexListDark}
+			\NexItemDark{Customized system installations with advanced scripting, leveraging Portage for seamless software compilation and optimization.}
+			\NexItemDark{Built highly modular tools to streamline configuration across Gentoo's flexible ecosystem.}
+		\end{NexListDark}
+	\end{NexMainBox}
+	\begin{NexMainBox}[nexcols, colfive, dark, crnE, equal height group=nexgentoos, valign=center]
+		\includesvg[width=\linewidth]{../lib/svg/gentoos.svg}
+	\end{NexMainBox}
+	\\[0.5mm]
+	\begin{NexMainBox}[nexcols, colfive, dark, crnW, equal height group=nexalpinelinux, valign=center]
+		\includesvg[width=\linewidth]{../lib/svg/alpinelinux.svg}
+	\end{NexMainBox}
+	\begin{NexMainBox}[nexcols, colnfive, dark, crnE, equal height group=nexalpinelinux]
+		\begin{NexListDark}
+			\NexItemDark{Preferred choice for container deployments, leveraging its compact footprint to optimize resource utilization.}
+			\NexItemDark{Expertly configured Linux network namespaces and software-defined networking (SDN) setups, tailoring Alpine Linux to complex networking workflows and high-performance environments.}
+		\end{NexListDark}
+	\end{NexMainBox}
+\end{NexMainBox}
+\begin{NexMainBox}[light, hdrA, sdwA, crnA,title={\NexUpRef{Operating Systems}}]
+	\begin{NexMainBox}[nexcols, colnfive, dark, crnW, equal height group=nexdebian]
+		\begin{NexListDark}
+			\NexItemDark{Leveraged robust scripting to automate package management and integrate fallback mechanisms for diverse system utilities.}
+			\NexItemDark{Enhanced system performance by utilizing AWK's sorting algorithms and POSIX-compliant modules.}
+		\end{NexListDark}
+	\end{NexMainBox}
+	\begin{NexMainBox}[nexcols, colfive, dark, crnE, equal height group=nexdebian, valign=center]
+		\includesvg[width=\linewidth]{../lib/svg/debian.svg}
+	\end{NexMainBox}
+	\\[0.5mm]
+	\begin{NexMainBox}[nexcols, colfive, dark, crnW, equal height group=nexopenwrt, valign=center]
+		\includesvg[width=\linewidth]{../lib/svg/openwrt.svg}
+	\end{NexMainBox}
+	\begin{NexMainBox}[nexcols, colnfive, dark, crnE, equal height group=nexopenwrt]
+		\begin{NexListDark}
+			\NexItemDark{Applied exclusively to physical hardware for flashing and customization, creating powerful, tailored networking solutions.}
+			\NexItemDark{Engineered automated scripts and utilities to streamline OpenWRT installations, networking configuration, and device management.}
+			\NexItemDark{Focused on adapting OpenWRT systems to unique hardware constraints and requirements for maximum performance and versatility.}
+		\end{NexListDark}
+	\end{NexMainBox}
+	\\[0.5mm]
+	\begin{NexMainBox}[nexcols, colnfive, dark, crnW, equal height group=nexopensuse]
+		\begin{NexListDark}
+			\NexItemDark{Specialized in integrating automation scripts within OpenSUSE's YaST ecosystem to simplify system administration.}
+			\NexItemDark{Developed modular scripting solutions optimized for package management and version upgrades via Zypper, ensuring seamless operations across environments.}
+			\NexItemDark{Focused on leveraging POSIX-compliant tools to enhance script portability and efficiency in OpenSUSE setups.}
+		\end{NexListDark}
+	\end{NexMainBox}
+	\begin{NexMainBox}[nexcols, colfive, dark, crnE, equal height group=nexopensuse, valign=center]
+		\includesvg[width=\linewidth]{../lib/svg/opensuse.svg}
+	\end{NexMainBox}
+	\\[0.5mm]
+	\begin{NexMainBox}[nexcols, colfive, dark, crnW, equal height group=nexrhel, valign=center]
+		\includesvg[width=\linewidth]{../lib/svg/redhat.svg}
+	\end{NexMainBox}
+	\begin{NexMainBox}[nexcols, colnfive, dark, crnE, equal height group=nexrhel]
+		\begin{NexListDark}
+			\NexItemDark{Designed and integrated advanced network frameworks, automating configurations for iproute, eBPF, SELinux, and nftables to optimize system performance and security.}
+			\NexItemDark{Leveraged modular POSIX-compliant scripts to streamline deployment, enhance scalability, and maintain consistency in enterprise-grade networking setups.}
+			\NexItemDark{Developed tools to simplify complex network management workflows, ensuring seamless integration across diverse infrastructure environments.}
+		\end{NexListDark}
+	\end{NexMainBox}
+\end{NexMainBox}
+\begin{NexMainBox}[light, hdrA, sdwA, crnA,title={\NexUpRef{Operating Systems}}]
+	\begin{NexMainBox}[nexcols, colnfive, dark, crnW, equal height group=nexarchlinux]
+		\begin{NexListDark}
+			\NexItemDark{Daily driver and foundation for professional, personal, and experimental projects.}
+			\NexItemDark{Fully embraced the rolling release model for immediate access to the latest software and features, aligning with a commitment to explore, test, and innovate with cutting-edge technologies.}
+			\NexItemDark{Designed modular scripts and frameworks to automate system setup and ensure seamless integration of new updates, even when they introduce breaking changes.}
+			\NexItemDark{Viewed Arch not just as an operating system, but as a philosophy of experimentation, adaptability, and continuous learning in software development.}
+			\NexItemDark{Leveraged the Arch User Repository (AUR) through yay and community-driven resources to maintain a highly customizable, high-performance system tailored to ever-evolving needs.}
+		\end{NexListDark}
+	\end{NexMainBox}
+	\begin{NexMainBox}[nexcols, colfive, dark, crnE, equal height group=nexarchlinux, valign=center]
+		\includesvg[width=\linewidth]{../lib/svg/archlinux.svg}
+	\end{NexMainBox}
+\end{NexMainBox}
 \smallskip
 
