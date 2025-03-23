@@ -1,17 +1,11 @@
 \pdftrailerid{}
 \pagestyle{fancy}
-\usetikzlibrary{decorations.fractals}
-\renewcommand{\headrulewidth}{0.4pt}
-\renewcommand{\footrulewidth}{0.4pt}
-\pdftrailerid{}
-\pagestyle{fancy}
-\usetikzlibrary{decorations.fractals}
+\usetikzlibrary{decorations.fractals, patterns}
 \renewcommand{\headrulewidth}{0.4pt}
 \renewcommand{\footrulewidth}{0.4pt}
 \NoParIndent
 \RomainFooter
 \SnowFlakeHeader
-\usetikzlibrary{patterns}
 \fancyfoot[LE,RO]{\textsl{\rightmark}}
 \fancyfoot[LO,RE]{\textsl{\leftmark}}
 \setlength{\headheight}{20.97897pt}
@@ -19,13 +13,13 @@
 	\ifodd\the\count0
 		\AtPageLowerLeft{
 			\begin{tikzpicture}[remember picture, overlay]
-				\shade[top color=nex.light.body.secondary, bottom color=nex.light.body.primary](current page.south west) rectangle (current page.north east);
+				\shade[top color=nex.light.body.tertiary, bottom color=nex.light.body.primary](current page.south west) rectangle (current page.north east);
 			\end{tikzpicture}
 		}
 	\else
 		\AtPageLowerLeft{
 			\begin{tikzpicture}[remember picture, overlay]
-				\shade[top color=nex.light.body.primary, bottom color=nex.light.body.secondary](current page.south west) rectangle (current page.north east);
+				\shade[top color=nex.light.body.primary, bottom color=nex.light.body.tertiary](current page.south west) rectangle (current page.north east);
 			\end{tikzpicture}
 		}
 	\fi

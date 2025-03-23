@@ -1,6 +1,6 @@
 
-\def\NexUpRef#1{\hyperref[#1]{\textcolor{nex.dark.link}{\textbf{\faAngleUp~#1}}}}
-\def\NexDownRef#1{\hyperref[#1]{\textcolor{nex.dark.link}{\textbf{\faAngleDown~#1}}}}
+\def\NexUpRef#1{\hyperref[#1]{\textbf{\faAngleUp~#1}}}
+\def\NexDownRef#1{\hyperref[#1]{\textbf{\faAngleDown~#1}}}
 
 \NewTColorBox{NexMainBox}{O{}}{
 	enhanced,
@@ -27,6 +27,10 @@
 		sharp corners,
 		leftrule=1.5mm,
 		rounded corners=west
+	},
+	grwA/.style={
+		grow to right by=1cm,
+		grow to left by=1cm
 	},
 	sdwA/.style={
 		lifted shadow={1mm}{-2mm}{3mm}{0.1mm}{black!50!white}
