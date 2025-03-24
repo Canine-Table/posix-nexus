@@ -1,0 +1,25 @@
+\begin{MintedVerbatim}[commandchars=\\\{\},codes={\catcode`\$=3\catcode`\^=7\catcode`\_=8\relax}]
+\PYG{k}{function}\PYG{+w}{ }LOR\PYGZus{}\PYGZus{}\PYG{o}{(}B1,\PYG{+w}{ }B2,\PYG{+w}{ }B3,\PYG{+w}{ }M,\PYG{+w}{   }t\PYG{o}{)}
+\PYG{o}{\PYGZob{}}
+\PYG{+w}{        }\PYG{c+c1}{\PYGZsh{} Determine mode based on M pattern: length or default}
+\PYG{+w}{        }\PYG{k}{if}\PYG{+w}{ }\PYG{o}{(}M\PYG{+w}{ }\PYGZti{}\PYG{+w}{ }/\PYGZca{}\PYG{o}{(}l\PYG{o}{(}e\PYG{o}{(}n\PYG{o}{(}g\PYG{o}{(}t\PYG{o}{(}h\PYG{o}{)}?\PYG{o}{)}?\PYG{o}{)}?\PYG{o}{)}?\PYG{o}{)}?\PYG{o}{)}\PYGZdl{}/\PYG{o}{)}\PYG{+w}{ }\PYG{c+c1}{\PYGZsh{} Regex for \PYGZsq{}length\PYGZsq{}}
+\PYG{+w}{                }\PYG{n+nv}{t}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{l+m}{0}
+\PYG{+w}{        }\PYG{k}{else}\PYG{+w}{ }\PYG{k}{if}\PYG{+w}{ }\PYG{o}{(}M\PYG{+w}{ }\PYGZti{}\PYG{+w}{ }/\PYGZca{}\PYG{o}{(}d\PYG{o}{(}e\PYG{o}{(}f\PYG{o}{(}a\PYG{o}{(}u\PYG{o}{(}l\PYG{o}{(}t\PYG{o}{)}?\PYG{o}{)}?\PYG{o}{)}?\PYG{o}{)}?\PYG{o}{)}?\PYG{o}{)}?\PYG{o}{)}\PYGZdl{}/\PYG{o}{)}\PYG{+w}{ }\PYG{c+c1}{\PYGZsh{} Regex for \PYGZsq{}default\PYGZsq{}}
+\PYG{+w}{                }\PYG{n+nv}{t}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{l+m}{1}
+\PYG{+w}{        }\PYG{c+c1}{\PYGZsh{} Full comparison based on t}
+\PYG{+w}{        }\PYG{k}{if}\PYG{+w}{ }\PYG{o}{(}FULL\PYGZus{}\PYGZus{}\PYG{o}{(}t\PYG{o}{)}\PYG{o}{)}\PYG{+w}{ }\PYG{o}{\PYGZob{}}
+\PYG{+w}{                }\PYG{k}{if}\PYG{+w}{ }\PYG{o}{(}B3\PYG{o}{)}
+\PYG{+w}{                        }\PYG{k}{return}\PYG{+w}{ }GT\PYGZus{}\PYGZus{}\PYG{o}{(}B1,\PYG{+w}{ }B2,\PYG{+w}{ }t\PYG{o}{)}\PYG{+w}{ }\PYG{c+c1}{\PYGZsh{} Greater than comparison}
+\PYG{+w}{                }\PYG{k}{else}
+\PYG{+w}{                        }\PYG{k}{return}\PYG{+w}{ }LT\PYGZus{}\PYGZus{}\PYG{o}{(}B1,\PYG{+w}{ }B2,\PYG{+w}{ }t\PYG{o}{)}\PYG{+w}{ }\PYG{c+c1}{\PYGZsh{} Less than comparison}
+\PYG{+w}{        }\PYG{o}{\PYGZcb{}}\PYG{+w}{ }\PYG{k}{else}\PYG{+w}{ }\PYG{o}{\PYGZob{}}
+\PYG{+w}{                }\PYG{c+c1}{\PYGZsh{} Check if B1 and B2 are digits or M is \PYGZsq{}string\PYGZsq{}}
+\PYG{+w}{                }\PYG{k}{if}\PYG{+w}{ }\PYG{o}{(}!\PYG{+w}{ }\PYG{o}{(}is\PYGZus{}digit\PYG{o}{(}B1,\PYG{+w}{ }\PYG{l+m}{1}\PYG{o}{)}\PYG{+w}{ }\PYG{o}{\PYGZam{}\PYGZam{}}\PYG{+w}{ }is\PYGZus{}digit\PYG{o}{(}B2,\PYG{+w}{ }\PYG{l+m}{1}\PYG{o}{)}\PYG{o}{)}\PYG{+w}{ }\PYG{o}{||}\PYG{+w}{ }M\PYG{+w}{ }\PYGZti{}\PYG{+w}{ }/\PYGZca{}\PYG{o}{(}s\PYG{o}{(}t\PYG{o}{(}r\PYG{o}{(}i\PYG{o}{(}n\PYG{o}{(}g\PYG{o}{)}?\PYG{o}{)}?\PYG{o}{)}?\PYG{o}{)}?\PYG{o}{)}?\PYG{o}{)}\PYGZdl{}/\PYG{o}{)}
+\PYG{+w}{                        }\PYG{n+nv}{t}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{l+s+s2}{\PYGZdq{}a\PYGZdq{}}\PYG{+w}{ }\PYG{c+c1}{\PYGZsh{} Set t to \PYGZsq{}a\PYGZsq{} for ASCII comparison}
+\PYG{+w}{                }\PYG{k}{if}\PYG{+w}{ }\PYG{o}{(}B3\PYG{o}{)}
+\PYG{+w}{                        }\PYG{k}{return}\PYG{+w}{ }GT\PYGZus{}\PYGZus{}\PYG{o}{(}t\PYG{+w}{ }B1,\PYG{+w}{ }t\PYG{+w}{ }B2\PYG{o}{)}\PYG{+w}{ }\PYG{c+c1}{\PYGZsh{} Concatenate t with B1 and B2, compare}
+\PYG{+w}{                }\PYG{k}{else}
+\PYG{+w}{                        }\PYG{k}{return}\PYG{+w}{ }LT\PYGZus{}\PYGZus{}\PYG{o}{(}t\PYG{+w}{ }B1,\PYG{+w}{ }t\PYG{+w}{ }B2\PYG{o}{)}
+\PYG{+w}{        }\PYG{o}{\PYGZcb{}}
+\PYG{o}{\PYGZcb{}}
+\end{MintedVerbatim}

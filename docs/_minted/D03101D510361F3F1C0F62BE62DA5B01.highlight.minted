@@ -1,0 +1,6 @@
+\begin{MintedVerbatim}[commandchars=\\\{\},codes={\catcode`\$=3\catcode`\^=7\catcode`\_=8\relax}]
+\PYG{k}{function}\PYG{+w}{ }EQ\PYGZus{}\PYGZus{}\PYG{o}{(}B1,\PYG{+w}{ }B2,\PYG{+w}{ }B3\PYG{o}{)}
+\PYG{o}{\PYGZob{}}
+\PYG{+w}{        }\PYG{k}{return}\PYG{+w}{ }CMP\PYGZus{}\PYGZus{}\PYG{o}{(}B1,\PYG{+w}{ }B2,\PYG{+w}{ }B3\PYG{o}{)}
+\PYG{o}{\PYGZcb{}}
+\end{MintedVerbatim}

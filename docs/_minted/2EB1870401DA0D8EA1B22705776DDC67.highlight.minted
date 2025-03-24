@@ -1,0 +1,6 @@
+\begin{MintedVerbatim}[commandchars=\\\{\},codes={\catcode`\$=3\catcode`\^=7\catcode`\_=8\relax}]
+\PYG{k}{function}\PYG{+w}{ }NOT\PYGZus{}\PYGZus{}\PYG{o}{(}D\PYG{o}{)}
+\PYG{o}{\PYGZob{}}
+\PYG{+w}{	}\PYG{k}{return}\PYG{+w}{ }!\PYG{+w}{ }D
+\PYG{o}{\PYGZcb{}}
+\end{MintedVerbatim}

@@ -1,0 +1,6 @@
+function is_signed_digit(N,     e)
+{
+        if (__is_signed(N) && is_digit(N, 1))
+                e = 1
+        return e
+}

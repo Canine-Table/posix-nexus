@@ -1,11 +1,59 @@
-
-\def\NexUpRef#1{\hyperref[#1]{\textbf{\faAngleUp~#1}}}
-\def\NexDownRef#1{\hyperref[#1]{\textbf{\faAngleDown~#1}}}
+\newtcblisting{NexCodeBox}[2]{
+	grow to right by=1.5cm,
+	grow to left by=1.5cm,
+	listing engine=minted,
+	minted style=colorful,
+	minted language=#1,
+	skin=spartan,
+	left=14mm,
+	enhanced,
+	breakable,
+	colframe=nex.dark.frame,
+	colback=nex.dark.back,
+	colbacktitle=nex.dark.back.title,
+	colbacklower=nex.dark.back.lower,
+	colupper=nex.dark.lower,
+	collower=nex.dark.upper,
+	coltitle=nex.dark.title,
+	coltext=nex.dark.text,
+	overlay={
+		\begin{tcbclipinterior}
+			\fill[nex.dark.frame] (frame.south west) rectangle ([xshift=10mm]frame.north west);
+		\end{tcbclipinterior}
+	},
+	minted options={
+		linenos,
+		autogobble,
+		frame=lines,
+		numberblanklines,
+		rulecolor=\color{nex.dark.frame},
+		framesep=3mm,
+		style=dracula,
+		encoding=UTF-8,
+		tabsize=4,
+		fontsize=\footnotesize,
+		keywordcase=lower,
+		numbers=left,
+		breaklines,
+		breakautoindent=false,
+		breaksymbolindentleft=0pt,
+		breaksymbolsepleft=0pt,
+		breaksymbolindentright=0pt,
+		escapeinside=@@
+	},
+	IfBlankF={#2}{#2}
+}
 
 \NewTColorBox{NexMainBox}{O{}}{
 	enhanced,
 	autoparskip,
 	hyphenationfix,
+	shpA/.style={
+		square,
+		halign=center,
+		valign=center,
+		circular arc
+	},
 	crnA/.style={
 		arc=8pt,
 		if odd page={
@@ -31,6 +79,10 @@
 	grwA/.style={
 		grow to right by=1cm,
 		grow to left by=1cm
+	},
+	grwB/.style={
+		grow to right by=1.5cm,
+		grow to left by=1.5cm
 	},
 	sdwA/.style={
 		lifted shadow={1mm}{-2mm}{3mm}{0.1mm}{black!50!white}
@@ -158,6 +210,7 @@
 	},
 	IfBlankF={#1}{#1}
 }
+
 
 \newenvironment{NexListDark}{%
 	\begin{itemize}%

@@ -1,14 +1,26 @@
 \pdftrailerid{}
 \pagestyle{fancy}
 \usetikzlibrary{decorations.fractals, patterns}
+\tcbuselibrary{minted, vignette}
 \renewcommand{\headrulewidth}{0.4pt}
 \renewcommand{\footrulewidth}{0.4pt}
 \NoParIndent
 \RomainFooter
 \SnowFlakeHeader
+\titleformat{\section}[block]{\Large\bfseries}{\thesection}{1em}{}
+\titleformat{\subsection}[block]{\large\bfseries}{\thesubsection}{1em}{}
+\titleformat{\subsubsection}[block]{\normalsize\bfseries}{\thesubsubsection}{1em}{}
 \fancyfoot[LE,RO]{\textsl{\rightmark}}
 \fancyfoot[LO,RE]{\textsl{\leftmark}}
 \setlength{\headheight}{20.97897pt}
+\renewcommand{\contentsname}{}
+\renewcommand{\theFancyVerbLine}{
+    \sffamily\textcolor{nex.minted.number}{
+        \scriptsize\oldstylenums{
+            \textbf{\arabic{FancyVerbLine}}
+        }
+    }
+}
 \AddToShipoutPictureBG{
 	\ifodd\the\count0
 		\AtPageLowerLeft{
