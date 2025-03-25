@@ -1,8 +1,16 @@
-" Main LaTeX ettings function
+" Main LaTeX Settings function
 function! LaTeXSettings()
 	let g:vimtex_compiler_method = BaseName($TEXCPL)
 	let g:vimtex_docs_directory = $G_NEX_MOD_DOCS
-	let g:vimtex_view_method = BaseName($VPDF)
+	let g:vimtex_quickfix_ignore_filters = [
+		\ 'Underfull \\hbox',
+		\ 'Overfull \\hbox',
+		\ 'LaTeX Warning: .\+ float specifier changed to',
+		\ 'LaTeX hooks Warning',
+		\ 'Package siunitx Warning: Detected the "physics" package:',
+		\ 'Package hyperref Warning: Token not allowed in a PDF string',
+	\]
+	let g:vimtex_quickfix_open_on_warning = 0
 	" Define a dictionary mapping compiler methods to configuration functions
 	let l:compiler_config = {
 		\ 'pdflatex': 's:ConfigurePDFLaTeX',
@@ -26,7 +34,7 @@ function! s:ConfigureLaTeXMK()
 			\ '-pdf',
 			\ '-output-directory=' . g:vimtex_docs_directory,
 			\ '-interaction=nonstopmode',
-        		\ '-shell-escape',
+			\ '-shell-escape',
 		\ ],
 	\}
 endfunction
@@ -39,7 +47,7 @@ function! s:ConfigureLuaTeX()
 			\ '-interaction=nonstopmode',
 			\ '-output-directory=' . g:vimtex_docs_directory,
 			\ '-synctex=1',
-        		\ '-shell-escape',
+			\ '-shell-escape',
 		\ ],
 	\}
 endfunction
@@ -52,7 +60,7 @@ function! s:ConfigurePDFLaTeX()
 			\ '-interaction=nonstopmode',
 			\ '-output-directory=' . g:vimtex_docs_directory,
 			\ '-synctex=1',
-        		\ '-shell-escape',
+			\ '-shell-escape',
 		\ ],
 	\}
 endfunction
@@ -65,7 +73,7 @@ function! s:ConfigureXeLaTeX()
 			\ '-interaction=nonstopmode',
 			\ '-output-directory=' . g:vimtex_docs_directory,
 			\ '-synctex=1',
-        		\ '-shell-escape',
+			\ '-shell-escape',
 		\ ],
 	\}
 endfunction

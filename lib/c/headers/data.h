@@ -1,12 +1,17 @@
 #ifndef NEX_DATA_H
 #define NEX_DATA_H
 
-typedef struct nex_node {
+typedef struct NexArr {
+    int sz;
+    har *arr;
+} NexArr;
+
+typedef struct NexNode {
     int data;
-    struct nex_node *left;
-    struct nex_node *right;
-} nex_node;
-nex_node* create_nex_node(int);
+    struct NexNode *left;
+    struct NexNode *right;
+} NexNode;
+NexNode* create_nex_node(int);
 
 #include "data.c"
 #endif

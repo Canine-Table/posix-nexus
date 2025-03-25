@@ -1,0 +1,22 @@
+\documentclass[a4paper,12pt]{article}
+\input{./contents/classic-c/preamble.tex}
+
+\begin{document}
+	\label{top}
+	\title{
+		\hspace{24px}\textbf{Classic C}\hspace{4px}\includesvg[width=24px]{../lib/svg/c.svg}\\[10mm]
+		\begin{NexMainBox}[dark, shpA,fit, width=\linewidth/2]
+			\includegraphics[width=\textwidth]{img/posix-nexus.png}
+		\end{NexMainBox}
+	}
+	\author{Canine-Table}
+	\date{\today}
+	\maketitle
+	\newpage
+	\begin{NexMainBox}[light, title=Contents, hdrB, breakable]
+		\tableofcontents
+	\end{NexMainBox}
+	\newpage
+	\input{./contents/classic-c/history.tex}
+\end{document}
+

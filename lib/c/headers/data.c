@@ -1,8 +1,8 @@
 #include <stdlib.h>
 
-nex_node *create_nex_node(int d)
+NexNode *create_nex_node(int d)
 {
-	nex_node *new_nex_node = (nex_node*)malloc(sizeof(nex_node));
+	NexNode *new_nex_node = (NexNode*)malloc(sizeof(NexNode));
 	if (new_nex_node != NULL) {
 		new_nex_node->data = d;
 		new_nex_node->left = NULL;
