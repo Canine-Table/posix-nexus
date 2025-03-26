@@ -112,3 +112,38 @@ void nex_fcp(NexFE *s, NexFE *d)
 	free(d);
 }
 
+void nex_chrs()
+{
+	int c;
+	while ((c = getchar()) != EOF)
+		putchar(c);
+}
+
+long nex_cchrs()
+{
+	int c;
+	long l;
+	while ((c = getchar()) != EOF)
+		++l;
+	return l;
+}
+
+long nex_lchrs()
+{
+	int c;
+	long l;
+	while ((c = getchar()) != EOF)
+		if (c == '\n')
+			++l;
+	return l;
+}
+
+long nex_wchrs()
+{
+	int c;
+	long l;
+	while ((c = getchar()) != EOF)
+		if (c == '\n' || c == '\t' || c == ' ')
+			++l;
+	return l;
+}

@@ -12,6 +12,9 @@ void nex_fwrite(NexFE*, const char*);
 void nex_fdel(const char*);
 void nex_fread(NexFE*);
 void nex_fcp(NexFE*, NexFE*);
+void nex_chrs(void);
+long nex_cchrs(void);
+long nex_wchrs(void);
 
 #include "file.c"
 #endif

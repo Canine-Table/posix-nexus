@@ -14,6 +14,7 @@ typedef struct {
 
 void new_nex_t(void*);
 char *nex_char(char);
+int nex_digit(const char*, unsigned int);
 
 #include "type.c"
 #endif

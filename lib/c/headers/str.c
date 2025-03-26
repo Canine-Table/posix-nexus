@@ -1,6 +1,5 @@
 #include <stdio.h>
 
-
 char *nex_srvs(char *arr, unsigned int r)
 {
 	int l = 0;

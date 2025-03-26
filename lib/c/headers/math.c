@@ -1,4 +1,18 @@
-#include<stdio.h>
+#include <stdio.h>
+#include "str.h"
+#include "type.h"
+
+void nex_fahcel(double *arr, unsigned int len)
+{
+	for (int i = 0; i < len; i++)
+		arr[i] = 5.0 / 9.0 * (arr[i] - 32.0);
+}
+
+void nex_celfah(double *arr, unsigned int len)
+{
+	for (int i = 0; i < len; i++)
+		arr[i] = 9.0 / 5.0 * arr[i] + 32.0;
+}
 
 static long __fibonacci(long, long, long);
 static long __factoral(long, long);

@@ -3,7 +3,7 @@
 
 typedef struct NexArr {
     int sz;
-    har *arr;
+    char *arr;
 } NexArr;
 
 typedef struct NexNode {
