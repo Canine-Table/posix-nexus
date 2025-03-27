@@ -1,7 +1,7 @@
 
-set_vm_virtbox()
+set_vm_vbox()
 {
-	command -v vboxmanage 1>/dev/null 2>&1 && {
+	has_vm_vbox 2>&1 && {
 		get_pkgmgr -i \
 			phpvirtualbox \
 			libvirt \
@@ -30,5 +30,30 @@ set_vm_virtbox()
 			}
 		)
 	}
+}
+
+get_vm_lst()
+{
+	has_vm_vbox && (
+		case "$1" in
+			'-rv') tmp='runningvms';;
+			'-cp') tmp='cpu-profiles';;
+			'-ds') tmp='dhcpservers';;
+			'-dvd') tmp='dhcpservers';;
+			'-os') tmp='ostypes';;
+			'-net') tmp='ostypes';;
+			*) tmp='vms';;
+		esac
+		shift
+		VBoxManage list "$tmp"
+		[ ${#@} -gt 0 ] && {
+			get_vm_lst $@
+		}
+	)
+}
+
+has_vm_vbox()
+{
+	command -v vboxmanage 1>/dev/null 2>&1
 }
 

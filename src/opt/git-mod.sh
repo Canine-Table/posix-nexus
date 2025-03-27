@@ -28,7 +28,7 @@ gh_social()
 				-a "$i" \
 				-b "torvalds"
 			)" ] && {
-				echo gh api -X DELETE "/user/following/$i"
+				gh api -X DELETE "/user/following/$i"
 			}
 		done
 	)

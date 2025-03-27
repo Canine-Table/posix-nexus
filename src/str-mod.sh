@@ -2,6 +2,35 @@
 
 ##:( get ):##################################################################################
 
+get_str_rand()
+{
+	(
+		${AWK:-$(get_cmd_awk)} \
+			-v num="${1:-8}" \
+			-v chars="${2:-alnum}" \
+		"
+			$(cat \
+				"$G_NEX_MOD_LIB/awk/misc.awk" \
+				"$G_NEX_MOD_LIB/awk/algor.awk" \
+				"$G_NEX_MOD_LIB/awk/structs.awk" \
+				"$G_NEX_MOD_LIB/awk/types.awk" \
+				"$G_NEX_MOD_LIB/awk/math.awk" \
+				"$G_NEX_MOD_LIB/awk/str.awk"
+			)
+		"'
+			BEGIN {
+				if (! is_integral(num))
+					num = 8
+				val = random_str(num, chars)
+				if (val)
+					print val
+				else
+					exit 1
+			}
+		'
+	)
+}
+
 get_str_locate()
 {
 	(
