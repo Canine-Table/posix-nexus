@@ -1,3 +1,18 @@
+\newpage
 \section{Algorithms}
-\label{sec:algor}
+\label{Algorithms}
+\begin{NexMainBox}[light, hdrA, sdwA, crnA, grwB, secA]
+	\begin{NexMainBox}[dark, crnA]
+		The following functions provide robust implementations of key algorithms, including sorting, partitioning, and randomization, enabling efficient data processing and manipulation.
+	\end{NexMainBox}
+	\begin{NexMainBox}[dark, crnA]
+		\begin{NexListDark}
+			\NexItemDark{\NexFunction{\_\_pivot(L, R)}: Selects a random pivot index within the range [\NexFunction{L}, \NexFunction{R}], ensuring valid integer bounds.}
+			\NexItemDark{\NexFunction{\_\_swap(V, DA, DB)}: Swaps the elements at indices \NexFunction{DA} and \NexFunction{DB} within array \NexFunction{V}.}
+			\NexItemDark{\NexFunction{\_\_hoares\_partition(V, L, R, B, M)}: Partitions array \NexFunction{V} using Hoare’s algorithm, comparing elements based on pivot value and mode \NexFunction{M}, with flags for direction \NexFunction{B}.}
+			\NexItemDark{\NexFunction{entropy(P)}: Generates a random alphanumeric string of length \NexFunction{P}, converts it from base-62 to base-10, and returns the result.}
+			\NexItemDark{\NexFunction{quick\_sort(V, L, R, B, M)}: Implements the QuickSort algorithm to sort array \NexFunction{V} within the range [\NexFunction{L}, \NexFunction{R}], based on comparison direction \NexFunction{B} and mode \NexFunction{M}.}
+		\end{NexListDark}
+	\end{NexMainBox}
+\end{NexMainBox}
 

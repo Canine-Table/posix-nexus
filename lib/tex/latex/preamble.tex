@@ -1,10 +1,12 @@
 \pdftrailerid{}
+\pgfplotsset{compat=1.18}
 \pagestyle{fancy}
 \usetikzlibrary{decorations.fractals, patterns, positioning}
 \tcbuselibrary{minted, vignette}
 \renewcommand{\headrulewidth}{0.4pt}
 \renewcommand{\footrulewidth}{0.4pt}
 \NoParIndent
+\fancyhead{}
 \RomainFooter
 \SnowFlakeHeader
 \titleformat{\section}[block]{\Large\bfseries}{\thesection}{1em}{}
@@ -21,6 +23,8 @@
         }
     }
 }
+\renewcommand{\cftsecleader}{\cftdotfill{\cftdotsep}}
+\renewcommand{\numberline}[1]{}
 \AddToShipoutPictureBG{
 	\ifodd\the\count0
 		\AtPageLowerLeft{

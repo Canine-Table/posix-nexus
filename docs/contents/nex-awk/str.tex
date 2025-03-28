@@ -1,2 +1,37 @@
 \section{Strings}
-\label{sec:str}
+\label{Strings}
+\begin{NexMainBox}[light, hdrA, sdwA, crnA, grwB, secA]
+	\begin{NexMainBox}[dark, crnA]
+		The following functions offer robust tools for processing, manipulating, and transforming strings, enabling versatile text-handling operations for a wide range of use cases.
+	\end{NexMainBox}
+	\begin{NexMainBox}[dark, crnA]
+		\begin{NexListDark}
+			\NexItemDark{\NexFunction{\_\_join\_str(D1, D2, S)}: Appends \NexFunction{D2} to \NexFunction{D1}, using the separator \NexFunction{S} if \NexFunction{D1} is not empty.}
+			\NexItemDark{\NexFunction{append\_str(N, D, B)}: Repeats appending \NexFunction{D} either at the beginning or end, determined by \NexFunction{B}, \NexFunction{N} times.}
+			\NexItemDark{\NexFunction{reverse\_str(D)}: Reverses the string \NexFunction{D} by rearranging its characters in reverse order.}
+			\NexItemDark{\NexFunction{format\_str(D1, D2, S, L, R, B)}: Formats \NexFunction{D1} by replacing placeholders in \NexFunction{D2} using delimiters \NexFunction{S}, \NexFunction{L}, and \NexFunction{R}, and optionally removes unmatched placeholders based on \NexFunction{B}.}
+			\NexItemDark{\NexFunction{\_\_get\_half(D, C, B1, B2)}: Splits \NexFunction{D} at the first occurrence of character \NexFunction{C} and returns either the first or second half based on \NexFunction{B1}, adjusted by \NexFunction{B2}.}
+			\NexItemDark{\NexFunction{\_\_first\_index(D, V, B)}: Finds the earliest occurrence of any substring in \NexFunction{V} within \NexFunction{D} and returns its position or the length of \NexFunction{D} if no match is found and \NexFunction{B} is set.}
+			\NexItemDark{\NexFunction{\_\_load\_quote\_map(V)}: Initializes \NexFunction{V} with mappings for single (\NexFunction{sq}) and double (\NexFunction{dq}) quotes.}
+			\NexItemDark{\NexFunction{\_\_load\_str\_map(V)}: Populates \NexFunction{V} with character group mappings, such as uppercase, lowercase, digits, and alphanumeric ranges.}
+			\NexItemDark{\NexFunction{\_\_load\_esc\_map(V)}: Sets up \NexFunction{V} with escape character mappings for common whitespace and control characters.}
+			\NexItemDark{\NexFunction{\_\_compare\_lengths(V, B)}: Compares the lengths of strings in \NexFunction{V} and returns either the maximum or minimum length based on \NexFunction{B}.}
+			\NexItemDark{\NexFunction{escape\_str(D)}: Escapes all characters in \NexFunction{D} by prefixing them with a backslash.}
+			\NexItemDark{\NexFunction{random\_str(N, C, S, B)}: Generates a random string of length \NexFunction{N} using character sets defined by \NexFunction{C}, split by \NexFunction{S}, with random device selection influenced by \NexFunction{B}.}
+			\NexItemDark{\NexFunction{totitle(D)}: Converts \NexFunction{D} to title case, capitalizing the first letter of each substring and lowering the rest.}
+			\NexItemDark{\NexFunction{trim(D, S)}: Trims leading and trailing spaces from \NexFunction{D} and removes excess spaces around the delimiter \NexFunction{S}.}
+		\end{NexListDark}
+	\end{NexMainBox}
+\end{NexMainBox}
+
+\begin{NexMainBox}[light, hdrA, sdwA, crnA, grwB, secB]
+	\begin{NexMainBox}[dark, crnA]
+		\begin{NexListDark}
+			\NexItemDark{\NexFunction{match\_length(D, B, S, O)}: Filters and sorts substrings in \NexFunction{D} by length based on \NexFunction{B}, joining them with \NexFunction{O}.}
+			\NexItemDark{\NexFunction{match\_boundary(D1, D2, B, S, O)}: Matches strings in \NexFunction{D2} that start or end with \NexFunction{D1}, based on \NexFunction{B}, and joins them with \NexFunction{O}.}
+			\NexItemDark{\NexFunction{match\_option(D1, D2, S, O, B1, B2, B3)}: Filters, sorts, and joins strings in \NexFunction{D2} that match \NexFunction{D1} at the start or end based on flags \NexFunction{B2}, \NexFunction{B3}, and optionally clears duplicates with \NexFunction{B1}.}
+			\NexItemDark{\NexFunction{even\_lengths(V, D1, D2, B)}: Adjusts the lengths of \NexFunction{V[D1]} and \NexFunction{V[D2]} to ensure both are even by trimming the longer one, based on \NexFunction{B}.}
+		\end{NexListDark}
+    \end{NexMainBox}
+\end{NexMainBox}
+

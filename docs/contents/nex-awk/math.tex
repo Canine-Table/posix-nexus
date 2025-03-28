@@ -1,2 +1,39 @@
+\newpage
 \section{Math}
-\label{sec:math}
+\label{Math}
+\begin{NexMainBox}[light, hdrA, sdwA, crnA, grwB, secA]
+	\begin{NexMainBox}[dark, crnA]
+		The following functions provide tools for primality testing, random prime generation, and efficient computational methods for dealing with large numbers under practical constraints.
+	\end{NexMainBox}
+	\begin{NexMainBox}[dark, crnA]
+		\begin{NexListDark}
+			\NexItemDark{\NexFunction{\_\_trim\_precision(N1, N2)}: Trims \NexFunction{N2} to \NexFunction{N1} decimal places, removing trailing zeros in the fractional part.}
+			\NexItemDark{\NexFunction{pi(N)}: Returns the value of $\pi$ with \NexFunction{N} decimal places of precision, using the arctangent function.}
+			\NexItemDark{\NexFunction{tau(N)}: Returns the value of $\tau$ (2$\pi$) with \NexFunction{N} decimal places of precision.}
+			\NexItemDark{\NexFunction{remainder(N1, N2)}: Computes the remainder when \NexFunction{N1} is divided by \NexFunction{N2}, handling precision and rounding.}
+			\NexItemDark{\NexFunction{fibonacci(N, B)}: Calculates the \NexFunction{N}-th Fibonacci number, optionally displaying intermediate sums when \NexFunction{B} is true.}
+			\NexItemDark{\NexFunction{factoral(N, B)}: Computes the factorial of \NexFunction{N}, optionally printing the multiplication steps when \NexFunction{B} is true.}
+			\NexItemDark{\NexFunction{absolute(N)}: Returns the absolute value of \NexFunction{N}, converting negative numbers to positive.}
+			\NexItemDark{\NexFunction{ceiling(N)}: Returns the smallest integer greater than or equal to \NexFunction{N}, rounding up for non-integer values.}
+			\NexItemDark{\NexFunction{round(N)}: Rounds \NexFunction{N} to the nearest integer, using standard rounding rules.}
+			\NexItemDark{\NexFunction{distribution(N1, N2, N3)}: Calculates the distribution value for \NexFunction{N3} within the range defined by \NexFunction{N1} and \NexFunction{N2}, rounding up to the nearest integer.}
+			\NexItemDark{\NexFunction{euclidean(N1, N2)}: Implements the Euclidean algorithm to compute the greatest common divisor (GCD) of \NexFunction{N1} and \NexFunction{N2}.}
+			\NexItemDark{\NexFunction{lcd(N1, N2)}: Calculates the least common multiple (LCM) of \NexFunction{N1} and \NexFunction{N2} using their GCD.}
+			\NexItemDark{\NexFunction{modulus\_range(N1, N2, N3)}: Adjusts \NexFunction{N1} to fit within the range [\NexFunction{N2}, \NexFunction{N3}] using modulus operations.}
+			\NexItemDark{\NexFunction{modular\_exponentiation(N1, N2, N3)}: Efficiently computes \((N1^{N2}) \bmod N3\) using iterative squaring, with \NexFunction{N3} defaulting to 100000007 if not provided.}
+			\NexItemDark{\NexFunction{fermats\_little\_theorm(N)}: Applies Fermat's Little Theorem to estimate primality for \NexFunction{N} by checking divisibility against small primes.}
+		\end{NexListDark}
+	\end{NexMainBox}
+\end{NexMainBox}
+
+\begin{NexMainBox}[light, hdrA, sdwA, crnA, grwB, secB]
+	\begin{NexMainBox}[dark, crnA]
+		\begin{NexListDark}
+			\NexItemDark{\NexFunction{divisible(N1, N2)}: Determines whether \NexFunction{N1} is divisible by \NexFunction{N2} without a remainder.}
+			\NexItemDark{\NexFunction{miller\_rabin(N, T, S)}: Performs the Miller-Rabin primality test on \NexFunction{N}, using \NexFunction{T} trials and separating bases with \NexFunction{S}.}
+			\NexItemDark{\NexFunction{\_\_load\_primes(N, S)}: Loads a set of prime bases for testing \NexFunction{N}, selecting ranges based on the size of \NexFunction{N}, and separating them with \NexFunction{S}.}
+			\NexItemDark{\NexFunction{random\_prime(N)}: Generates a random prime number with up to \NexFunction{N} digits, defaulting to 8 digits due to POSIX AWK limitations.}
+		\end{NexListDark}
+	\end{NexMainBox}
+\end{NexMainBox}
+

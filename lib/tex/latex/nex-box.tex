@@ -1,3 +1,9 @@
+\let\oldsection\section
+\renewcommand{\section}[1]{%
+	\def\sectiontitle{#1}%
+	\oldsection{#1}%
+}
+
 \newtcblisting{NexCodeBox}[2]{
 	grow to right by=1.5cm,
 	grow to left by=1.5cm,
@@ -53,6 +59,12 @@
 		halign=center,
 		valign=center,
 		circular arc
+	},
+	secA/.style={
+		title=\textbf{\thesection~\sectiontitle}
+	},
+	secB/.style={
+		title=\NexUpSecRef\sectiontitle\thesection
 	},
 	crnA/.style={
 		arc=8pt,

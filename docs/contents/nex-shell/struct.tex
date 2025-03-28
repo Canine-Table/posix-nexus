@@ -1,0 +1,26 @@
+\newpage
+\section{Struct}
+\label{Struct}
+\begin{NexMainBox}[light, hdrA, sdwA, crnA, grwB, secA]
+	\begin{NexMainBox}[dark, crnA]
+		The following functions provide a robust set of tools for managing structured data in shell scripts, covering retrieval, comparison, manipulation, and execution, with a focus on modularity and efficiency.
+	\end{NexMainBox}
+	\begin{NexMainBox}[dark, crnA]
+		\begin{NexListDark}
+			\NexItemDark{\NexFunction{get\_struct\_ref()}: Retrieves the value of a variable by its name, allowing for dynamic access and reference in shell scripts.}
+			\NexItemDark{\NexFunction{get\_struct\_ref\_append()}: Appends a value to the referenced variable, optionally inserting a separator before the new content, and returns the updated structure.}
+			\NexItemDark{\NexFunction{get\_struct\_compare()}: Compares two structures (input list and reference list), with options for case sensitivity, delimiters, and comparison modes (e.g., left, right, or intersection).}
+			\NexItemDark{\NexFunction{get\_struct\_list()}: Processes an input list with options for reversing, deduplication, or restructuring, while using specified separators for splitting and joining elements.}
+			\NexItemDark{\NexFunction{new\_struct\_task()}: Executes tasks iteratively on elements from a structured list, with configurable input, output, and error streams, as well as background execution control.}
+			\NexItemDark{\NexFunction{set\_struct\_noexpand()}: Prepares a variable for structured assignment by escaping special characters, ensuring its value is preserved in a non-expanded format.}
+			\NexItemDark{\NexFunction{set\_struct\_opt()}: Processes input and reference lists (\NexFunction{inpt} and \NexFunction{reflst}) using specified delimiters and options, matching input against reference values with configurable verbosity, case sensitivity, and length validation.}
+		\end{NexListDark}
+	\end{NexMainBox}
+\end{NexMainBox}
+\begin{NexMainBox}[light, hdrA, sdwA, crnA, grwB, secB]
+	\begin{NexMainBox}[dark, crnA]
+		\begin{NexListDark}
+			\NexItemDark{\NexFunction{get\_int\_range()}: Adjusts \NexFunction{num1} to fit within the range defined by \NexFunction{num2} and \NexFunction{num3}, using modulus operations for precise computation.}
+		\end{NexListDark}
+	\end{NexMainBox}
+\end{NexMainBox}

@@ -57,5 +57,14 @@ get_tty_prop()
 	)
 }
 
+set_tty_hault()
+{
+	command -v setterm 1>/dev/null 2>&1 && {
+		setterm -cursor off
+		trap 'setterm -cursor on' RETURN SIGINT SIGHUP
+	}
+	read -n 1 -s;
+}
+
 ##############################################################################################
 

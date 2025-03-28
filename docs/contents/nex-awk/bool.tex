@@ -1,33 +1,33 @@
-\section{Boolean}
+\section{Boolean Operations}
 \label{Boolean Operations}
-\begin{NexMainBox}[light, hdrA, sdwA, crnA, grwB, title=\textbf{Boolean Operations}]
-    \begin{NexMainBox}[dark, crnA]
-	The following functions provide utilities for logical and comparative operations, enabling versatile Boolean checks across various conditions.
-    \end{NexMainBox}
-    \begin{NexMainBox}[dark, crnA]
-	\begin{NexListDark}
-	    \NexItemDark{\NexFunction{NOT\_\_(D)}: Returns the logical NOT of \texttt{D}.}
-	    \NexItemDark{\NexFunction{NULL\_\_(D)}: Returns the logical NOT of \texttt{D} (equivalent to \NexFunction{NOT\_\_}).}
-	    \NexItemDark{\NexFunction{FULL\_\_(D)}: Determines whether \texttt{D} is full (non-empty).}
-	    \NexItemDark{\NexFunction{TRUE\_\_(D, B)}: Returns \texttt{1} if \texttt{D} is full or valid based on \texttt{B}.}
-	    \NexItemDark{\NexFunction{FALSE\_\_(D, B)}: Returns the logical NOT of \NexFunction{TRUE\_\_}.}
-	    \NexItemDark{\NexFunction{OR\_\_(B1, B2, B3)}: Logical OR operation between \texttt{B1} and \texttt{B2} based on \texttt{B3}.}
-	    \NexItemDark{\NexFunction{NOR\_\_(B1, B2, B3)}: Logical NOR operation, the NOT of \NexFunction{OR\_\_}.}
-	    \NexItemDark{\NexFunction{AND\_\_(B1, B2, B3)}: Logical AND operation between \texttt{B1} and \texttt{B2} based on \texttt{B3}.}
-	    \NexItemDark{\NexFunction{NAND\_\_(B1, B2, B3)}: Logical NAND operation, the NOT of \NexFunction{AND\_\_}.}
-	    \NexItemDark{\NexFunction{XOR\_\_(B1, B2, B3)}: Logical XOR operation, true if exactly one of \texttt{B1} or \texttt{B2} is true.}
-	    \NexItemDark{\NexFunction{XNOR\_\_(B1, B2, B3)}: Logical XNOR operation, the NOT of \NexFunction{XOR\_\_}.}
-	    \NexItemDark{\NexFunction{CMP\_\_(B1, B2, B3, B4)}: Compares \texttt{B1} and \texttt{B2} based on conditions \texttt{B3} and \texttt{B4}.}
-	    \NexItemDark{\NexFunction{NCMP\_\_(B1, B2, B3, B4)}: Logical NOT of \NexFunction{CMP\_\_}.}
-	    \NexItemDark{\NexFunction{LOR\_\_(B1, B2, B3, M)}: Logical OR based on modes specified in \texttt{M}.}
-	    \NexItemDark{\NexFunction{EQ\_\_(B1, B2, B3)}: Determines equality between \texttt{B1} and \texttt{B2} based on \texttt{B3}.}
-	    \NexItemDark{\NexFunction{NEQ\_\_(B1, B2, B3)}: Determines inequality (NOT equal) between \texttt{B1} and \texttt{B2} based on \texttt{B3}.}
-	    \NexItemDark{\NexFunction{IEQ\_\_(B1, B2, B3)}: Case-insensitive equality comparison between \texttt{B1} and \texttt{B2}.}
-	\end{NexListDark}
-    \end{NexMainBox}
+\begin{NexMainBox}[light, hdrA, sdwA, crnA, grwB, secA]
+	\begin{NexMainBox}[dark, crnA]
+		The following functions provide utilities for logical and comparative operations, enabling versatile Boolean checks across various conditions.
+	\end{NexMainBox}
+	\begin{NexMainBox}[dark, crnA]
+		\begin{NexListDark}
+			\NexItemDark{\NexFunction{NOT\_\_(D)}: Returns the logical NOT of \texttt{D}.}
+			\NexItemDark{\NexFunction{NULL\_\_(D)}: Returns the logical NOT of \texttt{D} (equivalent to \NexFunction{NOT\_\_}).}
+			\NexItemDark{\NexFunction{FULL\_\_(D)}: Determines whether \texttt{D} is full (non-empty).}
+			\NexItemDark{\NexFunction{TRUE\_\_(D, B)}: Returns \texttt{1} if \texttt{D} is full or valid based on \texttt{B}.}
+			\NexItemDark{\NexFunction{FALSE\_\_(D, B)}: Returns the logical NOT of \NexFunction{TRUE\_\_}.}
+			\NexItemDark{\NexFunction{OR\_\_(B1, B2, B3)}: Logical OR operation between \texttt{B1} and \texttt{B2} based on \texttt{B3}.}
+			\NexItemDark{\NexFunction{NOR\_\_(B1, B2, B3)}: Logical NOR operation, the NOT of \NexFunction{OR\_\_}.}
+			\NexItemDark{\NexFunction{AND\_\_(B1, B2, B3)}: Logical AND operation between \texttt{B1} and \texttt{B2} based on \texttt{B3}.}
+			\NexItemDark{\NexFunction{NAND\_\_(B1, B2, B3)}: Logical NAND operation, the NOT of \NexFunction{AND\_\_}.}
+			\NexItemDark{\NexFunction{XOR\_\_(B1, B2, B3)}: Logical XOR operation, true if exactly one of \texttt{B1} or \texttt{B2} is true.}
+			\NexItemDark{\NexFunction{XNOR\_\_(B1, B2, B3)}: Logical XNOR operation, the NOT of \NexFunction{XOR\_\_}.}
+			\NexItemDark{\NexFunction{CMP\_\_(B1, B2, B3, B4)}: Compares \texttt{B1} and \texttt{B2} based on conditions \texttt{B3} and \texttt{B4}.}
+			\NexItemDark{\NexFunction{NCMP\_\_(B1, B2, B3, B4)}: Logical NOT of \NexFunction{CMP\_\_}.}
+			\NexItemDark{\NexFunction{LOR\_\_(B1, B2, B3, M)}: Logical OR based on modes specified in \texttt{M}.}
+			\NexItemDark{\NexFunction{EQ\_\_(B1, B2, B3)}: Determines equality between \texttt{B1} and \texttt{B2} based on \texttt{B3}.}
+			\NexItemDark{\NexFunction{NEQ\_\_(B1, B2, B3)}: Determines inequality (NOT equal) between \texttt{B1} and \texttt{B2} based on \texttt{B3}.}
+			\NexItemDark{\NexFunction{IEQ\_\_(B1, B2, B3)}: Case-insensitive equality comparison between \texttt{B1} and \texttt{B2}.}
+		\end{NexListDark}
+	\end{NexMainBox}
 \end{NexMainBox}
 
-\begin{NexMainBox}[light, hdrA, sdwA, crnA, grwB, title={\NexUpRef{Boolean Operations}}]
+\begin{NexMainBox}[light, hdrA, sdwA, crnA, grwB, secB]
 	\begin{NexMainBox}[dark, crnA]
 		\begin{NexListDark}
 			\NexItemDark{\NexFunction{INEQ\_\_(B1, B2, B3)}: Logical NOT of \NexFunction{IEQ\_\_}.}

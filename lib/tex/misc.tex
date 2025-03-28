@@ -28,6 +28,9 @@
 
 \def\RomainFooter{%
 	\pagenumbering{Roman}%
+	\renewcommand{\thesection}{\Roman{section}}%
+	\renewcommand{\thesubsection}{\Roman{section}}%
+	\renewcommand{\thesubsubsection}{\Roman{section}}%
 	\global\renewcommand\footrule{%
 		\hrulefill%
 		\raisebox{-2.1pt}{%

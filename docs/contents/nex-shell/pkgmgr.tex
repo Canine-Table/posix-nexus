@@ -1,0 +1,16 @@
+\newpage
+\section{Pkgmgr}
+\label{Pkgmgr}
+\begin{NexMainBox}[light, hdrA, sdwA, crnA, grwB, secA]
+	\begin{NexMainBox}[dark, crnA]]
+		The following functions serve as wrappers for various package managers, offering a unified interface for common operations like updating, searching, installing, and managing software packages across different environments.
+	\end{NexMainBox}
+	\begin{NexMainBox}[dark, crnA]
+		\begin{NexListDark}
+			\NexItemDark{\NexFunction{get\_pkgmgr()}: A wrapper function for interacting with the defined package manager, supporting operations like updating (\texttt{-u}), querying (\texttt{-q}), searching (\texttt{-s}), installing (\texttt{-i}), removing (\texttt{-r}), and cleaning caches (\texttt{-c}).}
+			\NexItemDark{\NexFunction{\_\_set\_pkgmgr()}: Manages the execution of package manager commands by mapping user-specified options to the corresponding commands for the chosen package manager.}
+			\NexItemDark{\NexFunction{\_\_get\_pkgmgr\_*()}: Defines package manager-specific command mappings for each supported package manager, such as \texttt{pacman}, \texttt{apt}, \texttt{apk}, \texttt{brew}, and others.}
+		\end{NexListDark}
+	\end{NexMainBox}
+\end{NexMainBox}
+
