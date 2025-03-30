@@ -31,6 +31,8 @@
 			\NexItemDark{\NexFunction{match\_boundary(D1, D2, B, S, O)}: Matches strings in \NexFunction{D2} that start or end with \NexFunction{D1}, based on \NexFunction{B}, and joins them with \NexFunction{O}.}
 			\NexItemDark{\NexFunction{match\_option(D1, D2, S, O, B1, B2, B3)}: Filters, sorts, and joins strings in \NexFunction{D2} that match \NexFunction{D1} at the start or end based on flags \NexFunction{B2}, \NexFunction{B3}, and optionally clears duplicates with \NexFunction{B1}.}
 			\NexItemDark{\NexFunction{even\_lengths(V, D1, D2, B)}: Adjusts the lengths of \NexFunction{V[D1]} and \NexFunction{V[D2]} to ensure both are even by trimming the longer one, based on \NexFunction{B}.}
+			\NexItemDark{\NexFunction{str\_parser(D1, D2)}: Parses a string \NexFunction{D2} based on the format defined in \NexFunction{D1}. Flags and key-value options are extracted, while unrecognized elements are included in the remainder.}
+			\NexItemDark{\NexFunction{str\_group(D, V)}: Groups strings enclosed in double (`"`) or single (`'`) quotes within \NexFunction{D} into elements in \NexFunction{V}. Handles spaces and escape sequences.}
 		\end{NexListDark}
     \end{NexMainBox}
 \end{NexMainBox}

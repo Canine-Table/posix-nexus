@@ -3,11 +3,16 @@
 \label{Content}
 \begin{NexMainBox}[light, hdrA, sdwA, crnA, grwB, secA]
 	\begin{NexMainBox}[dark, crnA]]
-		The following functions utilize efficient algorithms for sorting and processing data structures, with a focus on modularity and adaptability.
+		The following functions streamline content operations, allowing for efficient path resolution, listing of files or directories, and modular scripting through dynamic file loading.
 	\end{NexMainBox}
 	\begin{NexMainBox}[dark, crnA]
 		\begin{NexListDark}
-			\NexItemDark{\NexFunction{set\_algor\_qsort()}: Implements a QuickSort algorithm to sort a list (\NexFunction{lst}) of elements, with options to reverse the sort order (\NexFunction{rvs}), apply a custom sorting mechanism (\NexFunction{meh}), and use specified delimiters (\NexFunction{sep} and \NexFunction{osep}).}
+			\NexItemDark{\NexFunction{get\_content\_trim()}: Normalizes file or directory paths by removing redundant slashes, resolving relative paths (\texttt{./}), and trimming trailing slashes.}
+			\NexItemDark{\NexFunction{get\_content\_leaf()}: Extracts the last component (leaf) of a file or directory path, such as the filename or the final directory in a hierarchy. Ensures accurate results by resolving the container path first.}
+			\NexItemDark{\NexFunction{get\_content\_container()}: Resolves the parent directory (container) of a given file or directory. Validates the path and returns the absolute directory path after normalization.}
+			\NexItemDark{\NexFunction{get\_content\_path()}: Resolves the full absolute path for a given file or directory, normalizing the input and accounting for symbolic links or relative paths.}
+			\NexItemDark{\NexFunction{get\_content\_list()}: Lists details of files or directories specified in the input. Differentiates between containers (directories) and leaf elements (files) for accurate display.}
+			\NexItemDark{\NexFunction{add\_content\_modules()}: Dynamically loads modular shell scripts from a specified source directory, excluding the \NexFunction{content-mod.sh} file itself. Ensures readability and prevents redundant loading.}
 		\end{NexListDark}
 	\end{NexMainBox}
 \end{NexMainBox}

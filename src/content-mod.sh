@@ -63,11 +63,13 @@ add_content_modules() {
 export G_NEX_ROOT="/usr/local/bin/nex"
 export G_NEX_MOD_SRC="$G_NEX_ROOT/src"
 export G_NEX_MOD_LIB="$G_NEX_ROOT/lib"
-export G_NEX_MOD_DOCS="$G_NEX_ROOT/docs"
+export G_NEX_MOD_CNF="$G_NEX_ROOT/cnf"
+export G_NEX_MOD_LOG="/tmp"
 
 add_content_modules
 export LESS='-R'
 export COLORFGBG=';0'
+export DIALOGRC="$G_NEX_MOD_CNF/.dialogrc"
 export PAGER="$(get_cmd_pager)"
 export EDITOR="$(get_cmd_editor)"
 export SHELL="$(get_cmd_shell)"

@@ -1,0 +1,36 @@
+\newpage
+\section{Types}
+\label{Types}
+\begin{NexMainBox}[light, hdrA, sdwA, crnA, grwB, secA]
+	\begin{NexMainBox}[dark, crnA]]
+		The following functions extend type-checking and utility capabilities, enabling validation for defined values and array-like structures, including dynamic handling of default values.
+	\end{NexMainBox}
+	\begin{NexMainBox}[dark, crnA]
+		\begin{NexListDark}
+			\NexItemDark{\NexFunction{Type.isObject(val)}: Determines whether the given value \NexFunction{val} is a non-null object and not an array. Returns \texttt{true} if the value meets these criteria, otherwise \texttt{false}.}
+			\NexItemDark{\NexFunction{Type.isFunction(val)}: Verifies whether the given value \NexFunction{val} is a function. Returns \texttt{true} if the value is callable, otherwise \texttt{false}.}
+			\NexItemDark{\NexFunction{Type.isClass(val)}: Checks if the provided value \NexFunction{val} is a class definition. Returns \texttt{true} if the value is a class, otherwise \texttt{false}. Utilizes a regex check to distinguish class structures.}
+			\NexItemDark{\NexFunction{Type.isFloat(val)}: Determines whether the given value \NexFunction{val} is a valid floating-point number. Supports scientific notation (e.g., \texttt{1.23e4}) and returns \texttt{true} for valid inputs, otherwise \texttt{false}.}
+			\NexItemDark{\NexFunction{Type.isIntegral(val)}: Verifies whether the given value \NexFunction{val} is a valid integer (including negatives and positives). Returns \texttt{true} if the value meets this criteria, otherwise \texttt{false}.}
+			\NexItemDark{\NexFunction{Type.isString(val)}: Checks if the given value \NexFunction{val} is a string. Returns \texttt{true} if \NexFunction{val} is of type \texttt{string} or an instance of \texttt{String}, otherwise \texttt{false}.}
+			\NexItemDark{\NexFunction{Type.isBoolean(val)}: Determines if the given value \NexFunction{val} is a boolean. Returns \texttt{true} if \NexFunction{val} is of type \texttt{boolean} or an instance of \texttt{Boolean}, otherwise \texttt{false}.}
+			\NexItemDark{\NexFunction{Type.isEmpty(val)}: Checks whether the given value \NexFunction{val} is an empty string (\texttt{''}). Returns \texttt{true} if \NexFunction{val} is empty, otherwise \texttt{false}.}
+			\NexItemDark{\NexFunction{Type.isTrue(val)}: Validates whether the given value \NexFunction{val} loosely equals \texttt{true}. Returns \texttt{true} for truthy values, otherwise \texttt{false}.}
+			\NexItemDark{\NexFunction{Type.isFalse(val)}: Validates whether the given value \NexFunction{val} loosely equals \texttt{false}. Returns \texttt{true} for falsy values, otherwise \texttt{false}.}
+			\NexItemDark{\NexFunction{Type.isUndefined(val)}: Checks if the given value \NexFunction{val} is explicitly \texttt{undefined}. Returns \texttt{true} if \NexFunction{val} equals \texttt{undefined}, otherwise \texttt{false}.}
+			\NexItemDark{\NexFunction{Type.isNull(val)}: Determines if the given value \NexFunction{val} is explicitly \texttt{null}. Returns \texttt{true} if \NexFunction{val} equals \texttt{null}, otherwise \texttt{false}.}
+		\end{NexListDark}
+	\end{NexMainBox}
+\end{NexMainBox}
+
+\begin{NexMainBox}[light, hdrA, sdwA, crnA, grwB, secB]
+	\begin{NexMainBox}[dark, crnA]
+		\begin{NexListDark}
+			\NexItemDark{\NexFunction{Type.isAbsolute(val)}: Validates whether the given value \NexFunction{val} is an absolute number (equal to its absolute value). Returns \texttt{true} for absolute numbers, otherwise \texttt{false}.}
+			\NexItemDark{\NexFunction{Type.isJson(val)}: Checks if the given value \NexFunction{val} is a valid JSON string. Returns \texttt{true} if \NexFunction{val} can be successfully parsed by \texttt{JSON.parse}, otherwise \texttt{false}.}
+			\NexItemDark{\NexFunction{Type.isDefined(val, def)}: Checks if the given value \NexFunction{val} is defined (not \texttt{undefined} or an empty string). Returns the default value \NexFunction{def} if \NexFunction{val} is not defined, otherwise returns \texttt{true} or the value of \NexFunction{val} if \NexFunction{def} is specified.}
+			\NexItemDark{\NexFunction{Type.isArray(val, def)}: Determines whether the given value \NexFunction{val} is an array or a \texttt{Set}. If true, returns \NexFunction{val} or \texttt{true} depending on \NexFunction{def}. If \NexFunction{val} is a defined string (but not an object), splits it into an array using \NexFunction{def} as the delimiter. Returns an empty array or \texttt{false} for other cases, depending on \NexFunction{def}.}
+		\end{NexListDark}
+	\end{NexMainBox}
+\end{NexMainBox}
+

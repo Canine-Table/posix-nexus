@@ -66,8 +66,9 @@ get_str_print()
 			BEGIN {
 				if (inpt ~ /^-/ && inpt ~ /[^ ]/)
 					printf(" %s ", inpt)
-				else
+				else {
 					printf(" \x27%s\x27 ", inpt)
+				}
 			}
 		'
 		shift

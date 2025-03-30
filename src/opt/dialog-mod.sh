@@ -3,23 +3,27 @@
 __get_dialog_factory()
 {
 	(
+		trap 'exec 7>&-' EXIT SIGINT SIGHUP
+		exec 7>&2
+		R_GDF="$(get_tty_prop -k 'rows')"
+		C_GDF="$(get_tty_prop -k 'columns')"
 		DIALOG_ESC=255 DIALOG_ITEM_HELP=4 DIALOG_EXTRA=3 DIALOG_HELP=2 DIALOG_CANCEL=1 DIALOG_OK=0
-		#while getopts :v:m:b:p:e: OPT; do
-		#	case $OPT in
-		#		v) v="$OPTARG";;
-		#		m|b|p|e) eval "$OPT"="'$(get_struct_ref_append "$OPT" "$OPTARG" ',')'";;
-		#	esac
-		#done
-		#shift $((OPTIND - 1))
-		eval "$(get_str_parser "v:e:m:b:p:" "$@")"
+		while getopts :v:m:b:p:e: OPT; do
+			case $OPT in
+				v) v="$OPTARG";;
+				m|b|p|e) eval "${OPT}_gdf"="'$(get_struct_ref_append "${OPT}_gdf" "$OPTARG" ',')'";;
+			esac
+		done
+		shift $((OPTIND - 1))
 		${AWK:-$(get_cmd_awk)} \
-			-v vrnt="${v:-msgbox}" \
-			-v msg="$m" \
-			-v bol="$b" \
-			-v ext="$e" \
-			-v param="$p" \
-			-v columns="$C" \
-			-v rows="$R" "
+			-v vrnt="${v_gdf:-${v:-msgbox}}" \
+			-v msg="${m_gdf:-$m}" \
+			-v bol="${b_gdf:-$b}" \
+			-v ext="${e_gdf:-$e}" \
+			-v rmdr="$@" \
+			-v param="${p_gdf:-$p}" \
+			-v columns="${C_DGF:-$C}" \
+			-v rows="${R_GDF:-$R}" "
 			$(cat \
 				"$G_NEX_MOD_LIB/awk/misc.awk" \
 				"$G_NEX_MOD_LIB/awk/str.awk" \
@@ -77,13 +81,19 @@ __get_dialog_factory()
 						}
 					}
 				}
-				vrnt = __return_value(match_option(tolower(vrnt), "treeview,calendar,buildlist,checklist,dselect,fselect,editbox,form,tailboxfg,tailboxbg,textbox,timebox,infobox,inputbox,inputmenu,menu,mixedform,mixedgauge,gauge,msgbox,passwordform,passwordbox,pause,prgbox,programbox,progressbox,radiolist,rangebox,yesno"), "infobox")
+				vrnt = __return_value(match_option(tolower(vrnt), "treeview,calendar,buildlist,checklist,dselect,fselect,editbox,form,tailbox,tailboxbg,textbox,timebox,infobox,inputbox,inputmenu,menu,mixedform,mixedgauge,gauge,msgbox,passwordform,passwordbox,pause,prgbox,programbox,progressbox,radiolist,rangebox,yesno"), "infobox")
 				if (vrnt ~ /^(password(box|form))$/)
 					printf("--%s ", "insecure")
-				printf("%s ", "--no-collapse")
+				if (vrnt != "editbox")
+					printf("--%s ", "no-collapse")
+				printf("%s ", "--output-fd 7 --erase-on-exit --scrollbar --output-separator \\n")
+				printf("--trace \x22%s\x22 ", __return_value(ENVIRON["G_NEX_MOD_LOG"], "/var/log"), "/nex-dialog.log")
 				printf("--%s ", vrnt)
 				printf("\x22%s\x22 ", msg)
-				printf("%s %s ", rows, columns)
+				if (vrnt == "calendar")
+					printf("0 0 ")
+				else
+					printf("%s %s ", rows, columns)
 				if (vrnt ~ /^((password|mixed)?form|(radio|check|build)list|(input)?menu|treeview)$/) {
 					printf("%s ", rows)
 					for (i = 1; i <= trim_split(param, arr, ","); i++) {
@@ -116,20 +126,25 @@ __get_dialog_factory()
 						}
 					}
 				} else if (vrnt ~ /^((tailbox(bg|fg))|(msg|edit|time|text|progress|info|program|range)box|(f|d)select|calendar|gauge|pause|yesno)$/) {
+					# TODO
 				}
 			}
 		'
 	)
 }
 
+__get_dialog_size()
+{
+	R="$(get_tty_prop -k 'rows')"
+	C="$(get_tty_prop -k 'columns')"
+}
+
 get_dialog_explorer()
 {
 	(
-		R="$(get_tty_prop -k 'rows')"
-		C="$(get_tty_prop -k 'columns')"
-		eval $(get_str_parser "v:f:" "$@")
-		echo "$(set_struct_opt -i "$v" -r "fselect,dselect,editbox")"
-		echo $v
+		__get_dialog_size
+		eval $(get_str_parser 'v:f:e:m:b:p:' "$*")
+		v="$(set_struct_opt -i "$v" -r "fselect,dselect,textbox,editbox,tailboxbg,tailbox")"
 		[ -z "$f" -a -n "$1" ] && {
 			f="$(get_content_path "$1")"
 			shift
@@ -138,8 +153,8 @@ get_dialog_explorer()
 		}
 		[ -r "$f" ] && {
 			[ -f "$f" ] && {
-				[ "$v" != 'editbox' ] && {
-					v="fselect"
+				[ "$v" = 'dselect' ] && {
+					v="textbox"
 				}
 			}
 			[ -d "$f" -a -x "$f" ] && {
@@ -149,16 +164,50 @@ get_dialog_explorer()
 		[ -z "$v" ] && {
 			exit 1
 		}
-		trap 'exec 7>&-' EXIT SIGINT SIGHUP
-		exec 7>&2
-		DIALOG_OPTIONS=$(echo "dialog $(__get_dialog_factory "$@" -v "$v" -m "$f")" 3>&1 1>&7 7>&3)
+		DIALOG_OPTIONS=$(eval "dialog $(__get_dialog_factory ${p:+-p "$p"} ${e:+-e "$e"}  ${m:+-m "$m"} ${b:+-b "$b"} -v $v -m "$f")" 3>&1 1>&7 7>&3)
 		DIALOG_EXIT_STATUS=$?
-		set_tty_hault
+		echo "$DIALOG_OPTIONS"
 		return $DIALOG_EXIT_STATUS
 	)
 }
 
+get_dialog_yn()
+{
+	(
+		__get_dialog_size
+		eval $(get_str_parser 'v:e:m:b:p:' "$*")
+		v="$(set_struct_opt -i "$v" -r "yesno,msgbox")"
+		eval "dialog $(__get_dialog_factory ${p:+-p "$p"} ${e:+-e "$e"}  ${m:+-m "$m"} ${b:+-b "$b"} -v ${v:-yesno})"
+	)
+}
 
+get_dialog_cal()
+{
+	(
+		eval $(get_str_parser 'e:m:b:p:' "$*")
+		v="calendar"
+		DIALOG_OPTIONS=$(eval "dialog $(__get_dialog_factory ${p:+-p "$p"} ${e:+-e "$e"}  ${m:+-m "$m"} ${b:+-b "$b"} -v $v -m "$f") $(date +"%d %m %y")" 3>&1 1>&7 7>&3)
+		DIALOG_EXIT_STATUS=$?
+		echo "$DIALOG_OPTIONS"
+		return $DIALOG_EXIT_STATUS
+	)
+}
 
-
+get_dialog_time()
+{
+	(
+		__get_dialog_size
+		eval $(get_str_parser 'v:e:m:b:p:' "$*")
+		v="$(set_struct_opt -i "$v" -r "pause,timebox")"
+		[ "$1" = '-t' ] && {
+			t="$2"
+		} || {
+			[ "$v" = "pause" ] && t="59" || t="23 59 59"
+		}
+		DIALOG_OPTIONS=$(eval "dialog $(__get_dialog_factory ${p:+-p "$p"} ${e:+-e "$e"}  ${m:+-m "$m"} ${b:+-b "$b"} -v ${v:-timebox}) $t" 3>&1 1>&7 7>&3)
+		DIALOG_EXIT_STATUS=$?
+		echo "$DIALOG_OPTIONS"
+		return $DIALOG_EXIT_STATUS
+	)
+}
 

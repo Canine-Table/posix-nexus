@@ -1,0 +1,20 @@
+\newpage
+\section{Integer}
+\label{Integer}
+\begin{NexMainBox}[light, hdrA, sdwA, crnA, grwB, secA]
+	\begin{NexMainBox}[dark, crnA]]
+		The following functions provide advanced numerical utilities for iterative looping, directional number generation, and proportional value distribution.
+	\end{NexMainBox}
+	\begin{NexMainBox}[dark, crnA]
+		\begin{NexListDark}
+			\NexItemDark{\NexFunction{Int.loop(num, start = 0, stop)}: Adjusts the numerical value \NexFunction{num} to fit within the inclusive range defined by \NexFunction{start} and \NexFunction{stop}. Handles cyclic behavior, ensuring values outside the range wrap back inwards. Returns \texttt{0} if \NexFunction{num} is not a valid float.}
+			\NexItemDark{\NexFunction{Int.direction(start = 0, stop, skip = 1)}: Generates a sequence of numbers between \NexFunction{start} and \NexFunction{stop}, incrementing or decrementing by \NexFunction{skip}. Supports infinite iteration when \NexFunction{stop} is not defined. Returns a generator object.}
+			\NexItemDark{\NexFunction{Int.distribute(low, up, range)}: Calculates the proportional distribution of a value within the range defined by \NexFunction{low} and \NexFunction{up}, adjusted by the given \NexFunction{range}. Returns the ceiling of the resulting value for accurate interval placement.}
+			\NexItemDark{\NexFunction{Int.randomRange(stop, start = 0)}: Generates a random integer within the inclusive range specified by \NexFunction{start} and \NexFunction{stop}. Ensures both bounds are integral values, adjusting behavior with \NexFunction{Int.loop} for proper range wrapping.}
+			\NexItemDark{\NexFunction{Int.wholeRandom()}: Produces a whole random number derived from the decimal portion of a \texttt{Math.random()} call. Uses \NexFunction{Str.lastChar()} to extract the desired numeric portion.}
+			\NexItemDark{\NexFunction{Int.odd(num, val)}: Adjusts the given number \NexFunction{num} to the nearest odd integer. If \NexFunction{val} is truthy, increases \NexFunction{num} to the next odd value if necessary. If falsy, decreases \NexFunction{num} to the previous odd value if required.}
+			\NexItemDark{\NexFunction{Int.isPos(val)}: Determines if the given value \NexFunction{val} is positive or zero. Uses \texttt{Math.sign()} for precise validation. Returns \texttt{true} for positive values or zero.}
+			\NexItemDark{\NexFunction{Int.isNeg(val)}: Determines if the given value \NexFunction{val} is negative. Uses \texttt{Math.sign()} for accurate validation. Returns \texttt{true} for negative values, including \texttt{-0}.}
+		\end{NexListDark}
+	\end{NexMainBox}
+\end{NexMainBox}

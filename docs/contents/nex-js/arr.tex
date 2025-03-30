@@ -1,0 +1,43 @@
+\newpage
+\section{Array}
+\label{Array}
+\begin{NexMainBox}[light, hdrA, sdwA, crnA, grwB, secA]
+	\begin{NexMainBox}[dark, crnA]]
+		The following functions provide advanced utilities for array manipulation, enabling operations like uniqueness setting, querying, range generation, and structure flattening.
+	\end{NexMainBox}
+	\begin{NexMainBox}[dark, crnA]
+		\begin{NexListDark}
+			\NexItemDark{\NexFunction{Arr.add(val, arr, sep = ',')}: Combines the given value \NexFunction{val} and array \NexFunction{arr} into a single array. Converts both inputs into array structures using the specified separator \NexFunction{sep} before concatenation.}
+			\NexItemDark{\NexFunction{Arr.search(val, arr, act, sep = ',')}: Searches the array \NexFunction{arr} for elements matching the given value \NexFunction{val}, based on the specified action \NexFunction{act}. Supports methods like \texttt{includes}, \texttt{endsWith}, and \texttt{startsWith}, with an optional separator \NexFunction{sep} for input transformation.}
+			\NexItemDark{\NexFunction{Arr.start(val, arr, sep)}: Filters the array \NexFunction{arr} for elements that start with the given value \NexFunction{val}. Acts as a shorthand for \NexFunction{Arr.search()} with a default action of \texttt{startsWith}.}
+			\NexItemDark{\NexFunction{Arr.end(val, arr, sep)}: Filters the array \NexFunction{arr} to find elements ending with the given value \NexFunction{val}. Acts as a shorthand for \NexFunction{Arr.search()} with a default action of \texttt{endsWith}.}
+			\NexItemDark{\NexFunction{Arr.within(val, arr, sep)}: Filters the array \NexFunction{arr} to find elements that include the given value \NexFunction{val}. Serves as a shorthand for \NexFunction{Arr.search()} with a default action of \texttt{includes}.}
+			\NexItemDark{\NexFunction{Arr.in(val, arr, sep = ',')}: Checks whether the given value \NexFunction{val} exists within the array \NexFunction{arr}. Returns \texttt{true} if found, otherwise \texttt{false}.}
+			\NexItemDark{\NexFunction{Arr.lengths(val, sep = ',', act)}: Determines the length of the longest or shortest element in the array \NexFunction{val}, based on the \NexFunction{act} parameter. Returns \texttt{0} if \NexFunction{val} is not defined.}
+			\NexItemDark{\NexFunction{Arr.lengthMatch(val, sep, len)}: Filters the array \NexFunction{val} to find elements with lengths matching the specified \NexFunction{len}. Returns an array of matched elements.}
+			\NexItemDark{\NexFunction{Arr.extremeMatch(val, sep = ',', ext)}: Finds elements in the array \NexFunction{val} with the shortest or longest length, based on the \NexFunction{ext} parameter. If multiple elements match, returns them all; otherwise, returns the singular match.}
+			\NexItemDark{\NexFunction{Arr.shortest(val, sep = ',')}: Identifies the shortest element in the array \NexFunction{val}. Uses \NexFunction{Arr.extremeMatch()} for streamlined processing. Returns the shortest value or an array of matches.}
+			\NexItemDark{\NexFunction{Arr.longest(val, sep = ',')}: Identifies the longest element in the given array \NexFunction{val}. Uses \NexFunction{Arr.extremeMatch()} to determine the result, returning either a singular match or multiple matching elements.}
+		\end{NexListDark}
+	\end{NexMainBox}
+\end{NexMainBox}
+
+\begin{NexMainBox}[light, hdrA, sdwA, crnA, grwB, secB]
+	\begin{NexMainBox}[dark, crnA]
+		\begin{NexListDark}
+			\NexItemDark{\NexFunction{Arr.explode(val)}: Splits the given string \NexFunction{val} into an array of individual characters. Returns an empty array if \NexFunction{val} is not defined.}
+			\NexItemDark{\NexFunction{Arr.difference(arrA, arrB, side, sep = ',')}: Computes the difference between two arrays, \NexFunction{arrA} and \NexFunction{arrB}. Returns elements unique to either array. The \NexFunction{side} parameter controls whether differences are calculated unidirectionally or bidirectionally.}
+			\NexItemDark{\NexFunction{Arr.left(arrA, arrB, sep = ',')}: Computes elements in \NexFunction{arrA} that are not present in \NexFunction{arrB}. Acts as a shorthand for \NexFunction{Arr.difference()} with a unidirectional configuration.}
+			\NexItemDark{\NexFunction{Arr.right(arrA, arrB, sep = ',')}: Computes elements in \NexFunction{arrB} that are not present in \NexFunction{arrA}. Acts as a shorthand for \NexFunction{Arr.difference()} with reversed inputs.}
+			\NexItemDark{\NexFunction{Arr.shortStart(val, opt, sep = ',', def)}: Searches for the shortest matching element within \NexFunction{opt} starting with \NexFunction{val}. Returns a default value \NexFunction{def} if no match or multiple matches are found.}
+			\NexItemDark{\NexFunction{Arr.rotate(arr, steps, sep = ',')}: Rotates the elements of the array \NexFunction{arr} by the specified number of \NexFunction{steps}. Wraps elements cyclically to maintain array integrity.}
+			\NexItemDark{\NexFunction{Arr.set(obj, sep = ',')}: Removes duplicate entries from the given input \NexFunction{obj} and returns an array of unique values. Processes the input as an array using the separator \NexFunction{sep}.}
+			\NexItemDark{\NexFunction{Arr.query(val, obj, sep = ',')}: Generates values from \NexFunction{val} based on the given \NexFunction{obj}. Supports both array and object formats for \NexFunction{obj}, providing flexible start, stop, and skip options. Returns a generator object.}
+			\NexItemDark{\NexFunction{Arr.range(val, bound, skip)}: Creates a range of numbers starting from \NexFunction{bound} to \NexFunction{val}, with optional skipping intervals. Adjusts the input format for boundary conditions using special characters like \texttt{'<'} and \texttt{'>'}.}
+			\NexItemDark{\NexFunction{Arr.expandBoolean(obj)}: Expands a boolean configuration object, converting \texttt{true} and \texttt{false} arrays into corresponding key-value pairs. Merges the expanded entries back into the original object for consistent usage.}
+			\NexItemDark{\NexFunction{Arr.flatten(obj, ref, sep = '-', osep)}: Flattens nested structures, generating a single-level array. Uses the reference \NexFunction{ref} for key transformation and applies the separator \NexFunction{sep} to construct hierarchical paths. Optionally joins the result using \NexFunction{osep}.}
+			\NexItemDark{\NexFunction{Arr.types(arr, type, not = false)}: Filters the array \NexFunction{arr} based on the specified data types in \NexFunction{type}. Supports exclusion when \NexFunction{not} is set to \texttt{true}.}
+			\NexItemDark{\NexFunction{Arr.prePostAppend(arr, pre = '', post = '', sep = ' ')}: Appends the specified prefix \NexFunction{pre} and suffix \NexFunction{post} to each element of the array \NexFunction{arr}. Joins the results using the separator \NexFunction{sep}.}
+		\end{NexListDark}
+	\end{NexMainBox}
+\end{NexMainBox}
