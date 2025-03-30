@@ -343,3 +343,80 @@ function anchor_search(D1, D2, D3, N, B, S, O,		rcd, dlm, i, s, c, tk) {
 	}
 }
 
+function str_parser(D1, D2,	tmpa, tmpb, tmpc, i, j, k, l, m, opts, arr, kw, rtn, rmdr)
+{
+	split("", arr, "")
+	split("", kw, "")
+	split("", tmpc, "")
+	l = split(D1, opts, "")
+	for (i = 1; i <= l; i++) {
+		if (opts[i + 1] != ":") {
+			if (opts[i] != ":")
+				arr[opts[i]] = ""
+		} else {
+			kw[opts[i++]] = ""
+		}
+	}
+	rmdr = ""
+	split("", rtn, "")
+	while (match(D2, /([!-~]+)/)) {
+		tmpa = substr(D2, RSTART + RLENGTH)
+		if (trim(tmpb = substr(D2, 1, RSTART + RLENGTH)) ~ /^-/) {
+			if ((k = __get_half(substr(D2, RSTART, RLENGTH), "-")) == "-") {
+				rmdr = rmdr tmpa
+				break
+			}
+			l = split(k, opts, "")
+			for (j = 1; j <= l; j++) {
+				if (opts[j] in arr) {
+					if (opts[j] ~ /[A-Z]+/)
+						rtn[tolower(opts[j])] = "false"
+					else
+						rtn[opts[j]] = "true"
+				} else if (opts[j] in kw) {
+					str_group(substr(tmpa " ", 2), tmpc)
+					if ((m = substr(tmpc[1], 1, 1)) ~ /^['"]/ && m == substr(tmpc[1], length(tmpc[1])))
+						m = substr(tmpc[1], 2, length(tmpc[1]) - 2)
+					else
+						m = substr(tmpc[1], 1, length(tmpc[1]) - 1)
+					rtn[opts[j]] = __join_str(rtn[opts[j]], m, ",")
+					tmpa = substr(tmpa, length(tmpc[1]) + 2)
+				} else {
+					rmdr = rmdr "-" substr(k, j, 1) " "
+				}
+			}
+		} else {
+			rmdr = rmdr substr(tmpb, 2)
+		}
+		D2 = tmpa
+	}
+	delete opts
+	delete arr
+	delete kw
+	delete tmpc
+	rmdr = "rmdr=\x22" rmdr "\x22"
+	for (i in rtn)
+		rmdr = rmdr " " i "=\x22" rtn[i] "\x22"
+	delete rtn
+	return rmdr
+}
+
+function str_group(D, V,	i, idx, m, arr)
+{
+	if (! is_array(V))
+		split("", V, "")
+	idx = 1
+	split("\x20,\x22,\x27", arr, ",")
+	while (D) {
+		i = __first_index(D, arr, 1)
+		if ((m = substr(D, i, 1)) == " ") {
+			V[idx++] = substr(D, 1, i)
+		} else if (match(D, m "(.*[^\\\\" m "].*)*"  m)) {
+			V[idx++] = substr(D, RSTART, RLENGTH)
+			i = RSTART + RLENGTH
+		}
+		D = substr(D, i + 1)
+	}
+	delete arr
+	return idx
+}

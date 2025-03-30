@@ -31,6 +31,50 @@ get_str_rand()
 	)
 }
 
+get_str_parser()
+{
+	(
+		opt="$1"
+		shift
+		${AWK:-$(get_cmd_awk)} \
+			-v opt="$opt" \
+			-v prs="$(get_str_print "$@")" \
+		"
+			$(cat \
+				"$G_NEX_MOD_LIB/awk/misc.awk" \
+				"$G_NEX_MOD_LIB/awk/algor.awk" \
+				"$G_NEX_MOD_LIB/awk/structs.awk" \
+				"$G_NEX_MOD_LIB/awk/types.awk" \
+				"$G_NEX_MOD_LIB/awk/str.awk"
+			)
+		"'
+			BEGIN {
+				print str_parser(opt, prs)
+			}
+		'
+	)
+}
+
+get_str_print()
+{
+	[ "${#@}" -gt 0 ] && {
+		${AWK:-$(get_cmd_awk)} -v inpt="$1" "
+			$(cat \
+				"$G_NEX_MOD_LIB/awk/str.awk"
+			)
+		"'
+			BEGIN {
+				if (inpt ~ /^-/ && inpt ~ /[^ ]/)
+					printf(" %s ", inpt)
+				else
+					printf(" \x27%s\x27 ", inpt)
+			}
+		'
+		shift
+		get_str_print "$@"
+	}
+}
+
 get_str_locate()
 {
 	(
