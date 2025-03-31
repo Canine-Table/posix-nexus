@@ -8,29 +8,6 @@ function valid_address(D)
 	}
 }
 
-function valid_prefix(D, S, B,		l, i, d, v)
-{
-	# Check if the separator is not valid, default to ":"
-	if (S !~ /^(:|[.]|-)$/)
-		S = ":"
-	# Remove all occurrences of colons, dots, or hyphens from the address
-	gsub(/:|[.]|-/, "", D)
-	# Add random string to make the length of D equal to 12 characters if shorter
-	if (l = 12 - length(D))
-		D = D random_str(l, "xdigit")
-	# Join characters into pairs separated by S
-	for (i = 2; i <= split(D, v, ""); i += 2)
-		d = __join_str(d, v[i - 1] v[i], S)
-	delete v
-	# Convert to uppercase if B is provided and truthy, otherwise convert to lowercase
-	if (B)
-		d = toupper(d)
-	else if (length(B))
-		d = tolower(d)
-	# Validate and return the modified address
-	return valid_address(d)
-}
-
 function l2_type(D,	d, m, x)
 {
 	if (valid_address(D)) {
@@ -61,13 +38,14 @@ function __valid_cidr(D1, D2, B)
 			if (B)
 				return "/" c
 			return c
+		}
 	}
 }
 
 function expand_ipv6(D,		e, i, cidr, hex, str)
 {
 	cidr = __valid_cidr(D, 6, 1)
-	D = __get_half(D, "/", 1)
+	D = __return_value(__get_half(D, "/", 1), D)
 	# Ensure there are 8 segments in the address
 	for (i = split(D, hex, ":"); i <= 8; i++)
 		e = e ":0000"
@@ -79,7 +57,7 @@ function expand_ipv6(D,		e, i, cidr, hex, str)
 		if (i > 1)
 			str = str ":"
 		# Prepend leading zeros to make each segment 4 characters long
-		str = str append(4 - length(hex[i]), "0") hex[i]
+		str = str append_str(4 - length(hex[i]), "0") hex[i]
 	}
 	# Clean up
 	delete hex
@@ -89,7 +67,7 @@ function expand_ipv6(D,		e, i, cidr, hex, str)
 function truncate_ipv6(D,	i, cidr, hex, str)
 {
 	cidr = __valid_cidr(D, 6, 1)
-	D = __get_half(D, "/", 1)
+	D = __return_value(__get_half(D, "/", 1), D)
 	# Check if the address does not contain "::"
 	if (D !~ /::/) {
 		# Replace the longest segment of zero(s) with "::"
@@ -121,9 +99,9 @@ function truncate_ipv6(D,	i, cidr, hex, str)
 
 function valid_ipv6(D, B,	hex, cidr, cnt, i)
 {
-	if (! (cidr = __valid_cidr(a, 6, 1)) && B)
+	if (! (cidr = __valid_cidr(D, 6, 1)) && B)
 		return
-	D = __get_half(D1, "/", 1)
+	D = __return_value(__get_half(D, "/", 1), D)
 	# Set initial return value to the input address
 	if ((cnt = gsub(/[:]/, ":", D)) > 1 && cnt < 8 && D) {
 		# Split the address into segments
@@ -146,9 +124,9 @@ function valid_ipv6(D, B,	hex, cidr, cnt, i)
 
 function valid_ipv4(D, B,	oct, cidr, i)
 {
-	if (! (cidr = __valid_cidr(a, 4, 1)) && B)
+	if (! (cidr = __valid_cidr(D, 4, 1)) && B)
 		return
-	D = __get_half(D1, "/", 1)
+	D = __return_value(__get_half(D, "/", 1), D)
 	# Set initial return value to the input address
 	if (gsub(/[.]/, ".", D) == 3 && D) {
 		# Split the address into octets
@@ -162,6 +140,72 @@ function valid_ipv4(D, B,	oct, cidr, i)
 		# Clean up the oct array
 		delete oct
 		return D cidr
+	}
+}
+
+function valid_l2(D)
+{
+	if ((gsub(/:/, ":", D) == 5) || (gsub(/[.]/, ".", D) == 5) || (gsub(/-/, "-", D) == 5))
+		if (D ~ /^([0-9a-zA-Z]{2}((:|[.]|-)[0-9a-zA-Z]{2}){5})$/)
+			return D
+}
+
+function valid_prefix(D1, S, D2, D3,	l, str)
+{
+	if (S !~ /^(:|[.]|-)$/)
+		S = ":"
+	gsub(/:|[.]|-/, "", D1)
+	if (l = 12 - length(D1))
+		D1 = D1 random_str(l, "xdigit")
+	str = ""
+	for (i = 1; i <= 12; i += 2)
+		str = __join_str(str, substr(D1, i, 2), S)
+	return l2_assign(str, D2, D3)
+}
+
+function l2_assign(D1, D2, D3,		b, l2_map)
+{
+	if (valid_l2(D1)) {
+		# RFC 7042
+		D2 = __return_value(match_option(D2, "universal, local, flip"), "local") # U/L
+		D3 = __return_value(match_option(D3, "unicast, multicast, flip"), "unicast") # I/G
+		b = convert_base(substr(D1, 2, 1), 16, 2)
+		if (D2) {
+			l2_map["universal"] = "0"
+			l2_map["local"] = "1"
+			if (! (D2 = l2_map[D2]))
+				D2 = compliment(substr(b, 2, 1), 2)
+			D2 = substr(b, 1, 1) D2
+			delete l2_map
+		} else {
+			D2 = substr(b, 1, 2)
+		}
+		if (D3) {
+			l2_map["unicast"] = "0"
+			l2_map["multicast"] = "1"
+			if (! (D3 = l2_map[D3]))
+				D3 = compliment(substr(b, 4, 1), 2)
+			D3 = substr(b, 3, 1) D3
+			delete l2_map
+		} else {
+			D3 = substr(b, 3, 2)
+		}
+		return substr(D1, 1, 1) substr(convert_base(D2 "" D3, 2, 16), 1, 1) substr(D1, 3, 16)
+	}
+}
+
+function eui64(D, S,	flp, i)
+{
+	if (valid_l2(D)) {
+		if (S !~ /^(:|[.]|-)$/)
+			S = ":"
+		D = l2_assign(D, "flip")
+		gsub(/[^a-zA-Z0-9]/, "", D)
+		D = substr(D, 1, 6) "fffe" substr(D, 7)
+		flp = ""
+		for (i = 1; i <= 16; i += 4)
+			flp = __join_str(flp, substr(D, i, 4), S)
+		return flp
 	}
 }
 
