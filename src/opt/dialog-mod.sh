@@ -225,6 +225,7 @@ get_dialog_explorer()
 		__get_dialog_size
 		eval $(get_str_parser 'v:f:e:m:b:p:' "$*")
 		v="$(set_struct_opt -i "$v" -r "fselect,dselect,textbox,editbox,tailboxbg,tailbox")"
+		echo $f
 		[ -z "$f" -a -n "$1" ] && {
 			f="$(get_content_path "$1")"
 			shift
@@ -244,7 +245,8 @@ get_dialog_explorer()
 		[ -z "$v" ] && {
 			exit 1
 		}
-		DIALOG_OPTIONS=$(eval "dialog $(__get_dialog_factory ${p:+-p "$p"} ${e:+-e "$e"}  ${m:+-m "$m"} ${b:+-b "$b"} -v $v -m "$f")" 3>&1 1>&7 7>&3)
+	
+		DIALOG_OPTIONS=$(eval "dialog $(__get_dialog_factory ${p:+-p "$p"} ${e:+-e "$e"}  ${m:+-m "$m"} ${b:+-b "$b"} -v $v -m "$f")" 3>&1 1>&2 2>&3)
 		DIALOG_EXIT_STATUS=$?
 		echo "$DIALOG_OPTIONS"
 		return $DIALOG_EXIT_STATUS
@@ -314,6 +316,15 @@ get_dialog_menu()
 		DIALOG_EXIT_STATUS=$?
 		__get_dialog_selected "$DIALOG_OPTIONS" "$p"
 		return $DIALOG_EXIT_STATUS
+	)
+}
+
+get_dialog_other()
+{
+	(
+		__get_dialog_size
+		eval $(get_str_parser 'v:e:m:b:p:' "$*")
+		eval "dialog $(__get_dialog_factory ${p:+-p "$p"} ${e:+-e "$e"}  ${m:+-m "$m"} ${b:+-b "$b"} -v ${v:-msgbox})" 3>&1 1>&2 2>&3
 	)
 }
 

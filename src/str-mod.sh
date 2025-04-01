@@ -76,22 +76,22 @@ get_str_print()
 	}
 }
 
-get_str_locate()
+get_str_search()
 {
 	(
-		while getopts :f:r:s:o:n:g OPT; do
+		while getopts :f:s:o:r:d:n: OPT; do
 			case $OPT in
-				f|n|s|r|o|g) eval "$OPT"="'${OPTARG:-true}'";;
+				f|r|s|o|d|n) eval "$OPT"="'${OPTARG:-true}'";;
 			esac
 		done
 		shift $((OPTIND - 1))
-		eval "$*" | ${AWK:-$(get_cmd_awk)} \
-			-v glbl="$g" \
+		eval "$*" 2>/dev/null | ${AWK:-$(get_cmd_awk)} \
 			-v sep="$s" \
 			-v osep="$o" \
+			-v div="$d" \
+			-v ndiv="$n" \
 			-v fnd="$f" \
-			-v rpl="$r" \
-			-v num="$n" "
+			-v rpl="$r" "
 			$(cat \
 				"$G_NEX_MOD_LIB/awk/misc.awk" \
 				"$G_NEX_MOD_LIB/awk/algor.awk" \
@@ -102,16 +102,26 @@ get_str_locate()
 			)
 		"'
 			BEGIN {
+				if (! div)
+					div = "/"
 				if (! sep)
 					sep = "\x20"
 				__load_delim(dlm, sep, osep)
+				o = ""
+				v = ""
 			} {
-				gsub(/\t|\v/, dlm["s"], $0)
-				anchor_search($0, fnd, rpl, num, glbl, dlm["s"], dlm["o"])
+				if (str = str_search($0, dlm["s"], div, ndiv, dlm["o"], fnd, rpl)) {
+					printf("%s%s", o, str)
+					if (! o)
+						o = dlm["o"]
+				}
+			} END {
+				delete dlm
 			}
 		'
 	)
 }
+
 
 ###:( set ):##################################################################################
 

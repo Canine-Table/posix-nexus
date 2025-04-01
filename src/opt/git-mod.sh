@@ -2,8 +2,7 @@
 
 gh_social()
 {
-	command -v jq 1> /dev/null 2>&1 || return 1
-	command -v gh 1> /dev/null 2>&1 || return 2
+	has_cmd jq gh || return 2
 	(
 		usr="$(gh auth status | ${AWK:-$(get_cmd_awk)} '/Token scopes/')"
 		([ "$?" -gt 0 ] || ! (echo "$usr" | grep -q "'user'")) && {
@@ -32,5 +31,25 @@ gh_social()
 			}
 		done
 	)
+}
+
+__is_git_repo()
+{
+	has_cmd git && git rev-parse --is-inside-work-tree 1> /dev/null 2>&1
+}
+
+get_git_head()
+{
+	__is_git_repo && get_str_search -s '/' -f '/origin/,1'  git symbolic-ref refs/remotes/origin/HEAD
+}
+
+get_git_remote()
+{
+	__is_git_repo && get_str_search  -r '(fetch)=fetch:\t,(push)=push:\t' -f '/(fetch)/^/(push)/^/,-1' git remote -v
+}
+
+get_git_branch()
+{
+	__is_git_repo && get_str_search  -s '/' -f '/origin/,1' git branch -a | sed -n '3,$p'
 }
 

@@ -268,7 +268,10 @@ function array(D, V, S,		i, k)
 
 function split_parameters(D, V, S1, S2,		i, j, v, k)
 {
+	S1 = __return_value(substr(S1, 1, 1),  ",")
 	S2 = __return_value(substr(S2, 1, 1),  "=")
+	if (! is_array(V))
+		split("", V, "")
 	for (i = 1; i <= unique_indexed_array(D, v, S1); i++) {
 		if (j = index(v[i], S2)) {
 			k = substr(v[i], 1, j - 1)

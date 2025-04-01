@@ -2,28 +2,36 @@
 
 ###:( get ):##################################################################################
 
+has_cmd()
+{
+	while [ ${#@} -gt 0 ]; do
+		command -v "$1" 1>/dev/null 2>&1 || return 1
+		shift
+	done
+}
+
 get_cmd()
 {
-        while [ ${#@} -gt 0 ]; do
-                command -v "$1" && return
-                shift
-        done
-        return 1
+	while [ ${#@} -gt 0 ]; do
+		command -v "$1" && return
+		shift
+	done
+	return 1
 }
 
 get_cmd_pager()
 {
-        get_cmd less more tee
+	get_cmd less more tee
 }
 
 get_cmd_awk()
 {
-        get_cmd mawk nawk awk gawk
+	get_cmd mawk nawk awk gawk
 }
 
 get_cmd_shell()
 {
-        get_cmd dash sh ash mksh posh yash ksh loksh pdksh bash zsh fish
+	get_cmd dash sh ash mksh posh yash ksh loksh pdksh bash zsh fish
 }
 
 get_cmd_editor()

@@ -307,39 +307,54 @@ function even_lengths(V, D1, D2, B,	t1, t2, t3, t4)
 	}
 }
 
-# D1: The input string to search within.
-# D2: The pattern to search for within the input string.
-# D3: A substring to be removed from the matched elements (if specified).
-# N: An offset for selecting elements relative to the matched position.
-# B: A flag indicating whether to perform a global substitution (1) or a single substitution (0) for removing DC.
-# S: The delimiter for splitting the input string.
-# O: The output delimiter for joining matched elements.
-function anchor_search(D1, D2, D3, N, B, S, O,		rcd, dlm, i, s, c, tk) {
-	if (D1 && D2) {
-		__load_delim(dlm, S, O)
-		c = split(D1, rcd, dlm["s"])
-		rcd[0] = D1
-		for (i = 1; i <= c + 1; i++) {
-			if (rcd[i] ~ D2) {
-				tk = absolute((i + N) % c)
-				if (length(rcd[tk])) {
-					if (length(D3)) {
-						if (B)
-							gsub(D3, "", rcd[tk])
-						else
-							sub(D3, "", rcd[tk])
+function str_search(D1, S1, S2, S3, O, D2, D3,	arr, i, j, l, n, o, dtn, fnd, mth, rpl, reg, idx, rtn)
+{
+	S1 = __return_value(S1, "\x20")
+	O = __return_value(O, "\x0a")
+	if (D2) {
+		rtn = ""
+		S2 = __return_value(S2, "/")
+		S3 = __return_value(S3, ",")
+		l = split(D1, arr, S1)
+		if (idx = __get_half(D2, S3)) {
+			D2 = __get_half(D2, S3, 1)
+		}
+		if (! (is_integral(idx, 1))) {
+			arr[0] = D1
+			idx = 0
+		}
+		if (reg = __get_half(D2, S2, 0, 0)) {
+			n = str_group(reg, fnd, S2)
+			o = str_group(substr(reg, 2), mth, S2)
+			split_parameters(D3, rpl)
+			if (reg ~ /g$/)
+				glb = 1
+			for (i = 1; i <= l; i++) {
+				for (j = 1; j <= n; j++) {
+					if (arr[i] ~ fnd[j]) {
+						if (idx == 0) {
+							reg = arr[0]
+						} else {
+							reg = arr[modulus_range(i + idx, 1, l)]
+							if (mth[j]) {
+								if (glb)
+									gsub(mth[j], __return_value(rpl[fnd[j]], ""), reg)
+								else
+									sub(mth[j], __return_value(rpl[fnd[j]], ""), reg)
+							}
+							rtn = __join_str(rtn, reg, O)
+						}
+
 					}
-					s = __join_str(s, rcd[tk], dlm["o"])
-					delete rcd[tk]
 				}
 			}
+			delete fnd
+			delete mth
+			delete rpl
+			return rtn
 		}
-		delete rcd
-		delete dlm
-		if (s)
-			print s
 	} else if (D1) {
-		print D1
+		return D1 O
 	}
 }
 
@@ -401,21 +416,21 @@ function str_parser(D1, D2,	tmpa, tmpb, tmpc, i, j, k, l, m, opts, arr, kw, rtn,
 	return rmdr
 }
 
-function str_group(D, V,	i, idx, m, arr)
+function str_group(D1, V, D2, S,	i, idx, m, arr)
 {
+	idx = 0
 	if (! is_array(V))
 		split("", V, "")
-	idx = 1
-	split("\x20,\x22,\x27", arr, ",")
-	while (D) {
-		i = __first_index(D, arr, 1)
-		if ((m = substr(D, i, 1)) == " ") {
-			V[idx++] = substr(D, 1, i)
-		} else if (match(D, m "(.*[^\\\\" m "].*)*"  m)) {
-			V[idx++] = substr(D, RSTART, RLENGTH)
+	split(__return_value(D2, "\x20,\x22,\x27"), arr, __return_value(S, ","))
+	while (D1) {
+		i = __first_index(D1, arr, 1)
+		if ((m = substr(D1, i, 1)) == " ") {
+			V[++idx] = substr(D1, 1, i)
+		} else if (match(D1, m "[^\\\\" m "]*"  m)) {
+			V[++idx] = substr(D1, RSTART + 1, RLENGTH - 2)
 			i = RSTART + RLENGTH
 		}
-		D = substr(D, i + 1)
+		D1 = substr(D1, i + 1)
 	}
 	delete arr
 	return idx

@@ -124,6 +124,51 @@ get_struct_list() {
 	)
 }
 
+get_struct_map() {
+	(
+		while getopts :s:o: OPT; do
+			case $OPT in
+				s|o) eval "$OPT"="'$OPTARG'";;
+			esac
+		done
+		shift $((OPTIND - 1))
+		${AWK:-$(get_cmd_awk)} \
+			-v inpt="$(echo $*)" \
+			-v sep="$s" \
+			-v osep="$o" "
+			$(cat \
+				"$G_NEX_MOD_LIB/awk/misc.awk" \
+				"$G_NEX_MOD_LIB/awk/bool.awk" \
+				"$G_NEX_MOD_LIB/awk/structs.awk" \
+				"$G_NEX_MOD_LIB/awk/algor.awk" \
+				"$G_NEX_MOD_LIB/awk/bases.awk" \
+				"$G_NEX_MOD_LIB/awk/math.awk" \
+				"$G_NEX_MOD_LIB/awk/types.awk" \
+				"$G_NEX_MOD_LIB/awk/str.awk"
+			)
+		"'
+			BEGIN {
+				if (! osep)
+					osep = "="
+				__load_delim(dlm, sep, osep)
+				if (is_integral(k = trim_split(inpt, arr, dlm["s"]) / 2)) {
+					j = k
+					str = ""
+					for (i = 1; i <= k; i++)
+						str = __join_str(str, arr[i] dlm["o"] arr[++j], dlm["s"])
+				}
+				delete arr
+				delete dlm
+				if (str)
+					print str
+				else
+					exit 1
+			}
+		'
+	)
+}
+
+
 ###:( new ):##################################################################################
 
 new_struct_task()

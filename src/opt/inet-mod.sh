@@ -16,12 +16,22 @@ __chk_net_virt_type()
 
 __get_net_dev_name()
 {
-	get_struct_list -s ' ' -o ',' "$(get_str_locate -f '^[0-9+]:' -n 1 -r ':' ip --color=never link show)"
+	get_str_search -o ',' -f '/mtu/:/,-2' ip --color=never link show
+}
+
+__get_net_dev_id()
+{
+	get_str_search -o ',' -f '/mtu/:/,-3' ip --color=never link show
+}
+
+__get_net_dev_map()
+{
+	get_struct_map "$(__get_net_dev_id),$(__get_net_dev_name)"
 }
 
 __get_net_dev_alt()
 {
-	get_struct_list -s ' ' -o ',' "$(get_str_locate -f 'altname' -r 'altname' -n 1 ip --color=never link show)"
+	get_str_search -o ',' -f '/altname/,1' ip --color=never link show
 }
 
 __get_net_dev_names()
@@ -36,7 +46,7 @@ __chk_net_dev_names()
 
 __get_net_dev_realname()
 {
-	get_str_locate -f '^[0-9+]:' -n 1 -r ':' ip --color=never link show "$(__chk_net_dev_names "$1")"
+	get_str_search -f '/mtu/:/,-2' ip --color=never address show "$(__chk_net_dev_names "$1")"
 }
 
 __is_net_dev() {
@@ -99,6 +109,14 @@ __get_net_dev_list()
 	)
 }
 
+get_net_dev_map()
+{
+	get_struct_list -s ' ' -o ',' "$(
+		for i in $(get_net_dev_name_list); do
+			echo "$(get_str_search -f "/$i:/:/,-1" ip link show "$i")=$i"
+		done
+	)"
+}
 __get_net_dev_file()
 {
 	__is_net_dev "$1" && {
@@ -319,5 +337,22 @@ get_net_eui64()
 	)
 }
 
-
-
+get_net_info_menu()
+{
+	(
+		while :; do
+			RES=$(get_dialog_menu \
+				-p $(get_struct_map "$(__get_net_dev_name),$(__get_net_dev_id)") \
+				-m "'tit=Network Info,ok=Select Device,cancel=Exit Menu, iproute2'"
+			) || case $? in
+				1) break
+			esac
+			#eval "$RES"
+			#get_dialog_other -v programbox -m "'
+			#	title=$GDF_SL_1,
+			#	ok=Back,
+			#	echo "hello world"
+			#'"
+		done
+	)
+}
