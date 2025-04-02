@@ -339,12 +339,21 @@ get_net_info_menu()
 				1) break
 			esac
 			eval "$RES"
+			IFACE="$GDF_SL_1"
+			while :; do
+				RES=$(get_dialog_menu \
+					-p 'inet6,inet4,l2,duplex,qlenindex,alias,state,mtu,speed' \
+					-m "tit=$IFACE,cancel=Exit Menu, iproute2"
+				) || case $? in
+					1) break
+				esac
+				eval "$RES"
+			done
+			#
 			#RES=""
 			#for i in \
-			#	'inet6' 'inet4' 'l2' 'duplex' 'qlen' \
-			#	'index' 'alias' 'state' 'mtu' 'speed'
 			#do
-			#	x="$(get_net_dev_$i $GDF_SL_1)";
+			#	x="$(get_net_dev_$i )";
 			#	[ -n '$x' ] && RES="$RES\n${i}: $x"
 			#done
 			#echo -e $RES | $PAGER
