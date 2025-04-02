@@ -167,47 +167,7 @@ __get_dialog_size()
 	eval "${2:-C_GDFE}"="$(get_tty_prop -k 'columns')"
 }
 
-__get_dialog_output()
-{
-	echo "$1"
-	${AWK:-$(get_cmd_awk)} \
-		-v opt="$1" \
-		-v fld="$2" \
-		-v dft="${3:-0}" "
-		$(cat \
-			"$G_NEX_MOD_LIB/awk/misc.awk" \
-			"$G_NEX_MOD_LIB/awk/str.awk" \
-			"$G_NEX_MOD_LIB/awk/bool.awk" \
-			"$G_NEX_MOD_LIB/awk/structs.awk" \
-			"$G_NEX_MOD_LIB/awk/algor.awk" \
-			"$G_NEX_MOD_LIB/awk/bases.awk" \
-			"$G_NEX_MOD_LIB/awk/math.awk" \
-			"$G_NEX_MOD_LIB/awk/types.awk"
-		)
-	"'
-		BEGIN {
-			trim_split(opt, arr, "\n")
-			l = trim_split(fld, flds, ",")
-			for (i = 1; i <= l; i++) {
-				print flds[i]
-				k = __get_half(flds[i], "=", 1)
-				if (dft)
-					w = __return_value(arr[i], __get_half(flds[i], "="))
-				else
-					w = __get_half(flds[i], "=")
-				gsub(/ /, "_", k)
-				gsub(/[^a-zA-Z0-9_]/, "", k)
-				if (k ~ /^[0-9]+/)
-					k = "_" k
-				printf("%s=\x22%s\x22 ", k, w)
-			}
-			delete flds
-			delete arr
-		}
-	'
-}
-
-__get_dialog_selected()
+__set_dialog_selected()
 {
 	${AWK:-$(get_cmd_awk)} \
 		-v opt="$1" \
@@ -224,22 +184,55 @@ __get_dialog_selected()
 		)
 	"'
 		BEGIN {
-			sl = 0
-			l = trim_split(opt, arr, "\x22")
-			m = split_parameters(fld, flds, ",", "=", 1)
+			split_parameters(fld, flds, ",", "=", 1)
+			l = unique_indexed_array(opt, opts, "\x22")
 			for (i = 1; i <= l; i++) {
-				if (arr[i] in flds) {
-					k = arr[i]
-					gsub(/ /, "_", k)
-					gsub(/[^a-zA-Z0-9_]/, "", k)
-					if (k ~ /^[0-9]+/)
-						k = "_" k
-					printf("%s=\x22%s\x22 %s=\x22%s\x22 ", "GDF_SL_" ++sl, k, k, __return_value(__get_half(flds[arr[i]], ":", 1), flds[arr[i]]))
-				}
+				k = trim(opts[i])
+				w = flds[k]
+				gsub(/ /, "_", k)
+				gsub(/[^a-zA-Z0-9_]/, "", k)
+				if (k ~ /^[0-9]+/)
+					k = "_" k
+				printf("%s=\x22%s\x22 %s=\x22%s\x22 ", "GDF_SL_" i, k, k, w)
 			}
-			printf("%s=\x22%s\x22 ", "GDF_SL", sl)
+			printf("%s=\x22%s\x22 ", "GDF_SL", i - 1)
+			delete opts
 			delete flds
-			delete arr
+		}
+	'
+}
+
+__set_dialog_output()
+{
+	${AWK:-$(get_cmd_awk)} \
+		-v opt="$1" \
+		-v fld="$2" \
+		-v dft="${3:-0}" "
+		$(cat \
+			"$G_NEX_MOD_LIB/awk/misc.awk" \
+			"$G_NEX_MOD_LIB/awk/str.awk" \
+			"$G_NEX_MOD_LIB/awk/bool.awk" \
+			"$G_NEX_MOD_LIB/awk/structs.awk" \
+			"$G_NEX_MOD_LIB/awk/algor.awk" \
+			"$G_NEX_MOD_LIB/awk/bases.awk" \
+			"$G_NEX_MOD_LIB/awk/math.awk" \
+			"$G_NEX_MOD_LIB/awk/types.awk"
+		)
+	"'
+		BEGIN {
+			l = trim_split(fld, flds, ",")
+			trim_split(opt, opts, "\n")
+			for (i = 1; i <= l; i++) {
+				k = trim(__get_half(flds[i], "=", 1))
+				gsub(/ /, "_", k)
+				gsub(/[^a-zA-Z0-9_]/, "", k)
+				if (k ~ /^[0-9]+/)
+					k = "_" k
+				printf("%s=\x22%s\x22 %s=\x22%s\x22 ", "GDF_SL_" i, k, k, __return_else_value(dft, __return_value(opts[i], __get_half(flds[i], "=")), opts[i]))
+			}
+			printf("%s=\x22%s\x22 ", "GDF_SL", i - 1)
+			delete opts
+			delete flds
 		}
 	'
 }
@@ -328,7 +321,7 @@ get_dialog_form()
 		p_gdfe="$(get_str_param -n "$p")"
 		DIALOG_OPTIONS=$(eval "dialog $(__get_dialog_factory ${m:+-m "$m"} ${e:+-e "$e"})" 3>&1 1>&2 2>&3)
 		DIALOG_EXIT_STATUS=$?
-		__get_dialog_output "$(echo "$DIALOG_OPTIONS")" "$p_gdfe" "$d"
+		__set_dialog_output "$DIALOG_OPTIONS" "$p_gdfe" "$d"
 		return $DIALOG_EXIT_STATUS
 	)
 }
@@ -346,7 +339,7 @@ get_dialog_menu()
 			${e:+-e "$e"} \
 		)" 3>&1 1>&2 2>&3)
 		DIALOG_EXIT_STATUS=$?
-		__get_dialog_selected "$DIALOG_OPTIONS" "$p"
+		__set_dialog_selected "$DIALOG_OPTIONS" "$p_gdfe"
 		return $DIALOG_EXIT_STATUS
 	)
 }
