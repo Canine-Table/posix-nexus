@@ -266,23 +266,33 @@ function array(D, V, S,		i, k)
 	}
 }
 
-function split_parameters(D, V, S1, S2,		i, j, v, k)
+function split_parameters(D, V, S1, S2, B,		i, j, v, k)
 {
 	S1 = __return_value(substr(S1, 1, 1),  ",")
 	S2 = __return_value(substr(S2, 1, 1),  "=")
 	if (! is_array(V))
 		split("", V, "")
-	for (i = 1; i <= unique_indexed_array(D, v, S1); i++) {
-		if (j = index(v[i], S2)) {
-			k = substr(v[i], 1, j - 1)
-			trim(k)
-			w = substr(v[i], j + 1)
-			trim(w)
-			V[k] = w
-		}
+	l = unique_indexed_array(D, v, S1)
+	for (i = 1; i <= l; i++) {
+		k = __return_else_value(B, __return_value(__get_half(v[i], S2, 1), v[i]), __return_value(__get_half(v[i], S2, 1), i))
+		trim(k)
+		w = __return_else_value(B, __get_half(v[i], S2), __return_value(__get_half(v[i], S2), v[i]))
+		trim(w)
+		V[k] = w
 		delete v[i]
 	}
 	delete v
+}
+
+function __join_parameters(V, S1, S2,	i, str)
+{
+	S1 = __return_value(substr(S1, 1, 1),  ",")
+	S2 = __return_value(substr(S2, 1, 1),  "=")
+	str = ""
+	for (i in V)
+		str = __join_str(str, i S2 V[i], S1)
+	delete V
+	return str
 }
 
 function compare_arrays(D1, D2, M, S, O,	dlm, v1, v2, s)

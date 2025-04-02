@@ -109,14 +109,6 @@ __get_net_dev_list()
 	)
 }
 
-get_net_dev_map()
-{
-	get_struct_list -s ' ' -o ',' "$(
-		for i in $(get_net_dev_name_list); do
-			echo "$(get_str_search -f "/$i:/:/,-1" ip link show "$i")=$i"
-		done
-	)"
-}
 __get_net_dev_file()
 {
 	__is_net_dev "$1" && {
@@ -158,7 +150,7 @@ get_net_dev_speed()
 
 get_net_dev_l2()
 {
-	get_str_locate -f 'link/(ether|loopback)' -n 1 ip --color=never address show "$(__chk_net_dev_names "$1")"
+	get_str_search -o ',' -d '"' -f '"link/(ether|loopback)",1' ip --color=never link show "$(__chk_net_dev_names "$1")"
 }
 
 get_net_dev_qlen()
@@ -168,18 +160,17 @@ get_net_dev_qlen()
 
 get_net_dev_inet6()
 {
-	get_str_locate -f 'inet6' -n 1 ip --color=never address show "$(__chk_net_dev_names "$1")"
+	get_str_search -o ',' -d '"' -f '"inet6"/.*",1' ip --color=never address show "$(__chk_net_dev_names "$1")"
 }
 
 get_net_dev_inet()
 {
-	get_str_locate -f 'inet' -n 1 -r '/.*' ip  --color=never address show "$(__chk_net_dev_names "$1")"
+	get_str_search -o ',' -d '"' -f '"inet"/.*",1' ip --color=never address show "$(__chk_net_dev_names "$1")"
 }
-
 
 get_net_dev_inet4()
 {
-	get_str_locate -f 'inet' -r '.*:.*' -n 1 ip --color=never address show "$(__chk_net_dev_names "$1")"
+	get_str_search -o ',' -d '"' -f '"inet$"/.*",1' ip --color=never address show "$(__chk_net_dev_names "$1")"
 }
 
 __get_net_dev_info()
@@ -343,16 +334,20 @@ get_net_info_menu()
 		while :; do
 			RES=$(get_dialog_menu \
 				-p $(get_struct_map "$(__get_net_dev_name),$(__get_net_dev_id)") \
-				-m "'tit=Network Info,ok=Select Device,cancel=Exit Menu, iproute2'"
+				-m 'tit=Network Info,ok=Select Device,cancel=Exit Menu, iproute2'
 			) || case $? in
 				1) break
 			esac
-			#eval "$RES"
-			#get_dialog_other -v programbox -m "'
-			#	title=$GDF_SL_1,
-			#	ok=Back,
-			#	echo "hello world"
-			#'"
+			eval "$RES"
+			#RES=""
+			#for i in \
+			#	'inet6' 'inet4' 'l2' 'duplex' 'qlen' \
+			#	'index' 'alias' 'state' 'mtu' 'speed'
+			#do
+			#	x="$(get_net_dev_$i $GDF_SL_1)";
+			#	[ -n '$x' ] && RES="$RES\n${i}: $x"
+			#done
+			#echo -e $RES | $PAGER
 		done
 	)
 }

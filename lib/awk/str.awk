@@ -358,11 +358,10 @@ function str_search(D1, S1, S2, S3, O, D2, D3,	arr, i, j, l, n, o, dtn, fnd, mth
 	}
 }
 
-function str_parser(D1, D2,	tmpa, tmpb, tmpc, i, j, k, l, m, opts, arr, kw, rtn, rmdr)
+function str_parser(D1, D2,	i, k, l, m, opts, arr, kw, rtn, rmdr)
 {
 	split("", arr, "")
 	split("", kw, "")
-	split("", tmpc, "")
 	l = split(D1, opts, "")
 	for (i = 1; i <= l; i++) {
 		if (opts[i + 1] != ":") {
@@ -374,42 +373,32 @@ function str_parser(D1, D2,	tmpa, tmpb, tmpc, i, j, k, l, m, opts, arr, kw, rtn,
 	}
 	rmdr = ""
 	split("", rtn, "")
-	while (match(D2, /([!-~]+)/)) {
-		tmpa = substr(D2, RSTART + RLENGTH)
-		if (trim(tmpb = substr(D2, 1, RSTART + RLENGTH)) ~ /^-/) {
-			if ((k = __get_half(substr(D2, RSTART, RLENGTH), "-")) == "-") {
-				rmdr = rmdr tmpa
+	l = split(D2, opts, "<NULL>")
+	for (i = 1; i <= l; i++) {
+		if (opts[i] ~ /^-/) {
+			if ((k = __get_half(opts[i], "-")) == "-") {
 				break
-			}
-			l = split(k, opts, "")
-			for (j = 1; j <= l; j++) {
-				if (opts[j] in arr) {
-					if (opts[j] ~ /[A-Z]+/)
-						rtn[tolower(opts[j])] = "false"
-					else
-						rtn[opts[j]] = "true"
-				} else if (opts[j] in kw) {
-					str_group(substr(tmpa " ", 2), tmpc)
-					if ((m = substr(tmpc[1], 1, 1)) ~ /^['"]/ && m == substr(tmpc[1], length(tmpc[1])))
-						m = substr(tmpc[1], 2, length(tmpc[1]) - 2)
-					else
-						m = substr(tmpc[1], 1, length(tmpc[1]) - 1)
-					rtn[opts[j]] = __join_str(rtn[opts[j]], m, ",")
-					tmpa = substr(tmpa, length(tmpc[1]) + 2)
-				} else {
-					rmdr = rmdr "-" substr(k, j, 1) " "
-				}
+			} else if (k in arr) {
+				if (opts[i] ~ /[A-Z]+/)
+					rtn[tolower(k)] = "false"
+				else
+					rtn[k] = "true"
+			} else if (k in kw) {
+					rtn[k] = __join_str(rtn[k], opts[++i], ",")
+			} else {
+				rmdr = rmdr " \x22" opts[i] "\x22"
 			}
 		} else {
-			rmdr = rmdr substr(tmpb, 2)
+			rmdr = rmdr " \x22" opts[i] "\x22"
 		}
-		D2 = tmpa
+	}
+	while (i < l) {
+		rmdr = rmdr " \x22" opts[++i] "\x22"
 	}
 	delete opts
 	delete arr
 	delete kw
-	delete tmpc
-	rmdr = "rmdr=\x22" rmdr "\x22"
+	rmdr = "rmdr=\x27" rmdr "\x27"
 	for (i in rtn)
 		rmdr = rmdr " " i "=\x22" rtn[i] "\x22"
 	delete rtn

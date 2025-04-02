@@ -37,9 +37,8 @@ get_str_parser()
 		opt="$1"
 		shift
 		${AWK:-$(get_cmd_awk)} \
-			-v opt="$opt" \
-			-v prs="$(get_str_print "$@")" \
-		"
+			-v inpt="$(get_str_print "$@")" \
+			-v opt="$opt" "
 			$(cat \
 				"$G_NEX_MOD_LIB/awk/misc.awk" \
 				"$G_NEX_MOD_LIB/awk/algor.awk" \
@@ -49,7 +48,7 @@ get_str_parser()
 			)
 		"'
 			BEGIN {
-				print str_parser(opt, prs)
+				print str_parser(opt, inpt)
 			}
 		'
 	)
@@ -58,22 +57,49 @@ get_str_parser()
 get_str_print()
 {
 	[ "${#@}" -gt 0 ] && {
-		${AWK:-$(get_cmd_awk)} -v inpt="$1" "
-			$(cat \
-				"$G_NEX_MOD_LIB/awk/str.awk"
-			)
-		"'
-			BEGIN {
-				if (inpt ~ /^-/ && inpt ~ /[^ ]/)
-					printf(" %s ", inpt)
-				else {
-					printf(" \x27%s\x27 ", inpt)
-				}
-			}
-		'
+		echo -n "$1"
+		[ "${#@}" -gt 1 ] && {
+			echo -n "<NULL>"
+		}
 		shift
 		get_str_print "$@"
 	}
+}
+
+get_str_param()
+{
+	(
+		while getopts :s:o:n OPT; do
+			case $OPT in
+				s|o|n) eval "$OPT"="'${OPTARG:-true}'";;
+			esac
+		done
+		shift $((OPTIND - 1))
+		${AWK:-$(get_cmd_awk)} \
+			-v sep="${s:-=}" \
+			-v nil="$n" \
+			-v osep="${o:-,}" \
+			-v param="$*" "
+			$(cat \
+				"$G_NEX_MOD_LIB/awk/misc.awk" \
+				"$G_NEX_MOD_LIB/awk/str.awk" \
+				"$G_NEX_MOD_LIB/awk/bool.awk" \
+				"$G_NEX_MOD_LIB/awk/structs.awk" \
+				"$G_NEX_MOD_LIB/awk/algor.awk" \
+				"$G_NEX_MOD_LIB/awk/bases.awk" \
+				"$G_NEX_MOD_LIB/awk/math.awk" \
+				"$G_NEX_MOD_LIB/awk/types.awk"
+			)
+		"'
+			BEGIN {
+				split_parameters(param, arr, osep, sep, nil)
+				if (str = __join_parameters(arr, osep, sep))
+					print str
+				else
+					exit 1
+			}
+		'
+	)
 }
 
 get_str_search()
@@ -118,10 +144,9 @@ get_str_search()
 			} END {
 				delete dlm
 			}
-		'
+		' || eval "$*"
 	)
 }
-
 
 ###:( set ):##################################################################################
 
