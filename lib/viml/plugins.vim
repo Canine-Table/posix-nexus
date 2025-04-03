@@ -14,6 +14,7 @@ Plug 'hrsh7th/cmp-path'
 Plug 'hrsh7th/cmp-cmdline'
 Plug 'sirver/ultisnips'
 Plug 'honza/vim-snippets'
+Plug 'ojroques/nvim-osc52'
 
 call plug#end()
 

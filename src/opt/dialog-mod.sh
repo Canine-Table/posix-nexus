@@ -48,7 +48,7 @@ __get_dialog_factory()
 		BEGIN {
 			if (length(ext)) {
 				for(i = 1; i <= trim_split(ext, arr, ","); i++) {
-					if (k = match_option(tolower(__get_half(arr[i], "=", 1)), "auto,fill,rows,columns")) {
+					if (k = match_option(tolower(__return_value(__get_half(arr[i], "=", 1), arr[i])), "auto,fill,rows,columns")) {
 						w = __get_half(arr[i], "=")
 						if (k == "auto" && ! (cl || rw)) {
 							cl = columns
@@ -101,16 +101,16 @@ __get_dialog_factory()
 				printf("--%s ", "insecure")
 			if (vrnt != "editbox")
 				printf("--%s ", "no-collapse")
-			printf("%s ", "--erase-on-exit --scrollbar")
+			printf("%s ", "--erase-on-exit --scrollbar --visit-items")
 			printf("--trace \x22%s%s\x22 ", __return_value(ENVIRON["G_NEX_MOD_LOG"], "/var/log"), "/nex-dialog.log")
 			printf("--%s ", vrnt)
-			printf("\x22%s\x22 ", __return_value(msg, " "))
-			if (vrnt == "prgbox")
+			if (vrnt == "prgbox") {
+				printf("\x22%s\x22 ", __return_value(msg, " "))
 				printf("\x22%s\x22 ", __return_value(cmd, "echo"))
-			if (vrnt == "calendar")
-				printf("0 0 ")
-			else
-				printf("%s %s ", rows, columns)
+			} else {
+				printf("\x22%s\x22 ", __return_value(__return_value(msg, cmd), " "))
+			}
+			printf("%s %s ", rows, columns)
 			if (vrnt ~ /^((password|mixed)?form|(radio|check|build)list|(input)?menu|treeview)$/) {
 				printf("%s ", rows)
 				l = trim_split(param, arr, ",")
@@ -277,17 +277,28 @@ get_dialog_yn()
 {
 	(
 		__get_dialog_size
-		eval $(get_str_parser 'm:e:v:' "$@")
+		eval $(get_str_parser 'c:m:e:v:' "$@")
 		v_gdfe="$(set_struct_opt -i "$v" -r "yesno,msgbox")"
 		v_gdfe="${v_gdfe:-msgbox}"
-		eval "dialog $(__get_dialog_factory ${m:+-m "$m"} ${e:+-e "$e"})"
+		DIALOG_OPTIONS=$(eval "dialog $(__get_dialog_factory \
+			${m:+-m "$m"} \
+			${e:+-e "$e"} \
+			${c:+-c "$c"} \
+		)" 3>&1 1>&2 2>&3)
+		DIALOG_EXIT_STATUS=$?
+		echo "$DIALOG_OPTIONS"
+		return $DIALOG_EXIT_STATUS
 	)
 }
 
 get_dialog_cal()
 {
 	(
-		DIALOG_OPTIONS=$(eval "dialog $(__get_dialog_factory "$@" -e "fill" -v "calendar") $(date +"%d %m %y")" 3>&1 1>&2 2>&3)
+		DIALOG_OPTIONS=$(eval "dialog $(__get_dialog_factory \
+			"$@" \
+			-e "auto" \
+			-v "calendar" \
+		) $(date +"%d %m %y")" 3>&1 1>&2 2>&3)
 		DIALOG_EXIT_STATUS=$?
 		echo "$DIALOG_OPTIONS"
 		return $DIALOG_EXIT_STATUS
@@ -315,11 +326,15 @@ get_dialog_form()
 {
 	(
 		__get_dialog_size
-		eval $(get_str_parser 'e:p:m:v:d' "$@")
+		eval $(get_str_parser 'c:e:p:m:v:d' "$@")
 		v_gdfe="$(set_struct_opt -i "$v" -r "form,passwordform,mixedform")"
 		v_gdfe="${v_gdfe:-form}"
 		p_gdfe="$(get_str_param -n "$p")"
-		DIALOG_OPTIONS=$(eval "dialog $(__get_dialog_factory ${m:+-m "$m"} ${e:+-e "$e"})" 3>&1 1>&2 2>&3)
+		DIALOG_OPTIONS=$(eval "dialog $(__get_dialog_factory \
+			${m:+-m "$m"} \
+			${e:+-e "$e"} \
+			${c:+-c "$c"} \
+		)" 3>&1 1>&2 2>&3)
 		DIALOG_EXIT_STATUS=$?
 		__set_dialog_output "$DIALOG_OPTIONS" "$p_gdfe" "$d"
 		return $DIALOG_EXIT_STATUS
@@ -330,13 +345,14 @@ get_dialog_menu()
 {
 	(
 		__get_dialog_size
-		eval $(get_str_parser 'm:e:v:p:' "$@")
+		eval $(get_str_parser 'c:m:e:v:p:' "$@")
 		v_gdfe="$(set_struct_opt -i "$v" -r "radiolist,checklist,buildlist,inputmenu,menu,treeview")"
 		v_gdfe="${v_gdfe:-menu}"
 		p_gdfe="$(get_str_param "$p")"
 		DIALOG_OPTIONS=$(eval "dialog $(__get_dialog_factory \
 			${m:+-m "$m"} \
 			${e:+-e "$e"} \
+			${c:+-c "$c"} \
 		)" 3>&1 1>&2 2>&3)
 		DIALOG_EXIT_STATUS=$?
 		__set_dialog_selected "$DIALOG_OPTIONS" "$p_gdfe"
@@ -348,7 +364,17 @@ get_dialog_other()
 {
 	(
 		__get_dialog_size
-		eval "dialog $(__get_dialog_factory "$@")" 3>&1 1>&2 2>&3
+		eval $(get_str_parser 'c:m:e:v:p:' "$@")
+		DIALOG_OPTIONS=$(eval "dialog $(__get_dialog_factory \
+			${m:+-m "$m"} \
+			${e:+-e "$e"} \
+			${v:+-v "$v"} \
+			${p:+-p "$p"} \
+			${c:+-c "$c"} \
+		)" 3>&1 1>&2 2>&3)
+		DIALOG_EXIT_STATUS=$?
+		echo "$DIALOG_OPTIONS"
+		return $DIALOG_EXIT_STATUS
 	)
 }
 

@@ -14,40 +14,6 @@ __chk_net_virt_type()
 	set_struct_opt -i "$1" -r "$(__get_net_virt_types)"
 }
 
-__get_net_dev_name()
-{
-	get_str_search -o ',' -f '/mtu/:/,-2' ip --color=never link show
-}
-
-__get_net_dev_id()
-{
-	get_str_search -o ',' -f '/mtu/:/,-3' ip --color=never link show
-}
-
-__get_net_dev_map()
-{
-	get_struct_map "$(__get_net_dev_id),$(__get_net_dev_name)"
-}
-
-__get_net_dev_alt()
-{
-	get_str_search -o ',' -f '/altname/,1' ip --color=never link show
-}
-
-__get_net_dev_names()
-{
-	echo "$(__get_net_dev_alt),$(__get_net_dev_name)"
-}
-
-__chk_net_dev_names()
-{
-	set_struct_opt -i "$1" -r "$(__get_net_dev_names)"
-}
-
-__get_net_dev_realname()
-{
-	get_str_search -f '/mtu/:/,-2' ip --color=never address show "$(__chk_net_dev_names "$1")"
-}
 
 __is_net_dev() {
 	[ -d "/sys/class/net/$(__get_net_dev_realname "$1")" ]
@@ -118,34 +84,39 @@ __get_net_dev_file()
 	} 2>/dev/null
 }
 
-get_net_dev_alias()
+__get_net_dev_alias()
 {
 	__get_net_dev_file "$1" 'ifalias'
 }
 
-get_net_dev_index()
+__get_net_dev_index()
 {
 	__get_net_dev_file "$1" 'ifindex'
 }
 
-get_net_dev_duplex()
+__get_net_dev_duplex()
 {
 	__get_net_dev_file "$1" 'duplex'
 }
 
-get_net_dev_state()
+__get_net_dev_state()
 {
 	__get_net_dev_file "$1" 'operstate'
 }
 
-get_net_dev_mtu()
+__get_net_dev_mtu()
 {
 	__get_net_dev_file "$1" 'mtu'
 }
 
-get_net_dev_speed()
+__get_net_dev_speed()
 {
 	__get_net_dev_file "$1" 'speed'
+}
+
+__get_net_dev_qlen()
+{
+	__get_net_dev_file "$1" 'tx_queue_len'
 }
 
 get_net_dev_l2()
@@ -153,25 +124,63 @@ get_net_dev_l2()
 	get_str_search -o ',' -d '"' -f '"link/(ether|loopback)",1' ip --color=never link show "$(__chk_net_dev_names "$1")"
 }
 
-get_net_dev_qlen()
-{
-	__get_net_dev_file "$1" 'tx_queue_len'
-}
-
-get_net_dev_inet6()
-{
-	get_str_search -o ',' -d '"' -f '"inet6"/.*",1' ip --color=never address show "$(__chk_net_dev_names "$1")"
-}
-
 get_net_dev_inet()
 {
-	get_str_search -o ',' -d '"' -f '"inet"/.*",1' ip --color=never address show "$(__chk_net_dev_names "$1")"
+	(
+		while getopts :d:46c OPT; do
+			case $OPT in
+				4) f='inet$';;
+				6) f='inet6';;
+				c) c='/.*';;
+				d) d="$OPTARG";;
+			esac
+		done
+		shift $((OPTIND - 1))
+		get_str_search -o ',' -d '!' -f "!${f:-inet}!$c!,1" ip --color=never address show "$(__chk_net_dev_names "${d:-$1}")"
+	)
 }
 
-get_net_dev_inet4()
+get_net_dev_name()
 {
-	get_str_search -o ',' -d '"' -f '"inet$"/.*",1' ip --color=never address show "$(__chk_net_dev_names "$1")"
+	(
+		while getopts :d:pa OPT; do
+			case $OPT in
+				p) c='(.*@|:)';;
+				a) c=':';;
+				d) d="$OPTARG";;
+			esac
+		done
+		shift $((OPTIND - 1))
+		get_str_search -o ',' -f "/mtu/${c:-(@.*|:)}/g,-2" ip --color=never link show "$(chk_net_dev_names "${d:-$1}")"
+	)
 }
+
+get_net_dev_alt()
+{
+	get_str_search -o ',' -f '/altname/,1' ip --color=never link show "$(chk_net_dev_names "$1")"
+}
+
+get_net_dev_names()
+{
+	echo "$(get_net_dev_alt),$(get_net_dev_name)"
+}
+
+chk_net_dev_names()
+{
+	set_struct_opt -i "$1" -r "$(get_net_dev_names)"
+}
+
+get_net_dev_realname()
+{
+	get_str_search -f '/mtu/:/,-2' ip --color=never address show "$(chk_net_dev_names "$1")"
+}
+
+
+get_net_dev_id()
+{
+	get_str_search -o ',' -f '/mtu/:/,-3' ip --color=never link show "$(__chk_net_dev_names "$1")"
+}
+
 
 __get_net_dev_info()
 {
@@ -328,35 +337,92 @@ get_net_eui64()
 	)
 }
 
-get_net_info_menu()
+get_net_menu()
 {
 	(
 		while :; do
-			RES=$(get_dialog_menu \
-				-p $(get_struct_map "$(__get_net_dev_name),$(__get_net_dev_id)") \
-				-m 'tit=Network Info,ok=Select Device,cancel=Exit Menu, iproute2'
-			) || case $? in
-				1) break
+			L_NEX_DIALOG_RESPONSE=$(get_dialog_menu \
+				-p $(get_struct_map "$(__get_net_dev_id),$(__get_net_dev_name)") \
+				-m '
+					title=Network Devices,
+					ok=Modify Device,
+					cancel=Exit Menu,
+					extra=Device Information,
+					help=New Device,
+					message=POSIX Nexus Network Management: Select an interface to inspect and configure.
+				'
+			)
+			L_NEX_DIALOG_STATE=$?
+			eval "$L_NEX_DIALOG_RESPONSE"
+			L_NEX_IFACE=$(get_struct_ref "$GDF_SL_1")
+			case $L_NEX_DIALOG_STATE in
+				0) __get_net_menu_modify;;
+				1) break;;
+				2) __get_net_menu_new;;
+				3) __get_net_menu_info;;
 			esac
-			eval "$RES"
-			IFACE="$GDF_SL_1"
-			while :; do
-				RES=$(get_dialog_menu \
-					-p 'inet6,inet4,l2,duplex,qlenindex,alias,state,mtu,speed' \
-					-m "tit=$IFACE,cancel=Exit Menu, iproute2"
-				) || case $? in
-					1) break
-				esac
-				eval "$RES"
-			done
-			#
-			#RES=""
-			#for i in \
-			#do
-			#	x="$(get_net_dev_$i )";
-			#	[ -n '$x' ] && RES="$RES\n${i}: $x"
-			#done
-			#echo -e $RES | $PAGER
 		done
 	)
 }
+
+__get_net_menu_info()
+{
+	(
+		get_dialog_other \
+			-v 'msgbox' \
+			-m "tit=$L_NEX_IFACE,
+				ok=Done,
+			" -c "$(
+				for i in inet inet6 l2; do
+					j="$(get_net_dev_$i "$L_NEX_IFACE")\\\\n"
+					[ -n "$j" ] && echo "$i: $j"
+				done
+			)"
+	)
+}
+
+__get_net_menu_modify()
+{
+	(
+		while :; do
+			L_NEX_DIALOG_RESPONSE=$(get_dialog_menu \
+				-v 'buildlist' \
+				-p 'inet6,inet4,l2,duplex,qlen,index,alias,state,mtu,speed' \
+				-m "
+					title=$L_NEX_IFACE,
+					cancel=Go Back,
+					ok=Proceed,
+					message=Choose the network properties you want to adjust. Each selection will lead to a detailed setup screen.,
+				"
+			) || case $? in
+				1) break
+			esac
+			L_NEX_DIALOG_STATE=$?
+			eval "$L_NEX_DIALOG_RESPONSE"
+		done
+	)
+}
+
+__get_net_menu_new()
+{
+	(
+		while :; do
+			L_NEX_DIALOG_RESPONSE=$(get_dialog_menu \
+				-v 'radiolist' \
+				-p "$(__get_net_virt_types)" \
+				-m "
+					title=Virtual Devices,
+					cancel=Go Back,
+					ok=Proceed,
+					message=Choose the network device you want to add.
+				"
+			) || case $? in
+				1) break
+			esac
+			L_NEX_DIALOG_STATE=$?
+			eval "$L_NEX_DIALOG_RESPONSE"
+		done
+	)
+}
+
+

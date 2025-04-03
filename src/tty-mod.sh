@@ -61,7 +61,7 @@ set_tty_hault()
 {
 	command -v setterm 1>/dev/null 2>&1 && {
 		setterm -cursor off
-		trap 'setterm -cursor on' RETURN SIGINT SIGHUP
+		trap 'setterm -cursor on' EXIT SIGINT SIGHUP
 	}
 	read -n 1 -s;
 }

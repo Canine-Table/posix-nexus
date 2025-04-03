@@ -1,1 +1,1 @@
-opt/inet-mod.sh
+opt/ip-mod.sh

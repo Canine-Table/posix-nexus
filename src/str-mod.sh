@@ -122,6 +122,7 @@ get_str_search()
 				"$G_NEX_MOD_LIB/awk/misc.awk" \
 				"$G_NEX_MOD_LIB/awk/algor.awk" \
 				"$G_NEX_MOD_LIB/awk/structs.awk" \
+				"$G_NEX_MOD_LIB/awk/bool.awk" \
 				"$G_NEX_MOD_LIB/awk/types.awk" \
 				"$G_NEX_MOD_LIB/awk/math.awk" \
 				"$G_NEX_MOD_LIB/awk/str.awk"
