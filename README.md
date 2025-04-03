@@ -1,4 +1,4 @@
-# POSIX-Nexus
+# <img align="right" src="/img/posix-nexus.png" alt="posix-nexus" title="posix-nexus" width="15%">POSIX-Nexus
 
 POSIX (Portable Operating System Interface) is a set of standards specified by the IEEE to ensure compatibility and portability across different operating systems.
 
