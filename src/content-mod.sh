@@ -1,5 +1,16 @@
 #!/bin/sh
 
+##:( set ):##################################################################################
+
+set_content_root()
+{
+	(
+		for f in env cnf; do
+			[ "$(get_content_leaf "$G_NEX_ROOT/$f")" = "$f" ] || mkdir "$G_NEX_ROOT/$f"
+		done
+	)
+}
+
 ##:( get ):##################################################################################
 
 get_content_trim()
@@ -51,7 +62,8 @@ get_content_list()
 
 ###:( add ):##################################################################################
 
-add_content_modules() {
+add_content_modules()
+{
 	for f in "$(get_content_path "$G_NEX_MOD_SRC")/"*"-mod.sh"; do
 		[ -f "$f" -a -r "$f" -a "$(get_content_leaf "$f")" != 'content-mod.sh' ] && . "$f"
 	done
@@ -64,9 +76,12 @@ export G_NEX_ROOT="/usr/local/bin/nex"
 export G_NEX_MOD_SRC="$G_NEX_ROOT/src"
 export G_NEX_MOD_LIB="$G_NEX_ROOT/lib"
 export G_NEX_MOD_CNF="$G_NEX_ROOT/cnf"
-export G_NEX_MOD_LOG="/tmp"
+export G_NEX_MOD_ENV="$G_NEX_ROOT/env"
+export G_NEX_MOD_LOG="$G_NEX_MOD_ENV"
 
+set_content_root
 add_content_modules
+
 export LESS='-R'
 export COLORFGBG=';0'
 export DIALOGRC="$G_NEX_MOD_CNF/.dialogrc"

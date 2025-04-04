@@ -250,8 +250,8 @@ function clone_array(V1, V2, B,		d, i, c)
 
 function trim_split(D, V, S)
 {
-	gsub(/(^ *| *$)/, "", D)
-	return split(D, V, " *" __return_value(S, ",") " *")
+	gsub(/(^(\t| )*|(\t| )*$)/, "", D)
+	return split(D, V, "( |\t)*" __return_value(S, ",") "( |\t)*")
 }
 
 function array(D, V, S,		i, k)
@@ -266,7 +266,7 @@ function array(D, V, S,		i, k)
 	}
 }
 
-function split_parameters(D, V, S1, S2, B,		i, j, v, k)
+function split_parameters(D, V, S1, S2, B1,		i, j, v, k)
 {
 	S1 = __return_value(substr(S1, 1, 1),  ",")
 	S2 = __return_value(substr(S2, 1, 1),  "=")

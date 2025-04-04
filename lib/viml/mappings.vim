@@ -19,6 +19,10 @@ function! MapNex()
 	nnoremap Q :quit<CR>
 	inoremap jk <esc>
 	nnoremap <leader>t :tabnew<CR>
+	nnoremap <leader>T :tabclose<CR>
+	nnoremap <leader>to :tab<CR>
+	nnoremap <leader>J :tabprevious<CR>
+	nnoremap <leader>K :tabnext<CR>
 	nnoremap <leader>w :write<CR>
 	nnoremap <leader>q :quit<CR>
 	nnoremap <leader>wq :wq<CR>
