@@ -205,7 +205,7 @@ function totitle(D,	i, s, esc_map)
 
 function trim(D, S)
 {
-	gsub(/(^[ \v\t]+|[ \v\t+$)/, "", D)
+	gsub(/(^[ \v\t]+|[ \v\t]+$)/, "", D)
 	gsub("[ \v\t]*" S "[ \v\t]*", S, D)
 	return D
 }
