@@ -250,8 +250,8 @@ function clone_array(V1, V2, B,		d, i, c)
 
 function trim_split(D, V, S)
 {
-	gsub(/(^(\t| )*|(\t| )*$)/, "", D)
-	return split(D, V, "( |\t)*" __return_value(S, ",") "( |\t)*")
+	gsub(/(^[ \t\v]+|[ \t\v]+$)/, "", D)
+	return split(D, V, "[ \t\v]*" __return_value(S, ",") "[ \t\v]*")
 }
 
 function array(D, V, S,		i, k)
