@@ -7,21 +7,20 @@
 	\end{NexMainBox}
 	\begin{NexMainBox}[dark, crnA]
 		\begin{NexListDark}
-			\NexItemDark{\NexFunction{insert\_indexed\_item(V, D, S, N1, N2, N3)}: Inserts items from \NexFunction{D} into the indexed array \NexFunction{V}, handling split delimiters \NexFunction{S} and optional position adjustments using \NexFunction{N1}, \NexFunction{N2}, and \NexFunction{N3}.}
-			\NexItemDark{\NexFunction{unique\_indexed\_array(D, V, S, O, B)}: Creates a unique indexed array or joined string from \NexFunction{D}, splitting using \NexFunction{S}, joining with \NexFunction{O}, and optionally storing results in \NexFunction{V} based on \NexFunction{B}.}
-			\NexItemDark{\NexFunction{remove\_indexed\_item(V, N1, N2, N3, N4)}: Deletes items from the indexed array \NexFunction{V} based on the range and step defined by \NexFunction{N1}, \NexFunction{N2}, \NexFunction{N3}, and \NexFunction{N4}.}
-			\NexItemDark{\NexFunction{\_\_join\_array(V, S)}: Joins the elements of array \NexFunction{V} into a string, separated by the delimiter \NexFunction{S}.}
-			\NexItemDark{\NexFunction{\_\_join\_indexed\_array(V, S)}: Joins the indexed elements of array \NexFunction{V} into a string, separated by the delimiter \NexFunction{S}.}
-			\NexItemDark{\NexFunction{flip\_map(V, D1, D2, D3, S)}: Swaps the values in array \NexFunction{V} for the keys defined in \NexFunction{D3}, using \NexFunction{D1} and \NexFunction{D2} to determine the keys to flip.}
+			\NexItemDark{\NexLink{insert_indexed_item}{insert_indexed_item(V, D, S, N1, N2, N3)}: Inserts items from \NexFunction{D} into the indexed array \NexFunction{V}, handling split delimiters \NexFunction{S} and optional position adjustments using \NexFunction{N1}, \NexFunction{N2}, and \NexFunction{N3}.} \NexItemDark{\NexFunction{unique_indexed_array(D, V, S, O, B)}: Creates a unique indexed array or joined string from \NexFunction{D}, splitting using \NexFunction{S}, joining with \NexFunction{O}, and optionally storing results in \NexFunction{V} based on \NexFunction{B}.}
+			\NexItemDark{\NexFunction{remove_indexed_item(V, N1, N2, N3, N4)}: Deletes items from the indexed array \NexFunction{V} based on the range and step defined by \NexFunction{N1}, \NexFunction{N2}, \NexFunction{N3}, and \NexFunction{N4}.}
+			\NexItemDark{\NexFunction{__join_array(V, S)}: Joins the elements of array \NexFunction{V} into a string, separated by the delimiter \NexFunction{S}.}
+			\NexItemDark{\NexFunction{__join_indexed_array(V, S)}: Joins the indexed elements of array \NexFunction{V} into a string, separated by the delimiter \NexFunction{S}.}
+			\NexItemDark{\NexFunction{flip_map(V, D1, D2, D3, S)}: Swaps the values in array \NexFunction{V} for the keys defined in \NexFunction{D3}, using \NexFunction{D1} and \NexFunction{D2} to determine the keys to flip.}
 			\NexItemDark{\NexFunction{size(V)}: Calculates and returns the size (number of elements) of the array \NexFunction{V}.}
-			\NexItemDark{\NexFunction{is\_array(V)}: Checks if \NexFunction{V} is an array and returns 1 if true, 0 otherwise.}
-			\NexItemDark{\NexFunction{\_\_is\_index(N)}: Validates that \NexFunction{N} is a positive integer and returns it if valid, otherwise returns 0.}
-			\NexItemDark{\NexFunction{resize\_indexed\_hashmap(V, N1, N2, S, D)}: Resizes the indexed hashmap \NexFunction{V} to the target size \NexFunction{N1}, redistributing elements starting from \NexFunction{N2}, joining them with \NexFunction{S}, and filling extra slots with \NexFunction{D} if needed.}
-			\NexItemDark{\NexFunction{reverse\_indexed\_hashmap(V, N1, N2, D, S, O)}: Reverses the indexed hashmap \NexFunction{V} between indices \NexFunction{N1} and \NexFunction{N2}, optionally splitting or joining elements with \NexFunction{S} and \NexFunction{O}.}
+			\NexItemDark{\NexFunction{is_array(V)}: Checks if \NexFunction{V} is an array and returns 1 if true, 0 otherwise.}
+			\NexItemDark{\NexFunction{__is_index(N)}: Validates that \NexFunction{N} is a positive integer and returns it if valid, otherwise returns 0.}
+			\NexItemDark{\NexFunction{resize_indexed_hashmap(V, N1, N2, S, D)}: Resizes the indexed hashmap \NexFunction{V} to the target size \NexFunction{N1}, redistributing elements starting from \NexFunction{N2}, joining them with \NexFunction{S}, and filling extra slots with \NexFunction{D} if needed.}
+			\NexItemDark{\NexFunction{reverse_indexed_hashmap(V, N1, N2, D, S, O)}: Reverses the indexed hashmap \NexFunction{V} between indices \NexFunction{N1} and \NexFunction{N2}, optionally splitting or joining elements with \NexFunction{S} and \NexFunction{O}.}
 			\NexItemDark{\NexFunction{stack(V, M, D, S)}: Implements stack operations (push, pop, peek, isempty) on \NexFunction{V}, using \NexFunction{D} for push and optionally splitting data with \NexFunction{S}.}
 			\NexItemDark{\NexFunction{queue(V, M, D1, S, D2)}: Implements queue operations (enqueue, dequeue, isempty, size, resize) on \NexFunction{V}, using \NexFunction{D1} and \NexFunction{D2} for data management and \NexFunction{S} for delimiters.}
-			\NexItemDark{\NexFunction{clone\_array(V1, V2, B)}: Copies elements from array \NexFunction{V1} to \NexFunction{V2}, either preserving keys (\NexFunction{B} set) or copying values directly.}
-			\NexItemDark{\NexFunction{trim\_split(D, V, S)}: Splits \NexFunction{D} into array \NexFunction{V}, trimming whitespace around delimiters \NexFunction{S}.}
+			\NexItemDark{\NexFunction{clone_array(V1, V2, B)}: Copies elements from array \NexFunction{V1} to \NexFunction{V2}, either preserving keys (\NexFunction{B} set) or copying values directly.}
+			\NexItemDark{\NexFunction{trim_split(D, V, S)}: Splits \NexFunction{D} into array \NexFunction{V}, trimming whitespace around delimiters \NexFunction{S}.}
 		\end{NexListDark}
 	\end{NexMainBox}
 \end{NexMainBox}
@@ -30,9 +29,51 @@
 	\begin{NexMainBox}[dark, crnA]
 		\begin{NexListDark}
 			\NexItemDark{\NexFunction{array(D, V, S)}: Populates the array \NexFunction{V} with unique keys from \NexFunction{D}, splitting elements using delimiter \NexFunction{S}.}
-			\NexItemDark{\NexFunction{split\_parameters(D, V, S1, S2)}: Splits \NexFunction{D} into key-value pairs based on delimiters \NexFunction{S1} (pair separator) and \NexFunction{S2} (key-value separator), storing the result in \NexFunction{V}.}
-			\NexItemDark{\NexFunction{compare\_arrays(D1, D2, M, S, O)}: Compares arrays \NexFunction{D1} and \NexFunction{D2} based on mode \NexFunction{M} (left, right, intersect, difference) and combines results using delimiters \NexFunction{S} and \NexFunction{O}.}
+			\NexItemDark{\NexFunction{split_parameters(D, V, S1, S2)}: Splits \NexFunction{D} into key-value pairs based on delimiters \NexFunction{S1} (pair separator) and \NexFunction{S2} (key-value separator), storing the result in \NexFunction{V}.}
+			\NexItemDark{\NexFunction{compare_arrays(D1, D2, M, S, O)}: Compares arrays \NexFunction{D1} and \NexFunction{D2} based on mode \NexFunction{M} (left, right, intersect, difference) and combines results using delimiters \NexFunction{S} and \NexFunction{O}.}
 		\end{NexListDark}
 	\end{NexMainBox}
 \end{NexMainBox}
+
+\subsection{insert_indexed_item}
+\label{insert_indexed_item}
+
+\begin{NexCodeBox}{bash}{title=\textbf{insert_indexed_item(V, D, S, N1, N2, N3)}}
+function insert_indexed_item(V, D, S, N1, N2, N3, j)
+{
+	if (TRUE__(D, 1)) {
+		if (! is_array(V))
+			split("", V, "")
+		if (! is_integral(N1))
+			N1 = size(V)
+		if (LT__(+N2, N1))
+			N2 = 0
+		if (! __is_index(N3))
+			N3 = 1
+		j = N1
+		for (i = 1; i <= trim_split(D, v, S); i++) {
+			if (N2)
+				j = modulus_range(j, N1, N2)
+			V[j] = v[i]
+			j = j + N3
+		}
+		delete v
+		if (N2)
+			return modulus_range(j, N1, N2)
+		return j
+	}
+}
+\end{NexCodeBox}
+
+\begin{NexMainBox}[light, hdrA, sdwA, crnA, grwB, ssecB]
+	\begin{NexMainBox}[dark, crnA, title=Validation and Initialization]
+		\begin{NexListDark}
+			\NexItemDark{\NexFunction{trim_split(D, V, S)}: Splits \NexFunction{D} into array \NexFunction{V}, trimming whitespace around delimiters \NexFunction{S}.}
+		\end{NexListDark}
+
+	\end{NexMainBox}
+\end{NexMainBox}
+
+
+
 

@@ -1,4 +1,6 @@
-function insert_indexed_item(V, D, S, N1, N2, N3, j)
+
+
+function insert_indexed_item(V, D, S, N1, N2, N3, 	j, l)
 {
 	if (TRUE__(D, 1)) {
 		if (! is_array(V))
@@ -10,7 +12,8 @@ function insert_indexed_item(V, D, S, N1, N2, N3, j)
 		if (! __is_index(N3))
 			N3 = 1
 		j = N1
-		for (i = 1; i <= trim_split(D, v, S); i++) {
+		l = trim_split(D, v, S)
+		for (i = 1; i <= l; i++) {
 			if (N2)
 				j = modulus_range(j, N1, N2)
 			V[j] = v[i]
@@ -182,6 +185,8 @@ function reverse_indexed_hashmap(V, N1, N2, D, S, O,	i)
 # M: The operation mode (push, pop, peek, isempty).
 # D: The data to push (if M is push).
 # S: The delimiter for splitting data.
+
+
 function stack(V, M, D, S,	c)
 {
 	if (M = match_option(M, "push, pop, peek, isempty")) {
@@ -197,6 +202,7 @@ function stack(V, M, D, S,	c)
 			else
 				return 1
 		} else if (V[0] > 1) {
+			print V[0]
 			c = V[V[0] - 1]
 			if (M == "pop")
 				V[0] = remove_indexed_item(V, "back", 1, V[0], 1, 1)

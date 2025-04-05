@@ -87,13 +87,10 @@ function __first_index(D, V, B,		i, j, c)
 	if (is_array(V)) {
 		for (i in V) {	# Iterate over each element in array V
 			if (j = index(D, V[i])) {  # Find the position of V[i] in D
-				if (! c)
-					c = j  # If c is not set, assign j to c
-				else if (c > j)
-					c = j  # If j is less than the current c, update c to j
+				if (! c || c > j)
+					c = j
 			}
-		}
-		if (B && ! c)
+		} if (B && ! c)
 			c = length(D)  # If B is set and no match is found, set c to the length of D
 		return c  # Return the position of the first match or the length of D
 	}

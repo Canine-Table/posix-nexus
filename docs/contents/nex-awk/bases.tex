@@ -7,20 +7,20 @@
 	\end{NexMainBox}
 	\begin{NexMainBox}[dark, crnA]
 		\begin{NexListDark}
-			\NexItemDark{\NexFunction{\_\_load\_number\_map(V1, N1, V2, N2, N3)}: Loads \NexFunction{N1} into \NexFunction{V1} based on base \NexFunction{N2}, storing attributes like sign, fractional part, and validation against the base range 2-62.}
-			\NexItemDark{\NexFunction{\_\_construct\_number(V, N, B1, B2, B3)}: Reconstructs a number from \NexFunction{V} using its integer, fractional, and sign components based on flags \NexFunction{B1}, \NexFunction{B2}, and \NexFunction{B3}.}
-			\NexItemDark{\NexFunction{\_\_get\_base(D, V)}: Determines and validates the base (2-62) of \NexFunction{D}, using \NexFunction{V} if necessary.}
-			\NexItemDark{\NexFunction{\_\_set\_base(N, V)}: Ensures \NexFunction{N} is a valid base and returns it as an integer, defaulting to 10 if invalid.}
-			\NexItemDark{\NexFunction{\_\_base\_regex(N, V, B)}: Generates a regex for validating numbers in base \NexFunction{N} using \NexFunction{V}, optionally loading the number, lower, or upper maps based on \NexFunction{B}.}
-			\NexItemDark{\NexFunction{\_\_load\_num\_map(V)}: Initializes \NexFunction{V} with digits 0-9 as the number map.}
-			\NexItemDark{\NexFunction{\_\_load\_lower\_map(V)}: Extends \NexFunction{V} with mappings for digits and lowercase letters for bases 10-35.}
-			\NexItemDark{\NexFunction{\_\_load\_upper\_map(V)}: Extends \NexFunction{V} with mappings for digits and uppercase letters for bases 36-62.}
-			\NexItemDark{\NexFunction{\_\_base\_logarithm(N1, N2)}: Calculates the logarithm of \NexFunction{N1} with base \NexFunction{N2}.}
-			\NexItemDark{\NexFunction{\_\_bit\_width(N)}: Computes the number of bits required to represent \NexFunction{N} in binary.}
-			\NexItemDark{\NexFunction{\_\_pad\_bits(V, N1, N2)}: Pads the integer and fractional parts of \NexFunction{N1} in \NexFunction{V} with zeros to align with the bit width of base \NexFunction{N2}.}
-			\NexItemDark{\NexFunction{convert\_base(N1, N2, N3, N4)}: Converts \NexFunction{N1} from base \NexFunction{N2} to base \NexFunction{N3}, with optional precision \NexFunction{N4} (default: 64).}
+			\NexItemDark{\NexFunction{__load_number_map(V1, N1, V2, N2, N3)}: Loads \NexFunction{N1} into \NexFunction{V1} based on base \NexFunction{N2}, storing attributes like sign, fractional part, and validation against the base range 2-62.}
+			\NexItemDark{\NexFunction{__construct_number(V, N, B1, B2, B3)}: Reconstructs a number from \NexFunction{V} using its integer, fractional, and sign components based on flags \NexFunction{B1}, \NexFunction{B2}, and \NexFunction{B3}.}
+			\NexItemDark{\NexFunction{__get_base(D, V)}: Determines and validates the base (2-62) of \NexFunction{D}, using \NexFunction{V} if necessary.}
+			\NexItemDark{\NexFunction{__set_base(N, V)}: Ensures \NexFunction{N} is a valid base and returns it as an integer, defaulting to 10 if invalid.}
+			\NexItemDark{\NexFunction{__base_regex(N, V, B)}: Generates a regex for validating numbers in base \NexFunction{N} using \NexFunction{V}, optionally loading the number, lower, or upper maps based on \NexFunction{B}.}
+			\NexItemDark{\NexFunction{__load_num_map(V)}: Initializes \NexFunction{V} with digits 0-9 as the number map.}
+			\NexItemDark{\NexFunction{__load_lower_map(V)}: Extends \NexFunction{V} with mappings for digits and lowercase letters for bases 10-35.}
+			\NexItemDark{\NexFunction{__load_upper_map(V)}: Extends \NexFunction{V} with mappings for digits and uppercase letters for bases 36-62.}
+			\NexItemDark{\NexFunction{__base_logarithm(N1, N2)}: Calculates the logarithm of \NexFunction{N1} with base \NexFunction{N2}.}
+			\NexItemDark{\NexFunction{__bit_width(N)}: Computes the number of bits required to represent \NexFunction{N} in binary.}
+			\NexItemDark{\NexFunction{__pad_bits(V, N1, N2)}: Pads the integer and fractional parts of \NexFunction{N1} in \NexFunction{V} with zeros to align with the bit width of base \NexFunction{N2}.}
+			\NexItemDark{\NexFunction{convert_base(N1, N2, N3, N4)}: Converts \NexFunction{N1} from base \NexFunction{N2} to base \NexFunction{N3}, with optional precision \NexFunction{N4} (default: 64).}
 			\NexItemDark{\NexFunction{compliment(N1, N2)}: Calculates the base-\NexFunction{N2} complement of \NexFunction{N1}, adjusting digit values accordingly.}
-			\NexItemDark{\NexFunction{base\_compliment(N1, N2, N3, N4, D, B)}: Computes the base-\NexFunction{N3} complement of \NexFunction{N1} relative to \NexFunction{N2}, accounting for optional sign \NexFunction{D} and precision \NexFunction{N4}.}
+			\NexItemDark{\NexFunction{base_compliment(N1, N2, N3, N4, D, B)}: Computes the base-\NexFunction{N3} complement of \NexFunction{N1} relative to \NexFunction{N2}, accounting for optional sign \NexFunction{D} and precision \NexFunction{N4}.}
 		\end{NexListDark}
 	\end{NexMainBox}
 \end{NexMainBox}
@@ -28,8 +28,8 @@
 \begin{NexMainBox}[light, hdrA, sdwA, crnA, grwB, secB]
 	\begin{NexMainBox}[dark, crnA]
 		\begin{NexListDark}
-			\NexItemDark{\NexFunction{subtract\_base(N1, N2, N3, N4, B)}: Subtracts \NexFunction{N2} from \NexFunction{N1} in base \NexFunction{N3}, using optional flags for precision \NexFunction{N4} and default sign behavior \NexFunction{B}.}
-			\NexItemDark{\NexFunction{add\_base(N1, N2, N3, N4, B)}: Adds \NexFunction{N1} and \NexFunction{N2} in base \NexFunction{N3}, handling fractional parts and sign alignment, with optional precision \NexFunction{N4} and flag \NexFunction{B}.}
+			\NexItemDark{\NexFunction{subtract_base(N1, N2, N3, N4, B)}: Subtracts \NexFunction{N2} from \NexFunction{N1} in base \NexFunction{N3}, using optional flags for precision \NexFunction{N4} and default sign behavior \NexFunction{B}.}
+			\NexItemDark{\NexFunction{add_base(N1, N2, N3, N4, B)}: Adds \NexFunction{N1} and \NexFunction{N2} in base \NexFunction{N3}, handling fractional parts and sign alignment, with optional precision \NexFunction{N4} and flag \NexFunction{B}.}
 		\end{NexListDark}
 	\end{NexMainBox}
 \end{NexMainBox}

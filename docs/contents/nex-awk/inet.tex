@@ -7,14 +7,14 @@
 	\end{NexMainBox}
 	\begin{NexMainBox}[dark, crnA]
 		\begin{NexListDark}
-			\NexItemDark{\NexFunction{valid\_address(D)}: Validates whether \NexFunction{D} is a properly formatted address, checking for exactly five colons, dots, or hyphens, and ensuring it matches the regex pattern for alphanumeric pairs separated by delimiters.}
-			\NexItemDark{\NexFunction{valid\_prefix(D, S, B)}: Generates a valid prefix for \NexFunction{D}, ensuring correct separator \NexFunction{S}, length adjustments, and casing based on \NexFunction{B}, and validates the result.}
-			\NexItemDark{\NexFunction{l2\_type(D)}: Identifies the Layer 2 (L2) address type of \NexFunction{D} (e.g., locally/universally administered, multicast/unicast) based on RFC 7042 standards.}
-			\NexItemDark{\NexFunction{expand\_ipv6(D)}: Converts a compressed IPv6 address \NexFunction{D} into its expanded format, ensuring all segments are present and properly padded with zeros.}
-			\NexItemDark{\NexFunction{truncate\_ipv6(D)}: Compresses an expanded IPv6 address \NexFunction{D}, removing leading zeros and replacing consecutive zero segments with "::" for a shorter representation.}
-			\NexItemDark{\NexFunction{valid\_ipv6(D, B)}: Validates whether \NexFunction{D} is a proper IPv6 address, checking segment ranges and patterns, optionally returning the expanded form if valid.}
-			\NexItemDark{\NexFunction{valid\_ipv4(D, B)}: Validates whether \NexFunction{D} is a properly formatted IPv4 address, ensuring all octets are within the valid range, and optionally processing CIDR notation if \NexFunction{B} is true.}
-			\NexItemDark{\NexFunction{load\_inet\_map(D, V)}: Loads the address configuration map into \NexFunction{V} based on the IP version (\NexFunction{D}), setting the character, tetra size, segments, and base for IPv4 or IPv6.}
+			\NexItemDark{\NexFunction{valid_address(D)}: Validates whether \NexFunction{D} is a properly formatted address, checking for exactly five colons, dots, or hyphens, and ensuring it matches the regex pattern for alphanumeric pairs separated by delimiters.}
+			\NexItemDark{\NexFunction{valid_prefix(D, S, B)}: Generates a valid prefix for \NexFunction{D}, ensuring correct separator \NexFunction{S}, length adjustments, and casing based on \NexFunction{B}, and validates the result.}
+			\NexItemDark{\NexFunction{l2_type(D)}: Identifies the Layer 2 (L2) address type of \NexFunction{D} (e.g., locally/universally administered, multicast/unicast) based on RFC 7042 standards.}
+			\NexItemDark{\NexFunction{expand_ipv6(D)}: Converts a compressed IPv6 address \NexFunction{D} into its expanded format, ensuring all segments are present and properly padded with zeros.}
+			\NexItemDark{\NexFunction{truncate_ipv6(D)}: Compresses an expanded IPv6 address \NexFunction{D}, removing leading zeros and replacing consecutive zero segments with "::" for a shorter representation.}
+			\NexItemDark{\NexFunction{valid_ipv6(D, B)}: Validates whether \NexFunction{D} is a proper IPv6 address, checking segment ranges and patterns, optionally returning the expanded form if valid.}
+			\NexItemDark{\NexFunction{valid_ipv4(D, B)}: Validates whether \NexFunction{D} is a properly formatted IPv4 address, ensuring all octets are within the valid range, and optionally processing CIDR notation if \NexFunction{B} is true.}
+			\NexItemDark{\NexFunction{load_inet_map(D, V)}: Loads the address configuration map into \NexFunction{V} based on the IP version (\NexFunction{D}), setting the character, tetra size, segments, and base for IPv4 or IPv6.}
 			\NexItemDark{\NexFunction{inet(D)}: Processes and validates an IPv4 or IPv6 address, applies CIDR constraints, adjusts segments accordingly, and returns the formatted result.}
 		\end{NexListDark}
 	\end{NexMainBox}

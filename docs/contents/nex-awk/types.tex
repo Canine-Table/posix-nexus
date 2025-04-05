@@ -7,26 +7,26 @@
 	\end{NexMainBox}
 	\begin{NexMainBox}[dark, crnA]
 		\begin{NexListDark}
-			\NexItemDark{\NexFunction{\_\_is\_signed(N)}: Checks if the input number \texttt{N} has a \texttt{+} or \texttt{-} prefix.}
-			\NexItemDark{\NexFunction{\_\_get\_sign(N)}: Retrieves the sign (\texttt{+} or \texttt{-}) of \texttt{N} if it is signed.}
-			\NexItemDark{\NexFunction{is\_integral(N, B)}: Verifies if \texttt{N} is an integer. The parameter \texttt{B} specifies whether to allow a sign prefix.}
-			\NexItemDark{\NexFunction{is\_signed\_integral(N)}: Checks if \texttt{N} is a signed integer.}
-			\NexItemDark{\NexFunction{is\_float(N, B)}: Determines if \texttt{N} is a floating-point number, with \texttt{B} controlling the allowance of a sign.}
-			\NexItemDark{\NexFunction{is\_signed\_float(N)}: Validates whether \texttt{N} is a signed floating-point number.}
-			\NexItemDark{\NexFunction{is\_digit(N, B)}: Checks if \texttt{N} is any numeric value (integer or float).}
-			\NexItemDark{\NexFunction{is\_signed\_digit(N)}: Checks if \texttt{N} is a signed numeric value (integer or float).}
+			\NexItemDark{\NexFunction{__is_signed(N)}: Checks if the input number \texttt{N} has a \texttt{+} or \texttt{-} prefix.}
+			\NexItemDark{\NexFunction{__get_sign(N)}: Retrieves the sign (\texttt{+} or \texttt{-}) of \texttt{N} if it is signed.}
+			\NexItemDark{\NexFunction{is_integral(N, B)}: Verifies if \texttt{N} is an integer. The parameter \texttt{B} specifies whether to allow a sign prefix.}
+			\NexItemDark{\NexFunction{is_signed_integral(N)}: Checks if \texttt{N} is a signed integer.}
+			\NexItemDark{\NexFunction{is_float(N, B)}: Determines if \texttt{N} is a floating-point number, with \texttt{B} controlling the allowance of a sign.}
+			\NexItemDark{\NexFunction{is_signed_float(N)}: Validates whether \texttt{N} is a signed floating-point number.}
+			\NexItemDark{\NexFunction{is_digit(N, B)}: Checks if \texttt{N} is any numeric value (integer or float).}
+			\NexItemDark{\NexFunction{is_signed_digit(N)}: Checks if \texttt{N} is a signed numeric value (integer or float).}
 		\end{NexListDark}
 	\end{NexMainBox}
 \end{NexMainBox}
 
-\begin{NexCodeBox}{c}{title=\textbf{\_\_is\_signed(N)}}
+\begin{NexCodeBox}{c}{title=\textbf{__is_signed(N)}}
 function __is_signed(N)
 {
         return N ~ /^([-]|[+])/
 }
 \end{NexCodeBox}
 
-\begin{NexCodeBox}{c}{title=\textbf{\_\_get\_sign(N)}}
+\begin{NexCodeBox}{c}{title=\textbf{__get_sign(N)}}
 function __get_sign(N)
 {
         if (__is_signed(N)) {
@@ -35,7 +35,7 @@ function __get_sign(N)
 }
 \end{NexCodeBox}
 
-\begin{NexCodeBox}{c}{title=\textbf{is\_integral(N)}}
+\begin{NexCodeBox}{c}{title=\textbf{is_integral(N)}}
 function is_integral(N, B,      e)
 {
 	if ((B && N ~ /^([-]|[+])?[0-9]+$/) || (! B && N ~ /^[0-9]+$/))
@@ -44,7 +44,7 @@ function is_integral(N, B,      e)
 }
 \end{NexCodeBox}
 
-\begin{NexCodeBox}{c}{title=\textbf{is\_signed\_integral(N)}}
+\begin{NexCodeBox}{c}{title=\textbf{is_signed_integral(N)}}
 function is_signed_integral(N,          e)
 {
         if (__is_signed(N) && is_integral(N, 1))
@@ -53,7 +53,7 @@ function is_signed_integral(N,          e)
 }
 \end{NexCodeBox}
 
-\begin{NexCodeBox}{c}{title=\textbf{is\_float(N, B)}}
+\begin{NexCodeBox}{c}{title=\textbf{is_float(N, B)}}
 function is_float(N, B,         e)
 {
         if ((B && N ~ /^([-]|[+])?[0-9]+[.][0-9]+$/) || (! B && N ~ /^[0-9]+[.][0-9]+$/))
@@ -62,7 +62,7 @@ function is_float(N, B,         e)
 }
 \end{NexCodeBox}
 
-\begin{NexCodeBox}{c}{title=\textbf{is\_signed\_float(N)}}
+\begin{NexCodeBox}{c}{title=\textbf{is_signed_float(N)}}
 function is_signed_float(N,             e)
 {
         if (__is_signed(N) && is_float(N, 1))
@@ -71,7 +71,7 @@ function is_signed_float(N,             e)
 }
 \end{NexCodeBox}
 
-\begin{NexCodeBox}{c}{title=\textbf{is\_digit(N, B)}}
+\begin{NexCodeBox}{c}{title=\textbf{is_digit(N, B)}}
 function is_digit(N, B,         e)
 {
         if (is_integral(N, B) || is_float(N, B))
@@ -80,7 +80,7 @@ function is_digit(N, B,         e)
 }
 \end{NexCodeBox}
 
-\begin{NexCodeBox}{c}{title=\textbf{is\_signed\_digit(N)}}
+\begin{NexCodeBox}{c}{title=\textbf{is_signed_digit(N)}}
 function is_signed_digit(N,     e)
 {
         if (__is_signed(N) && is_digit(N, 1))
