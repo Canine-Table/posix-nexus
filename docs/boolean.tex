@@ -1,23 +1,31 @@
 \documentclass[a4paper,12pt]{article}
-\input{../lib/tex/param.tex}
-\input{../lib/tex/stream.tex}
-\input{../lib/tex/plain.tex}
-\input{../lib/tex/registers.tex}
-\input{../lib/tex/misc.tex}
-\input{contents/boolean/preamble.tex}
-\input{../lib/tex/registers/counters.tex}
-\input{../lib/tex/registers/dimentions.tex}
-\input{../lib/tex/registers/boxes.tex}
+\input{./contents/boolean/preamble.tex}
 
 \begin{document}
-	\input{contents/boolean/laws/identity.tex}
-	\input{contents/boolean/laws/null.tex}
-	\input{contents/boolean/laws/idempotent.tex}
-	\input{contents/boolean/laws/compliment.tex}
-	\input{contents/boolean/laws/commutative.tex}
-	\input{contents/boolean/laws/associative.tex}
-	\input{contents/boolean/laws/distributive.tex}
-	\input{contents/boolean/laws/absorption.tex}
-	\input{contents/boolean/laws/double-negation.tex}
+	\label{top}
+	\title{
+		\textbf{Posix-Nexus Boolean}\\[5mm]
+		\begin{NexMainBox}[dark, shpA,fit, width=\linewidth/2]
+			\includegraphics[width=\textwidth]{img/posix-nexus.png}
+		\end{NexMainBox}
+	}
+	\author{Canine-Table}
+	\date{\today}
+	\maketitle
+	\newpage
+	\begin{NexMainBox}[light, title=Contents, hdrB, breakable]
+		\thispagestyle{plain}
+		\tableofcontents
+	\end{NexMainBox}
+	\newpage
+	%\input{contents/boolean/laws/identity.tex}
+	%\input{contents/boolean/laws/null.tex}
+	%\input{contents/boolean/laws/idempotent.tex}
+	%\input{contents/boolean/laws/compliment.tex}
+	%\input{contents/boolean/laws/commutative.tex}
+	%\input{contents/boolean/laws/associative.tex}
+	%\input{contents/boolean/laws/distributive.tex}
+	%\input{contents/boolean/laws/absorption.tex}
+	%\input{contents/boolean/laws/double-negation.tex}
 \end{document}
 

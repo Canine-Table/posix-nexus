@@ -20,7 +20,7 @@
 *.bcf
 *.blg
 *.run.xml
-*.minted
+**/_minted
 
 # PDF files
 *.ps

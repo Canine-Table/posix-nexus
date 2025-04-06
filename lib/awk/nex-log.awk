@@ -50,9 +50,8 @@ function color_map(D)
 	return D
 }
 
-function __error(D, V, N)
+function __nx_error(D, V, N)
 {
 	l = -int(V[-0])
-	print l
-	#if (__defined(D))
+	return 0
 }

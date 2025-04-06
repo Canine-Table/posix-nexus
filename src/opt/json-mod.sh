@@ -2,11 +2,15 @@
 get_json_parser()
 {
 	${AWK:-$(get_cmd_awk)} \
-		-v inpt="$*" "
+		-v tmpa="$1" \
+		-v tmpb="$2" \
+		-v tmpc="$3" "
 		$(cat \
 			"$G_NEX_MOD_LIB/awk/nex-misc.awk" \
 			"$G_NEX_MOD_LIB/awk/nex-str.awk" \
-			"$G_NEX_MOD_LIB/awk/data.awk"
+			"$G_NEX_MOD_LIB/awk/nex-log.awk" \
+			"$G_NEX_MOD_LIB/awk/nex-math.awk" \
+			"$G_NEX_MOD_LIB/awk/nex-struct.awk"
 			#"$G_NEX_MOD_LIB/awk/misc.awk" \
 			#"$G_NEX_MOD_LIB/awk/str.awk" \
 			#"$G_NEX_MOD_LIB/awk/bool.awk" \
@@ -18,21 +22,11 @@ get_json_parser()
 		)
 	"'
 		BEGIN {
-			#s = "a\\: b, c: d, e: f"
-			#s = "aa"
-			#vector("tom, is, here \"hello, this, is, world\", this,is, \"tom\"", arr, ",")
-			l = nx_vector("tom, is, here \"hello, this, is, world\", this,is, \" tom   \"", arr, ",")
-			#l = nx_uniq("a,a,b,c,c,d,e,e,f,f,g", arr, ",")
-			#print arr[1]
-			for (i = 1; i <= arr[0]; i++) {
-				print arr[i]
-			}
-			#"abcd , drerr"
-			#print typeof(s)
-			#split("", arr, "")
-			#tokenize(s, arr)
-			#while (stack(arr, "isempty"))
-			#print json_parser("{ abc: [ { x: y }, z ], def: { d: d, e: e, f: f }}")
+			#print __nx_if(1, "3", "2")
+			print nx_option("g", arr, ",", "add,rebt,ici,iud,iuiueiu,iuufiiu,uiuig", 1)
+			#print __nx_equality(tmpa, tmpb, tmpc)
+			#print nx_cut_str("hello world : cut me", ":", 0)
+			#print nx_totitle("hello world : cut me", ":")
 		}
 	'
 }
