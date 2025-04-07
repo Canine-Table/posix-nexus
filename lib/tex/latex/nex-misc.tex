@@ -1,4 +1,9 @@
-\def\NexFunction#1{\textcolor{nex.primary.link}{\textbf{#1}}}
+\def\NexColors#1#2{\textcolor{nex.#1}{\textbf{#2}}}
+\def\NexFunction#1{\NexColors{primary.link}{#1}}
+\def\NexBoolean#1{\NexColors{sucess.frame}{#1}}
+\def\NexData#1{\NexColors{info.frame}{#1}}
+\def\NexOption#1{\NexColors{warning.back}{#1}}
+
 \def\NexLink#1#2{\hyperref[#1]{\NexFunction{\faAngleDown~#2}}}
 \def\NexUpRef#1{\hyperref[#1]{\textbf{\faAngleUp~#1}}}
 \def\NexUpSecRef#1#2{\hyperref[#1]{\textbf{\faAngleUp~#2~#1}}}

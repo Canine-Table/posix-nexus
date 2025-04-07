@@ -7,13 +7,694 @@
 	\end{NexMainBox}
 	\begin{NexMainBox}[dark, crnA]
 		\begin{NexListDark}
-			\NexItemDark{\NexFunction{__return_value(D1, D2)}: Returns \NexFunction{D1} if it exists; otherwise, returns \NexFunction{D2}.}
-			\NexItemDark{\NexFunction{__return_if_value(D1, D2, B)}: Combines \NexFunction{D1} and \NexFunction{D2} based on \NexFunction{B} and returns the result if \NexFunction{D1} exists.}
-			\NexItemDark{\NexFunction{__return_else_value(D1, D2, B)}: Returns \NexFunction{D2} if \NexFunction{D1} satisfies the \NexFunction{TRUE__} condition for \NexFunction{B}.}
-			\NexItemDark{\NexFunction{__load_value(V, K, DA, DB)}: Assigns \NexFunction{DA} to \NexFunction{V[K]} if \NexFunction{DA} is not "NULL"; otherwise, assigns \NexFunction{DB}.}
-			\NexItemDark{\NexFunction{__load_delim(V, S, O)}: Sets delimiters in \NexFunction{V} by assigning \NexFunction{S} and \NexFunction{O} to keys "s" and "o" with defaults "," and newline.}
-			\NexItemDark{\NexFunction{__load_tag(V, L, R)}: Sets tag delimiters in \NexFunction{V} by assigning \NexFunction{L} and \NexFunction{R} to keys "l" and "r" with defaults "<" and ">".}
+			\NexItemDark{\NexLink{__nx_defined}{__nx_defined(\NexOption{D}, \NexOption{B})}: Validates whether \NexOption{D} is defined or evaluates as truthy under additional constraints provided by \NexOption{B}.}
+			\NexItemDark{\NexLink{__nx_null}{__nx_null(\NexOption{D})}: Checks whether \NexOption{D} is null or has a length of zero.}
+			\NexItemDark{\NexLink{__nx_else}{__nx_else(\NexOption{D1}, \NexOption{D2}, \NexOption{B})}: Returns \NexOption{D1} if it is truthy or satisfies the condition set by \NexOption{B}, otherwise returns \NexOption{D2}.}
+			\NexItemDark{\NexLink{__nx_if}{__nx_if(\NexOption{B1}, \NexOption{D1}, \NexOption{D2}, \NexOption{B2})}: Returns \NexOption{D1} if \NexOption{B1} is truthy or satisfies the condition set by \NexOption{B2}, otherwise returns \NexOption{D2}.}
+			\NexItemDark{\NexLink{__nx_elif}{__nx_elif(\NexOption{B1}, \NexOption{B2}, \NexOption{B3}, \NexOption{B4}, \NexOption{B5}, \NexOption{B6})}: Evaluates multiple conditions and their relationships, returning a boolean value based on comparisons of the results of \NexFunction{__nx_defined} for the provided inputs.}
+			\NexItemDark{\NexLink{__nx_or}{__nx_or(\NexOption{B1}, \NexOption{B2}, \NexOption{B3}, \NexOption{B4}, \NexOption{B5}, \NexOption{B6})}: Evaluates logical OR conditions between multiple inputs, incorporating constraints applied via \NexFunction{__nx_defined} and fallback adjustments from \NexFunction{__nx_else}.}
+			\NexItemDark{\NexLink{__nx_xor}{__nx_xor(\NexOption{B1}, \NexOption{B2}, \NexOption{B3}, \NexOption{B4})}: Evaluates exclusive OR (XOR) conditions between multiple inputs, incorporating constraints applied via \NexFunction{__nx_defined} and fallback adjustments from \NexFunction{__nx_else}.}
+			\NexItemDark{\NexLink{__nx_compare}{__nx_compare(\NexOption{B1}, \NexOption{B2}, \NexOption{B3}, \NexOption{B4})}: Compares two inputs based on type, length, or specified comparison rules, leveraging \NexFunction{awk}'s dynamic behavior and optional constraints.}
+			\NexItemDark{\NexLink{__nx_equality}{__nx_equality(\NexOption{B1}, \NexOption{B2}, \NexOption{B3})}: Evaluates the equality or relational conditions between \NexOption{B1} and \NexOption{B3} based on the operator specified in \NexOption{B2}, leveraging \NexFunction{awk} behavior for dynamic comparisons.}
+			\NexItemDark{\NexLink{__nx_swap}{__nx_swap(\NexOption{V}, \NexOption{D1}, \NexOption{D2})}: Swaps the values of two specified indices in the provided array or associative array. Utilizes a temporary variable to ensure the operation is safe and lossless.}
 		\end{NexListDark}
 	\end{NexMainBox}
 \end{NexMainBox}
+
+\newpage
+\subsection{__nx_defined}
+\label{__nx_defined}
+\begin{NexCodeBox}{bash}{title={__nx_defined(D, B)}}
+function __nx_defined(D, B) {
+	return (D || (length(D) && B))
+}
+\end{NexCodeBox}
+
+\begin{NexMainBox}[light, hdrA, sdwA, crnA, grwB, ssecB]
+	\begin{NexMainBox}[dark, crnA]
+		Determines whether \NexOption{D} is defined or evaluates to a truthy value, optionally constrained by \NexOption{B}. Returns a boolean value accordingly.
+	\end{NexMainBox}
+	\begin{NexMainBox}[dark, crnA]
+		\begin{NexListDark}
+			\NexItemDark{\NexOption{D}: The variable or value to check for definition or truthiness.}
+			\NexItemDark{\NexOption{B}: An optional additional condition for validation when \NexOption{D} has length.}
+		\end{NexListDark}
+	\end{NexMainBox}
+\end{NexMainBox}
+
+\begin{NexCodeBox}{bash}{title={Basic truth check}}
+	B1 = 1
+	B2 = ""
+	result = __nx_defined(B1, B2)
+	% result is true, as B1 is true (1) regardless of B2
+\end{NexCodeBox}
+
+\begin{NexCodeBox}{bash}{title={Empty string check}}
+	B1 = ""
+	B2 = 1
+	result = __nx_defined(B1, B2)
+	% result is false, as B1 is an empty string, which fails the defined check
+\end{NexCodeBox}
+
+\begin{NexCodeBox}{bash}{title={String with length check}}
+	B1 = "hello"
+	B2 = 0
+	result = __nx_defined(B1, B2)
+	% result is true, as B1 ("hello") is non-empty and therefore defined
+\end{NexCodeBox}
+
+\begin{NexCodeBox}{bash}{title={Numeric length check}}
+	B1 = 0
+	B2 = 1
+	result = __nx_defined(B1, B2)
+	% result is true, as B1 (0) has a length, even though it evaluates as false in conditions
+\end{NexCodeBox}
+
+\begin{NexCodeBox}{bash}{title={Combined truth and fallback check}}
+	B1 = ""
+	B2 = "fallback"
+	result = __nx_defined(B1, B2)
+	% result is true, as B2 ("fallback") is defined and compensates for B1 being empty
+\end{NexCodeBox}
+
+\newpage
+\subsection{__nx_null}
+\label{__nx_null}
+\begin{NexCodeBox}{bash}{title={__nx_null(D)}}
+function __nx_null(D) {
+	return (length(D) == 0)
+}
+\end{NexCodeBox}
+
+\begin{NexMainBox}[light, hdrA, sdwA, crnA, grwB, ssecB]
+	\begin{NexMainBox}[dark, crnA]
+		Determines whether \NexOption{D} is null or has a length of zero. This function is useful for validating empty values or strings.
+	\end{NexMainBox}
+	\begin{NexMainBox}[dark, crnA]
+		\begin{NexListDark}
+			\NexItemDark{\NexOption{D}: The variable or value to check for nullity or zero length.}
+		\end{NexListDark}
+	\end{NexMainBox}
+\end{NexMainBox}
+
+\begin{NexCodeBox}{bash}{title={Null check on an empty value}}
+	B1 = ""
+	result = __nx_null(B1)
+	% result is true, as B1 is an empty string and thus considered null
+\end{NexCodeBox}
+
+\begin{NexCodeBox}{bash}{title={Null check on a numeric zero}}
+	B1 = 0
+	result = __nx_null(B1)
+	% result is false, as B1 (0) is not considered null despite evaluating as false in conditions
+\end{NexCodeBox}
+
+\begin{NexCodeBox}{bash}{title={Null check on an undefined value}}
+	B1 = ""
+	B2 = 1
+	result = __nx_null(__nx_else(B1, B2))
+	% result is false, as the fallback B2 (1) is defined, overriding B1’s null state
+\end{NexCodeBox}
+
+\begin{NexCodeBox}{bash}{title={Null check with regex pattern fallback}}
+	B1 = ""
+	B2 = "abc123"
+	B3 = /^[a-z]+[0-9]+$/
+	result = __nx_null(__nx_else(B1, B2 ~ B3))
+	% result is false, as B2 matches the regex pattern, making it non-null
+\end{NexCodeBox}
+
+\begin{NexCodeBox}{bash}{title={Handling null explicitly in logical flows}}
+	B1 = ""
+	B2 = ""
+	B3 = 0
+	result = __nx_null(__nx_or(B1, B2, B3))
+	% result is true, as all inputs to __nx_or resolve to null-like states
+\end{NexCodeBox}
+
+\newpage
+\subsection{__nx_else}
+\label{__nx_else}
+\begin{NexCodeBox}{bash}{title={__nx_else(D1, D2, B)}}
+function __nx_else(D1, D2, B) {
+	if (D1 || __nx_defined(D1, B))
+		return D1
+	return D2
+}
+\end{NexCodeBox}
+
+\begin{NexMainBox}[light, hdrA, sdwA, crnA, grwB, ssecB]
+	\begin{NexMainBox}[dark, crnA]
+		Returns \NexOption{D1} if it is truthy or satisfies the condition set by \NexOption{B}. If neither condition is met, \NexOption{D2} is returned.
+	\end{NexMainBox}
+	\begin{NexMainBox}[dark, crnA]
+		\begin{NexListDark}
+			\NexItemDark{\NexOption{D1}: The primary value to evaluate and potentially return.}
+			\NexItemDark{\NexOption{D2}: The fallback value returned if \NexOption{D1} does not meet the conditions.}
+			\NexItemDark{\NexOption{B}: An optional constraint applied to \NexOption{D1} using \NexFunction{__nx_defined}.}
+		\end{NexListDark}
+	\end{NexMainBox}
+\end{NexMainBox}
+
+\begin{NexCodeBox}{bash}{title={Simple fallback adjustment}}
+	B1 = 1
+	B2 = 0
+	result = __nx_else(B1, B2)
+	% result is true, as B1 is true (1), overriding the fallback condition of B2 (0)
+\end{NexCodeBox}
+
+\begin{NexCodeBox}{bash}{title={Fallback with string input}}
+	B1 = "abc"
+	B2 = ""
+	result = __nx_else(B1, B2)
+	% result is true, as B1 ("abc") is valid and overrides the empty fallback (B2 = "")
+\end{NexCodeBox}
+
+\begin{NexCodeBox}{bash}{title={Numeric fallback adjustment}}
+	B1 = ""
+	B2 = 42
+	result = __nx_else(B1, B2)
+	% result is true, as B1 fails the condition, falling back to B2 (42)
+\end{NexCodeBox}
+
+\begin{NexCodeBox}{bash}{title={Fallback with pattern matching}}
+	B1 = "[a-z]+"
+	B2 = "hello"
+	result = __nx_else(B2 ~ B1, 0)
+	% result is true, as the pattern "[a-z]+" matches B2 ("hello"), overriding the fallback (0)
+\end{NexCodeBox}
+
+\newpage
+\subsection{__nx_if}
+\label{__nx_if}
+\begin{NexCodeBox}{bash}{title={__nx_if(B1, D1, D2, B2)}}
+function __nx_if(B1, D1, D2, B2) {
+	if (B1 || __nx_defined(B1, B2))
+		return D1
+	return D2
+}
+\end{NexCodeBox}
+
+\begin{NexMainBox}[light, hdrA, sdwA, crnA, grwB, ssecB]
+	\begin{NexMainBox}[dark, crnA]
+		Returns \NexOption{D1} if \NexOption{B1} is truthy or satisfies the condition set by \NexOption{B2}. If neither condition is met, \NexOption{D2} is returned. This function extends conditional operations by integrating the \NexFunction{__nx_defined} utility.
+	\end{NexMainBox}
+	\begin{NexMainBox}[dark, crnA]
+		\begin{NexListDark}
+			\NexItemDark{\NexOption{B1}: The primary condition to evaluate for truthiness.}
+			\NexItemDark{\NexOption{D1}: The value returned if \NexOption{B1} meets the conditions.}
+			\NexItemDark{\NexOption{D2}: The fallback value returned if \NexOption{B1} does not satisfy the conditions.}
+			\NexItemDark{\NexOption{B2}: An optional additional constraint applied to \NexOption{B1} using \NexFunction{__nx_defined}.}
+		\end{NexListDark}
+	\end{NexMainBox}
+\end{NexMainBox}
+
+\begin{NexCodeBox}{bash}{title={Basic conditional check}}
+	B1 = 1
+	B2 = "True Case"
+	B3 = "False Case"
+	result = __nx_if(B1, B2, B3)
+	% result is "True Case", as B1 is true (1), returning the second argument
+\end{NexCodeBox}
+
+\begin{NexCodeBox}{bash}{title={Evaluating string-based condition}}
+	B1 = "non-empty"
+	B2 = "Condition Met"
+	B3 = "Condition Not Met"
+	result = __nx_if(B1, B2, B3)
+	% result is "Condition Met", as B1 is non-empty and therefore true, returning the second argument
+\end{NexCodeBox}
+
+\begin{NexCodeBox}{bash}{title={Numeric comparison in conditional check}}
+	B1 = (5 > 3)
+	B2 = "Greater"
+	B3 = "Lesser or Equal"
+	result = __nx_if(B1, B2, B3)
+	% result is "Greater", as B1 evaluates to true (5 > 3)
+\end{NexCodeBox}
+
+\begin{NexCodeBox}{bash}{title={Regex-based condition}}
+	B1 = ("abc123" ~ /^[a-z]+[0-9]+$/)
+	B2 = "Pattern Matches"
+	B3 = "Pattern Doesn't Match"
+	result = __nx_if(B1, B2, B3)
+	% result is "Pattern Matches", as B1 evaluates to true due to the regex match
+\end{NexCodeBox}
+
+\begin{NexCodeBox}{bash}{title={Fallback when condition is false}}
+	B1 = 0
+	B2 = "Will Not Return"
+	B3 = "Fallback Case"
+	result = __nx_if(B1, B2, B3)
+	% result is "Fallback Case", as B1 is false (0), returning the third argument
+\end{NexCodeBox}
+
+\newpage
+\subsection{__nx_elif}
+\label{__nx_elif}
+\begin{NexCodeBox}{bash}{title={__nx_elif(B1, B2, B3, B4, B5, B6)}}
+function __nx_elif(B1, B2, B3, B4, B5, B6) {
+	if (B4) {
+		B5 = __nx_else(B5, B4)
+		B6 = __nx_else(B6, B5)
+	}
+	return (__nx_defined(B1, B4) == __nx_defined(B2, B5) && __nx_defined(B3, B6) != __nx_defined(B1, B4))
+}
+\end{NexCodeBox}
+
+\begin{NexMainBox}[light, hdrA, sdwA, crnA, grwB, ssecB]
+	\begin{NexMainBox}[dark, crnA]
+		Evaluates multiple conditions and their relationships. Returns a boolean value based on comparisons of the outputs from \NexFunction{__nx_defined} applied to the provided inputs.
+	\end{NexMainBox}
+	\begin{NexMainBox}[dark, crnA]
+	\begin{NexListDark}
+		\NexItemDark{\NexOption{B1}: The first condition to validate using \NexFunction{__nx_defined}.}
+		\NexItemDark{\NexOption{B2}: The second condition to validate using \NexFunction{__nx_defined}.}
+		\NexItemDark{\NexOption{B3}: The third condition to validate using \NexFunction{__nx_defined}.}
+		\NexItemDark{\NexOption{B4}: Optional constraint applied to subsequent conditions \NexOption{B5} and \NexOption{B6}.}
+		\NexItemDark{\NexOption{B5}: Adjusted condition based on \NexOption{B4} if provided, otherwise unchanged.}
+		\NexItemDark{\NexOption{B6}: Adjusted condition based on \NexOption{B5} if provided, otherwise unchanged.}
+	\end{NexListDark}
+	\end{NexMainBox}
+\end{NexMainBox}
+
+\begin{NexCodeBox}{bash}{title={Simple relational checks}}
+	B1 = 1
+	B2 = 2
+	B3 = 3
+	B4 = 0
+	B5 = 1
+	B6 = 0
+	result = __nx_elif(B1, B2, B3, B4, B5, B6)
+	% result is false, as the comparisons of __nx_defined(B1, B4), __nx_defined(B2, B5), and __nx_defined(B3, B6)
+	% do not satisfy the logic for XOR relationships
+\end{NexCodeBox}
+
+\begin{NexCodeBox}{bash}{title={Pattern matching logic}}
+	B1 = "hello"
+	B2 = "world"
+	B3 = "[a-z]+"
+	B4 = 0
+	B5 = ""
+	B6 = "_"
+	result = __nx_elif(B1, B2, B3, B4, B5, B6)
+	% result is false, as __nx_defined(B3, B6) evaluates to true with pattern "[a-z]+",
+	% but the fallback adjustments for B1 and B2 overlap in truth, violating XOR logic
+\end{NexCodeBox}
+
+\begin{NexCodeBox}{bash}{title={Complex nested XOR conditions}}
+	B1 = 10
+	B2 = 20
+	B3 = 30
+	B4 = ""
+	B5 = "a"
+	B6 = "i"
+	result = __nx_elif(B1, B2, B3, B4, B5, B6)
+	% result is false, as none of the relationships between B1, B2, and B3 fulfill the XOR conditions
+	% after fallback adjustments with __nx_else
+\end{NexCodeBox}
+
+\begin{NexCodeBox}{bash}{title={Nested condition adjustments}}
+	B1 = "abc"
+	B2 = "abc"
+	B3 = ""
+	B4 = "a"
+	B5 = "def"
+	B6 = ""
+	result = __nx_elif(B1, B2, B3, B4, B5, B6)
+	% result is true, as __nx_defined(B1, B4) and __nx_defined(B2, B5) are true,
+	% and the adjusted relationships satisfy the condition logic
+\end{NexCodeBox}
+
+\newpage
+\subsection{__nx_or}
+\label{__nx_or}
+\begin{NexCodeBox}{bash}{title={__nx_or(B1, B2, B3, B4, B5, B6)}}
+function __nx_or(B1, B2, B3, B4, B5, B6) {
+	if (B4) {
+		B5 = __nx_else(B5, B4)
+		B6 = __nx_else(B6, B5)
+	}
+	return ((__nx_defined(B1, B4) && __nx_defined(B2, B5)) || (__nx_defined(B3, B6) && ! __nx_defined(B1, B4)))
+}
+\end{NexCodeBox}
+
+\begin{NexMainBox}[light, hdrA, sdwA, crnA, grwB, ssecB]
+	\begin{NexMainBox}[dark, crnA]
+		Evaluates logical OR conditions between multiple inputs. Uses \NexFunction{__nx_defined} to validate conditions and applies fallback adjustments using \NexFunction{__nx_else} for specific inputs.
+	\end{NexMainBox}
+	\begin{NexMainBox}[dark, crnA]
+		\begin{NexListDark}
+			\NexItemDark{\NexOption{B1}: The first condition to evaluate using \NexFunction{__nx_defined}.}
+			\NexItemDark{\NexOption{B2}: The second condition to evaluate using \NexFunction{__nx_defined}.}
+			\NexItemDark{\NexOption{B3}: The third condition to evaluate using \NexFunction{__nx_defined}.}
+			\NexItemDark{\NexOption{B4}: Optional constraint applied to conditions and used in fallback adjustments via \NexFunction{__nx_else}.}
+			\NexItemDark{\NexOption{B5}: Adjusted condition based on \NexOption{B4} if provided, otherwise unchanged.}
+			\NexItemDark{\NexOption{B6}: Adjusted condition based on \NexOption{B5} if provided, otherwise unchanged.}
+		\end{NexListDark}
+	\end{NexMainBox}
+\end{NexMainBox}
+
+\begin{NexCodeBox}{bash}{title={OR condition for integer validation}}
+	B = 1
+	N = "-123"
+	result = __nx_or(B, N ~ /^([-]|[+])?[0-9]+$/, N ~ /^[0-9]+$/)
+	% result is true, as N matches the first regex pattern for signed integers (-123)
+\end{NexCodeBox}
+
+\begin{NexCodeBox}{bash}{title={OR condition for decimal number validation}}
+	B = 0
+	N = "123.45"
+	result = __nx_or(B, N ~ /^([-]|[+])?[0-9]+[.][0-9]+$/, N ~ /^[0-9]+[.][0-9]+$/)
+	% result is true, as N matches the first regex pattern for signed decimals (123.45)
+\end{NexCodeBox}
+
+\newpage
+\subsection{__nx_xor}
+\label{__nx_xor}
+\begin{NexCodeBox}{bash}{title={__nx_xor(B1, B2, B3, B4)}}
+function __nx_xor(B1, B2, B3, B4) {
+	if (B3)
+		B4 = __nx_else(B4, B3)
+	return ((! __nx_defined(B2, B4) && __nx_defined(B1, B3)) || (__nx_defined(B2, B4) && ! __nx_defined(B1, B3)))
+}
+\end{NexCodeBox}
+
+\begin{NexMainBox}[light, hdrA, sdwA, crnA, grwB, ssecB]
+	\begin{NexMainBox}[dark, crnA]
+		Evaluates exclusive OR (XOR) conditions between multiple inputs. Uses \NexFunction{__nx_defined} to validate conditions and applies fallback adjustments using \NexFunction{__nx_else} for specific inputs.
+	\end{NexMainBox}
+	\begin{NexMainBox}[dark, crnA]
+		\begin{NexListDark}
+			\NexItemDark{\NexOption{B1}: The first condition to evaluate using \NexFunction{__nx_defined}.}
+			\NexItemDark{\NexOption{B2}: The second condition to evaluate using \NexFunction{__nx_defined}.}
+			\NexItemDark{\NexOption{B3}: Optional condition used for fallback adjustments via \NexFunction{__nx_else}.}
+			\NexItemDark{\NexOption{B4}: Adjusted condition based on \NexOption{B3} if provided, otherwise unchanged.}
+		\end{NexListDark}
+	\end{NexMainBox}
+\end{NexMainBox}
+
+\begin{NexCodeBox}{bash}{title={Basic XOR: Compare B1 and B2}}
+	B1 = 1
+	B2 = 0
+	B3 = ""
+	B4 = ""
+	result = __nx_xor(B1, B2, B3, B4)
+	% result is true, as B1 is true (1) and B2 is false (0), making XOR true
+\end{NexCodeBox}
+
+\begin{NexCodeBox}{bash}{title={Complex XOR with fallback adjustment}}
+	B1 = 0
+	B2 = 0
+	B3 = ""
+	B4 = "_"
+	result = __nx_xor(B1, B2, B3, B4)
+	% result is true, as B2 satisfies the fallback condition (B4),
+	% while B1 is false, fulfilling XOR
+\end{NexCodeBox}
+
+\begin{NexCodeBox}{bash}{title={XOR with both conditions as true}}
+	B1 = 10
+	B2 = 20
+	B3 = 1
+	B4 = 1
+	result = __nx_xor(B1, B2, B3, B4)
+	% result is false, as B1 and B2 both satisfy their respective truth and length conditions, 
+	% violating XOR
+\end{NexCodeBox}
+
+\begin{NexCodeBox}{bash}{title={String XOR with adjusted truth conditions}}
+	B1 = ""
+	B2 = "def"
+	B3 = 1
+	B4 = "a"
+	result = __nx_xor(B1, B2, B3, B4)
+	% result is true, as B1 ("") fails the truth check required by B3, 
+	% while B2 ("def") satisfies the length requirement via B4, fulfilling XOR
+\end{NexCodeBox}
+
+\newpage
+\subsection{__nx_compare}
+\label{__nx_compare}
+\begin{NexCodeBox}{bash}{title={__nx_compare(B1, B2, B3, B4)}}
+function __nx_compare(B1, B2, B3, B4) {
+	if (! B3) {
+		if (length(B3)) {
+			B1 = length(B1)
+			B2 = length(B2)
+			B3 = 1
+		} else if (__nx_is_digit(B1, 1) && __nx_is_digit(B2, 1)) {
+			B1 = +B1
+			B2 = +B2
+			B3 = 1
+		} else {
+			B1 = "a" B1
+			B2 = "a" B2
+			B3 = 1
+		}
+	}
+
+	if (B4) {
+		return __nx_if(__nx_is_digit(B4), B1 > B2, B1 < B2) || __nx_if(__nx_else(B4 == 1, tolower(B4) == "i"), B1 == B2, 0)
+	} else if (length(B4)) {
+		return B1 ~ B2
+	} else {
+		return B1 == B2
+	}
+}
+\end{NexCodeBox}
+
+\begin{NexMainBox}[light, hdrA, sdwA, crnA, grwB, ssecB]
+	\begin{NexMainBox}[dark, crnA]
+		Dynamically compares two inputs based on their type, value, and specified behavior. The function leverages \NexFunction{awk}'s dynamic capabilities, adjusting input values and logic based on context. Its flexibility allows for comparisons of numeric values, strings, lengths, or patterns.
+	\end{NexMainBox}
+	\begin{NexMainBox}[dark, crnA]
+		\begin{NexListDark}
+			\NexItemDark{\NexOption{B1}: The first input to compare.}
+			\NexItemDark{\NexOption{B2}: The second input to compare.}
+			\NexItemDark{\NexOption{B3}: Determines how inputs are normalized for comparison:
+				\begin{NexListLight}
+					\NexItemLight{\NexOption{1}: Inputs are treated as numeric values.}
+					\NexItemLight{\NexOption{""}: Inputs are compared as strings.}
+					\NexItemLight{\NexOption{0}: Inputs engage regex-based comparison.}
+				\end{NexListLight}
+			}
+			\NexItemDark{\NexOption{B4}: Specifies the comparison rule. When \NexOption{B4} is:
+				\begin{NexListLight}
+					\NexItemLight{\NexOption{"i"}: Performs \texttt{>=} (greater than or equal to).}
+					\NexItemLight{\NexOption{"a"}: Performs \texttt{>} (greater than) only, as it fails the second logic check.}
+					\NexItemLight{\NexOption{"1"}: If numeric, performs \texttt{<=} (less than or equal to).}
+					\NexItemLight{\NexOption{numeric but not "1"}: Performs \texttt{<} (less than).}
+					\NexItemLight{\NexOption{""}: Engages strict equality comparison (\texttt{==}).}
+					\NexItemLight{\NexOption{"0"}: Activates pattern matching (\texttt{\textasciitilde}).}
+				\end{NexListLight}
+			}
+		\end{NexListDark}
+	\end{NexMainBox}
+\end{NexMainBox}
+
+\begin{NexCodeBox}{bash}{title={Compare lengths of B1 and B2}}
+	B1 = "hello"
+	B2 = "world!"
+	B3 = 1
+	result = __nx_compare(B1, B2, B3)
+	% result is false, as length("hello") < length("world!")
+\end{NexCodeBox}
+
+\begin{NexCodeBox}{bash}{title={Compare numeric values of B1 and B2}}
+	B1 = "42"
+	B2 = "24"
+	B3 = 1
+	result = __nx_compare(B1, B2, B3)
+	% result is true, as 42 > 24 (numeric comparison)
+\end{NexCodeBox}
+
+\begin{NexCodeBox}{bash}{title={String comparison of B1 and B2}}
+	B1 = "abc"
+	B2 = "def"
+	B3 = ""
+	result = __nx_compare(B1, B2, B3)
+	% result is false, as "abc" != "def"
+\end{NexCodeBox}
+
+\begin{NexCodeBox}{bash}{title={Pattern matching B1 against B2}}
+	B1 = "abc123"
+	B2 = "[a-z]+[0-9]+"
+	B3 = 0
+	result = __nx_compare(B1, B2, B3)
+	% result is true, as "abc123" matches the regex "[a-z]+[0-9]+"
+\end{NexCodeBox}
+
+\begin{NexCodeBox}{bash}{title={Relational comparison using B4}}
+	B1 = 10
+	B2 = 20
+	B3 = 1
+	B4 = "1"
+	result = __nx_compare(B1, B2, B3, B4)
+	% result is true, as 10 <= 20 (numeric comparison with B4 = 1)
+\end{NexCodeBox}
+
+\begin{NexCodeBox}{bash}{title={Case-insensitive equality comparison}}
+	B1 = "Hello"
+	B2 = "hello"
+	B3 = ""
+	B4 = "i"
+	result = __nx_compare(B1, B2, B3, B4)
+	% result is true, as "Hello" == "hello" (case-insensitive)
+\end{NexCodeBox}
+
+
+\newpage
+\subsection{__nx_equality}
+\label{__nx_equality}
+\begin{NexCodeBox}{bash}{title={__nx_equality(B1, B2, B3)}}
+function __nx_equality(B1, B2, B3,	b, e, g) {
+	b = substr(B2, 1, 1)
+	if (b == ">") {
+		e = 2
+		g = 1
+	} else if (b == "<") {
+		e = "a"
+		g = "i"
+	} else if (b == "=") {
+		e = ""
+	} else if (b == "~") {
+		e = 0
+	} else {
+		b = ""
+	}
+	if (b) {
+		if (__nx_compare(substr(B2, 2, 1), "=", 1)) {
+			b = g
+		} else {
+			b = e
+		}
+		e = substr(B2, length(B2), 1)
+		if (__nx_compare(e, "a", 1))
+			return __nx_compare(B1, B3, "", b)
+		else if (__nx_compare(e, "_", 1))
+			return __nx_compare(B1, B3, 0, b)
+		else
+			return __nx_compare(B1, B3, 1, b)
+	}
+	return __nx_compare(B1, B2)
+}
+\end{NexCodeBox}
+
+\begin{NexMainBox}[light, hdrA, sdwA, crnA, grwB, ssecB]
+	\begin{NexMainBox}[dark, crnA]
+		Dynamically evaluates equality or relational conditions between inputs. \NexOption{B2} specifies the operator (\texttt{>}, \texttt{<}, \texttt{=}, or \texttt{\textasciitilde}) and controls the type of comparison. The function uses \NexFunction{__nx_compare} for nuanced behavior based on \NexOption{awk} capabilities.
+	\end{NexMainBox}
+	\begin{NexMainBox}[dark, crnA]
+		\begin{NexListDark}
+			\NexItemDark{\NexOption{B1}: The first input to compare.}
+			\NexItemDark{\NexOption{B2}: Specifies the operator and additional flags for comparison logic. When \NexOption{B2} starts with:
+				\begin{NexListLight}
+					\NexItemLight{\texttt{">"}: Relational comparison (greater than).}
+					\NexItemLight{\texttt{"<"}: Relational comparison (less than).}
+					\NexItemLight{\texttt{"="}: Strict equality check.}
+					\NexItemLight{\texttt{"~"}: Pattern matching (\texttt{\textasciitilde}).}
+				\end{NexListLight}
+			}
+			\NexItemDark{\NexOption{B3}: The second input to compare against \NexOption{B1}.}
+		\end{NexListDark}
+	\end{NexMainBox}
+\end{NexMainBox}
+
+\begin{NexCodeBox}{bash}{title={Compare B1 > B3}}
+	B1 = 5
+	B2 = ">"
+	B3 = 3
+	result = __nx_equality(B1, B2, B3)
+	% result is true, as 5 > 3
+\end{NexCodeBox}
+
+\begin{NexCodeBox}{bash}{title={Compare B1 == B3}}
+	B1 = "hello"
+	B2 = "="
+	B3 = "hello"
+	result = __nx_equality(B1, B2, B3)
+	% result is true, as "hello" == "hello"
+\end{NexCodeBox}
+
+\begin{NexCodeBox}{bash}{title={Check if B1 matches regex B3}}
+	B1 = "abc123"
+	B2 = "~"
+	B3 = "[a-z]+[0-9]+"
+	result = __nx_equality(B1, B2, B3)
+	% result is true, as "abc123" matches the regex "[a-z]+[0-9]+"
+\end{NexCodeBox}
+
+\begin{NexCodeBox}{bash}{title={Compare B1 <= B3}}
+	B1 = 7
+	B2 = "<="
+	B3 = 10
+	result = __nx_equality(B1, B2, B3)
+	% result is true, as 7 <= 10
+\end{NexCodeBox}
+
+\newpage
+\subsection{__nx_swap}
+\label{__nx_swap}
+\begin{NexCodeBox}{bash}{title={__nx_swap(V, D1, D2)}}
+function __nx_swap(V, D1, D2, t) {
+	t = V[D1]
+	V[D1] = V[D2]
+	V[D2] = t
+}
+\end{NexCodeBox}
+
+\begin{NexMainBox}[light, hdrA, sdwA, crnA, grwB, ssecB]
+	\begin{NexMainBox}[dark, crnA]
+		Swaps the values of two indices within an array or associative array. This ensures flexibility in dynamically rearranging or reordering data structures. A temporary variable (`t`) protects against loss during the exchange.
+	\end{NexMainBox}
+	\begin{NexMainBox}[dark, crnA]
+		\begin{NexListDark}
+			\NexItemDark{\NexOption{V}: The array or associative array containing values to be swapped.}
+			\NexItemDark{\NexOption{D1}: The first index (or key) whose value will be swapped.}
+			\NexItemDark{\NexOption{D2}: The second index (or key) whose value will be swapped.}
+		\end{NexListDark}
+	\end{NexMainBox}
+\end{NexMainBox}
+
+\begin{NexCodeBox}{bash}{title={Basic swap of numeric values}}
+	V = [10, 20, 30, 40]
+	D1 = 1
+	D2 = 3
+	__nx_swap(V, D1, D2)
+	% Result: V = [10, 40, 30, 20], as the values at indices 1 and 3 are swapped
+\end{NexCodeBox}
+
+\begin{NexCodeBox}{bash}{title={Swap in a string array}}
+	V = ["apple", "banana", "cherry"]
+	D1 = 0
+	D2 = 2
+	__nx_swap(V, D1, D2)
+	% Result: V = ["cherry", "banana", "apple"], as the values at indices 0 and 2 are swapped
+\end{NexCodeBox}
+
+\begin{NexCodeBox}{bash}{title={Swapping the same index (no-op)}}
+	V = [1, 2, 3]
+	D1 = 1
+	D2 = 1
+	__nx_swap(V, D1, D2)
+	% Result: V = [1, 2, 3], as swapping the same index has no effect
+\end{NexCodeBox}
+
+\begin{NexCodeBox}{bash}{title={Swapping in an associative array}}
+	V["a"] = "x"
+	V["b"] = "y"
+	D1 = "a"
+	D2 = "b"
+	__nx_swap(V, D1, D2)
+	% Result: V = {"a": "y", "b": "x"}, as the values at keys "a" and "b" are swapped
+\end{NexCodeBox}
+
+\begin{NexCodeBox}{bash}{title={Nested array swap}}
+	V = [[1, 2], [3, 4], [5, 6]]
+	D1 = 0
+	D2 = 2
+	__nx_swap(V, D1, D2)
+	% Result: V = [[5, 6], [3, 4], [1, 2]], as the nested arrays at indices 0 and 2 are swapped
+\end{NexCodeBox}
 

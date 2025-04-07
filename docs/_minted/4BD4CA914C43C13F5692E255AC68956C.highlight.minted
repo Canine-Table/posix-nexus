@@ -1,6 +1,0 @@
-\begin{MintedVerbatim}[commandchars=\\\{\},codes={\catcode`\$=3\catcode`\^=7\catcode`\_=8\relax}]
-\PYG{k}{function}\PYG{+w}{ }FULL\PYGZus{}\PYGZus{}\PYG{o}{(}D\PYG{o}{)}
-\PYG{o}{\PYGZob{}}
-\PYG{+w}{	}\PYG{k}{return}\PYG{+w}{ }CMP\PYGZus{}\PYGZus{}\PYG{o}{(}D,\PYG{+w}{ }\PYG{l+s+s2}{\PYGZdq{}\PYGZdq{}},\PYG{+w}{ }\PYG{l+s+s2}{\PYGZdq{}\PYGZdq{}},\PYG{+w}{ }\PYG{l+m}{1}\PYG{o}{)}
-\PYG{o}{\PYGZcb{}}
-\end{MintedVerbatim}

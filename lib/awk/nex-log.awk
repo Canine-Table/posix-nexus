@@ -1,13 +1,38 @@
-function load_symbols(V)
+function load_symbols(V, N)
 {
-	V[30] = "-"
-	V[31] = "X"
-	V[32] = "V"
-	V[33] = "!"
-	V[34] = "i"
-	V[35] = "*"
-	V[36] = "+"
-	V[37] = "?"
+	V[sym0] = "-"
+	V[col0] = "31"
+	V[sym1] = "X"
+	V[sym2] = "!"
+	V[sym3] = "*"
+	V[sym4] = "+"
+	V["c7"] = 37
+	
+	V[s6] = "i"
+	V["c7"] = 35
+
+	V[sym6] = "V"
+	V[sym7] = "?"
+	V["c7"] = 35
+
+	if (D == "black" || D == "dark")
+		D = 30
+	else if (D == "red" || D == "error")
+		D = 31
+	else if (D == "green" || D == "success")
+		D = 32
+	else if (D == "yellow" || D == "warning")
+		D = 33
+	else if (D == "blue" || D == "info")
+		D = 34
+	else if (D == "magenta" || D == "debug")
+		D = 35
+	else if (D == "teal" || D == "alert")
+		D = 36
+	else if (D == "white" || D == "light")
+		D = 37
+	else
+	
 }
 
 function text_style_map(D)
@@ -50,8 +75,17 @@ function color_map(D)
 	return D
 }
 
-function __nx_error(D, V, N)
+function __nx_error(V, D, N, B1, B2)
 {
-	l = -int(V[-0])
+	if (length(V)) {
+		if (! (-0 in V))
+			V[-0] = 0
+		if (__nx_defined(D, 1)) {
+			N = __nx_if(__nx_is_integral(N) && __nx_equality(N, "<=0", 7), N, 7)
+			
+			print N
+		}
+		#-int(++V[-0])
+	}
 	return 0
 }

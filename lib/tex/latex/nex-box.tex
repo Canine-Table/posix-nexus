@@ -281,13 +281,15 @@
 	\end{itemize}%
 }
 
-\long\def\NexItemLight#1{\item[\textcolor{nex.light.frame}{\faArrowAltCircleRight}] #1}
+\long\def\NexItemLight#1{\item[\textcolor{nex.light.frame}{\faArrowAltCircleRight[regular]}] #1}
 
 \tcolorboxenvironment{NexListLight}{
-	blanker,
+	enhanced,
+	jigsaw,
 	before skip=6pt,
 	after skip=6pt,
-	borderline west={3mm}{0pt}{nex.light.frame},
+	borderline west={8mm}{0pt}{nex.light.frame},
+	colframe={nex.light.frame},
 	coltext=nex.light.text,
 }
 

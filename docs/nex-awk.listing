@@ -1,24 +1,8 @@
-function insert_indexed_item(V, D, S, N1, N2, N3, j)
-{
-	if (TRUE__(D, 1)) {
-		if (! is_array(V))
-			split("", V, "")
-		if (! is_integral(N1))
-			N1 = size(V)
-		if (LT__(+N2, N1))
-			N2 = 0
-		if (! __is_index(N3))
-			N3 = 1
-		j = N1
-		for (i = 1; i <= trim_split(D, v, S); i++) {
-			if (N2)
-				j = modulus_range(j, N1, N2)
-			V[j] = v[i]
-			j = j + N3
-		}
-		delete v
-		if (N2)
-			return modulus_range(j, N1, N2)
-		return j
-	}
-}
+	D1 = "<hello>world</hello> <token value />"
+	V1["<hello>"] = "</hello>"
+	V1["<token "] = "/>"
+	result = nx_token_group(D1, V1, V2)
+	% Result:
+	% V2[1_s] = 1, V2[1_c] = "world", V2[1_e] = 19
+	% V2[2_s] = 20, V2[2_c] = "value", V2[2_e] = 35
+	% Explanation: Two sets of delimiters are processed, capturing "world" and "value".

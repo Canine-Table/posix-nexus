@@ -1,6 +1,0 @@
-\begin{MintedVerbatim}[commandchars=\\\{\},codes={\catcode`\$=3\catcode`\^=7\catcode`\_=8\relax}]
-\PYG{n}{function}\PYG{+w}{ }\PYG{n+nf}{\PYGZus{}\PYGZus{}is\PYGZus{}signed}\PYG{p}{(}\PYG{n}{N}\PYG{p}{)}
-\PYG{p}{\PYGZob{}}
-\PYG{+w}{        }\PYG{k}{return}\PYG{+w}{ }\PYG{n}{N}\PYG{+w}{ }\PYG{o}{\PYGZti{}}\PYG{+w}{ }\PYG{o}{/}\PYG{o}{\PYGZca{}}\PYG{p}{(}\PYG{p}{[}\PYG{o}{\PYGZhy{}}\PYG{p}{]}\PYG{o}{|}\PYG{p}{[}\PYG{o}{+}\PYG{p}{]}\PYG{p}{)}\PYG{o}{/}
-\PYG{p}{\PYGZcb{}}
-\end{MintedVerbatim}

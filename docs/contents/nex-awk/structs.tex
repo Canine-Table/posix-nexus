@@ -7,73 +7,198 @@
 	\end{NexMainBox}
 	\begin{NexMainBox}[dark, crnA]
 		\begin{NexListDark}
-			\NexItemDark{\NexLink{insert_indexed_item}{insert_indexed_item(V, D, S, N1, N2, N3)}: Inserts items from \NexFunction{D} into the indexed array \NexFunction{V}, handling split delimiters \NexFunction{S} and optional position adjustments using \NexFunction{N1}, \NexFunction{N2}, and \NexFunction{N3}.} \NexItemDark{\NexFunction{unique_indexed_array(D, V, S, O, B)}: Creates a unique indexed array or joined string from \NexFunction{D}, splitting using \NexFunction{S}, joining with \NexFunction{O}, and optionally storing results in \NexFunction{V} based on \NexFunction{B}.}
-			\NexItemDark{\NexFunction{remove_indexed_item(V, N1, N2, N3, N4)}: Deletes items from the indexed array \NexFunction{V} based on the range and step defined by \NexFunction{N1}, \NexFunction{N2}, \NexFunction{N3}, and \NexFunction{N4}.}
-			\NexItemDark{\NexFunction{__join_array(V, S)}: Joins the elements of array \NexFunction{V} into a string, separated by the delimiter \NexFunction{S}.}
-			\NexItemDark{\NexFunction{__join_indexed_array(V, S)}: Joins the indexed elements of array \NexFunction{V} into a string, separated by the delimiter \NexFunction{S}.}
-			\NexItemDark{\NexFunction{flip_map(V, D1, D2, D3, S)}: Swaps the values in array \NexFunction{V} for the keys defined in \NexFunction{D3}, using \NexFunction{D1} and \NexFunction{D2} to determine the keys to flip.}
-			\NexItemDark{\NexFunction{size(V)}: Calculates and returns the size (number of elements) of the array \NexFunction{V}.}
-			\NexItemDark{\NexFunction{is_array(V)}: Checks if \NexFunction{V} is an array and returns 1 if true, 0 otherwise.}
-			\NexItemDark{\NexFunction{__is_index(N)}: Validates that \NexFunction{N} is a positive integer and returns it if valid, otherwise returns 0.}
-			\NexItemDark{\NexFunction{resize_indexed_hashmap(V, N1, N2, S, D)}: Resizes the indexed hashmap \NexFunction{V} to the target size \NexFunction{N1}, redistributing elements starting from \NexFunction{N2}, joining them with \NexFunction{S}, and filling extra slots with \NexFunction{D} if needed.}
-			\NexItemDark{\NexFunction{reverse_indexed_hashmap(V, N1, N2, D, S, O)}: Reverses the indexed hashmap \NexFunction{V} between indices \NexFunction{N1} and \NexFunction{N2}, optionally splitting or joining elements with \NexFunction{S} and \NexFunction{O}.}
-			\NexItemDark{\NexFunction{stack(V, M, D, S)}: Implements stack operations (push, pop, peek, isempty) on \NexFunction{V}, using \NexFunction{D} for push and optionally splitting data with \NexFunction{S}.}
-			\NexItemDark{\NexFunction{queue(V, M, D1, S, D2)}: Implements queue operations (enqueue, dequeue, isempty, size, resize) on \NexFunction{V}, using \NexFunction{D1} and \NexFunction{D2} for data management and \NexFunction{S} for delimiters.}
-			\NexItemDark{\NexFunction{clone_array(V1, V2, B)}: Copies elements from array \NexFunction{V1} to \NexFunction{V2}, either preserving keys (\NexFunction{B} set) or copying values directly.}
-			\NexItemDark{\NexFunction{trim_split(D, V, S)}: Splits \NexFunction{D} into array \NexFunction{V}, trimming whitespace around delimiters \NexFunction{S}.}
+			\NexItemDark{\NexLink{nx_find_index}{nx_find_index(\NexOption{D1}, \NexOption{S}, \NexOption{D2})}: Searches for the first occurrence of a pattern within a string, with additional constraints. Returns the index of the match or modifies behavior based on optional parameters.}
+			\NexItemDark{\NexLink{nx_next_index}{nx_next_index(\NexOption{D1}, \NexOption{V}, \NexOption{S}, \NexOption{D2}, \NexOption{B1}, \NexOption{B2})}: Retrieves the next relevant index within a string, based on constraints and fallback adjustments. Dynamically updates or clears the search list (\NexOption{V}) after evaluation.}
+			\NexItemDark{\NexLink{nx_token_group}{nx_token_group(\NexOption{D1}, \NexOption{V1}, \NexOption{V2}, \NexOption{D2}, \NexOption{B}, \NexOption{s}, \NexOption{e})}: Extracts and tokenizes content from a data string (\NexOption{D1}) based on specified start and end delimiters (\NexOption{V1}). Stores results dynamically in an output vector (\NexOption{V2}), including token content and its indices. Handles escape sequences through constraints (\NexOption{D2}) and optionally clears \NexOption{V1} after processing (\NexOption{B}).}
 		\end{NexListDark}
 	\end{NexMainBox}
 \end{NexMainBox}
 
-\begin{NexMainBox}[light, hdrA, sdwA, crnA, grwB, secB]
-	\begin{NexMainBox}[dark, crnA]
-		\begin{NexListDark}
-			\NexItemDark{\NexFunction{array(D, V, S)}: Populates the array \NexFunction{V} with unique keys from \NexFunction{D}, splitting elements using delimiter \NexFunction{S}.}
-			\NexItemDark{\NexFunction{split_parameters(D, V, S1, S2)}: Splits \NexFunction{D} into key-value pairs based on delimiters \NexFunction{S1} (pair separator) and \NexFunction{S2} (key-value separator), storing the result in \NexFunction{V}.}
-			\NexItemDark{\NexFunction{compare_arrays(D1, D2, M, S, O)}: Compares arrays \NexFunction{D1} and \NexFunction{D2} based on mode \NexFunction{M} (left, right, intersect, difference) and combines results using delimiters \NexFunction{S} and \NexFunction{O}.}
-		\end{NexListDark}
-	\end{NexMainBox}
-\end{NexMainBox}
-
-\subsection{insert_indexed_item}
-\label{insert_indexed_item}
-
-\begin{NexCodeBox}{bash}{title=\textbf{insert_indexed_item(V, D, S, N1, N2, N3)}}
-function insert_indexed_item(V, D, S, N1, N2, N3, j)
-{
-	if (TRUE__(D, 1)) {
-		if (! is_array(V))
-			split("", V, "")
-		if (! is_integral(N1))
-			N1 = size(V)
-		if (LT__(+N2, N1))
-			N2 = 0
-		if (! __is_index(N3))
-			N3 = 1
-		j = N1
-		for (i = 1; i <= trim_split(D, v, S); i++) {
-			if (N2)
-				j = modulus_range(j, N1, N2)
-			V[j] = v[i]
-			j = j + N3
+\newpage
+\subsection{nx_find_index}
+\label{nx_find_index}
+\begin{NexCodeBox}{bash}{title={nx_find_index(D1, S, D2)}}
+function nx_find_index(D1, S, D2, f, m) {
+	if (__nx_defined(D1, 1)) {
+		m = 0
+		f = 0
+		S = __nx_else(S, "\x20")
+		D2 = __nx_else(D2, "\\")
+		while (match(D1, S)) {
+			f = f + RSTART
+			if (! (match(substr(D1, 1, RSTART - 1), D2 "+$") && __nx_defined(D2, 1)) || int(RLENGTH % 2) == 0) {
+				m = 1
+				break
+			} else {
+				f = f + RLENGTH
+				D1 = substr(D1, f + 1)
+			}
 		}
-		delete v
-		if (N2)
-			return modulus_range(j, N1, N2)
-		return j
+		return f
 	}
 }
 \end{NexCodeBox}
 
 \begin{NexMainBox}[light, hdrA, sdwA, crnA, grwB, ssecB]
-	\begin{NexMainBox}[dark, crnA, title=Validation and Initialization]
+	\begin{NexMainBox}[dark, crnA]
+		Searches for the first match of a given pattern (\NexOption{S}) within a string (\NexOption{D1}) while applying optional constraints (\NexOption{D2}). The function handles fallback conditions and uses nuanced logic to account for escape characters and repeated patterns.
+	\end{NexMainBox}
+	\begin{NexMainBox}[dark, crnA]
 		\begin{NexListDark}
-			\NexItemDark{\NexFunction{trim_split(D, V, S)}: Splits \NexFunction{D} into array \NexFunction{V}, trimming whitespace around delimiters \NexFunction{S}.}
+			\NexItemDark{\NexOption{D1}: The input string to search.}
+			\NexItemDark{\NexOption{S}: The primary pattern to search for. Defaults to the space character (` `).}
+			\NexItemDark{\NexOption{D2}: An optional secondary pattern used to constrain matches (e.g., escape sequences). Defaults to the backslash (`\backslash`).}
 		\end{NexListDark}
-
 	\end{NexMainBox}
 \end{NexMainBox}
 
+\begin{NexCodeBox}{bash}{title={Basic pattern matching}}
+	D1 = "hell\o world"
+	S = "o"
+	result = nx_find_index(D1, S)
+	% result is 8
+	% Explanation: The first occurrence of "o" in "hello world" is excaped, the next occurence is at index 8.
+\end{NexCodeBox}
 
+\begin{NexCodeBox}{bash}{title={No match for the pattern}}
+	D1 = "hello world"
+	S = "z"
+	result = nx_find_index(D1, S)
+	% result is 0
+	% Explanation: Since "z" doesn't exist in the string, the function returns 0.
+\end{NexCodeBox}
 
+\begin{NexCodeBox}{bash}{title={Default parameters}}
+	D1 = "this is an example"
+	result = nx_find_index(D1)
+	% result is 5
+	% Explanation: The default pattern `S` is a space character, and the first space is at index 5.
+\end{NexCodeBox}
 
+\begin{NexCodeBox}{bash}{title={Complex string with escape sequences}}
+	D1 = "path\\to\\file"
+	S = "\\\\"
+	D2 = "\\\\"
+	result = nx_find_index(D1, S, D2)
+	% result is 5
+	% Explanation: The function navigates the string while respecting escape constraints and finds the first valid match.
+\end{NexCodeBox}
+
+\newpage
+\subsection{nx_next_index}
+\label{nx_next_index}
+\begin{NexCodeBox}{bash}{title={nx_next_index(D1, V, S, D2, B1, B2)}}
+function nx_next_index(D1, V, S, D2, B1, B2, i, m, f) {
+	if (__nx_defined(D1, 1)) {
+		if (! length(V)) {
+			if (S)
+				split(S, V, "")
+			else
+				return 0
+		}
+		for (i in V) {
+			m = nx_find_index(D1, V[i], D2)
+			if (! f || __nx_or(B1, m > f, m < f))
+				f = m
+		}
+		if (B2)
+			delete V
+		return f
+	}
+}
+\end{NexCodeBox}
+
+\begin{NexMainBox}[light, hdrA, sdwA, crnA, grwB, ssecB]
+	\begin{NexMainBox}[dark, crnA]
+		Retrieves the next relevant index from the input string (\NexOption{D1}) based on specific search conditions and constraints. Updates or removes the search list (\NexOption{V}) as needed to maintain dynamic behavior.
+	\end{NexMainBox}
+	\begin{NexMainBox}[dark, crnA]
+		\begin{NexListDark}
+			\NexItemDark{\NexOption{D1}: The input string to search.}
+			\NexItemDark{\NexOption{V}: A list of characters or substrings to search for within \NexOption{D1}. Dynamically updated based on \NexOption{S} if empty.}
+			\NexItemDark{\NexOption{S}: A string used to generate the search list (\NexOption{V}) if it is initially empty.}
+			\NexItemDark{\NexOption{D2}: An optional constraint applied during the search, leveraging \NexFunction{nx_find_index}.}
+			\NexItemDark{\NexOption{B1}: A logical parameter controlling whether indices above or below the previous match (\NexOption{f}) are prioritized.}
+			\NexItemDark{\NexOption{B2}: A flag indicating whether to delete the search list (\NexOption{V}) after evaluation.}
+		\end{NexListDark}
+	\end{NexMainBox}
+\end{NexMainBox}
+
+\begin{NexCodeBox}{bash}{title={Using S to generate the vector V}}
+	D1 = "abcdef"
+	S = "cdf"
+	split(S, V, "")
+	result = nx_next_index(D1, V)
+	% result is 3
+	% Explanation: `S` is split into a vector `V` as ["c", "d", "f"]. The first match is "c" at index 3 in `D1`.
+\end{NexCodeBox}
+
+\newpage
+\subsection{nx_token_group}
+\label{nx_token_group}
+\begin{NexCodeBox}{bash}{title={nx_token_group(D1, V1, V2, D2, B, s, e)}}
+function nx_token_group(D1, V1, V2, D2, B, s, e) {
+	if (length(V1) && length(D1)) {
+	V2[0] = int(V2[0])
+	for (i in V1) {
+		s = i
+		gsub(//, "\\", s)
+		if ((s = nx_find_index(D1, substr(s, 1, length(s) - 1), D2)) && (e = V1[i])) {
+		gsub(//, "\\", e)
+		t = s + length(i)
+		if (e = nx_find_index(substr(D1, t), substr(e, 1, length(e) - 1), D2)) {
+			V2[++V2[0] "_s"] = s
+			V2[V2[0] "_c"] = substr(D1, t, e - 1)
+			V2[V2[0] "_e"] = t + e + length(V1[i]) - 1
+		}
+		}
+	}
+	if (B)
+		delete V1
+	return V2[0]
+	}
+}
+\end{NexCodeBox}
+
+\begin{NexMainBox}[light, hdrA, sdwA, crnA, grwB, ssecB]
+	\begin{NexMainBox}[dark, crnA]
+	Extracts and tokenizes content from a data string (\NexOption{D1}) based on specified start and end delimiters stored in an associative array (\NexOption{V1}). Results, including token content and indices, are stored dynamically in the output vector (\NexOption{V2}).
+	\end{NexMainBox}
+	\begin{NexMainBox}[dark, crnA]
+	\begin{NexListDark}
+		\NexItemDark{\NexOption{D1}: The input data string that contains content to be tokenized.}
+		\NexItemDark{\NexOption{V1}: An associative array mapping start delimiters (keys) to end delimiters (values).}
+		\NexItemDark{\NexOption{V2}: A vector for storing results, including tokenized content and its indices.}
+		\NexItemDark{\NexOption{D2}: Constraints for handling escape sequences or specific delimiters.}
+		\NexItemDark{\NexOption{B}: A boolean flag to delete \NexOption{V1} after processing if set to true.}
+	\end{NexListDark}
+	\end{NexMainBox}
+\end{NexMainBox}
+
+\begin{NexCodeBox}{bash}{title={Basic token grouping with associative array delimiters}}
+	D1 = "<token data />"
+	V1["<token "] = "/>"
+	V2[0] = 0
+	result = nx_token_group(D1, V1, V2)
+	% Result: V2[1_s] = 1, V2[1_c] = "data", V2[1_e] = 16
+	% Explanation: The function identifies the start delimiter "<token " and the end delimiter "/>", capturing "data".
+\end{NexCodeBox}
+
+\begin{NexCodeBox}{bash}{title={Token grouping with nested delimiters}}
+	D1 = "{{% nested content %}}"
+	V1["{{%"] = "%}}"
+	result = nx_token_group(D1, V1, V2)
+	% Result: V2[1_s] = 1, V2[1_c] = " nested content ", V2[1_e] = 24
+	% Explanation: The function processes the start delimiter "{{%" and the end delimiter "%}}", extracting "nested content".
+\end{NexCodeBox}
+
+\begin{NexCodeBox}{bash}{title={Multiple delimiter pairs}}
+	D1 = "<hello>world</hello> <token value />"
+	V1["<hello>"] = "</hello>"
+	V1["<token "] = "/>"
+	result = nx_token_group(D1, V1, V2)
+	% Result:
+	% V2[1_s] = 1, V2[1_c] = "world", V2[1_e] = 19
+	% V2[2_s] = 20, V2[2_c] = "value", V2[2_e] = 35
+	% Explanation: Two sets of delimiters are processed, capturing "world" and "value".
+\end{NexCodeBox}

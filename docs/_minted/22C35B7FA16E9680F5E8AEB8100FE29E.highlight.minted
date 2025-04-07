@@ -1,6 +1,0 @@
-\begin{MintedVerbatim}[commandchars=\\\{\},codes={\catcode`\$=3\catcode`\^=7\catcode`\_=8\relax}]
-\PYG{k}{function}\PYG{+w}{ }IN\PYGZus{}\PYGZus{}\PYG{o}{(}V,\PYG{+w}{ }D,\PYG{+w}{ }B\PYG{o}{)}
-\PYG{o}{\PYGZob{}}
-\PYG{+w}{	}\PYG{k}{return}\PYG{+w}{ }D\PYG{+w}{ }\PYG{k}{in}\PYG{+w}{ }V\PYG{+w}{ }\PYG{o}{\PYGZam{}\PYGZam{}}\PYG{+w}{ }TRUE\PYGZus{}\PYGZus{}\PYG{o}{(}V\PYG{o}{[}D\PYG{o}{]},\PYG{+w}{ }B\PYG{o}{)}
-\PYG{o}{\PYGZcb{}}
-\end{MintedVerbatim}
