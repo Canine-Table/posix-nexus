@@ -1,8 +1,8 @@
-	D1 = "<hello>world</hello> <token value />"
-	V1["<hello>"] = "</hello>"
-	V1["<token "] = "/>"
-	result = nx_token_group(D1, V1, V2)
+	D1 = "token1\,token2, token3"
+	V2[""] = ","
+	V1[0] = 0
+	result = nx_tokenize(D1, V1, V2, "\\")
 	% Result:
-	% V2[1_s] = 1, V2[1_c] = "world", V2[1_e] = 19
-	% V2[2_s] = 20, V2[2_c] = "value", V2[2_e] = 35
-	% Explanation: Two sets of delimiters are processed, capturing "world" and "value".
+	% V1[1] = "token1\,token2"
+	% V1[2] = "token3"
+	% Explanation: Accounts for escaped commas ("\,") and ensures they are not treated as delimiters.

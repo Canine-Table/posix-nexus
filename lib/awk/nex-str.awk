@@ -1,29 +1,3 @@
-function __nx_load_char_map(V)
-{
-	V["upper"] = "A-Z"
-	V["lower"] = "a-z"
-	V["xupper"] = "A-F"
-	V["xlower"] = "a-f"
-	V["digit"] = "0-9"
-	V["alpha"] = V["upper"] V["lower"]
-	V["xdigit"] = V["digit"] V["xupper"] V["xlower"]
-	V["alnum"] = V["digit"] V["alpha"]
-	V["print"] = "\x20-\x7e"
-	V["punct"] = "\x21-\x2f\x3a-\x40\x5b-\x60\x7b-\x7e"
-}
-
-function __nx_load_esc_map(V)
-{
-	V[" "] = "\x20"
-	V["b"] = "\x08"
-	V["t"] = "\x09"
-	V["n"] = "\x0a"
-	V["v"] = "\x0b"
-	V["f"] = "\x0c"
-	V["r"] = "\x0d"
-	V["e"] = "\x1b"
-}
-
 function nx_reverse_str(D,	i, v)
 {
 	if ((i = split(D, v, "")) > 1) {
@@ -78,19 +52,20 @@ function nx_cut_str(D1, D2, B)
 	}
 }
 
-function nx_totitle(D, B,	i, s, v)
-{
-	while (i = nx_first_index(D, "\t\n\f\v ", 1, v)) {
-		s = s toupper(substr(D, 1, 1)) tolower(substr(D, 2, i - 1))
-		D = substr(D, i + 1)
-	}
-	if (__nx_null(B))
-		delete v
-	return s
-}
+#function nx_totitle(D, B,	i, s, v)
+#{
+#	__nx_escape_map(v)
+#	while (i = nx_first_index(D, v, 1, v)) {
+#		s = s toupper(substr(D, 1, 1)) tolower(substr(D, 2, i - 1))
+#		D = substr(D, i + 1)
+#	}
+#	if (B)
+#		delete v
+#	return s
+#}
 
-function nx_random_str(N, D, S, B,	v1, v2)
-{
+#function nx_random_str(N, D, S, B,	v1, v2)
+#{
 	#if (__nx_is_natural(N)) {
 	#	__load_str_map(v1)
 	#	v1[0] = length(v1)
@@ -99,7 +74,7 @@ function nx_random_str(N, D, S, B,	v1, v2)
 	#		nx_option(v1[i], v3, S, v3, 1)
 	#	}
 	#}
-}
+#}
 
 #function random_str(N, C, S, B,		str_map, s, v, i, rg, line)
 ##{

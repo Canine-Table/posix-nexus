@@ -1,3 +1,40 @@
+function __nx_quote_map(V)
+{
+	V["\""] = "\""
+	V["'"] = "'"
+	V["`"] = "`"
+}
+
+function __nx_bracket_map(V)
+{
+	V["\x5b"] = "\x5d"
+	V["\x7b"] = "\x7d"
+	V["\x28"] = "\x29"
+}
+
+function __nx_str_map(V)
+{
+	V["upper"] = "A-Z"
+	V["lower"] = "a-z"
+	V["xupper"] = "A-F"
+	V["xlower"] = "a-f"
+	V["digit"] = "0-9"
+	V["alpha"] = V["upper"] V["lower"]
+	V["xdigit"] = V["digit"] V["xupper"] V["xlower"]
+	V["alnum"] = V["digit"] V["alpha"]
+	V["print"] = "\x20-\x7e"
+	V["punct"] = "\x21-\x2f\x3a-\x40\x5b-\x60\x7b-\x7e"
+}
+
+function __nx_escape_map(V)
+{
+	V["\x20"] = ""
+	V["\x09"] = ""
+	V["\x0a"] = ""
+	V["\x0b"] = ""
+	V["\x0c"] = ""
+}
+
 function __nx_defined(D, B)
 {
 	return (D || (length(D) && B))
@@ -5,7 +42,7 @@ function __nx_defined(D, B)
 
 function __nx_null(D)
 {
-	return (length(D) == 0)
+	return D == ""
 }
 
 function __nx_else(D1, D2, B)

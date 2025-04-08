@@ -7,6 +7,10 @@
 	\end{NexMainBox}
 	\begin{NexMainBox}[dark, crnA]
 		\begin{NexListDark}
+			\NexItemDark{\NexLink{__nx_quote_map}{__nx_quote_map(\NexOption{V})}: Initializes an associative array (\NexOption{V}) with mappings for common quote characters (double quotes, single quotes, and backticks). Useful for handling quotes in parsing, escaping, or validation tasks.}
+			\NexItemDark{\NexLink{__nx_bracket_map}{__nx_bracket_map(\NexOption{V})}: Initializes an associative array (\NexOption{V}) with mappings for common opening and closing brackets (e.g., \texttt{[} to \texttt{]}, \texttt{\{} to \texttt{\}}, and \texttt{(} to \texttt{)}). Useful for parsing, validation, and other operations involving balanced brackets.}
+			\NexItemDark{\NexLink{__nx_str_map}{__nx_str_map(\NexOption{V})}: Initializes an associative array (\NexOption{V}) with mappings for string character classes. These include ranges for uppercase and lowercase letters, digits, hexadecimal characters, alphanumeric characters, printable ASCII characters, and punctuation. Useful for validation, parsing, and string processing.}
+			\NexItemDark{\NexLink{__nx_escape_map}{__nx_escape_map(\NexOption{V})}: Initializes an associative array (\NexOption{V}) with mappings for common escape sequences (\texttt{\textbackslash x20}, \texttt{\textbackslash x09}, \texttt{\textbackslash x0a}, \texttt{\textbackslash x0b}, \texttt{\textbackslash x0c}), each assigned to an empty string. Useful for removing whitespace and control characters during string processing.}
 			\NexItemDark{\NexLink{__nx_defined}{__nx_defined(\NexOption{D}, \NexOption{B})}: Validates whether \NexOption{D} is defined or evaluates as truthy under additional constraints provided by \NexOption{B}.}
 			\NexItemDark{\NexLink{__nx_null}{__nx_null(\NexOption{D})}: Checks whether \NexOption{D} is null or has a length of zero.}
 			\NexItemDark{\NexLink{__nx_else}{__nx_else(\NexOption{D1}, \NexOption{D2}, \NexOption{B})}: Returns \NexOption{D1} if it is truthy or satisfies the condition set by \NexOption{B}, otherwise returns \NexOption{D2}.}
@@ -14,9 +18,143 @@
 			\NexItemDark{\NexLink{__nx_elif}{__nx_elif(\NexOption{B1}, \NexOption{B2}, \NexOption{B3}, \NexOption{B4}, \NexOption{B5}, \NexOption{B6})}: Evaluates multiple conditions and their relationships, returning a boolean value based on comparisons of the results of \NexFunction{__nx_defined} for the provided inputs.}
 			\NexItemDark{\NexLink{__nx_or}{__nx_or(\NexOption{B1}, \NexOption{B2}, \NexOption{B3}, \NexOption{B4}, \NexOption{B5}, \NexOption{B6})}: Evaluates logical OR conditions between multiple inputs, incorporating constraints applied via \NexFunction{__nx_defined} and fallback adjustments from \NexFunction{__nx_else}.}
 			\NexItemDark{\NexLink{__nx_xor}{__nx_xor(\NexOption{B1}, \NexOption{B2}, \NexOption{B3}, \NexOption{B4})}: Evaluates exclusive OR (XOR) conditions between multiple inputs, incorporating constraints applied via \NexFunction{__nx_defined} and fallback adjustments from \NexFunction{__nx_else}.}
+		\end{NexListDark}
+	\end{NexMainBox}
+\end{NexMainBox}
+
+\begin{NexMainBox}[light, hdrA, sdwA, crnA, grwB, secB]
+	\begin{NexMainBox}[dark, crnA]
+		\begin{NexListDark}
 			\NexItemDark{\NexLink{__nx_compare}{__nx_compare(\NexOption{B1}, \NexOption{B2}, \NexOption{B3}, \NexOption{B4})}: Compares two inputs based on type, length, or specified comparison rules, leveraging \NexFunction{awk}'s dynamic behavior and optional constraints.}
 			\NexItemDark{\NexLink{__nx_equality}{__nx_equality(\NexOption{B1}, \NexOption{B2}, \NexOption{B3})}: Evaluates the equality or relational conditions between \NexOption{B1} and \NexOption{B3} based on the operator specified in \NexOption{B2}, leveraging \NexFunction{awk} behavior for dynamic comparisons.}
 			\NexItemDark{\NexLink{__nx_swap}{__nx_swap(\NexOption{V}, \NexOption{D1}, \NexOption{D2})}: Swaps the values of two specified indices in the provided array or associative array. Utilizes a temporary variable to ensure the operation is safe and lossless.}
+		\end{NexListDark}
+	\end{NexMainBox}
+\end{NexMainBox}
+
+\subsection{__nx_quote_map}
+\label{__nx_quote_map}
+\begin{NexCodeBox}{bash}{title={__nx_quote_map(V)}}
+	function __nx_quote_map(V) {
+		V["\""] = "\""
+		V["'"] = "'"
+		V["`"] = "`"
+	}
+\end{NexCodeBox}
+
+\begin{NexMainBox}[light, hdrA, sdwA, crnA, grwB, ssecB]
+	\begin{NexMainBox}[dark, crnA]
+		Initializes an associative array (\NexOption{V}) with common quote characters (double quotes, single quotes, and backticks), mapping each to itself. This is useful for handling quotes in parsing, escaping, or validation tasks.
+	\end{NexMainBox}
+	\begin{NexMainBox}[dark, crnA]
+		\begin{NexListDark}
+			\NexItemDark{\NexOption{V}: An associative array passed by reference. After execution, it contains mappings for the following characters:
+				\begin{NexListLight}
+					\NexItemLight{\texttt{"} (double quote)}
+					\NexItemLight{\texttt{' (single quote)}}
+					\NexItemLight{\texttt{` (backtick)}}
+				\end{NexListLight}
+			}
+		\end{NexListDark}
+	\end{NexMainBox}
+\end{NexMainBox}
+
+\newpage
+\subsection{__nx_bracket_map}
+\label{__nx_bracket_map}
+\begin{NexCodeBox}{bash}{title={__nx_bracket_map(V)}}
+function __nx_bracket_map(V) {
+	V["\x5b"] = "\x5d"
+	V["\x7b"] = "\x7d"
+	V["\x28"] = "\x29"
+}
+\end{NexCodeBox}
+
+\begin{NexMainBox}[light, hdrA, sdwA, crnA, grwB, ssecB]
+	\begin{NexMainBox}[dark, crnA]
+		Initializes an associative array (\NexOption{V}) with mappings for common bracket characters. Each opening bracket is mapped to its corresponding closing bracket, using their ASCII hexadecimal representations.
+	\end{NexMainBox}
+	\begin{NexMainBox}[dark, crnA]
+		\begin{NexListDark}
+			\NexItemDark{\NexOption{V}: An associative array passed by reference. After execution, it contains the following mappings:
+				\begin{NexListLight}
+					\NexItemLight{\texttt{\textbackslash x5b} (ASCII for \texttt{[}) maps to \texttt{\textbackslash x5d} (ASCII for \texttt{]}).}
+					\NexItemLight{\texttt{\textbackslash x7b} (ASCII for \texttt{\{}) maps to \texttt{\textbackslash x7d} (ASCII for \texttt{\}}).}
+					\NexItemLight{\texttt{\textbackslash x28} (ASCII for \texttt{(}) maps to \texttt{\textbackslash x29} (ASCII for \texttt{)}).}
+				\end{NexListLight}
+			}
+		\end{NexListDark}
+	\end{NexMainBox}
+\end{NexMainBox}
+
+\subsection{__nx_str_map}
+\label{__nx_str_map}
+\begin{NexCodeBox}{bash}{title={__nx_str_map(V)}}
+function __nx_str_map(V) {
+	V["upper"] = "A-Z"
+	V["lower"] = "a-z"
+	V["xupper"] = "A-F"
+	V["xlower"] = "a-f"
+	V["digit"] = "0-9"
+	V["alpha"] = V["upper"] V["lower"]
+	V["xdigit"] = V["digit"] V["xupper"] V["xlower"]
+	V["alnum"] = V["digit"] V["alpha"]
+	V["print"] = "\x20-\x7e"
+	V["punct"] = "\x21-\x2f\x3a-\x40\x5b-\x60\x7b-\x7e"
+}
+\end{NexCodeBox}
+
+\begin{NexMainBox}[light, hdrA, sdwA, crnA, grwB, ssecB]
+	\begin{NexMainBox}[dark, crnA]
+		Initializes an associative array (\NexOption{V}) with mappings for string character classes. These mappings include ranges for uppercase letters, lowercase letters, digits, hexadecimal characters, printable characters, and punctuation.
+	\end{NexMainBox}
+	\begin{NexMainBox}[dark, crnA]
+		\begin{NexListDark}
+			\NexItemDark{\NexOption{V}: An associative array passed by reference. After execution, it contains the following mappings:
+				\begin{NexListLight}
+					\NexItemLight{\NexOption{"upper"}: Maps to \texttt{"A-Z"} (uppercase English letters).}
+					\NexItemLight{\NexOption{"lower"}: Maps to \texttt{"a-z"} (lowercase English letters).}
+					\NexItemLight{\NexOption{"xupper"}: Maps to \texttt{"A-F"} (uppercase hexadecimal characters).}
+					\NexItemLight{\NexOption{"xlower"}: Maps to \texttt{"a-f"} (lowercase hexadecimal characters).}
+					\NexItemLight{\NexOption{"digit"}: Maps to \texttt{"0-9"} (numerical digits).}
+					\NexItemLight{\NexOption{"alpha"}: Concatenation of \NexOption{"upper"} and \NexOption{"lower"}; maps to \texttt{"A-Za-z"} (alphabetical characters).}
+					\NexItemLight{\NexOption{"xdigit"}: Concatenation of \NexOption{"digit"}, \NexOption{"xupper"}, and \NexOption{"xlower"}; maps to \texttt{"0-9A-Fa-f"} (hexadecimal digits).}
+					\NexItemLight{\NexOption{"alnum"}: Concatenation of \NexOption{"digit"} and \NexOption{"alpha"}; maps to \texttt{"0-9A-Za-z"} (alphanumeric characters).}
+					\NexItemLight{\NexOption{"print"}: Maps to \texttt{"\textbackslash x20-\textbackslash x7e"} (printable ASCII characters).}
+					\NexItemLight{\NexOption{"punct"}: Maps to \texttt{"\textbackslash x21-\textbackslash x2f\textbackslash x3a-\textbackslash x40\textbackslash x5b-\textbackslash x60\textbackslash x7b-\textbackslash x7e"} (punctuation characters within printable ASCII).}
+				\end{NexListLight}
+			}
+		\end{NexListDark}
+	\end{NexMainBox}
+\end{NexMainBox}
+
+\subsection{__nx_escape_map}
+\label{__nx_escape_map}
+\begin{NexCodeBox}{bash}{title={__nx_escape_map(V)}}
+function __nx_escape_map(V) {
+	V["\x20"] = ""
+	V["\x09"] = ""
+	V["\x0a"] = ""
+	V["\x0b"] = ""
+	V["\x0c"] = ""
+}
+\end{NexCodeBox}
+
+\begin{NexMainBox}[light, hdrA, sdwA, crnA, grwB, ssecB]
+	\begin{NexMainBox}[dark, crnA]
+		Initializes an associative array (\NexOption{V}) with mappings for common escape sequences, assigning each escape sequence to an empty string. This is useful for processing or sanitizing strings by removing whitespace and control characters.
+	\end{NexMainBox}
+	\begin{NexMainBox}[dark, crnA]
+		\begin{NexListDark}
+			\NexItemDark{\NexOption{V}: An associative array passed by reference. After execution, it contains the following mappings:
+				\begin{NexListLight}
+					\NexItemLight{\texttt{\textbackslash x20}: Maps to an empty string (ASCII for space).}
+					\NexItemLight{\texttt{\textbackslash x09}: Maps to an empty string (ASCII for tab).}
+					\NexItemLight{\texttt{\textbackslash x0a}: Maps to an empty string (ASCII for newline).}
+					\NexItemLight{\texttt{\textbackslash x0b}: Maps to an empty string (ASCII for vertical tab).}
+					\NexItemLight{\texttt{\textbackslash x0c}: Maps to an empty string (ASCII for form feed).}
+				\end{NexListLight}
+			}
 		\end{NexListDark}
 	\end{NexMainBox}
 \end{NexMainBox}

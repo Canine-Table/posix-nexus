@@ -8,6 +8,7 @@ get_json_parser()
 		$(cat \
 			"$G_NEX_MOD_LIB/awk/nex-misc.awk" \
 			"$G_NEX_MOD_LIB/awk/nex-math.awk" \
+			"$G_NEX_MOD_LIB/awk/nex-str.awk" \
 			"$G_NEX_MOD_LIB/awk/nex-struct.awk"
 			#"$G_NEX_MOD_LIB/awk/misc.awk" \
 			#"$G_NEX_MOD_LIB/awk/str.awk" \
@@ -20,25 +21,14 @@ get_json_parser()
 		)
 	"'
 		BEGIN {
-			#arr["<hello>"] = "</hel>"
-			    D1 = "abcdef"
-				    S = "cdf"
-				    split(S, V, "")
-				    print nx_next_index(D1, V)
+			nx_trim_vector("abc,def, adef", arra)
+			print nx_option("a", arra)
 
-			#nx_token_group("a b c <hello>d e f g h</hel> this is after", arr, arrb)
-			#print arrb[1 "_CENTER"]
-			#arr[3] = "h"
-			#arr[1] = " o"
-			#arr[2] = "o w"
-			#print nx_next_index("hello o world did opoo this", arr)
-			#__nx_error(arr, "an error occured", 3)
-			#__nx_error(arr)
-			#print __nx_if(1, "3", "2")
-			#print nx_option("g", arr, ",", "add,rebt,ici,iud,iuiueiu,iuufiiu,uiuig", 1)
-			#print __nx_equality(tmpa, tmpb, tmpc)
-			#print nx_cut_str("hello world : cut me", ":", 0)
-			#print nx_totitle("hello world : cut me", ":")
+			#for (i = 1; i <= arra[0]; i++)
+			#	print arra[i]
+			#nx_boundary("a", arra, arrb)
+			#for (i = 1; i <= arrb[0]; i++)
+			#	print arrb[i]
 		}
 	'
 }
