@@ -52,29 +52,32 @@ function nx_cut_str(D1, D2, B)
 	}
 }
 
-#function nx_totitle(D, B,	i, s, v)
-#{
-#	__nx_escape_map(v)
-#	while (i = nx_first_index(D, v, 1, v)) {
-#		s = s toupper(substr(D, 1, 1)) tolower(substr(D, 2, i - 1))
-#		D = substr(D, i + 1)
-#	}
-#	if (B)
-#		delete v
-#	return s
-#}
+function nx_totitle(D, B1, B2,		j, i, s, v1, v2)
+{
+	__nx_escape_map(v1)
+	while (D) {
+		i = nx_next_pair(D, v1, v2, B1, 1)
+		j = v2[i] + v2[i "_s"]
+		k = substr(D, 1, j)
+		s = toupper(substr(k, 1, 1)) tolower(substr(k, 2))
+		D = substr(D, j + 1)
+	}
+	delete v1
+	delete v2
+	return s
+}
 
-#function nx_random_str(N, D, S, B,	v1, v2)
-#{
-	#if (__nx_is_natural(N)) {
-	#	__load_str_map(v1)
-	#	v1[0] = length(v1)
-	#	nx_vector(D, v2, S)
-	#	for (i = 1; i < v2[0]; i++) {
-	#		nx_option(v1[i], v3, S, v3, 1)
-	#	}
-	#}
-#}
+function nx_random_str(N, D, S, B,	i, v1, v2)
+{
+	if (__nx_is_natural(N)) {
+		__nx_str_map(v1)
+		nx_trim_vector(D, v2, S)
+		for (i = 1; i <= v2[0]; i++) {
+			print v2[i]
+			#nx_option(v1[i], v3, S, v3, 1)
+		}
+	}
+}
 
 #function random_str(N, C, S, B,		str_map, s, v, i, rg, line)
 ##{

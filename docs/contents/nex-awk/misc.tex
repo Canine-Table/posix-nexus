@@ -34,7 +34,7 @@
 
 \subsection{__nx_quote_map}
 \label{__nx_quote_map}
-\begin{NexCodeBox}{bash}{title={__nx_quote_map(V)}}
+\begin{NexCodeBox}{bash}{title={\NexFunction{__nx_quote_map(\NexOption{V})}}}
 	function __nx_quote_map(V) {
 		V["\""] = "\""
 		V["'"] = "'"
@@ -62,7 +62,7 @@
 \newpage
 \subsection{__nx_bracket_map}
 \label{__nx_bracket_map}
-\begin{NexCodeBox}{bash}{title={__nx_bracket_map(V)}}
+\begin{NexCodeBox}{bash}{title={\NexFunction{__nx_bracket_map(\NexOption{V})}}}
 function __nx_bracket_map(V) {
 	V["\x5b"] = "\x5d"
 	V["\x7b"] = "\x7d"
@@ -89,7 +89,7 @@ function __nx_bracket_map(V) {
 
 \subsection{__nx_str_map}
 \label{__nx_str_map}
-\begin{NexCodeBox}{bash}{title={__nx_str_map(V)}}
+\begin{NexCodeBox}{bash}{title={\NexFunction{__nx_str_map(\NexOption{V})}}}
 function __nx_str_map(V) {
 	V["upper"] = "A-Z"
 	V["lower"] = "a-z"
@@ -130,7 +130,7 @@ function __nx_str_map(V) {
 
 \subsection{__nx_escape_map}
 \label{__nx_escape_map}
-\begin{NexCodeBox}{bash}{title={__nx_escape_map(V)}}
+\begin{NexCodeBox}{bash}{title={\NexFunction{__nx_escape_map(\NexOption{V})}}}
 function __nx_escape_map(V) {
 	V["\x20"] = ""
 	V["\x09"] = ""
@@ -162,7 +162,7 @@ function __nx_escape_map(V) {
 \newpage
 \subsection{__nx_defined}
 \label{__nx_defined}
-\begin{NexCodeBox}{bash}{title={__nx_defined(D, B)}}
+\begin{NexCodeBox}{bash}{title={\NexFunction{__nx_defined(\NexOption{D}, \NexOption{B})}}}
 function __nx_defined(D, B) {
 	return (D || (length(D) && B))
 }
@@ -184,41 +184,41 @@ function __nx_defined(D, B) {
 	B1 = 1
 	B2 = ""
 	result = __nx_defined(B1, B2)
-	% result is true, as B1 is true (1) regardless of B2
+	# result is true, as B1 is true (1) regardless of B2
 \end{NexCodeBox}
 
 \begin{NexCodeBox}{bash}{title={Empty string check}}
 	B1 = ""
 	B2 = 1
 	result = __nx_defined(B1, B2)
-	% result is false, as B1 is an empty string, which fails the defined check
+	# result is false, as B1 is an empty string, which fails the defined check
 \end{NexCodeBox}
 
 \begin{NexCodeBox}{bash}{title={String with length check}}
 	B1 = "hello"
 	B2 = 0
 	result = __nx_defined(B1, B2)
-	% result is true, as B1 ("hello") is non-empty and therefore defined
+	# result is true, as B1 ("hello") is non-empty and therefore defined
 \end{NexCodeBox}
 
 \begin{NexCodeBox}{bash}{title={Numeric length check}}
 	B1 = 0
 	B2 = 1
 	result = __nx_defined(B1, B2)
-	% result is true, as B1 (0) has a length, even though it evaluates as false in conditions
+	# result is true, as B1 (0) has a length, even though it evaluates as false in conditions
 \end{NexCodeBox}
 
 \begin{NexCodeBox}{bash}{title={Combined truth and fallback check}}
 	B1 = ""
 	B2 = "fallback"
 	result = __nx_defined(B1, B2)
-	% result is true, as B2 ("fallback") is defined and compensates for B1 being empty
+	# result is true, as B2 ("fallback") is defined and compensates for B1 being empty
 \end{NexCodeBox}
 
 \newpage
 \subsection{__nx_null}
 \label{__nx_null}
-\begin{NexCodeBox}{bash}{title={__nx_null(D)}}
+\begin{NexCodeBox}{bash}{title={\NexFunction{__nx_null(\NexOption{D})}}}
 function __nx_null(D) {
 	return (length(D) == 0)
 }
@@ -238,20 +238,20 @@ function __nx_null(D) {
 \begin{NexCodeBox}{bash}{title={Null check on an empty value}}
 	B1 = ""
 	result = __nx_null(B1)
-	% result is true, as B1 is an empty string and thus considered null
+	# result is true, as B1 is an empty string and thus considered null
 \end{NexCodeBox}
 
 \begin{NexCodeBox}{bash}{title={Null check on a numeric zero}}
 	B1 = 0
 	result = __nx_null(B1)
-	% result is false, as B1 (0) is not considered null despite evaluating as false in conditions
+	# result is false, as B1 (0) is not considered null despite evaluating as false in conditions
 \end{NexCodeBox}
 
 \begin{NexCodeBox}{bash}{title={Null check on an undefined value}}
 	B1 = ""
 	B2 = 1
 	result = __nx_null(__nx_else(B1, B2))
-	% result is false, as the fallback B2 (1) is defined, overriding B1’s null state
+	# result is false, as the fallback B2 (1) is defined, overriding B1’s null state
 \end{NexCodeBox}
 
 \begin{NexCodeBox}{bash}{title={Null check with regex pattern fallback}}
@@ -259,7 +259,7 @@ function __nx_null(D) {
 	B2 = "abc123"
 	B3 = /^[a-z]+[0-9]+$/
 	result = __nx_null(__nx_else(B1, B2 ~ B3))
-	% result is false, as B2 matches the regex pattern, making it non-null
+	# result is false, as B2 matches the regex pattern, making it non-null
 \end{NexCodeBox}
 
 \begin{NexCodeBox}{bash}{title={Handling null explicitly in logical flows}}
@@ -267,13 +267,13 @@ function __nx_null(D) {
 	B2 = ""
 	B3 = 0
 	result = __nx_null(__nx_or(B1, B2, B3))
-	% result is true, as all inputs to __nx_or resolve to null-like states
+	# result is true, as all inputs to __nx_or resolve to null-like states
 \end{NexCodeBox}
 
 \newpage
 \subsection{__nx_else}
 \label{__nx_else}
-\begin{NexCodeBox}{bash}{title={__nx_else(D1, D2, B)}}
+\begin{NexCodeBox}{bash}{title={\NexFunction{__nx_else(\NexOption{D1}, \NexOption{D2}, \NexOption{B})}}}
 function __nx_else(D1, D2, B) {
 	if (D1 || __nx_defined(D1, B))
 		return D1
@@ -298,34 +298,34 @@ function __nx_else(D1, D2, B) {
 	B1 = 1
 	B2 = 0
 	result = __nx_else(B1, B2)
-	% result is true, as B1 is true (1), overriding the fallback condition of B2 (0)
+	# result is true, as B1 is true (1), overriding the fallback condition of B2 (0)
 \end{NexCodeBox}
 
 \begin{NexCodeBox}{bash}{title={Fallback with string input}}
 	B1 = "abc"
 	B2 = ""
 	result = __nx_else(B1, B2)
-	% result is true, as B1 ("abc") is valid and overrides the empty fallback (B2 = "")
+	# result is true, as B1 ("abc") is valid and overrides the empty fallback (B2 = "")
 \end{NexCodeBox}
 
 \begin{NexCodeBox}{bash}{title={Numeric fallback adjustment}}
 	B1 = ""
 	B2 = 42
 	result = __nx_else(B1, B2)
-	% result is true, as B1 fails the condition, falling back to B2 (42)
+	# result is true, as B1 fails the condition, falling back to B2 (42)
 \end{NexCodeBox}
 
 \begin{NexCodeBox}{bash}{title={Fallback with pattern matching}}
 	B1 = "[a-z]+"
 	B2 = "hello"
 	result = __nx_else(B2 ~ B1, 0)
-	% result is true, as the pattern "[a-z]+" matches B2 ("hello"), overriding the fallback (0)
+	# result is true, as the pattern "[a-z]+" matches B2 ("hello"), overriding the fallback (0)
 \end{NexCodeBox}
 
 \newpage
 \subsection{__nx_if}
 \label{__nx_if}
-\begin{NexCodeBox}{bash}{title={__nx_if(B1, D1, D2, B2)}}
+\begin{NexCodeBox}{bash}{title={\NexFunction{__nx_if(\NexOption{B1}, \NexOption{D1}, \NexOption{D2}, \NexOption{B2})}}}
 function __nx_if(B1, D1, D2, B2) {
 	if (B1 || __nx_defined(B1, B2))
 		return D1
@@ -352,7 +352,7 @@ function __nx_if(B1, D1, D2, B2) {
 	B2 = "True Case"
 	B3 = "False Case"
 	result = __nx_if(B1, B2, B3)
-	% result is "True Case", as B1 is true (1), returning the second argument
+	# result is "True Case", as B1 is true (1), returning the second argument
 \end{NexCodeBox}
 
 \begin{NexCodeBox}{bash}{title={Evaluating string-based condition}}
@@ -360,7 +360,7 @@ function __nx_if(B1, D1, D2, B2) {
 	B2 = "Condition Met"
 	B3 = "Condition Not Met"
 	result = __nx_if(B1, B2, B3)
-	% result is "Condition Met", as B1 is non-empty and therefore true, returning the second argument
+	# result is "Condition Met", as B1 is non-empty and therefore true, returning the second argument
 \end{NexCodeBox}
 
 \begin{NexCodeBox}{bash}{title={Numeric comparison in conditional check}}
@@ -368,7 +368,7 @@ function __nx_if(B1, D1, D2, B2) {
 	B2 = "Greater"
 	B3 = "Lesser or Equal"
 	result = __nx_if(B1, B2, B3)
-	% result is "Greater", as B1 evaluates to true (5 > 3)
+	# result is "Greater", as B1 evaluates to true (5 > 3)
 \end{NexCodeBox}
 
 \begin{NexCodeBox}{bash}{title={Regex-based condition}}
@@ -376,7 +376,7 @@ function __nx_if(B1, D1, D2, B2) {
 	B2 = "Pattern Matches"
 	B3 = "Pattern Doesn't Match"
 	result = __nx_if(B1, B2, B3)
-	% result is "Pattern Matches", as B1 evaluates to true due to the regex match
+	# result is "Pattern Matches", as B1 evaluates to true due to the regex match
 \end{NexCodeBox}
 
 \begin{NexCodeBox}{bash}{title={Fallback when condition is false}}
@@ -384,13 +384,13 @@ function __nx_if(B1, D1, D2, B2) {
 	B2 = "Will Not Return"
 	B3 = "Fallback Case"
 	result = __nx_if(B1, B2, B3)
-	% result is "Fallback Case", as B1 is false (0), returning the third argument
+	# result is "Fallback Case", as B1 is false (0), returning the third argument
 \end{NexCodeBox}
 
 \newpage
 \subsection{__nx_elif}
 \label{__nx_elif}
-\begin{NexCodeBox}{bash}{title={__nx_elif(B1, B2, B3, B4, B5, B6)}}
+\begin{NexCodeBox}{bash}{title={\NexFunction{__nx_elif(\NexOption{B1}, \NexOption{B2}, \NexOption{B3}, \NexOption{B4}, \NexOption{B5}, \NexOption{B6})}}}
 function __nx_elif(B1, B2, B3, B4, B5, B6) {
 	if (B4) {
 		B5 = __nx_else(B5, B4)
@@ -424,8 +424,8 @@ function __nx_elif(B1, B2, B3, B4, B5, B6) {
 	B5 = 1
 	B6 = 0
 	result = __nx_elif(B1, B2, B3, B4, B5, B6)
-	% result is false, as the comparisons of __nx_defined(B1, B4), __nx_defined(B2, B5), and __nx_defined(B3, B6)
-	% do not satisfy the logic for XOR relationships
+	# result is false, as the comparisons of __nx_defined(B1, B4), __nx_defined(B2, B5), and __nx_defined(B3, B6)
+	# do not satisfy the logic for XOR relationships
 \end{NexCodeBox}
 
 \begin{NexCodeBox}{bash}{title={Pattern matching logic}}
@@ -436,8 +436,8 @@ function __nx_elif(B1, B2, B3, B4, B5, B6) {
 	B5 = ""
 	B6 = "_"
 	result = __nx_elif(B1, B2, B3, B4, B5, B6)
-	% result is false, as __nx_defined(B3, B6) evaluates to true with pattern "[a-z]+",
-	% but the fallback adjustments for B1 and B2 overlap in truth, violating XOR logic
+	# result is false, as __nx_defined(B3, B6) evaluates to true with pattern "[a-z]+",
+	# but the fallback adjustments for B1 and B2 overlap in truth, violating XOR logic
 \end{NexCodeBox}
 
 \begin{NexCodeBox}{bash}{title={Complex nested XOR conditions}}
@@ -448,8 +448,8 @@ function __nx_elif(B1, B2, B3, B4, B5, B6) {
 	B5 = "a"
 	B6 = "i"
 	result = __nx_elif(B1, B2, B3, B4, B5, B6)
-	% result is false, as none of the relationships between B1, B2, and B3 fulfill the XOR conditions
-	% after fallback adjustments with __nx_else
+	# result is false, as none of the relationships between B1, B2, and B3 fulfill the XOR conditions
+	# after fallback adjustments with __nx_else
 \end{NexCodeBox}
 
 \begin{NexCodeBox}{bash}{title={Nested condition adjustments}}
@@ -460,14 +460,14 @@ function __nx_elif(B1, B2, B3, B4, B5, B6) {
 	B5 = "def"
 	B6 = ""
 	result = __nx_elif(B1, B2, B3, B4, B5, B6)
-	% result is true, as __nx_defined(B1, B4) and __nx_defined(B2, B5) are true,
-	% and the adjusted relationships satisfy the condition logic
+	# result is true, as __nx_defined(B1, B4) and __nx_defined(B2, B5) are true,
+	# and the adjusted relationships satisfy the condition logic
 \end{NexCodeBox}
 
 \newpage
 \subsection{__nx_or}
 \label{__nx_or}
-\begin{NexCodeBox}{bash}{title={__nx_or(B1, B2, B3, B4, B5, B6)}}
+\begin{NexCodeBox}{bash}{title={\NexFunction{__nx_or(\NexOption{B1}, \NexOption{B2}, \NexOption{B3}, \NexOption{B4}, \NexOption{B5}, \NexOption{B6})})}}
 function __nx_or(B1, B2, B3, B4, B5, B6) {
 	if (B4) {
 		B5 = __nx_else(B5, B4)
@@ -497,20 +497,20 @@ function __nx_or(B1, B2, B3, B4, B5, B6) {
 	B = 1
 	N = "-123"
 	result = __nx_or(B, N ~ /^([-]|[+])?[0-9]+$/, N ~ /^[0-9]+$/)
-	% result is true, as N matches the first regex pattern for signed integers (-123)
+	# result is true, as N matches the first regex pattern for signed integers (-123)
 \end{NexCodeBox}
 
 \begin{NexCodeBox}{bash}{title={OR condition for decimal number validation}}
 	B = 0
 	N = "123.45"
 	result = __nx_or(B, N ~ /^([-]|[+])?[0-9]+[.][0-9]+$/, N ~ /^[0-9]+[.][0-9]+$/)
-	% result is true, as N matches the first regex pattern for signed decimals (123.45)
+	# result is true, as N matches the first regex pattern for signed decimals (123.45)
 \end{NexCodeBox}
 
 \newpage
 \subsection{__nx_xor}
 \label{__nx_xor}
-\begin{NexCodeBox}{bash}{title={__nx_xor(B1, B2, B3, B4)}}
+\begin{NexCodeBox}{bash}{title={\NexFunction{__nx_xor(\NexOption{B1}, \NexOption{B2}, \NexOption{B3}, \NexOption{B4})}}}
 function __nx_xor(B1, B2, B3, B4) {
 	if (B3)
 		B4 = __nx_else(B4, B3)
@@ -538,7 +538,7 @@ function __nx_xor(B1, B2, B3, B4) {
 	B3 = ""
 	B4 = ""
 	result = __nx_xor(B1, B2, B3, B4)
-	% result is true, as B1 is true (1) and B2 is false (0), making XOR true
+	# result is true, as B1 is true (1) and B2 is false (0), making XOR true
 \end{NexCodeBox}
 
 \begin{NexCodeBox}{bash}{title={Complex XOR with fallback adjustment}}
@@ -547,8 +547,8 @@ function __nx_xor(B1, B2, B3, B4) {
 	B3 = ""
 	B4 = "_"
 	result = __nx_xor(B1, B2, B3, B4)
-	% result is true, as B2 satisfies the fallback condition (B4),
-	% while B1 is false, fulfilling XOR
+	# result is true, as B2 satisfies the fallback condition (B4),
+	# while B1 is false, fulfilling XOR
 \end{NexCodeBox}
 
 \begin{NexCodeBox}{bash}{title={XOR with both conditions as true}}
@@ -557,8 +557,8 @@ function __nx_xor(B1, B2, B3, B4) {
 	B3 = 1
 	B4 = 1
 	result = __nx_xor(B1, B2, B3, B4)
-	% result is false, as B1 and B2 both satisfy their respective truth and length conditions, 
-	% violating XOR
+	# result is false, as B1 and B2 both satisfy their respective truth and length conditions, 
+	# violating XOR
 \end{NexCodeBox}
 
 \begin{NexCodeBox}{bash}{title={String XOR with adjusted truth conditions}}
@@ -567,14 +567,14 @@ function __nx_xor(B1, B2, B3, B4) {
 	B3 = 1
 	B4 = "a"
 	result = __nx_xor(B1, B2, B3, B4)
-	% result is true, as B1 ("") fails the truth check required by B3, 
-	% while B2 ("def") satisfies the length requirement via B4, fulfilling XOR
+	# result is true, as B1 ("") fails the truth check required by B3, 
+	# while B2 ("def") satisfies the length requirement via B4, fulfilling XOR
 \end{NexCodeBox}
 
 \newpage
 \subsection{__nx_compare}
 \label{__nx_compare}
-\begin{NexCodeBox}{bash}{title={__nx_compare(B1, B2, B3, B4)}}
+\begin{NexCodeBox}{bash}{title={\NexFunction{__nx_compare(\NexOption{B1}, \NexOption{B2}, \NexOption{B3}, \NexOption{B4})}}}
 function __nx_compare(B1, B2, B3, B4) {
 	if (! B3) {
 		if (length(B3)) {
@@ -636,7 +636,7 @@ function __nx_compare(B1, B2, B3, B4) {
 	B2 = "world!"
 	B3 = 1
 	result = __nx_compare(B1, B2, B3)
-	% result is false, as length("hello") < length("world!")
+	# result is false, as length("hello") < length("world!")
 \end{NexCodeBox}
 
 \begin{NexCodeBox}{bash}{title={Compare numeric values of B1 and B2}}
@@ -644,7 +644,7 @@ function __nx_compare(B1, B2, B3, B4) {
 	B2 = "24"
 	B3 = 1
 	result = __nx_compare(B1, B2, B3)
-	% result is true, as 42 > 24 (numeric comparison)
+	# result is true, as 42 > 24 (numeric comparison)
 \end{NexCodeBox}
 
 \begin{NexCodeBox}{bash}{title={String comparison of B1 and B2}}
@@ -652,7 +652,7 @@ function __nx_compare(B1, B2, B3, B4) {
 	B2 = "def"
 	B3 = ""
 	result = __nx_compare(B1, B2, B3)
-	% result is false, as "abc" != "def"
+	# result is false, as "abc" != "def"
 \end{NexCodeBox}
 
 \begin{NexCodeBox}{bash}{title={Pattern matching B1 against B2}}
@@ -660,7 +660,7 @@ function __nx_compare(B1, B2, B3, B4) {
 	B2 = "[a-z]+[0-9]+"
 	B3 = 0
 	result = __nx_compare(B1, B2, B3)
-	% result is true, as "abc123" matches the regex "[a-z]+[0-9]+"
+	# result is true, as "abc123" matches the regex "[a-z]+[0-9]+"
 \end{NexCodeBox}
 
 \begin{NexCodeBox}{bash}{title={Relational comparison using B4}}
@@ -669,7 +669,7 @@ function __nx_compare(B1, B2, B3, B4) {
 	B3 = 1
 	B4 = "1"
 	result = __nx_compare(B1, B2, B3, B4)
-	% result is true, as 10 <= 20 (numeric comparison with B4 = 1)
+	# result is true, as 10 <= 20 (numeric comparison with B4 = 1)
 \end{NexCodeBox}
 
 \begin{NexCodeBox}{bash}{title={Case-insensitive equality comparison}}
@@ -678,14 +678,13 @@ function __nx_compare(B1, B2, B3, B4) {
 	B3 = ""
 	B4 = "i"
 	result = __nx_compare(B1, B2, B3, B4)
-	% result is true, as "Hello" == "hello" (case-insensitive)
+	# result is true, as "Hello" == "hello" (case-insensitive)
 \end{NexCodeBox}
-
 
 \newpage
 \subsection{__nx_equality}
 \label{__nx_equality}
-\begin{NexCodeBox}{bash}{title={__nx_equality(B1, B2, B3)}}
+\begin{NexCodeBox}{bash}{title={\NexFunction{__nx_equality(\NexOption{B1}, \NexOption{B2}, \NexOption{B3})}}}
 function __nx_equality(B1, B2, B3,	b, e, g) {
 	b = substr(B2, 1, 1)
 	if (b == ">") {
@@ -744,7 +743,7 @@ function __nx_equality(B1, B2, B3,	b, e, g) {
 	B2 = ">"
 	B3 = 3
 	result = __nx_equality(B1, B2, B3)
-	% result is true, as 5 > 3
+	# result is true, as 5 > 3
 \end{NexCodeBox}
 
 \begin{NexCodeBox}{bash}{title={Compare B1 == B3}}
@@ -752,7 +751,7 @@ function __nx_equality(B1, B2, B3,	b, e, g) {
 	B2 = "="
 	B3 = "hello"
 	result = __nx_equality(B1, B2, B3)
-	% result is true, as "hello" == "hello"
+	# result is true, as "hello" == "hello"
 \end{NexCodeBox}
 
 \begin{NexCodeBox}{bash}{title={Check if B1 matches regex B3}}
@@ -760,7 +759,7 @@ function __nx_equality(B1, B2, B3,	b, e, g) {
 	B2 = "~"
 	B3 = "[a-z]+[0-9]+"
 	result = __nx_equality(B1, B2, B3)
-	% result is true, as "abc123" matches the regex "[a-z]+[0-9]+"
+	# result is true, as "abc123" matches the regex "[a-z]+[0-9]+"
 \end{NexCodeBox}
 
 \begin{NexCodeBox}{bash}{title={Compare B1 <= B3}}
@@ -768,13 +767,13 @@ function __nx_equality(B1, B2, B3,	b, e, g) {
 	B2 = "<="
 	B3 = 10
 	result = __nx_equality(B1, B2, B3)
-	% result is true, as 7 <= 10
+	# result is true, as 7 <= 10
 \end{NexCodeBox}
 
 \newpage
 \subsection{__nx_swap}
 \label{__nx_swap}
-\begin{NexCodeBox}{bash}{title={__nx_swap(V, D1, D2)}}
+\begin{NexCodeBox}{bash}{title={\NexFunction{__nx_swap(\NexOption{V}, \NexOption{D1}, \NexOption{D2})}}}
 function __nx_swap(V, D1, D2, t) {
 	t = V[D1]
 	V[D1] = V[D2]
@@ -800,7 +799,7 @@ function __nx_swap(V, D1, D2, t) {
 	D1 = 1
 	D2 = 3
 	__nx_swap(V, D1, D2)
-	% Result: V = [10, 40, 30, 20], as the values at indices 1 and 3 are swapped
+	# Result: V = [10, 40, 30, 20], as the values at indices 1 and 3 are swapped
 \end{NexCodeBox}
 
 \begin{NexCodeBox}{bash}{title={Swap in a string array}}
@@ -808,7 +807,7 @@ function __nx_swap(V, D1, D2, t) {
 	D1 = 0
 	D2 = 2
 	__nx_swap(V, D1, D2)
-	% Result: V = ["cherry", "banana", "apple"], as the values at indices 0 and 2 are swapped
+	# Result: V = ["cherry", "banana", "apple"], as the values at indices 0 and 2 are swapped
 \end{NexCodeBox}
 
 \begin{NexCodeBox}{bash}{title={Swapping the same index (no-op)}}
@@ -816,7 +815,7 @@ function __nx_swap(V, D1, D2, t) {
 	D1 = 1
 	D2 = 1
 	__nx_swap(V, D1, D2)
-	% Result: V = [1, 2, 3], as swapping the same index has no effect
+	# Result: V = [1, 2, 3], as swapping the same index has no effect
 \end{NexCodeBox}
 
 \begin{NexCodeBox}{bash}{title={Swapping in an associative array}}
@@ -825,7 +824,7 @@ function __nx_swap(V, D1, D2, t) {
 	D1 = "a"
 	D2 = "b"
 	__nx_swap(V, D1, D2)
-	% Result: V = {"a": "y", "b": "x"}, as the values at keys "a" and "b" are swapped
+	# Result: V = {"a": "y", "b": "x"}, as the values at keys "a" and "b" are swapped
 \end{NexCodeBox}
 
 \begin{NexCodeBox}{bash}{title={Nested array swap}}
@@ -833,6 +832,6 @@ function __nx_swap(V, D1, D2, t) {
 	D1 = 0
 	D2 = 2
 	__nx_swap(V, D1, D2)
-	% Result: V = [[5, 6], [3, 4], [1, 2]], as the nested arrays at indices 0 and 2 are swapped
+	# Result: V = [[5, 6], [3, 4], [1, 2]], as the nested arrays at indices 0 and 2 are swapped
 \end{NexCodeBox}
 

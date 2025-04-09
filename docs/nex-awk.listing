@@ -1,8 +1,9 @@
-	D1 = "token1\,token2, token3"
-	V2[""] = ","
-	V1[0] = 0
-	result = nx_tokenize(D1, V1, V2, "\\")
-	% Result:
-	% V1[1] = "token1\,token2"
-	% V1[2] = "token3"
-	% Explanation: Accounts for escaped commas ("\,") and ensures they are not treated as delimiters.
+	V1[1] = "no_boundary"
+	V1[2] = "no_match"
+	V1[0] = 2 # Managed dynamically by earlier functions
+	D = "option"
+	B1 = 0
+	B2 = 0
+	result = nx_option(D, V1, V2, B1, B2)
+	# Result: None
+	# Explanation: No elements in V1 match the boundary condition "option", so the function returns no result.

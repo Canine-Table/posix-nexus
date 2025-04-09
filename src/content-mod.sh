@@ -77,6 +77,7 @@ export G_NEX_MOD_SRC="$G_NEX_ROOT/src"
 export G_NEX_MOD_LIB="$G_NEX_ROOT/lib"
 export G_NEX_MOD_CNF="$G_NEX_ROOT/cnf"
 export G_NEX_MOD_ENV="$G_NEX_ROOT/env"
+export G_NEX_MOD_DOC="$G_NEX_ROOT/docs"
 export G_NEX_MOD_LOG="$G_NEX_MOD_ENV"
 
 set_content_root

@@ -119,14 +119,15 @@ function nx_filter(D1, D2, V1, V2, B,	i, v1, v2)
 	}
 }
 
-function nx_option(D, V, B1, B2,	i, v1, v2)
+function nx_option(D, V1, V2, B1, B2,	i, v1)
 {
 	if (length(V) && 0 in V) {
 		if (nx_boundary(D, V, v1, B1) > 1) {
-			if (nx_filter(nx_append_str("0", nx_length(v1, B2)), "=_", v1, v2, 1) == 1)
-				i = v2[1]
-			delete v2
-			return  i
+			if (nx_filter(nx_append_str("0", nx_length(v1, B2)), "=_", v1, V2, 1) == 1) {
+				i = V2[1]
+				delete V2
+				return i
+			}
 		} else {
 			i = v1[1]
 			delete v1
@@ -134,3 +135,4 @@ function nx_option(D, V, B1, B2,	i, v1, v2)
 		}
 	}
 }
+

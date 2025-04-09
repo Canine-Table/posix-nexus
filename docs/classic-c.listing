@@ -1,5 +1,0 @@
-int main()
-{
-	printf("Im a minted box for C!!\n");
-        return 0;
-}

@@ -21,14 +21,9 @@ get_json_parser()
 		)
 	"'
 		BEGIN {
-			nx_trim_vector("abc,def, adef", arra)
-			print nx_option("a", arra)
-
-			#for (i = 1; i <= arra[0]; i++)
-			#	print arra[i]
-			#nx_boundary("a", arra, arrb)
-			#for (i = 1; i <= arrb[0]; i++)
-			#	print arrb[i]
+			#z4nx_trim_vector(4, "abc,def, adef", arra)
+			#print nx_option("a", arra)
+			print nx_random_str(4, "hello, bye, hi")
 		}
 	'
 }
