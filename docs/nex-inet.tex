@@ -2,8 +2,7 @@
 \input{./contents/nex-inet/preamble.tex}
 
 \begin{document}
-	\label{top}
-	\title{
+\title{
 		\hspace{48px}\textbf{Posix-Nexus Networking Notes}\includesvg[width=48px]{../lib/svg/openwrt.svg}\\[10mm]
 		\begin{NexMainBox}[dark, shpA,fit, width=\linewidth/2]
 			\includegraphics[width=\textwidth]{img/posix-nexus.png}
@@ -13,19 +12,24 @@
 	\date{\today}
 	\maketitle
 	\newpage
+	\phantomsection{}
+	\label{top}
 	\begin{NexMainBox}[light, title=Contents, hdrB, breakable]
 		\thispagestyle{plain}
 		\tableofcontents
 	\end{NexMainBox}
 	\newpage
+	\catcode`_=8
 	\input{./contents/nex-inet/introduction.tex}
 	\input{./contents/nex-inet/fundamentals.tex}
 	\input{./contents/nex-inet/hardware.tex}
+	\input{./contents/nex-inet/hardware.tex}
+	\input{./contents/nex-inet/telecommunication.tex}
 	\input{./contents/nex-inet/management.tex}
 	\input{./contents/nex-inet/applications.tex}
 	\input{./contents/nex-inet/concepts.tex}
 	\input{./contents/nex-inet/trends.tex}
-	\input{./contents/nex-inet/standards.tex}
-	\input{./contents/nex-inet/guides.tex}
+	%\input{./contents/nex-inet/standards.tex}
+	%\input{./contents/nex-inet/guides.tex}
 \end{document}
 
