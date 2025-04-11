@@ -7,6 +7,7 @@ function! Main()
 	set wildmode=longest,list,full wildmenu
 	set list listchars=trail:▓,tab:▒░
 	set wrap breakindent
+	set magic
 	set title
 	set hidden
 	set history=10000

@@ -1,3 +1,23 @@
+function __nx_num_map(V,  i)
+{
+	for (i = 0; i < 10; i++)
+		V[i] = i
+}
+
+function __nx_lower_map(V,	    i)
+{
+	__nx_num_map(V)
+	for (i = 10; i < 36; i++)
+		V[i] = nx_bijective(V, i, 0, sprintf("%c", i + 87))
+}
+
+function __nx_upper_map(V,	i)
+{
+	__nx_lower_map(V)
+	for (i = 36; i < 62; i++)
+		V[i] = nx_bijective(V, i, 0, sprintf("%c", i + 29))
+}
+
 function __nx_quote_map(V)
 {
 	V["\""] = "\""
@@ -14,16 +34,16 @@ function __nx_bracket_map(V)
 
 function __nx_str_map(V)
 {
-	V["upper"] = "A-Z"
-	V["lower"] = "a-z"
-	V["xupper"] = "A-F"
-	V["xlower"] = "a-f"
-	V["digit"] = "0-9"
-	V["alpha"] = V["upper"] V["lower"]
-	V["xdigit"] = V["digit"] V["xupper"] V["xlower"]
-	V["alnum"] = V["digit"] V["alpha"]
-	V["print"] = "\x20-\x7e"
-	V["punct"] = "\x21-\x2f\x3a-\x40\x5b-\x60\x7b-\x7e"
+	nx_bijective(V, ++V[0], "upper", "A-Z")
+	nx_bijective(V, ++V[0], "lower", "a-z")
+	nx_bijective(V, ++V[0], "xupper", "A-F")
+	nx_bijective(V, ++V[0], "xlower", "a-f")
+	nx_bijective(V, ++V[0], "digit", "0-9")
+	nx_bijective(V, ++V[0], "alpha", V["upper"] V["lower"])
+	nx_bijective(V, ++V[0], "xdigit", V["digit"] V["xupper"] V["xlower"])
+	nx_bijective(V, ++V[0], "alnum", V["digit"] V["alpha"])
+	nx_bijective(V, ++V[0], "print", "\x20-\x7e")
+	nx_bijective(V, ++V[0], "punct", "\x21-\x2f\x3a-\x40\x5b-\x60\x7b-\x7e")
 }
 
 function __nx_escape_map(V)
@@ -38,11 +58,6 @@ function __nx_escape_map(V)
 function __nx_defined(D, B)
 {
 	return (D || (length(D) && B))
-}
-
-function __nx_null(D)
-{
-	return D == ""
 }
 
 function __nx_else(D1, D2, B)

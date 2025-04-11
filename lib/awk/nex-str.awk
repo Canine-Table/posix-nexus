@@ -67,52 +67,32 @@ function nx_totitle(D, B1, B2,		j, i, s, v1, v2)
 	return s
 }
 
-function nx_random_str(N, D, S, B,	i, v1, v2)
+function nx_random_str(N, D, S, B,	i, v1, v2, v3, s, r, f)
 {
-	if (__nx_is_natural(N)) {
-		__nx_str_map(v1)
-		nx_trim_vector(D, v2, S)
-		for (i = 1; i <= v2[0]; i++) {
-			print v2[i]
-			#nx_option(v1[i], v3, S, v3, 1)
-		}
+	N = int(__nx_if(__nx_is_natural(N), N, 8))
+	__nx_str_map(v1)
+	nx_trim_vector(__nx_else(D, "print"), v2, S)
+	for (i = 1; i <= v2[0]; i++) {
+		if (D = nx_option(v2[i], v1, v3))
+			r = r v1[D]
 	}
+	r = __nx_else(r, v1["print"])
+	split("/dev/urandom,/dev/random", v1, ",")
+	if (B)
+		__nx_swap(v1, 1, 2)
+	do {
+		if (! (getline line < v1[1])) {
+			if (! (getline line < v1[2]))
+				return
+		}
+		for (i = 1; i <= split(line, v2, ""); i++) {
+			if (v2[i] ~ "^[" r "]$")
+				s = s v2[i]
+		}
+	} while (length(s) < N)
+	delete v1
+	delete v2
+	delete v3
+	return substr(s, 1, N)
 }
-
-#function random_str(N, C, S, B,		str_map, s, v, i, rg, line)
-##{
-#	if (C && is_integral(N)) {
-#		__load_str_map(str_map)  # Load the string map
-#		array(C, v, S)	# Split the character set string C using the delimiter S into array v
-#		for (i in v) {
-#			if (i in str_map) {
-#				rg = rg str_map[i]  # Build the regular expression character set
-#				delete str_map[i]  # Delete the used entry from the string map
-#			}
-#			delete v[i]  # Clean up the temporary array v
-#		}
-#		delete v
-#		delete str_map
-#		if (rg) {
-#			split("/dev/urandom,/dev/random", str_map, ",")  # Define random device files
-#			if (B)
-#				__swap(str_map, 1, 2)  # Swap the device order if B is true
-#			N = int(N)  # Ensure N is an integer
-#			do {
-#				if (! (getline line < str_map[1])) {  # Read random data
-#					if (! (getline line < str_map[2])) {
-#						return
-#					}
-#				}
-#				for (i = 1; i <= split(line, v, ""); i++) {  # Split the random data into characters
-#					if (v[i] ~ "^[" rg "]$")  # Check if the character matches the regex
-#						s = s v[i]  # Append the character to the result string s
-#				}
-#			} while (length(s) < N)  # Repeat until the string is of desired length
-#			delete v
-#			delete str_map
-#			return substr(s, 1, N)	# Return the random string of length N
-#		}
-#	}
-#}
 

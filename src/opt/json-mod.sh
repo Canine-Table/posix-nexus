@@ -18,12 +18,10 @@ get_json_parser()
 			#"$G_NEX_MOD_LIB/awk/types.awk" \
 			#"$G_NEX_MOD_LIB/awk/math.awk" \
 			#"$G_NEX_MOD_LIB/awk/json.awk"
-		)
+	)
 	"'
 		BEGIN {
-			#z4nx_trim_vector(4, "abc,def, adef", arra)
-			#print nx_option("a", arra)
-			print nx_random_str(4, "hello, bye, hi")
+			__nx_number_map(arr, tmpa)
 		}
 	'
 }

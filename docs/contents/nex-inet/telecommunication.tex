@@ -100,7 +100,7 @@
 	\begin{NexMainBox}[dark, crnA, title=Coverage Area]
 		We calculate the coverage area for a satellite based on its altitude and the Earth's radius using:
 		\begin{NexMainBox}[light]
-			$$\NexVariable{r} = \sqrt{(\NexVariable{h} + \NexConstant{R_{\text{Earth}}})^2 - \NexConstant{R_{\text{Earth}}}^2}$$
+			$$ \NexVariable{r} = \sqrt{(\NexVariable{h} + \NexConstant{R_{\text{Earth}}})^2 - \NexConstant{R_{\text{Earth}}}^2} $$
 		\end{NexMainBox}
 		\begin{NexListDark}
 			\NexItemDark{\NexVariable{\LARGE $r$} $\to$ Maximum coverage radius ($km$).}
@@ -108,17 +108,17 @@
 			\NexItemDark{\NexConstant{\LARGE $R_{\text{Earth}}$} $\to$ Earth's radius ($6371 \, \text{km}$).}
 			\NexItemDark{\NexOption{LEO} ($\NexVariable{h} \approx 500 \, \text{km}$):
 				\begin{NexMainBox}[light]
-					$$\NexVariable{r} = \sqrt{(500 + 6371)^2 - 6371^2} = 2560 \, \text{km}$$
+					$$ \NexVariable{r} = \sqrt{(500 + 6371)^2 - 6371^2} = 2560 \, \text{km} $$
 				\end{NexMainBox}
 			}
 			\NexItemDark{\NexOption{MEO} ($\NexVariable{h} \approx 20,000 \, \text{km}$):
 				\begin{NexMainBox}[light]
-					$$\NexVariable{r} = \sqrt{(20,000 + 6371)^2 - 6371^2} = 17,423 \, \text{km}$$
+					$$ \NexVariable{r} = \sqrt{(20,000 + 6371)^2 - 6371^2} = 17,423 \, \text{km} $$
 				\end{NexMainBox}
 			}
 			\NexItemDark{\NexOption{Geostationary} ($\NexVariable{h} \approx 35,786 \, \text{km}$):
 				\begin{NexMainBox}[light]
-					$$\NexVariable{r} = \sqrt{(35,786 + 6371)^2 - 6371^2} = 35,618 \, \text{km}$$
+					$$ \NexVariable{r} = \sqrt{(35,786 + 6371)^2 - 6371^2} = 35,618 \, \text{km} $$
 				\end{NexMainBox}
 			}
 		\end{NexListDark}
@@ -137,17 +137,17 @@
 			\NexItemDark{\NexConstant{\LARGE $G_{\text{Earth}}$} $\to$ Earth's gravitational constant ($3.986 \times 10^{14} \, \text{m}^3/\text{s}^2$).}
 			\NexItemDark{\NexOption{LEO} ($\NexVariable{h} \approx 500 \, \text{km}$):
 				\begin{NexMainBox}[light]
-					$$\NexVariable{T} = 2\NexPI \sqrt{\frac{(500 + 6371)^3}{3.986 \times 10^{14}}} = \text{~90 minutes}$$
+					$$ \NexVariable{T} = 2\NexPI \sqrt{\frac{(500 + 6371)^3}{3.986 \times 10^{14}}} = \text{~90 minutes} $$
 				\end{NexMainBox}
 			}
 			\NexItemDark{\NexOption{MEO} ($\NexVariable{h} \approx 20,000 \, \text{km}$):
 				\begin{NexMainBox}[light]
-					$$\NexVariable{T} = 2\NexPI \sqrt{\frac{(20,000 + 6371)^3}{3.986 \times 10^{14}}} = \text{~12 hours}$$
+					$$ \NexVariable{T} = 2\NexPI \sqrt{\frac{(20,000 + 6371)^3}{3.986 \times 10^{14}}} = \text{~12 hours} $$
 				\end{NexMainBox}
 			}
 			\NexItemDark{\NexOption{Geostationary} ($\NexVariable{h} \approx 35,786 \, \text{km}$):
 				\begin{NexMainBox}[light]
-					$$\NexVariable{T} = 2\NexPI \sqrt{\frac{(35,786 + 6371)^3}{3.986 \times 10^{14}}} = \text{~24 hours}$$
+					$$ \NexVariable{T} = 2\NexPI \sqrt{\frac{(35,786 + 6371)^3}{3.986 \times 10^{14}}} = \text{~24 hours} $$
 				\end{NexMainBox}
 			}
 		\end{NexListDark}

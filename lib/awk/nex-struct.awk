@@ -1,3 +1,22 @@
+function nx_bijective(V, D1, B, D2)
+{
+	if (length(V) && D1 != "") {
+		if (D2 != "") {
+			if (length(B)) {
+				V[D1] = B
+				V[B] = D2
+			} else {
+				V[D1] = D2
+				V[D2] = D1
+			}
+		} else {
+			V[V[D1]] = V[D1]
+			if (B)
+				delete V[D1]
+		}
+	}
+}
+
 function nx_find_index(D1, S, D2,	f, m)
 {
 	if (__nx_defined(D1, 1)) {
@@ -68,17 +87,41 @@ function nx_tokenize(D1, V1, V2, D2, B1, B2,	i, j, m, v, s)
 
 function nx_vector(D, V1, S, V2)
 {
-	__nx_quote_map(V2)
-	V2[__nx_else(S, ",")] = ""
-	return nx_tokenize(D, V1, V2)
+	if (D != "") {
+		__nx_quote_map(V2)
+		V2[__nx_else(S, ",")] = ""
+		return nx_tokenize(D, V1, V2)
+	}
 }
 
 function nx_trim_vector(D, V1, S, V2,	i)
 {
-	nx_vector(D, V1, S, V2)
-	for (i = 1; i <= V1[0]; i++)
-		V1[i] = nx_trim_str(V1[i])
-	return V[0]
+	if (nx_vector(D, V1, S, V2)) {
+		for (i = 1; i <= V1[0]; i++)
+			V1[i] = nx_trim_str(V1[i])
+		return V1[0]
+	}
+}
+
+function nx_uniq_vector(D, V1, S, V2, B1, B2,	v, i)
+{
+	if (B1)
+		i = nx_vector(D, v, S, V2)
+	else
+		i = nx_trim_vector(D, v, S, V2)
+	if (i) {
+		for (i = 1; i <= v[0]; i++) {
+			if (! (v[i] in V1)) {
+				V1[v[i]] = __nx_if(B2, 0, ++V1[0])
+				V1[V1[0]] = v[i]
+			}
+			if (B2)
+				V1[v[i]]++
+		}
+		i = V1[0]
+	}
+	delete v
+	return i
 }
 
 function nx_length(V, B,	i, j, k)
@@ -95,7 +138,7 @@ function nx_length(V, B,	i, j, k)
 
 function nx_boundary(D, V1, V2, B1, B2,		i)
 {
-	if (length(V) && 0 in V && D != "") {
+	if (length(V1) && 0 in V1 && D != "") {
 		for (i = 1; i <= V1[0]; i++) {
 			if (__nx_if(B1, V1[i] ~ D "$", V1[i] ~ "^" D))
 				V2[++V2[0]] = V1[i]
@@ -121,8 +164,8 @@ function nx_filter(D1, D2, V1, V2, B,	i, v1, v2)
 
 function nx_option(D, V1, V2, B1, B2,	i, v1)
 {
-	if (length(V) && 0 in V) {
-		if (nx_boundary(D, V, v1, B1) > 1) {
+	if (length(V1) && 0 in V1 && D != "") {
+		if (nx_boundary(D, V1, v1, B1) > 1) {
 			if (nx_filter(nx_append_str("0", nx_length(v1, B2)), "=_", v1, V2, 1) == 1) {
 				i = V2[1]
 				delete V2
@@ -134,5 +177,10 @@ function nx_option(D, V1, V2, B1, B2,	i, v1)
 			return i
 		}
 	}
+}
+
+function nx_trim_split(D, V, S)
+{
+	return split(nx_trim_str(D), V, "[ \v\t\n\f]*" __nx_else(S, ",") "[ \v\t\n\f]*")
 }
 

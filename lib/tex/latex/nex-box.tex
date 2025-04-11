@@ -5,6 +5,12 @@
 	\oldsection{#1}%
 }
 
+\let\oldphantomsection\phantomsection
+\renewcommand{\phantomsection}[1]{%
+	\def\sectionitle{#1}%
+	\oldphantomsection{#1}%
+}
+
 \let\oldsubsection\subsection
 \renewcommand{\subsection}[1]{%
 	\def\subsectiontitle{#1}%
