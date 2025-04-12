@@ -7,11 +7,13 @@
 	\end{NexMainBox}
 	\begin{NexMainBox}[dark, crnA]
 		\begin{NexListDark}
+			\NexItemDark{\NexLink{nx_bijective}{nx_bijective(\NexOption{V}, \NexOption{D1}, \NexOption{B}, \NexOption{D2})}: Manages bijective mappings within an associative array (\NexOption{V}), allowing the creation, updating, or removal of one-to-one relationships between keys and values.}
 			\NexItemDark{\NexLink{nx_find_index}{nx_find_index(\NexOption{D1}, \NexOption{S}, \NexOption{D2})}: Searches for the first occurrence of a pattern within a string, with additional constraints. Returns the index of the match or modifies behavior based on optional parameters.}
 			\NexItemDark{\NexLink{nx_next_pair}{nx_next_pair(\NexOption{D1}, \NexOption{V1}, \NexOption{V2}, \NexOption{D2}, \NexOption{B1}, \NexOption{B2})}: Retrieves the next pair of start and end indices within a string (\NexOption{D1}), based on associative array delimiters (\NexOption{V1}). Outputs indices and their lengths to the result vector (\NexOption{V2}), while handling escape constraints (\NexOption{D2}). Logic flags (\NexOption{B1}, \NexOption{B2}) control fallback behavior and prioritization during evaluation.}
 			\NexItemDark{\NexLink{nx_tokenize}{nx_tokenize(\NexOption{D1}, \NexOption{V1}, \NexOption{V2}, \NexOption{D2}, \NexOption{B1}, \NexOption{B2})}: Tokenizes an input string (\NexOption{D1}) based on start and end delimiters (\NexOption{V2}). Extracted tokens are stored in the output vector (\NexOption{V1}). Handles escape sequences (\NexOption{D2}) and allows prioritization or fallback using logical flags (\NexOption{B1}, \NexOption{B2}).}
 			\NexItemDark{\NexLink{nx_vector}{nx_vector(\NexOption{D}, \NexOption{V1}, \NexOption{S}, \NexOption{V2})}: Processes a data string (\NexOption{D}) by tokenizing it into parts using a delimiter (\NexOption{S}) and associative array mappings (\NexOption{V2}). Uses \NexFunction{__nx_quote_map} for initialization and \NexFunction{nx_tokenize} for parsing.}
 			\NexItemDark{\NexLink{nx_trim_vector}{nx_trim_vector(\NexOption{D}, \NexOption{V1}, \NexOption{S}, \NexOption{V2})}: Tokenizes a data string (\NexOption{D}) into parts using delimiters and mappings (\NexOption{V2}), then trims each token to remove unnecessary whitespace or characters.}
+			\NexItemDark{\NexLink{nx_uniq_vector}{nx_uniq_vector(\NexOption{D}, \NexOption{V1}, \NexOption{S}, \NexOption{V2}, \NexOption{B1}, \NexOption{B2})}: Constructs a unique vector (\NexOption{V1}) from input data (\NexOption{D}), eliminating duplicates, optionally counting occurrences, and leveraging auxiliary vectors (\NexOption{V2}) for processing.}
 			\NexItemDark{\NexLink{nx_length}{nx_length(\NexOption{V}, \NexOption{B})}: Calculates the length of elements within a vector (\NexOption{V}) and returns the largest or smallest length based on the logical condition (\NexOption{B}).}
 			\NexItemDark{\NexLink{nx_boundary}{nx_boundary(\NexOption{D}, \NexOption{V1}, \NexOption{V2}, \NexOption{B1}, \NexOption{B2})}: Filters elements in a vector (\NexOption{V1}) that match boundary conditions with a given string (\NexOption{D}), and stores the results in another vector (\NexOption{V2}). Provides options to specify matching direction (\NexOption{B1}) and optionally delete the input vector (\NexOption{B2}).}
 			\NexItemDark{\NexLink{nx_filter}{nx_filter(\NexOption{D1}, \NexOption{D2}, \NexOption{V1}, \NexOption{V2}, \NexOption{B})}: Filters elements from an input vector (\NexOption{V1}) based on a flexible equality condition (\NexOption{D1}, \NexOption{D2}) and stores the results in an output vector (\NexOption{V2}). Provides an option (\NexOption{B}) to delete the input vector after processing.}
@@ -21,9 +23,77 @@
 \end{NexMainBox}
 
 \newpage
+\subsection{nx_bijective}
+\label{nx_bijective}
+\begin{NexCodeBox}{awk}{title={\NexFunction{nx_bijective(\NexOption{V}, \NexOption{D1}, \NexOption{B}, \NexOption{D2})}}}
+function nx_bijective(V, D1, B, D2) {
+	if (length(V) && D1 != "") {
+		if (D2 != "") {
+			if (length(B)) {
+				V[D1] = B
+				V[B] = D2
+				if (B)
+					V[D2] = D1
+			} else {
+				V[D1] = D2
+				V[D2] = D1
+			}
+		} else {
+			V[V[D1]] = D1
+			if (B)
+				delete V[D1]
+		}
+	}
+}
+\end{NexCodeBox}
+
+\begin{NexMainBox}[light, hdrA, sdwA, crnA, grwB, ssecB]
+	\begin{NexMainBox}[dark, crnA]
+		The \NexFunction{nx_bijective} function manages bijective mappings within an associative array (\NexOption{V}). It supports adding, updating, and removing one-to-one relationships, ensuring both keys and values are interconnected consistently.
+	\end{NexMainBox}
+	\begin{NexMainBox}[dark, crnA]
+		\begin{NexListDark}
+			\NexItemDark{\NexOption{V}: The associative array storing mappings. Keys are linked to values and vice versa.}
+			\NexItemDark{\NexOption{D1}: The primary key for establishing or modifying mappings.}
+			\NexItemDark{\NexOption{B}: Optional intermediate key used for chaining multi-step mappings.}
+			\NexItemDark{\NexOption{D2}: The value paired with \NexOption{D1}. An empty \NexOption{D2} triggers removal.}
+		\end{NexListDark}
+	\end{NexMainBox}
+\end{NexMainBox}
+
+\begin{NexCodeBox}{awk}{title={Adding a Multi-Step Mapping}}
+	V["D1"] = ""
+	V["B"] = ""
+	V["D2"] = ""
+	nx_bijective(V, "key1", "middle", "key2")
+	# Result:
+	# V["key1"] = "middle"
+	# V["middle"] = "key2"
+	# V["key2"] = "key1"
+\end{NexCodeBox}
+
+\begin{NexCodeBox}{awk}{title={Updating Reverse Mapping}}
+	V["key1"] = "middle"
+	V["middle"] = "key2"
+	V["key2"] = "key1"
+	nx_bijective(V, "key1", "", "")
+	# Result:
+	# V["key2"] = "key1"
+	# V["key1"] is deleted if B is truthy.
+\end{NexCodeBox}
+
+\begin{NexCodeBox}{awk}{title={Removing a Mapping}}
+	V["key1"] = "middle"
+	V["middle"] = "key2"
+	V["key2"] = "key1"
+	nx_bijective(V, "key1", "", "")
+	# Result:
+	# Deletes V["key1"] and adjusts the reverse mapping.
+\end{NexCodeBox}
+
+\newpage
 \subsection{nx_find_index}
 \label{nx_find_index}
-
 \begin{NexCodeBox}{bash}{title={\NexFunction{nx_find_index(\NexOption{D1}, \NexOption{S}, \NexOption{D2})}}}
 function nx_find_index(D1, S, D2,	f, m)
 {
@@ -337,6 +407,72 @@ function nx_trim_vector(D, V1, S, V2,   i)
 	# V1[3] = "token3"
 	# Explanation: Splits the input string on commas, trims whitespace from each token, and stores them in the vector V1.
 \end{NexCodeBox}
+
+\newpage
+\subsection{nx_uniq_vector}
+\label{nx_uniq_vector}
+\begin{NexCodeBox}{awk}{title={\NexFunction{nx_uniq_vector(\NexOption{D}, \NexOption{V1}, \NexOption{S}, \NexOption{V2}, \NexOption{B1}, \NexOption{B2})}}}
+function nx_uniq_vector(D, V1, S, V2, B1, B2, v, i) {
+	if (B1)
+		i = nx_vector(D, v, S, V2)
+	else
+		i = nx_trim_vector(D, v, S, V2)
+	if (i) {
+		for (i = 1; i <= v[0]; i++) {
+			if (! (v[i] in V1)) {
+				V1[v[i]] = __nx_if(B2, 0, ++V1[0])
+				V1[V1[0]] = v[i]
+			}
+			if (B2)
+				V1[v[i]]++
+		}
+		i = V1[0]
+	}
+	delete v
+	return i
+}
+\end{NexCodeBox}
+
+\begin{NexMainBox}[light, hdrA, sdwA, crnA, grwB, ssecB]
+	\begin{NexMainBox}[dark, crnA]
+		The \NexFunction{nx_uniq_vector} function creates a unique vector (\NexOption{V1}) from input data (\NexOption{D}). It ensures that only distinct elements are added, with optional occurrence counts, while leveraging auxiliary vectors for processing.
+	\end{NexMainBox}
+	\begin{NexMainBox}[dark, crnA]
+		\begin{NexListDark}
+			\NexItemDark{\NexOption{D}: Input data to be processed for unique elements.}
+			\NexItemDark{\NexOption{V1}: Output vector storing unique elements and optional occurrence counts.}
+			\NexItemDark{\NexOption{S}: Separator used for splitting or processing input data.}
+			\NexItemDark{\NexOption{V2}: Auxiliary vector used during the processing of \NexOption{D}.}
+			\NexItemDark{\NexOption{B1}: Flag indicating whether to use \NexFunction{nx_vector} or \NexFunction{nx_trim_vector} for processing.}
+			\NexItemDark{\NexOption{B2}: Optional flag for maintaining occurrence counts of unique elements.}
+		\end{NexListDark}
+	\end{NexMainBox}
+\end{NexMainBox}
+
+\begin{NexCodeBox}{awk}{title={Processing with occurrence counts}}
+	D = "apple,orange,apple,banana,orange"
+	V1[0] = 0
+	S = ","
+	V2[0] = 0
+	nx_uniq_vector(D, V1, S, V2, 1, 1)
+	# Result:
+	# V1[1] = "apple", V1["apple"] = 2
+	# V1[2] = "orange", V1["orange"] = 2
+	# V1[3] = "banana", V1["banana"] = 1
+\end{NexCodeBox}
+
+\begin{NexCodeBox}{awk}{title={Processing without occurrence counts}}
+	D = "apple,orange,apple,banana,orange"
+	V1[0] = 0
+	S = ","
+	V2[0] = 0
+	nx_uniq_vector(D, V1, S, V2, 0, 0)
+	# Result:
+	# V1[1] = "apple"
+	# V1[2] = "orange"
+	# V1[3] = "banana"
+\end{NexCodeBox}
+
 
 \newpage
 \subsection{nx_length}

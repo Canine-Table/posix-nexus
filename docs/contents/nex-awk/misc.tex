@@ -7,27 +7,95 @@
 	\end{NexMainBox}
 	\begin{NexMainBox}[dark, crnA]
 		\begin{NexListDark}
+			\NexItemDark{\NexLink{__nx_num_map}{__nx_num_map(\NexOption{V})}: Initializes an associative array (\NexOption{V}) with mappings for digits (\texttt{0-9}), where each digit maps to itself. Ideal for digit-based validations or transformations.}
+			\NexItemDark{\NexLink{__nx_lower_map}{__nx_lower_map(\NexOption{V})}: Initializes an associative array (\NexOption{V}) with mappings for digits (\texttt{0-9}) and lowercase letters (\texttt{a-z}), leveraging \NexFunction{nx_bijective} for the letter mappings. Ideal for scenarios involving alphanumeric parsing or transformations.}
+			\NexItemDark{\NexLink{__nx_upper_map}{__nx_upper_map(\NexOption{V})}: Extends \NexFunction{__nx_lower_map} by adding bijective mappings for uppercase letters (\texttt{A-Z}) to an associative array (\NexOption{V}), ensuring full alphanumeric coverage.}
 			\NexItemDark{\NexLink{__nx_quote_map}{__nx_quote_map(\NexOption{V})}: Initializes an associative array (\NexOption{V}) with mappings for common quote characters (double quotes, single quotes, and backticks). Useful for handling quotes in parsing, escaping, or validation tasks.}
 			\NexItemDark{\NexLink{__nx_bracket_map}{__nx_bracket_map(\NexOption{V})}: Initializes an associative array (\NexOption{V}) with mappings for common opening and closing brackets (e.g., \texttt{[} to \texttt{]}, \texttt{\{} to \texttt{\}}, and \texttt{(} to \texttt{)}). Useful for parsing, validation, and other operations involving balanced brackets.}
 			\NexItemDark{\NexLink{__nx_str_map}{__nx_str_map(\NexOption{V})}: Initializes an associative array (\NexOption{V}) with mappings for string character classes. These include ranges for uppercase and lowercase letters, digits, hexadecimal characters, alphanumeric characters, printable ASCII characters, and punctuation. Useful for validation, parsing, and string processing.}
 			\NexItemDark{\NexLink{__nx_escape_map}{__nx_escape_map(\NexOption{V})}: Initializes an associative array (\NexOption{V}) with mappings for common escape sequences (\texttt{\textbackslash x20}, \texttt{\textbackslash x09}, \texttt{\textbackslash x0a}, \texttt{\textbackslash x0b}, \texttt{\textbackslash x0c}), each assigned to an empty string. Useful for removing whitespace and control characters during string processing.}
 			\NexItemDark{\NexLink{__nx_defined}{__nx_defined(\NexOption{D}, \NexOption{B})}: Validates whether \NexOption{D} is defined or evaluates as truthy under additional constraints provided by \NexOption{B}.}
-			\NexItemDark{\NexLink{__nx_null}{__nx_null(\NexOption{D})}: Checks whether \NexOption{D} is null or has a length of zero.}
 			\NexItemDark{\NexLink{__nx_else}{__nx_else(\NexOption{D1}, \NexOption{D2}, \NexOption{B})}: Returns \NexOption{D1} if it is truthy or satisfies the condition set by \NexOption{B}, otherwise returns \NexOption{D2}.}
 			\NexItemDark{\NexLink{__nx_if}{__nx_if(\NexOption{B1}, \NexOption{D1}, \NexOption{D2}, \NexOption{B2})}: Returns \NexOption{D1} if \NexOption{B1} is truthy or satisfies the condition set by \NexOption{B2}, otherwise returns \NexOption{D2}.}
 			\NexItemDark{\NexLink{__nx_elif}{__nx_elif(\NexOption{B1}, \NexOption{B2}, \NexOption{B3}, \NexOption{B4}, \NexOption{B5}, \NexOption{B6})}: Evaluates multiple conditions and their relationships, returning a boolean value based on comparisons of the results of \NexFunction{__nx_defined} for the provided inputs.}
-			\NexItemDark{\NexLink{__nx_or}{__nx_or(\NexOption{B1}, \NexOption{B2}, \NexOption{B3}, \NexOption{B4}, \NexOption{B5}, \NexOption{B6})}: Evaluates logical OR conditions between multiple inputs, incorporating constraints applied via \NexFunction{__nx_defined} and fallback adjustments from \NexFunction{__nx_else}.}
-			\NexItemDark{\NexLink{__nx_xor}{__nx_xor(\NexOption{B1}, \NexOption{B2}, \NexOption{B3}, \NexOption{B4})}: Evaluates exclusive OR (XOR) conditions between multiple inputs, incorporating constraints applied via \NexFunction{__nx_defined} and fallback adjustments from \NexFunction{__nx_else}.}
 		\end{NexListDark}
 	\end{NexMainBox}
 \end{NexMainBox}
 
+
 \begin{NexMainBox}[light, hdrA, sdwA, crnA, grwB, secB]
 	\begin{NexMainBox}[dark, crnA]
 		\begin{NexListDark}
+			\NexItemDark{\NexLink{__nx_or}{__nx_or(\NexOption{B1}, \NexOption{B2}, \NexOption{B3}, \NexOption{B4}, \NexOption{B5}, \NexOption{B6})}: Evaluates logical OR conditions between multiple inputs, incorporating constraints applied via \NexFunction{__nx_defined} and fallback adjustments from \NexFunction{__nx_else}.}
+			\NexItemDark{\NexLink{__nx_xor}{__nx_xor(\NexOption{B1}, \NexOption{B2}, \NexOption{B3}, \NexOption{B4})}: Evaluates exclusive OR (XOR) conditions between multiple inputs, incorporating constraints applied via \NexFunction{__nx_defined} and fallback adjustments from \NexFunction{__nx_else}.}
 			\NexItemDark{\NexLink{__nx_compare}{__nx_compare(\NexOption{B1}, \NexOption{B2}, \NexOption{B3}, \NexOption{B4})}: Compares two inputs based on type, length, or specified comparison rules, leveraging \NexFunction{awk}'s dynamic behavior and optional constraints.}
 			\NexItemDark{\NexLink{__nx_equality}{__nx_equality(\NexOption{B1}, \NexOption{B2}, \NexOption{B3})}: Evaluates the equality or relational conditions between \NexOption{B1} and \NexOption{B3} based on the operator specified in \NexOption{B2}, leveraging \NexFunction{awk} behavior for dynamic comparisons.}
 			\NexItemDark{\NexLink{__nx_swap}{__nx_swap(\NexOption{V}, \NexOption{D1}, \NexOption{D2})}: Swaps the values of two specified indices in the provided array or associative array. Utilizes a temporary variable to ensure the operation is safe and lossless.}
+		\end{NexListDark}
+	\end{NexMainBox}
+\end{NexMainBox}
+
+\newpage
+\subsection{__nx_upper_map}
+\label{__nx_upper_map}
+\begin{NexCodeBox}{bash}{title={\NexFunction{__nx_upper_map(\NexOption{V})}}}
+function __nx_upper_map(V, i) {
+	__nx_lower_map(V)
+	for (i = 36; i < 62; i++)
+		nx_bijective(V, i, "", sprintf("%c", i + 29))
+}
+\end{NexCodeBox}
+
+\begin{NexMainBox}[light, hdrA, sdwA, crnA, grwB, ssecB]
+	\begin{NexMainBox}[dark, crnA]
+		The \NexFunction{__nx_upper_map} function extends the mappings established by \NexFunction{__nx_lower_map} by adding bijective mappings for uppercase English letters (\texttt{A-Z}). It combines numerical digit mappings (\texttt{0-9}), lowercase letters (\texttt{a-z}), and uppercase letters (\texttt{A-Z}) into the associative array (\NexOption{V}).
+	\end{NexMainBox}
+	\begin{NexMainBox}[dark, crnA]
+		\begin{NexListDark}
+			\NexItemDark{\NexOption{V}: An associative array passed by reference. After execution, it contains mappings for digits (\texttt{0-9}), lowercase letters (\texttt{a-z}), and uppercase letters (\texttt{A-Z}).}
+		\end{NexListDark}
+	\end{NexMainBox}
+\end{NexMainBox}
+
+\newpage
+\subsection{__nx_num_map}
+\label{__nx_num_map}
+\begin{NexCodeBox}{bash}{title={\NexFunction{__nx_num_map(\NexOption{V})}}}
+function __nx_num_map(V, i) {
+	for (i = 0; i < 10; i++)
+		V[i] = i
+}
+\end{NexCodeBox}
+
+\begin{NexMainBox}[light, hdrA, sdwA, crnA, grwB, ssecB]
+	\begin{NexMainBox}[dark, crnA]
+		The \NexFunction{__nx_num_map} function initializes an associative array (\NexOption{V}) with mappings for numerical digits, where each digit maps to itself (e.g., \texttt{0} maps to \texttt{0}, \texttt{1} maps to \texttt{1}, etc.). This utility is useful for tasks involving digit-based validations or transformations.
+	\end{NexMainBox}
+	\begin{NexMainBox}[dark, crnA]
+		\begin{NexListDark}
+			\NexItemDark{\NexOption{V}: An associative array passed by reference, populated with digit mappings (\texttt{0-9}).}
+		\end{NexListDark}
+	\end{NexMainBox}
+\end{NexMainBox}
+
+\newpage
+\subsection{__nx_lower_map}
+\label{__nx_lower_map}
+\begin{NexCodeBox}{bash}{title={\NexFunction{__nx_lower_map(\NexOption{V})}}}
+function __nx_lower_map(V, i) {
+	__nx_num_map(V)
+	for (i = 10; i < 36; i++)
+		nx_bijective(V, i, "", sprintf("%c", i + 87))
+}
+\end{NexCodeBox}
+
+\begin{NexMainBox}[light, hdrA, sdwA, crnA, grwB, ssecB]
+	\begin{NexMainBox}[dark, crnA]
+		The \NexFunction{__nx_lower_map} function initializes an associative array (\NexOption{V}) with mappings for numerical digits (\texttt{0-9}) and lowercase English letters (\texttt{a-z}). Numerical digits map to themselves, while lowercase letters are bijectively mapped using their ASCII values.
+	\end{NexMainBox}
+	\begin{NexMainBox}[dark, crnA]
+		\begin{NexListDark}
+			\NexItemDark{\NexOption{V}: An associative array passed by reference. After execution, it includes digit-to-digit mappings (\texttt{0-9}) and bijective mappings for lowercase letters (\texttt{a-z}).}
 		\end{NexListDark}
 	\end{NexMainBox}
 \end{NexMainBox}
@@ -90,17 +158,18 @@ function __nx_bracket_map(V) {
 \subsection{__nx_str_map}
 \label{__nx_str_map}
 \begin{NexCodeBox}{bash}{title={\NexFunction{__nx_str_map(\NexOption{V})}}}
-function __nx_str_map(V) {
-	V["upper"] = "A-Z"
-	V["lower"] = "a-z"
-	V["xupper"] = "A-F"
-	V["xlower"] = "a-f"
-	V["digit"] = "0-9"
-	V["alpha"] = V["upper"] V["lower"]
-	V["xdigit"] = V["digit"] V["xupper"] V["xlower"]
-	V["alnum"] = V["digit"] V["alpha"]
-	V["print"] = "\x20-\x7e"
-	V["punct"] = "\x21-\x2f\x3a-\x40\x5b-\x60\x7b-\x7e"
+function __nx_str_map(V)
+{
+	nx_bijective(V, ++V[0], "upper", "A-Z")
+	nx_bijective(V, ++V[0], "lower", "a-z")
+	nx_bijective(V, ++V[0], "xupper", "A-F")
+	nx_bijective(V, ++V[0], "xlower", "a-f")
+	nx_bijective(V, ++V[0], "digit", "0-9")
+	nx_bijective(V, ++V[0], "alpha", V["upper"] V["lower"])
+	nx_bijective(V, ++V[0], "xdigit", V["digit"] V["xupper"] V["xlower"])
+	nx_bijective(V, ++V[0], "alnum", V["digit"] V["alpha"])
+	nx_bijective(V, ++V[0], "print", "\x20-\x7e")
+	nx_bijective(V, ++V[0], "punct", "\x21-\x2f\x3a-\x40\x5b-\x60\x7b-\x7e")
 }
 \end{NexCodeBox}
 
@@ -213,61 +282,6 @@ function __nx_defined(D, B) {
 	B2 = "fallback"
 	result = __nx_defined(B1, B2)
 	# result is true, as B2 ("fallback") is defined and compensates for B1 being empty
-\end{NexCodeBox}
-
-\newpage
-\subsection{__nx_null}
-\label{__nx_null}
-\begin{NexCodeBox}{bash}{title={\NexFunction{__nx_null(\NexOption{D})}}}
-function __nx_null(D) {
-	return (length(D) == 0)
-}
-\end{NexCodeBox}
-
-\begin{NexMainBox}[light, hdrA, sdwA, crnA, grwB, ssecB]
-	\begin{NexMainBox}[dark, crnA]
-		Determines whether \NexOption{D} is null or has a length of zero. This function is useful for validating empty values or strings.
-	\end{NexMainBox}
-	\begin{NexMainBox}[dark, crnA]
-		\begin{NexListDark}
-			\NexItemDark{\NexOption{D}: The variable or value to check for nullity or zero length.}
-		\end{NexListDark}
-	\end{NexMainBox}
-\end{NexMainBox}
-
-\begin{NexCodeBox}{bash}{title={Null check on an empty value}}
-	B1 = ""
-	result = __nx_null(B1)
-	# result is true, as B1 is an empty string and thus considered null
-\end{NexCodeBox}
-
-\begin{NexCodeBox}{bash}{title={Null check on a numeric zero}}
-	B1 = 0
-	result = __nx_null(B1)
-	# result is false, as B1 (0) is not considered null despite evaluating as false in conditions
-\end{NexCodeBox}
-
-\begin{NexCodeBox}{bash}{title={Null check on an undefined value}}
-	B1 = ""
-	B2 = 1
-	result = __nx_null(__nx_else(B1, B2))
-	# result is false, as the fallback B2 (1) is defined, overriding B1’s null state
-\end{NexCodeBox}
-
-\begin{NexCodeBox}{bash}{title={Null check with regex pattern fallback}}
-	B1 = ""
-	B2 = "abc123"
-	B3 = /^[a-z]+[0-9]+$/
-	result = __nx_null(__nx_else(B1, B2 ~ B3))
-	# result is false, as B2 matches the regex pattern, making it non-null
-\end{NexCodeBox}
-
-\begin{NexCodeBox}{bash}{title={Handling null explicitly in logical flows}}
-	B1 = ""
-	B2 = ""
-	B3 = 0
-	result = __nx_null(__nx_or(B1, B2, B3))
-	# result is true, as all inputs to __nx_or resolve to null-like states
 \end{NexCodeBox}
 
 \newpage

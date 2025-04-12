@@ -4,18 +4,18 @@ function __nx_num_map(V,  i)
 		V[i] = i
 }
 
-function __nx_lower_map(V,	    i)
+function __nx_lower_map(V,	i)
 {
 	__nx_num_map(V)
 	for (i = 10; i < 36; i++)
-		V[i] = nx_bijective(V, i, 0, sprintf("%c", i + 87))
+		nx_bijective(V, i, "", sprintf("%c", i + 87))
 }
 
 function __nx_upper_map(V,	i)
 {
 	__nx_lower_map(V)
 	for (i = 36; i < 62; i++)
-		V[i] = nx_bijective(V, i, 0, sprintf("%c", i + 29))
+		nx_bijective(V, i, "", sprintf("%c", i + 29))
 }
 
 function __nx_quote_map(V)
@@ -105,16 +105,14 @@ function __nx_compare(B1, B2, B3, B4)
 		if (length(B3)) {
 			B1 = length(B1)
 			B2 = length(B2)
-			B3 = 1
 		} else if (__nx_is_digit(B1, 1) && __nx_is_digit(B2, 1)) {
-			    B1 = +B1
-			    B2 = +B2
-			    B3 = 1
+			B1 = +B1
+			B2 = +B2
 		} else {
 			B1 = "a" B1
 			B2 = "a" B2
-			B3 = 1
 		}
+		B3 = 1
 	}
 
 	if (B4) {

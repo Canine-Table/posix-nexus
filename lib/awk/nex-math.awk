@@ -1,3 +1,13 @@
+# Difference = Minuend - Subtrahend
+# Sum = Addend + Addend
+# Product = Factor * Factor
+# Power = Base ** Exponent
+#
+# Quotient = Dividend / Divisor
+# Quotient = (Dividend - Remainder) / Divisor
+# Dividend = (Divisor * Quotient) + Remainder
+# Remainder = Dividend % Divisor
+
 function __nx_is_signed(N)
 {
 	return N ~ /^([-]|[+])/
@@ -48,25 +58,6 @@ function nx_tau(N)
 {
 	if (N = nx_pi(N))
 		return N * 2
-}
-
-function __nx_base(D, V)
-{
-	if (D ~ /^[a-zA-Z]$/) {
-		if (! (length(V) && "Z" in V))
-			__nx_upper_map(V)
-		D = V[D]
-	}
-	if (__nx_is_natural(D)) {
-		D = int(D)
-		if (D >= 2 && D <= 62)
-			return D
-	}
-}
-
-function __nx_get_base(N1, V)
-{
-	return __nx_else(__nx_base(N1, V), 10)
 }
 
 function nx_summation(N1, N2, i)
@@ -289,23 +280,52 @@ function nx_miller_rabin(N, S,		v, t, d, s, a, x, i, j)
 	}
 }
 
-function __nx_base_regex(N, V, B,	r)
+function __nx_base(D, V)
+{
+	if (D ~ /^[a-zA-Z]$/) {
+		if (! (length(V) && "Z" in V))
+			__nx_upper_map(V)
+		D = V[D]
+	}
+	if (__nx_is_natural(D)) {
+		D = int(D)
+		if (D >= 2 && D <= 62)
+			return D
+	}
+}
+
+function __nx_load_base(N, V)
+{
+	if (N > 36 && ! ("Z" in V))
+		__nx_upper_map(V)
+	else if (N > 10 && ! ("z" in V))
+		__nx_lower_map(V)
+	else if (! (9 in V))
+		__nx_num_map(V)
+}
+
+function __nx_get_base(N1, V)
+{
+	return __nx_else(__nx_base(N1, V), 10)
+}
+
+function __nx_base_regex(N, V, B)
 {
 	if (N = __nx_get_base(N, V)) {
 		if (N < 10) {
 			if (B)
 				__nx_num_map(V)
-			r = "[0-" N "]+"
+			B = "[0-" N "]+"
 		} else if (N < 36) {
 			if (B)
 				__nx_lower_map(V)
-			r = "[0-9a-" V[N] "]+"
+			B = "[0-9a-" V[N] "]+"
 		} else {
 			if (B)
 				__nx_upper_map(V)
-			r = "[0-9a-zA-" V[N] "]+"
+			B = "[0-9a-zA-" V[N] "]+"
 		}
-		return "^([+]|[-])?" r "([.]" r ")?$"
+		return "^([+]|[-])?" B "([.]" B ")?$"
 	}
 }
 
@@ -314,17 +334,24 @@ function __nx_base_logarithm(N1, N2)
 	return log(__nx_base(N1)) / log(__nx_base(N2))
 }
 
+function __nx_bit_width(N)
+{
+	return nx_ceiling(__nx_base_logarithm(N, 2))
+}
+
 function __nx_number_map(V1, N1, V2, N2, N3)
 {
-	if (__nx_is_digit(N1, 1)) {
-		if (! (length(V) && 0 in V))
-			V[0] = 0
-		if (! (__nx_is_natural(N3) && N3 in V))
-			N3 = V[0] + 1
-		N2 = __nx_get_base(N2, V2)
-		if (N2 >= 2 && N2 <= 62) {
-			if (N2 > 10 && N2 < 37)
-				N1 = tolower(N1)
+	if (! (length(V1) && 0 in V1))
+		V1[0] = 0
+	if (! (__nx_is_natural(N3) && N3 in V1))
+		N3 = V1[0] + 1
+	N2 = __nx_get_base(N2, V2)
+	if (N2 >= 2 && N2 <= 62) {
+		__nx_load_base(N2, V2)
+		if (N2 > 10 && N2 < 37)
+			N1 = tolower(N1)
+		if (N1 ~ __nx_base_regex(N2 - 1, V2)) {
+			V1[N3 "_bs"] = N2
 			if (__nx_is_signed(N1)) {
 				V1[N3 "_sn"] = substr(N1, 1, 1)
 				N1 = substr(N1, 2)
@@ -332,20 +359,105 @@ function __nx_number_map(V1, N1, V2, N2, N3)
 			if (__nx_is_float(N1))
 				V1[N3 "_flt"] = nx_cut_str(N1, "[.]", 0)
 			V1[N3 "_num"] = __nx_else(nx_cut_str(N1, "[.]", 1), N1)
+			V1[0] = N3
+			return V1[0]
 		}
+	}
+}
+
+function nx_power(N1, N2, B, V)
+{
+	if (__nx_is_digit(N1, 1)) {
+		if (nx_absolute(N1) == 0)
+			return "0"
+		if (nx_absolute(N2) == 0)
+			return 1
+		__nx_number_map(V, N1)
+		__nx_number_map(V, N2)
+		N1 = nx_modular_exponentiation(__nx_construct_number(V, V[0] - 1, 1, 1), __nx_construct_number(V, V[0], 1, 1))
+		N2 = V[(V[0] - 1) "_sn"]
+		if (V[V[0] "_sn"] == "-")
+			N1 = N2 (1 / N1)
+		else
+			N1 = N2 N1
+		if (B)
+			delete V
+		return N1
 	}
 }
 
 function __nx_construct_number(V, N, B1, B2, B3,	t)
 {
-	if (N "_num" in V) {
+	if (length(V) && 0 in V && (N = __nx_else(N, V[0])) "_num" in V) {
 		if (B1)
 			t = __nx_else(V[N "_num"], 0)
 		if (B2)
-			t = __nx_else(t, 0) __nx_if(V[N "_flt"], ".", "") __nx_if(V[N "_flt"])
+			t = __nx_else(t, 0) __nx_if(V[N "_flt"], ".", "") V[N "_flt"]
 		if (B3)
-			t = __nx_else(V[N "_sn"], "+") t
+			t = __nx_else(V[N "_sn"], "") t
 		return t
+	}
+}
+
+function nx_compliment(N1, N2, V1, V2,		i, v, n, l)
+{
+	if (N2 = __nx_get_base(N2, V2)) {
+		if (__nx_number_map(V1, N1, V2, N2)) {
+			N2 = N2 - 1
+			l = split(N1, v, "")
+			for (i = 1; i <= l; i++) {
+				if (v[i] ~ /[.]|[+]|[-]/)
+					n = n v[i]
+				else
+					n = n V2[N2 - v[i]]
+			}
+			delete v
+			return n
+		}
+	}
+}
+
+function nx_convert_base(N1, N2, N3, N4, V1, V2,	v, l, n, i, j)
+{
+	if (N3 = __nx_get_base(N3, V2)) {
+		if (__nx_number_map(V1, N1, V2, N2)) {
+			if (V1[V1[0] "_bs"] != N3) {
+				__nx_load_base(N3, V2)
+				N4 = __nx_else(nx_floor(N4), 64)
+				if (V1[V1[0]"_bs"] != 10) {
+					l = split(V1[V1[0] "_num"], v, "")
+					for (i = l; i > 0; i--)
+						n = __nx_precision(n + nx_modular_exponentiation(V2[v[++j]] * V1[V1[0] "_bs"], i - 1))
+					V1[V1[0] "_num"] = n
+					n = 0
+					if (V1[0] "_flt" in V1) {
+						l = split(V1[V1[0] "_flt"], v, "")
+						for (i = 1; i <= l; i++)
+							n = __nx_precision(n + V2[v[i]] * nx_power(V1[V1[0] "_bs"], -i, 1), N4)
+						V1[V1[0] "_flt"] = substr(n, 3)
+						n = 0
+					}
+				}
+				if (N3 != 10) {
+					do {
+						n = V2[int(V1[V1[0] "_num"] % N3)] n
+						V1[V1[0] "_num"] = V1[V1[0] "_num"] / N3
+					} while (int(V1[V1[0] "_num"]))
+					V1[V1[0] "_num"] = n
+					n = ""
+					if (V1[0] "_flt" in V1) {
+						j = N4
+						V1[V1[0] "_flt"] = "0." V1[V1[0] "_flt"]
+						do {
+							n = n V2[i = int(V1[V1[0] "_flt"] = V1[V1[0] "_flt"] * N3)]
+						} while((V1[V1[0] "_flt"] = V1[V1[0] "_flt"] - i) > 0.01 && --j)
+						V1[V1[0] "_flt"] = n
+					}
+				}
+				delete v
+				return __nx_construct_number(V1, V1[0], 1, 1, 1)
+			}
+		}
 	}
 }
 

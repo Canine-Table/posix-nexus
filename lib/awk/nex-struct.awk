@@ -5,6 +5,7 @@ function nx_bijective(V, D1, B, D2)
 			if (length(B)) {
 				V[D1] = B
 				V[B] = D2
+				V[D2] = D1
 			} else {
 				V[D1] = D2
 				V[D2] = D1

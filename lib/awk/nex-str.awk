@@ -24,6 +24,68 @@ function nx_join_str(D1, D2, S, D3)
 	return D1 D3 D2 D3
 }
 
+function nx_same_length(N1, N2, B, V,	n, n1, n2, l1, l2, d1, d2)
+{
+#	if (N1 in V)
+#		b1 = 1
+#	l1 = length(n1 = __nx_if(b1, V[N1], N1))
+#	if (N2 in V)
+#		b2 = 1
+#	l2 = length(n2 = __nx_if(b1, V[N2], N2))
+#	if ((n = n1 - n2) > 0) {
+#		if (B) {
+#			if (b1)
+#				V[N1] = substr(n1, l1 - n + 1)
+#			return substr(n1, 1, l1 - n)
+#		} else {
+#			if (b1)
+#				V[N1] = substr(n1, 1, l1 - n)
+#			return substr(n1, l1 - n + 1)
+#		}
+#	} else {
+#		if (B) {
+#			if (b2)
+#				V[N2] = substr(n2, l2 + n + 1)
+#			return substr(n2, 1, l2 + n)
+#		} else {
+#			if (b2)
+#				V[N2] = substr(n2, 1, l2 + n)
+#			return substr(n2, l2 + n + 1)
+#		}
+#	}
+}
+
+function nx_slice_str(D, N, B1, B2,	s, e, l)
+{
+	if (__nx_is_natural(N) && N <= (l = length(D))) {
+		if (B1) {
+			if (B2) {
+				s = N + 1
+				e = l - N
+			} else {
+				s = 1
+				e = N
+			}
+		} else if (length(B1) && N * 2 <= l) {
+			if (B2) {
+				return substr(D, 1, N) substr(D, l - N + 1)
+			} else {
+				s = N + 1
+				e = l - N * 2
+			}
+		} else {
+			if (B2) {
+				s = 1
+				e = l - N
+			} else {
+				s = l - N + 1
+				e = N
+			}
+		}
+		return substr(D, s, e)
+	}
+}
+
 function nx_trim_str(D, S)
 {
 	S = __nx_else(S, " \v\t\n\f")
