@@ -1,25 +1,26 @@
-function nx_bijective(V, D1, B, D2)
+function nx_bijective(V, D1, D2, D3)
 {
 	if (D1 != "") {
 		if (D2 != "") {
-			if (length(B)) {
-				V[D1] = B
-				V[B] = D2
-				if (B)
-					V[D2] = D1
+			if (D3 != "") {
+				V[D1] = D2
+				V[D2] = D3
+				V[D3] = D1
 			} else {
 				V[D1] = D2
 				V[D2] = D1
 			}
-		} else {
-			V[V[D1]] = D1
-			if (B)
+		} else if (D3 != "") {
+				V[V[D1]] = D3
+			if (D2)
 				delete V[D1]
+			if (D1)
+				V[D3] = V1
 		}
 	}
 }
 
-function nx_find_index(D1, S, D2,	f, m)
+function nx_find_index(D1, S, D2,	f)
 {
 	if (__nx_defined(D1, 1)) {
 		f = 0

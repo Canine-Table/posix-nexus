@@ -7,7 +7,7 @@
 	\end{NexMainBox}
 	\begin{NexMainBox}[dark, crnA]
 		\begin{NexListDark}
-			\NexItemDark{\NexLink{nx_bijective}{nx_bijective(\NexOption{V}, \NexOption{D1}, \NexOption{B}, \NexOption{D2})}: Manages bijective mappings within an associative array (\NexOption{V}), allowing the creation, updating, or removal of one-to-one relationships between keys and values.}
+			\NexItemDark{\NexLink{nx_bijective}{nx_bijective(\NexOption{V}, \NexOption{D1}, \NexOption{D2}, \NexOption{D3})}: Updates a bijective mapping stored in \NexOption{V}, based on three keys (\NexOption{D1}, \NexOption{D2}, \NexOption{D3}). Creates or modifies circular references if all keys are provided, swaps references if two keys are defined, or performs deletions and adjustments based on the keys. Handles edge cases dynamically.}
 			\NexItemDark{\NexLink{nx_find_index}{nx_find_index(\NexOption{D1}, \NexOption{S}, \NexOption{D2})}: Searches for the first occurrence of a pattern within a string, with additional constraints. Returns the index of the match or modifies behavior based on optional parameters.}
 			\NexItemDark{\NexLink{nx_next_pair}{nx_next_pair(\NexOption{D1}, \NexOption{V1}, \NexOption{V2}, \NexOption{D2}, \NexOption{B1}, \NexOption{B2})}: Retrieves the next pair of start and end indices within a string (\NexOption{D1}), based on associative array delimiters (\NexOption{V1}). Outputs indices and their lengths to the result vector (\NexOption{V2}), while handling escape constraints (\NexOption{D2}). Logic flags (\NexOption{B1}, \NexOption{B2}) control fallback behavior and prioritization during evaluation.}
 			\NexItemDark{\NexLink{nx_tokenize}{nx_tokenize(\NexOption{D1}, \NexOption{V1}, \NexOption{V2}, \NexOption{D2}, \NexOption{B1}, \NexOption{B2})}: Tokenizes an input string (\NexOption{D1}) based on start and end delimiters (\NexOption{V2}). Extracted tokens are stored in the output vector (\NexOption{V1}). Handles escape sequences (\NexOption{D2}) and allows prioritization or fallback using logical flags (\NexOption{B1}, \NexOption{B2}).}
@@ -35,21 +35,21 @@
 \subsection{nx_bijective}
 \label{nx_bijective}
 \begin{NexCodeBox}{awk}{title={\NexFunction{nx_bijective(\NexOption{V}, \NexOption{D1}, \NexOption{B}, \NexOption{D2})}}}
-function nx_bijective(V, D1, B, D2) {
-	if (length(V) && D1 != "") {
+function nx_bijective(V, D1, D2, D3)
+{
+	if (D1 != "") {
 		if (D2 != "") {
-			if (length(B)) {
-				V[D1] = B
-				V[B] = D2
-				if (B)
-					V[D2] = D1
+			if (D3 != "") {
+				V[D1] = D2
+				V[D2] = D3
+				V[D3] = D1
 			} else {
 				V[D1] = D2
 				V[D2] = D1
 			}
-		} else {
-			V[V[D1]] = D1
-			if (B)
+		} else if (D3 != "") {
+				V[V[D1]] = D3
+			if (D2)
 				delete V[D1]
 		}
 	}
@@ -58,53 +58,48 @@ function nx_bijective(V, D1, B, D2) {
 
 \begin{NexMainBox}[light, hdrA, sdwA, crnA, grwB, ssecB]
 	\begin{NexMainBox}[dark, crnA]
-		The \NexFunction{nx_bijective} function manages bijective mappings within an associative array (\NexOption{V}). It supports adding, updating, and removing one-to-one relationships, ensuring both keys and values are interconnected consistently.
+		Updates a bijective mapping stored in \NexOption{V}, based on three keys (\NexOption{D1}, \NexOption{D2}, \NexOption{D3}). Creates or modifies circular references if all keys are provided, swaps references if two keys are defined, or performs deletions and adjustments based on the keys. Handles edge cases dynamically.
 	\end{NexMainBox}
-	\begin{NexMainBox}[dark, crnA]
+	\begin{NexMainBox}[dark, crnA}
 		\begin{NexListDark}
-			\NexItemDark{\NexOption{V}: The associative array storing mappings. Keys are linked to values and vice versa.}
-			\NexItemDark{\NexOption{D1}: The primary key for establishing or modifying mappings.}
-			\NexItemDark{\NexOption{B}: Optional intermediate key used for chaining multi-step mappings.}
-			\NexItemDark{\NexOption{D2}: The value paired with \NexOption{D1}. An empty \NexOption{D2} triggers removal.}
+			\NexItemDark{\NexOption{V}: The associative array representing the bijective mapping.}
+			\NexItemDark{\NexOption{D1}: The primary key used for mapping and adjustments.}
+			\NexItemDark{\NexOption{D2}: The secondary key for mapping relationships. Optional.}
+			\NexItemDark{\NexOption{D3}: The tertiary key for creating or modifying circular mappings. Optional.}
 		\end{NexListDark}
 	\end{NexMainBox}
 \end{NexMainBox}
 
-\begin{NexCodeBox}{awk}{title={Adding a Multi-Step Mapping}}
-	V["D1"] = ""
-	V["B"] = ""
-	V["D2"] = ""
-	nx_bijective(V, "key1", "middle", "key2")
-	# Result:
-	# V["key1"] = "middle"
-	# V["middle"] = "key2"
-	# V["key2"] = "key1"
+\begin{NexCodeBox}{bash}{title={Swap two keys}}
+    print nx_bijective(V, "X", "Y", "")
+    # Result: V["X"] = "Y", V["Y"] = "X"
 \end{NexCodeBox}
 
-\begin{NexCodeBox}{awk}{title={Updating Reverse Mapping}}
-	V["key1"] = "middle"
-	V["middle"] = "key2"
-	V["key2"] = "key1"
-	nx_bijective(V, "key1", "", "")
-	# Result:
-	# V["key2"] = "key1"
-	# V["key1"] is deleted if B is truthy.
+\begin{NexCodeBox}{bash}{title={Modify mappings}}
+    print nx_bijective(V, "P", "", "Q")
+    # Result: V[V["P"]] = "Q", V["P"] deleted, V["Q"] = V1
 \end{NexCodeBox}
 
-\begin{NexCodeBox}{awk}{title={Removing a Mapping}}
-	V["key1"] = "middle"
-	V["middle"] = "key2"
-	V["key2"] = "key1"
-	nx_bijective(V, "key1", "", "")
-	# Result:
-	# Deletes V["key1"] and adjusts the reverse mapping.
+\begin{NexCodeBox}{bash}{title={Modify mappings}}
+    print nx_bijective(V, "P", "", "Q")
+    # Result: V[V["P"]] = "Q", V["P"] deleted, V["Q"] = V1
+\end{NexCodeBox}
+
+\begin{NexCodeBox}{bash}{title={No operation}}
+    print nx_bijective(V, "", "M", "N")
+    # Result: (no changes made to V)
+\end{NexCodeBox}
+
+\begin{NexCodeBox}{bash}{title={Empty mapping}}
+    print nx_bijective(V, "", "", "")
+    # Result: (no changes made to V)
 \end{NexCodeBox}
 
 \newpage
 \subsection{nx_find_index}
 \label{nx_find_index}
 \begin{NexCodeBox}{bash}{title={\NexFunction{nx_find_index(\NexOption{D1}, \NexOption{S}, \NexOption{D2})}}}
-function nx_find_index(D1, S, D2,	f, m)
+function nx_find_index(D1, S, D2,	f)
 {
 	if (__nx_defined(D1, 1)) {
 		f = 0

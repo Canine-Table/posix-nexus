@@ -1,2 +1,5 @@
-	print nx_cut_str("abcdefghi", "xyz", 0)
-	# Result: (no output)
+	B1 = 0
+	B2 = "Will Not Return"
+	B3 = "Fallback Case"
+	result = __nx_if(B1, B2, B3)
+	# result is "Fallback Case", as B1 is false (0), returning the third argument
