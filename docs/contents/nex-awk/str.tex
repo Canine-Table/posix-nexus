@@ -6,9 +6,469 @@
 	\end{NexMainBox}
 	\begin{NexMainBox}[dark, crnA]
 		\begin{NexListDark}
-			\NexItemDark{\NexFunction{trim(D, S)}: Trims leading and trailing spaces from \NexFunction{D} and removes excess spaces around the delimiter \NexFunction{S}.}
+			\NexItemDark{\NexLink{nx_reverse_str}{nx_reverse_str(\NexOption{D}, \NexOption{i}, \NexOption{v})}: Reverses the input string (\NexOption{D}) by splitting it into characters, reversing the order, and recombining it into a new string.}
+			\NexItemDark{\NexLink{nx_escape_str}{nx_escape_str(\NexOption{D})}: Escapes all characters in the input string (\NexOption{D}) by prefixing them with a backslash (`\texttt{\backslash}`). Useful for preparing strings for use in regular expressions or other contexts where characters need escaping.}
+			\NexItemDark{\NexLink{nx_join_str}{nx_join_str(\NexOption{D1}, \NexOption{D2}, \NexOption{S}, \NexOption{D3})}: Joins two strings (\NexOption{D1} and \NexOption{D2}) with a separator (\NexOption{S}) while enclosing \NexOption{D2} in dynamic quotes (\texttt{'}/\texttt{"}) based on the length and value of \NexOption{D3}. Returns the concatenated result.}
+			\NexItemDark{\NexLink{nx_slice_str}{nx_slice_str(\NexOption{D}, \NexOption{N}, \NexOption{B1}, \NexOption{B2})}: Slices a string (\NexOption{D}) based on position (\NexOption{N}), constraints (\NexOption{B1} and \NexOption{B2}), and calculated start and end indices. Handles nuanced edge cases, including zero and empty values. Returns the sliced substring or a composite of two substrings.}
+			\NexItemDark{\NexLink{nx_trim_str}{nx_trim_str(\NexOption{D}, \NexOption{S})}: Trims unwanted characters (\NexOption{S}) from both ends of a string (\NexOption{D}). Defaults to whitespace characters if \NexOption{S} is not provided. Returns the trimmed string.}
+			\NexItemDark{\NexLink{nx_append_str}{nx_append_str(\NexOption{D1}, \NexOption{N}, \NexOption{D2}, \NexOption{B})}: Appends the string (\NexOption{D1}) to itself \NexOption{N} times, starting with an optional prefix (\NexOption{D2}). The append direction is determined by (\NexOption{B}): if true, appends in reverse; otherwise, appends normally. Returns the concatenated result.}
+			\NexItemDark{\NexLink{nx_cut_str}{nx_cut_str(\NexOption{D1}, \NexOption{D2}, \NexOption{B})}: Extracts or removes a substring matching the pattern (\NexOption{D2}) from the input string (\NexOption{D1}). The behavior is controlled by the flag (\NexOption{B}): if true, removes the substring before the match; if false with a length, removes the substring after the match; otherwise, returns the matched substring.}
+			\NexItemDark{\NexLink{nx_totitle}{nx_totitle(\NexOption{D}, \NexOption{B1}, \NexOption{B2})}: Converts an input string (\NexOption{D}) to title case, capitalizing the first letter of each segment and lowercasing the rest. Handles escaped characters (\NexOption{B1}) and relies on mappings (\NexOption{B2}) for pair segmentation logic. Returns the title-cased string.}
 		\end{NexListDark}
 	\end{NexMainBox}
 \end{NexMainBox}
 
+\newpage
+\subsection{nx_reverse_str}
+\label{nx_reverse_str}
+\begin{NexCodeBox}{bash}{title={\NexFunction{nx_reverse_str(\NexOption{D}, \NexOption{i}, \NexOption{v})}}}
+function nx_reverse_str(D, i, v) {
+	if ((i = split(D, v, "")) > 1) {
+		D = ""
+		do {
+			D = D v[i]
+		} while (--i)
+	}
+	delete v
+	return D
+}
+\end{NexCodeBox}
+
+\begin{NexMainBox}[light, hdrA, sdwA, crnA, grwB, ssecB]
+	\begin{NexMainBox}[dark, crnA]
+		Reverses the input string (\NexOption{D}) and returns the reversed result. The function breaks the string into individual characters, reverses the order, and combines them back into a single string.
+	\end{NexMainBox}
+	\begin{NexMainBox}[dark, crnA]
+		\begin{NexListDark}
+			\NexItemDark{\NexOption{D}: The input string to be reversed.}
+			\NexItemDark{\NexOption{v}: An auxiliary vector used to store the split characters during processing. Automatically cleared after use.}
+		\end{NexListDark}
+	\end{NexMainBox}
+\end{NexMainBox}
+
+\begin{NexCodeBox}{bash}{title={Basic string reversal}}
+	D = "hello"
+	result = nx_reverse_str(D)
+	# Result: "olleh"
+\end{NexCodeBox}
+
+\begin{NexCodeBox}{bash}{title={Empty string case}}
+	D = ""
+	result = nx_reverse_str(D)
+	# Result: ""
+\end{NexCodeBox}
+
+\begin{NexCodeBox}{bash}{title={Palindrome string}}
+	D = "madam"
+	result = nx_reverse_str(D)
+	# Result: "madam" (same as input, as it's a palindrome)
+\end{NexCodeBox}
+
+\newpage
+\subsection{nx_escape_str}
+\label{nx_escape_str}
+\begin{NexCodeBox}{bash}{title={\NexFunction{nx_escape_str(\NexOption{D})}}}
+function nx_escape_str(D) {
+	gsub(/./, "\\\\&", D)
+	return D
+}
+\end{NexCodeBox}
+
+
+\begin{NexMainBox}[light, hdrA, sdwA, crnA, grwB, ssecB]
+	\begin{NexMainBox}[dark, crnA]
+		Escapes all characters in the input string (\NexOption{D}) by prefixing them with a backslash (`\texttt{\textbackslash}`). Useful for preparing strings for use in regular expressions or other contexts where characters need escaping.
+	\end{NexMainBox}
+	\begin{NexMainBox}[dark, crnA]
+		\begin{NexListDark}
+			\NexItemDark{\NexOption{D}: The input string whose characters will be escaped.}
+		\end{NexListDark}
+	\end{NexMainBox}
+\end{NexMainBox}
+
+\begin{NexCodeBox}{bash}{title={Basic string escaping}}
+	D = "hello"
+	result = nx_escape_str(D)
+	# Result: "\h\e\l\l\o"
+\end{NexCodeBox}
+
+\begin{NexCodeBox}{bash}{title={Escaping special characters}}
+	D = "hello$world"
+	result = nx_escape_str(D)
+	# Result: "\h\e\l\l\o\$w\o\r\l\d"
+\end{NexCodeBox}
+
+\begin{NexCodeBox}{bash}{title={Empty string case}}
+	D = ""
+	result = nx_escape_str(D)
+	# Result: ""
+\end{NexCodeBox}
+
+\newpage
+\subsection{nx_join_str}
+\label{nx_join_str}
+\begin{NexCodeBox}{bash}{title={\NexFunction{nx_join_str(\NexOption{D1}, \NexOption{D2}, \NexOption{S}, \NexOption{D3})}}}
+function nx_join_str(D1, D2, S, D3) {
+	if (length(D3))
+		D3 = __nx_if(D3, "\x27", "\x22")
+	if (D1 && D2)
+		D1 = D1 S
+	return D1 D3 D2 D3
+}
+\end{NexCodeBox}
+
+\begin{NexMainBox}[light, hdrA, sdwA, crnA, grwB, ssecB]
+	\begin{NexMainBox}[dark, crnA]
+		Joins two strings (\NexOption{D1} and \NexOption{D2}) with a separator (\NexOption{S}) while enclosing \NexOption{D2} in dynamic quotes (\texttt{'}/\texttt{"}) based on the length and value of \NexOption{D3}. Returns the concatenated result.
+	\end{NexMainBox}
+	\begin{NexMainBox}[dark, crnA]
+		\begin{NexListDark}
+			\NexItemDark{\NexOption{D1}: The first string to be concatenated.}
+			\NexItemDark{\NexOption{D2}: The second string to be concatenated. Enclosed in quotes dynamically.}
+			\NexItemDark{\NexOption{S}: The separator placed between \NexOption{D1} and \NexOption{D2}.}
+			\NexItemDark{\NexOption{D3}: Determines the type of quotes (\texttt{'}/\texttt{"}) to enclose \NexOption{D2}. Quotes are applied if \NexOption{D3} has length.}
+		\end{NexListDark}
+	\end{NexMainBox}
+\end{NexMainBox}
+
+\begin{NexCodeBox}{bash}{title={Basic concatenation}}
+	D1 = "hello"
+	D2 = "world"
+	S = " "
+	D3 = "\""
+	result = nx_join_str(D1, D2, S, D3)
+	# Result: hello "world"
+\end{NexCodeBox}
+
+\begin{NexCodeBox}{bash}{title={Single quotes for D2}}
+	D1 = "key"
+	D2 = "value"
+	S = "="
+	D3 = "'"
+	result = nx_join_str(D1, D2, S, D3)
+	# Result: key='value'
+\end{NexCodeBox}
+
+\begin{NexCodeBox}{bash}{title={No separator or D1}}
+	D1 = ""
+	D2 = "standalone"
+	S = ""
+	D3 = "\""
+	result = nx_join_str(D1, D2, S, D3)
+	# Result: "standalone"
+\end{NexCodeBox}
+
+\begin{NexCodeBox}{bash}{title={No quotes for D2}}
+	D1 = "start"
+	D2 = "end"
+	S = "-"
+	D3 = ""
+	result = nx_join_str(D1, D2, S, D3)
+	# Result: start-end
+\end{NexCodeBox}
+
+\newpage
+\subsection{nx_slice_str}
+\label{nx_slice_str}
+\begin{NexCodeBox}{bash}{title={\NexFunction{nx_slice_str(\NexOption{D}, \NexOption{N}, \NexOption{B1}, \NexOption{B2})}}}
+function nx_slice_str(D, N, B1, B2, s, e, l) {
+	if (__nx_is_natural(N) && N <= (l = length(D))) {
+		if (B1) {
+			if (B2) {
+				s = N + 1
+				e = l - N
+			} else {
+				s = 1
+				e = N
+			}
+		} else if (length(B1) && N * 2 <= l) {
+			if (B2) {
+				return substr(D, 1, N) substr(D, l - N + 1)
+			} else {
+				s = N + 1
+				e = l - N * 2
+			}
+		} else {
+			if (B2) {
+				s = 1
+				e = l - N
+			} else {
+				s = l - N + 1
+				e = N
+			}
+		}
+		return substr(D, s, e)
+	}
+}
+\end{NexCodeBox}
+
+\begin{NexMainBox}[light, hdrA, sdwA, crnA, grwB, ssecB]
+	\begin{NexMainBox}[dark, crnA]
+		Slices a string (\NexOption{D}) based on position (\NexOption{N}), constraints (\NexOption{B1} and \NexOption{B2}), and calculated start and end indices. Handles nuanced edge cases, including zero and empty values. Returns the sliced substring or a composite of two substrings.
+	\end{NexMainBox}
+	\begin{NexMainBox}[dark, crnA]
+		\begin{NexListDark}
+			\NexItemDark{\NexOption{D}: The input string to be sliced.}
+			\NexItemDark{\NexOption{N}: The position used for slicing, which must be a natural number.}
+			\NexItemDark{\NexOption{B1}: The first condition influencing slicing logic.}
+			\NexItemDark{\NexOption{B2}: The second condition influencing slicing logic, which affects start and end indices.}
+		\end{NexListDark}
+	\end{NexMainBox}
+\end{NexMainBox}
+
+\begin{NexCodeBox}{bash}{title={Basic slicing}}
+	print nx_slice_str("abcdefghij", 3, 0, 0)
+	# Result: "defg" (starts from index 4 and captures 4 characters)
+\end{NexCodeBox}
+
+\begin{NexCodeBox}{bash}{title={Slicing with constraints (B1 and B2 both true)}}
+	print nx_slice_str("abcdefghij", 3, 1, 1)
+	# Result: "defghij" (starts from index 4 and captures the rest of the string)
+\end{NexCodeBox}
+
+\begin{NexCodeBox}{bash}{title={Composite slicing}}
+	print nx_slice_str("abcdefghij", 3, 1, 0)
+	# Result: "abc" (captures the first N characters of the string)
+\end{NexCodeBox}
+
+\begin{NexCodeBox}{bash}{title={Edge case: B1 empty}}
+	print nx_slice_str("abcdefghij", 5, "", 0)
+	# Result: "fghij" (starts from index 6 and captures the rest of the string)
+\end{NexCodeBox}
+
+\begin{NexCodeBox}{bash}{title={Special case: N equals 0}}
+	print nx_slice_str("abcdefghij", 0, 1, 1)
+	# Result: "" (returns an empty string as N is 0)
+\end{NexCodeBox}
+
+
+\newpage
+\subsection{nx_trim_str}
+\label{nx_trim_str}
+\begin{NexCodeBox}{bash}{title={\NexFunction{nx_trim_str(\NexOption{D}, \NexOption{S})}}}
+function nx_trim_str(D, S) {
+	S = __nx_else(S, " \v\t\n\f")
+	gsub("(^[" S "]+|[ " S "]+$)", "", D)
+	return D
+}
+\end{NexCodeBox}
+
+
+\begin{NexMainBox}[light, hdrA, sdwA, crnA, grwB, ssecB]
+	\begin{NexMainBox}[dark, crnA]
+		Trims unwanted characters (\NexOption{S}) from both ends of a string (\NexOption{D}). Defaults to whitespace characters if \NexOption{S} is not provided. Returns the trimmed string.
+	\end{NexMainBox}
+	\begin{NexMainBox}[dark, crnA]
+		\begin{NexListDark}
+			\NexItemDark{\NexOption{D}: The input string to be trimmed.}
+			\NexItemDark{\NexOption{S}: A set of characters to be removed from both ends. Defaults to common whitespace characters (`\texttt{\v, \t, \n, \f}`).}
+		\end{NexListDark}
+	\end{NexMainBox}
+\end{NexMainBox}
+
+\begin{NexCodeBox}{bash}{title={Trim default whitespace}}
+	print nx_trim_str("   hello world	", "")
+	# Result: "hello world"
+\end{NexCodeBox}
+
+\begin{NexCodeBox}{bash}{title={Trim custom characters}}
+	print nx_trim_str("__hello__", "_")
+	# Result: "hello"
+\end{NexCodeBox}
+
+\begin{NexCodeBox}{bash}{title={Trim multiple custom characters}}
+	print nx_trim_str("-*-hello-*-", "-*")
+	# Result: "hello"
+\end{NexCodeBox}
+
+\begin{NexCodeBox}{bash}{title={Trim multiple custom characters}}
+	print nx_trim_str("-*-hello-*-", "-*")
+	# Result: "hello"
+\end{NexCodeBox}
+
+\begin{NexCodeBox}{bash}{title={No characters to trim}}
+	print nx_trim_str("hello", "")
+	# Result: "hello"
+\end{NexCodeBox}
+
+\begin{NexCodeBox}{bash}{title={No characters to trim}}
+	print nx_trim_str("hello", "")
+	# Result: "hello"
+\end{NexCodeBox}
+
+\begin{NexCodeBox}{bash}{title={Empty string}}
+	print nx_trim_str("", "")
+	# Result: ""
+\end{NexCodeBox}
+
+\newpage
+\subsection{nx_append_str}
+\label{nx_append_str}
+\begin{NexCodeBox}{bash}{title={\NexFunction{nx_append_str(\NexOption{D}, \NexOption{N}, \NexOption{s})}}}
+function nx_append_str(D, N, s) {
+	if (__nx_is_natural(N) && __nx_defined(D, 1)) {
+		do {
+			s = s D
+		} while (--N)
+		return s
+	}
+}
+\end{NexCodeBox}
+
+\begin{NexMainBox}[light, hdrA, sdwA, crnA, grwB, ssecB]
+	\begin{NexMainBox}[dark, crnA]
+		Appends the string (\NexOption{D}) to itself \NexOption{N} times, prepending an optional initial string (\NexOption{s}) at the start. Returns the concatenated result.
+	\end{NexMainBox}
+	\begin{NexMainBox}[dark, crnA]
+		\begin{NexListDark}
+			\NexItemDark{\NexOption{D}: The string to be appended multiple times.}
+			\NexItemDark{\NexOption{N}: The number of times to append \NexOption{D}. Must be a natural number.}
+			\NexItemDark{\NexOption{s}: An optional initial prefix to include at the start of the resulting string.}
+		\end{NexListDark}
+	\end{NexMainBox}
+\end{NexMainBox}
+
+\newpage
+\subsection{nx_append_str}
+\label{nx_append_str}
+\begin{NexCodeBox}{bash}{title={\NexFunction{nx_append_str(\NexOption{D1}, \NexOption{N}, \NexOption{D2}, \NexOption{B})}}}
+function nx_append_str(D1, N, D2, B, s) {
+	if (__nx_is_natural(N) && __nx_defined(D1, 1)) {
+		if (D2 != "")
+			s = D2
+		do {
+			if (B)
+				s = D1 s
+			else
+				s = s D1
+		} while (--N)
+		return s
+	}
+}
+\end{NexCodeBox}
+
+
+\begin{NexMainBox}[light, hdrA, sdwA, crnA, grwB, ssecB]
+	\begin{NexMainBox}[dark, crnA]
+		Appends the string (\NexOption{D1}) to itself \NexOption{N} times, starting with an optional prefix (\NexOption{D2}). The append direction is determined by (\NexOption{B}): if true, appends in reverse; otherwise, appends normally. Returns the concatenated result.
+	\end{NexMainBox}
+	\begin{NexMainBox}[dark, crnA]
+		\begin{NexListDark}
+			\NexItemDark{\NexOption{D1}: The string to be appended multiple times.}
+			\NexItemDark{\NexOption{N}: The number of times to append \NexOption{D1}. Must be a natural number.}
+			\NexItemDark{\NexOption{D2}: An optional prefix to include at the start of the concatenated result. Defaults to an empty string.}
+			\NexItemDark{\NexOption{B}: A flag controlling the append direction. If true, appends \NexOption{D1} in reverse order; otherwise, appends normally.}
+		\end{NexListDark}
+	\end{NexMainBox}
+\end{NexMainBox}
+
+\begin{NexCodeBox}{bash}{title={Normal appending with no prefix}}
+	print nx_append_str("abc", 3, "", 0)
+	# Result: "abcabcabc"
+\end{NexCodeBox}
+
+\begin{NexCodeBox}{bash}{title={Normal appending with a prefix}}
+	print nx_append_str("xyz", 2, "start-", 0)
+	# Result: "start-xyzxyz"
+\end{NexCodeBox}
+
+\begin{NexCodeBox}{bash}{title={Reverse appending}}
+	print nx_append_str("123", 2, "", 1)
+	# Result: "123123"
+\end{NexCodeBox}
+
+\begin{NexCodeBox}{bash}{title={Reverse appending with prefix}}
+	print nx_append_str("456", 3, "end-", 1)
+	# Result: "456456456end-"
+\end{NexCodeBox}
+
+\begin{NexCodeBox}{bash}{title={Edge case: Undefined input (D1 = "")}}
+	print nx_append_str("", 5, "prefix-", 0)
+	# Result: (no output) (function returns without doing anything as D1 is not defined)
+\end{NexCodeBox}
+
+\begin{NexCodeBox}{bash}{title={Edge case: No appending (N = 0)}}
+	print nx_append_str("repeat", 0, "prefix-", 0)
+	# Result: (no output) (function returns without doing anything since N = 0 is not a natural number)
+\end{NexCodeBox}
+
+\newpage
+\subsection{nx_cut_str}
+\label{nx_cut_str}
+\begin{NexCodeBox}{bash}{title={\NexFunction{nx_cut_str(\NexOption{D1}, \NexOption{D2}, \NexOption{B})}}}
+function nx_cut_str(D1, D2, B) {
+	if (match(D1, D2)) {
+		if (B)
+			return substr(D1, 1, RSTART - 1)
+		if (length(B))
+			return substr(D1, RSTART + RLENGTH)
+		return substr(D1, RSTART, RLENGTH)
+	}
+}
+\end{NexCodeBox}
+
+\begin{NexMainBox}[light, hdrA, sdwA, crnA, grwB, ssecB]
+	\begin{NexMainBox}[dark, crnA]
+		Extracts or removes a substring matching the pattern (\NexOption{D2}) from the input string (\NexOption{D1}). The behavior is controlled by the flag (\NexOption{B}): if true, removes the substring before the match; if false with a length, removes the substring after the match; otherwise, returns the matched substring.
+	\end{NexMainBox}
+	\begin{NexMainBox}[dark, crnA]
+		\begin{NexListDark}
+			\NexItemDark{\NexOption{D1}: The input string to be processed.}
+			\NexItemDark{\NexOption{D2}: The pattern to search for within \NexOption{D1}.}
+			\NexItemDark{\NexOption{B}: A flag or value controlling the substring removal behavior.}
+		\end{NexListDark}
+	\end{NexMainBox}
+\end{NexMainBox}
+
+\begin{NexCodeBox}{bash}{title={Substring before the match}}
+	print nx_cut_str("abcdefghi", "def", 1)
+	# Result: "abc"
+\end{NexCodeBox}
+
+\begin{NexCodeBox}{bash}{title={Matched substring}}
+	print nx_cut_str("abcdefghi", "def", 0)
+	# Result: "def"
+\end{NexCodeBox}
+
+\begin{NexCodeBox}{bash}{title={Substring after the match}}
+	print nx_cut_str("abcdefghi", "def", "")
+	# Result: "ghi"
+\end{NexCodeBox}
+
+\begin{NexCodeBox}{bash}{title={No match}}
+	print nx_cut_str("abcdefghi", "xyz", 0)
+	# Result: (no output)
+\end{NexCodeBox}
+
+
+\begin{NexMainBox}[light, hdrA, sdwA, crnA, grwB, ssecB]
+	\begin{NexMainBox}[dark, crnA]
+		Converts an input string (\NexOption{D}) to title case, capitalizing the first letter of each segment and lowercasing the rest. Handles escaped characters (\NexOption{B1}) and relies on mappings (\NexOption{B2}) for pair segmentation logic. Returns the title-cased string.
+	\end{NexMainBox}
+	\begin{NexMainBox}[dark, crnA}
+		\begin{NexListDark}
+			\NexItemDark{\NexOption{D}: The input string to be transformed to title case.}
+			\NexItemDark{\NexOption{B1}: A flag to handle escaped characters during segmentation.}
+			\NexItemDark{\NexOption{B2}: Additional mapping information for pair segmentation logic.}
+		\end{NexListDark}
+	\end{NexMainBox}
+\end{NexMainBox}
+
+\begin{NexMainBox}[light, hdrA, sdwA, crnA, grwB, ssecB]
+	\begin{NexMainBox}[dark, crnA]
+		Converts an input string (\NexOption{D}) to title case, capitalizing the first letter of each segment and lowercasing the rest. Handles escaped characters (\NexOption{B1}) and relies on mappings (\NexOption{B2}) for pair segmentation logic. Returns the title-cased string.
+	\end{NexMainBox}
+	\begin{NexMainBox}[dark, crnA}
+		\begin{NexListDark}
+			\NexItemDark{\NexOption{D}: The input string to be transformed to title case.}
+			\NexItemDark{\NexOption{B1}: A flag to handle escaped characters during segmentation.}
+			\NexItemDark{\NexOption{B2}: Additional mapping information for pair segmentation logic.}
+		\end{NexListDark}
+	\end{NexMainBox}
+\end{NexMainBox}
+
+\begin{NexCodeBox}{bash}{title={Simple title casing}}
+    print nx_totitle("hello world", 0, 0)
+    # Result: "Hello World"
+\end{NexCodeBox}
 

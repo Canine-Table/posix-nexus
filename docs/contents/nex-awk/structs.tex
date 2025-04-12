@@ -17,7 +17,16 @@
 			\NexItemDark{\NexLink{nx_length}{nx_length(\NexOption{V}, \NexOption{B})}: Calculates the length of elements within a vector (\NexOption{V}) and returns the largest or smallest length based on the logical condition (\NexOption{B}).}
 			\NexItemDark{\NexLink{nx_boundary}{nx_boundary(\NexOption{D}, \NexOption{V1}, \NexOption{V2}, \NexOption{B1}, \NexOption{B2})}: Filters elements in a vector (\NexOption{V1}) that match boundary conditions with a given string (\NexOption{D}), and stores the results in another vector (\NexOption{V2}). Provides options to specify matching direction (\NexOption{B1}) and optionally delete the input vector (\NexOption{B2}).}
 			\NexItemDark{\NexLink{nx_filter}{nx_filter(\NexOption{D1}, \NexOption{D2}, \NexOption{V1}, \NexOption{V2}, \NexOption{B})}: Filters elements from an input vector (\NexOption{V1}) based on a flexible equality condition (\NexOption{D1}, \NexOption{D2}) and stores the results in an output vector (\NexOption{V2}). Provides an option (\NexOption{B}) to delete the input vector after processing.}
+		\end{NexListDark}
+	\end{NexMainBox}
+\end{NexMainBox}
+
+
+\begin{NexMainBox}[light, hdrA, sdwA, crnA, grwB, secB]
+	\begin{NexMainBox}[dark, crnA]
+		\begin{NexListDark}
 			\NexItemDark{\NexLink{nx_option}{nx_option(\NexOption{D}, \NexOption{V1}, \NexOption{V2}, \NexOption{B1}, \NexOption{B2})}: Determines a selected index from an input vector (\NexOption{V1}) based on boundary conditions (\NexOption{D}) and advanced filtering logic. Stores intermediate results in a secondary vector (\NexOption{V2}), applying conditions (\NexOption{B1}, \NexOption{B2}) to refine the output.}
+			\NexItemDark{\NexLink{nx_trim_split}{nx_trim_split(\NexOption{D}, \NexOption{V}, \NexOption{S})}: Splits a trimmed input string (\NexOption{D}) into parts stored in a vector (\NexOption{V}), using a customizable delimiter (\NexOption{S}). Defaults to a comma (\texttt{,}) when no delimiter is provided.}
 		\end{NexListDark}
 	\end{NexMainBox}
 \end{NexMainBox}
@@ -473,7 +482,6 @@ function nx_uniq_vector(D, V1, S, V2, B1, B2, v, i) {
 	# V1[3] = "banana"
 \end{NexCodeBox}
 
-
 \newpage
 \subsection{nx_length}
 \label{nx_length}
@@ -744,5 +752,48 @@ function nx_option(D, V1, V2, B1, B2,   i, v1)
 	result = nx_option(D, V1, V2, B1, B2)
 	# Result: None
 	# Explanation: No elements in V1 match the boundary condition "option", so the function returns no result.
+\end{NexCodeBox}
+
+\newpage
+\subsection{nx_trim_split}
+\label{nx_trim_split}
+\begin{NexCodeBox}{bash}{title={\NexFunction{nx_trim_split(\NexOption{D}, \NexOption{V}, \NexOption{S})}}}
+	function nx_trim_split(D, V, S) {
+		return split(nx_trim_str(D), V, "[ \v\t\n\f]*" __nx_else(S, ",") "[ \v\t\n\f]*")
+	}
+\end{NexCodeBox}
+
+\begin{NexMainBox}[light, hdrA, sdwA, crnA, grwB, ssecB]
+	\begin{NexMainBox}[dark, crnA]
+		Splits a trimmed input string (\NexOption{D}) into parts stored in a vector (\NexOption{V}), using a customizable delimiter (\NexOption{S}). Defaults to a comma (\texttt{,}) when no delimiter is provided.
+	\end{NexMainBox}
+	\begin{NexMainBox}[dark, crnA]
+		\begin{NexListDark}
+			\NexItemDark{\NexOption{D}: The input string to be trimmed and split.}
+			\NexItemDark{\NexOption{V}: The vector where split segments are stored.}
+			\NexItemDark{\NexOption{S}: The delimiter used for splitting. Defaults to a comma (\texttt{,}) if not provided.}
+		\end{NexListDark}
+	\end{NexMainBox}
+\end{NexMainBox}
+
+\begin{NexCodeBox}{bash}{title={Splitting with a custom delimiter}}
+	D = "apple ; orange ; banana"
+	S = ";"
+	result = nx_trim_split(D, V, S)
+	# Result: V[1] = "apple", V[2] = "orange", V[3] = "banana"
+\end{NexCodeBox}
+
+\begin{NexCodeBox}{bash}{title={Default delimiter}}
+	D = "apple,orange,banana"
+	S = ""
+	result = nx_trim_split(D, V, S)
+	# Result: V[1] = "apple", V[2] = "orange", V[3] = "banana"
+\end{NexCodeBox}
+
+\begin{NexCodeBox}{bash}{title={Whitespace trimming}}
+	D = "  apple  ; orange ;   banana   "
+	S = ";"
+	result = nx_trim_split(D, V, S)
+	# Result: V[1] = "apple", V[2] = "orange", V[3] = "banana"
 \end{NexCodeBox}
 

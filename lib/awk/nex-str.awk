@@ -18,7 +18,8 @@ function nx_escape_str(D)
 
 function nx_join_str(D1, D2, S, D3)
 {
-	D3 = __nx_if(Q, "\x27", "\x22")
+	if (length(D3))
+		D3 = __nx_if(D3, "\x27", "\x22")
 	if (D1 && D2)
 		D1 = D1 S
 	return D1 D3 D2 D3
@@ -93,11 +94,17 @@ function nx_trim_str(D, S)
 	return D
 }
 
-function nx_append_str(D, N,	s)
+function nx_append_str(D1, N, D2, B,	s)
 {
-	if (__nx_is_natural(N) && __nx_defined(D, 1)) {
+	if (__nx_is_natural(N) && __nx_defined(D1, 1)) {
+		if (D2 != "")
+			s = D2
 		do {
-			s = s D
+			if (B)
+				s = D1 s
+			else
+				s = s D1
+
 		} while (--N)
 		return s
 	}

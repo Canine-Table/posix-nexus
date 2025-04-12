@@ -1,9 +1,2 @@
-	V1[1] = "no_boundary"
-	V1[2] = "no_match"
-	V1[0] = 2 # Managed dynamically by earlier functions
-	D = "option"
-	B1 = 0
-	B2 = 0
-	result = nx_option(D, V1, V2, B1, B2)
-	# Result: None
-	# Explanation: No elements in V1 match the boundary condition "option", so the function returns no result.
+	print nx_cut_str("abcdefghi", "xyz", 0)
+	# Result: (no output)

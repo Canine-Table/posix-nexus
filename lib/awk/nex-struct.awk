@@ -1,17 +1,18 @@
 function nx_bijective(V, D1, B, D2)
 {
-	if (length(V) && D1 != "") {
+	if (D1 != "") {
 		if (D2 != "") {
 			if (length(B)) {
 				V[D1] = B
 				V[B] = D2
-				V[D2] = D1
+				if (B)
+					V[D2] = D1
 			} else {
 				V[D1] = D2
 				V[D2] = D1
 			}
 		} else {
-			V[V[D1]] = V[D1]
+			V[V[D1]] = D1
 			if (B)
 				delete V[D1]
 		}
@@ -37,7 +38,7 @@ function nx_find_index(D1, S, D2,	f, m)
 
 function nx_next_pair(D1, V1, V2, D2, B1, B2,	s, s_l, e, e_l, f, i)
 {
-	if (length(V1) && D1 != "") {
+	if (D1 != "") {
 		for (i in V1) {
 			if ((f = nx_find_index(D1, i, D2)) && (! s || __nx_if(B2, f > s, f < s))) {
 				s = f
@@ -64,7 +65,7 @@ function nx_next_pair(D1, V1, V2, D2, B1, B2,	s, s_l, e, e_l, f, i)
 
 function nx_tokenize(D1, V1, V2, D2, B1, B2,	i, j, m, v, s)
 {
-	if (length(V2) && D1 != "") {
+	if (D1 != "") {
 		while (D1) {
 			i = nx_next_pair(D1, V2, v, D2, 1, B1)
 			m = substr(D1, v[i], v[i "_" v[i]])
@@ -74,13 +75,13 @@ function nx_tokenize(D1, V1, V2, D2, B1, B2,	i, j, m, v, s)
 				s = s substr(D1, j, v[++i])
 				j = j + v[i] + v[i "_" v[i]]
 			} else {
-				V1[++V1[0]] = s
+				V1[++V1[0]] = __nx_if(B2, nx_trim_str(s), s)
 				s = ""
 			}
 			D1 = substr(D1, j)
 		}
 		if (s != "")
-			V1[++V1[0]] = s
+			V1[++V1[0]] = __nx_if(B2, nx_trim_str(s), s)
 		delete v
 		return V1[0]
 	}
@@ -177,6 +178,47 @@ function nx_option(D, V1, V2, B1, B2,	i, v1)
 			delete v1
 			return i
 		}
+	}
+}
+
+function nx_map(D1, V1, S1, S2, V2, D2, B1, B2,		v1, v2, c, s, i, j, m)
+{
+	if (__nx_defined(D1)) {
+		__nx_quote_map(V2)
+		S1 = __nx_else(S1, ",")
+		V2[S1] = ""
+		S2 = __nx_else(S2, "=")
+		V2[S2] = ""
+		nx_bijective(v1, S1, "", S2)
+		c = v1[S1]
+		while (D1) {
+			i = nx_next_pair(D1, V2, v2, D2, 1, B1)
+			m = substr(D1, v2[i], v2[i "_" v2[i]])
+			j = v2[i] + v2[i "_" v2[i]]
+			s = s substr(D1, 1, v2[i] - 1)
+			if (length(V2[m])) {
+				s = s substr(D1, j, v2[++i])
+				j = j + v2[i] + v2[i "_" v2[i]]
+			} else {
+				if (m == c) {
+					if (m == S2) {
+						V1[++V1[0]] = __nx_if(B2, s, nx_trim_str(s))
+					} else {
+						V1[V1[V1[0]]] = __nx_if(B2, s, nx_trim_str(s))
+					}
+					c = v1[c]
+					s = ""
+				}
+			}
+			D1 = substr(D1, j)
+		}
+		if (s != "") {
+			if (c == S1)
+				V1[V1[V1[0]]] = __nx_if(B2, s, nx_trim_str(s))
+			else
+				V1[++V1[0]] = __nx_if(B2, s, nx_trim_str(s))
+		}
+		return V1[0]
 	}
 }
 
