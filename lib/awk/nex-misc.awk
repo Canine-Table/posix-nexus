@@ -8,14 +8,14 @@ function __nx_lower_map(V,	i)
 {
 	__nx_num_map(V)
 	for (i = 10; i < 36; i++)
-		nx_bijective(V, i, "", sprintf("%c", i + 87))
+		nx_bijective(V, i, sprintf("%c", i + 87))
 }
 
 function __nx_upper_map(V,	i)
 {
 	__nx_lower_map(V)
 	for (i = 36; i < 62; i++)
-		nx_bijective(V, i, "", sprintf("%c", i + 29))
+		nx_bijective(V, i, sprintf("%c", i + 29))
 }
 
 function __nx_quote_map(V)

@@ -25,35 +25,28 @@ function nx_join_str(D1, D2, S, D3)
 	return D1 D3 D2 D3
 }
 
-function nx_same_length(N1, N2, B, V,	n, n1, n2, l1, l2, d1, d2)
+function nx_same_length(N1, N2, V, B,		k, n, n1, n2, l, l1, l2, b, b1, b2)
 {
-#	if (N1 in V)
-#		b1 = 1
-#	l1 = length(n1 = __nx_if(b1, V[N1], N1))
-#	if (N2 in V)
-#		b2 = 1
-#	l2 = length(n2 = __nx_if(b1, V[N2], N2))
-#	if ((n = n1 - n2) > 0) {
-#		if (B) {
-#			if (b1)
-#				V[N1] = substr(n1, l1 - n + 1)
-#			return substr(n1, 1, l1 - n)
-#		} else {
-#			if (b1)
-#				V[N1] = substr(n1, 1, l1 - n)
-#			return substr(n1, l1 - n + 1)
-#		}
-#	} else {
-#		if (B) {
-#			if (b2)
-#				V[N2] = substr(n2, l2 + n + 1)
-#			return substr(n2, 1, l2 + n)
-#		} else {
-#			if (b2)
-#				V[N2] = substr(n2, 1, l2 + n)
-#			return substr(n2, l2 + n + 1)
-#		}
-#	}
+	if (N1 in V)
+		b1 = 1
+	l1 = length(n1 = __nx_if(b1, V[N1], N1))
+	if (N2 in V)
+		b2 = 1
+	l2 = length(n2 = __nx_if(b2, V[N2], N2))
+	if ((l = l1 - l2) > 0) {
+		if (b = b1)
+			k = N1
+		n = n1
+	} else if ((l = nx_absolute(l)) > 0) {
+		if (b = b2)
+			k = N2
+		n = n2
+	} else {
+		return
+	}
+	if (b)
+		V[k] = nx_slice_str(n, l, "", !B)
+	return nx_slice_str(n, l, "", B)
 }
 
 function nx_slice_str(D, N, B1, B2,	s, e, l)
@@ -121,7 +114,7 @@ function nx_cut_str(D1, D2, B)
 	}
 }
 
-function nx_totitle(D, B1, B2,		j, i, s, v1, v2)
+function nx_totitle(D, B1, V2,		j, i, s, v1, v2)
 {
 	__nx_escape_map(v1)
 	while (D) {

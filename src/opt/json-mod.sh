@@ -22,10 +22,13 @@ get_json_parser()
 	)
 	"'
 		BEGIN {
-			nx_map("hello = world, `this = tom,` and = jerry", arr)
-			for (i = 1; i <= arr[0]; i++) {
-				print arr[i] " = " arr[arr[i]]
-			}
+			#nx_map("this = that, where = who, why = what, hello = world, this = tom, and = jerry, andor = not or", arr, ",", "=")
+			#nx_map("hello", arr)
+			#for (i = 1; i <= arr[0]; i++) {
+			#	print arr[i] " = " arr[arr[i]]
+			#}
+			#print nx_convert_base(tmpa, tmpb, tmpc)
+			print nx_base_compliment(tmpa, tmpb)
 		}
 	'
 }

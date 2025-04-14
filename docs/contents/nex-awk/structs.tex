@@ -38,7 +38,7 @@
 function nx_bijective(V, D1, D2, D3)
 {
 	if (D1 != "") {
-		if (D2 != "") {
+		if (D2) {
 			if (D3 != "") {
 				V[D1] = D2
 				V[D2] = D3
@@ -49,7 +49,7 @@ function nx_bijective(V, D1, D2, D3)
 			}
 		} else if (D3 != "") {
 				V[V[D1]] = D3
-			if (D2)
+			if (D2 != "")
 				delete V[D1]
 		}
 	}
@@ -76,12 +76,7 @@ function nx_bijective(V, D1, D2, D3)
 \end{NexCodeBox}
 
 \begin{NexCodeBox}{bash}{title={Modify mappings}}
-    print nx_bijective(V, "P", "", "Q")
-    # Result: V[V["P"]] = "Q", V["P"] deleted, V["Q"] = V1
-\end{NexCodeBox}
-
-\begin{NexCodeBox}{bash}{title={Modify mappings}}
-    print nx_bijective(V, "P", "", "Q")
+    print nx_bijective(V, "P", 1, "Q")
     # Result: V[V["P"]] = "Q", V["P"] deleted, V["Q"] = V1
 \end{NexCodeBox}
 
