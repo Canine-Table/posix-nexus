@@ -10,7 +10,7 @@
 			\NexItemDark{\NexLink{nx_bijective}{nx_bijective(\NexOption{V}, \NexOption{D1}, \NexOption{D2}, \NexOption{D3})}: Updates a bijective mapping stored in \NexOption{V}, based on three keys (\NexOption{D1}, \NexOption{D2}, \NexOption{D3}). Creates or modifies circular references if all keys are provided, swaps references if two keys are defined, or performs deletions and adjustments based on the keys. Handles edge cases dynamically.}
 			\NexItemDark{\NexLink{nx_find_index}{nx_find_index(\NexOption{D1}, \NexOption{S}, \NexOption{D2})}: Searches for the first occurrence of a pattern within a string, with additional constraints. Returns the index of the match or modifies behavior based on optional parameters.}
 			\NexItemDark{\NexLink{nx_next_pair}{nx_next_pair(\NexOption{D1}, \NexOption{V1}, \NexOption{V2}, \NexOption{D2}, \NexOption{B1}, \NexOption{B2})}: Retrieves the next pair of start and end indices within a string (\NexOption{D1}), based on associative array delimiters (\NexOption{V1}). Outputs indices and their lengths to the result vector (\NexOption{V2}), while handling escape constraints (\NexOption{D2}). Logic flags (\NexOption{B1}, \NexOption{B2}) control fallback behavior and prioritization during evaluation.}
-			\NexItemDark{\NexLink{nx_tokenize}{nx_tokenize(\NexOption{D1}, \NexOption{V1}, \NexOption{V2}, \NexOption{D2}, \NexOption{B1}, \NexOption{B2})}: Tokenizes an input string (\NexOption{D1}) based on start and end delimiters (\NexOption{V2}). Extracted tokens are stored in the output vector (\NexOption{V1}). Handles escape sequences (\NexOption{D2}) and allows prioritization or fallback using logical flags (\NexOption{B1}, \NexOption{B2}).}
+			\NexItemDark{\NexLink{nx_tokenize}{nx_tokenize(\NexOption{D1}, \NexOption{V1}, \NexOption{S1}, \NexOption{S2}, \NexOption{V2}, \NexOption{D2}, \NexOption{B1}, \NexOption{B2})}: Tokenizes the input string (\NexOption{D1}) into segments based on custom delimiters and pair boundaries. The primary delimiter (\NexOption{S1}, defaulting to a comma) and an optional secondary delimiter (\NexOption{S2}) are used together with a quote map (\NexOption{V2}) and an optional extra pattern (\NexOption{D2}) to drive token separation. Flags (\NexOption{B1} and \NexOption{B2}) control pairing behavior and trimming of tokens, respectively. The found tokens are stored in the array (\NexOption{V1}) with the token count in V1[0].}
 			\NexItemDark{\NexLink{nx_vector}{nx_vector(\NexOption{D}, \NexOption{V1}, \NexOption{S}, \NexOption{V2})}: Processes a data string (\NexOption{D}) by tokenizing it into parts using a delimiter (\NexOption{S}) and associative array mappings (\NexOption{V2}). Uses \NexFunction{__nx_quote_map} for initialization and \NexFunction{nx_tokenize} for parsing.}
 			\NexItemDark{\NexLink{nx_trim_vector}{nx_trim_vector(\NexOption{D}, \NexOption{V1}, \NexOption{S}, \NexOption{V2})}: Tokenizes a data string (\NexOption{D}) into parts using delimiters and mappings (\NexOption{V2}), then trims each token to remove unnecessary whitespace or characters.}
 			\NexItemDark{\NexLink{nx_uniq_vector}{nx_uniq_vector(\NexOption{D}, \NexOption{V1}, \NexOption{S}, \NexOption{V2}, \NexOption{B1}, \NexOption{B2})}: Constructs a unique vector (\NexOption{V1}) from input data (\NexOption{D}), eliminating duplicates, optionally counting occurrences, and leveraging auxiliary vectors (\NexOption{V2}) for processing.}
@@ -237,239 +237,101 @@ function nx_next_pair(D1, V1, V2, D2, B1, B2, s, s_l, e, e_l, f, i) {
 	# Explanation: Prioritizes pairs based on index comparison and logical conditions.
 \end{NexCodeBox}
 
+
+
+
+
+
+
+
+
 \newpage
 \subsection{nx_tokenize}
 \label{nx_tokenize}
-\begin{NexCodeBox}{bash}{title={\NexFunction{nx_tokenize(\NexOption{D1}, \NexOption{V1}, \NexOption{V2}, \NexOption{D2}, \NexOption{B1}, \NexOption{B2})}}}
-function nx_tokenize(D1, V1, V2, D2, B1, B2, i, j, m, v, s) {
-	if (length(V2) && D1 != "") {
-		while (D1) {
-			i = nx_next_pair(D1, V2, v, D2, 1, B1)
-			m = substr(D1, v[i], v[i "_" v[i]])
-			j = v[i] + v[i "_" v[i]]
-			s = s substr(D1, 1, v[i] - 1)
-			if (length(V2[m])) {
-				s = s substr(D1, j, v[++i])
-				j = j + v[i] + v[i "_" v[i]]
-			} else {
-				V1[++V1[0]] = s
-				s = ""
-			}
-			D1 = substr(D1, j)
-		}
-		if (s != "")
-			V1[++V1[0]] = s
-		delete v
-		return V1[0]
-	}
+\begin{NexCodeBox}{bash}{title={\NexFunction{nx_tokenize(\NexOption{D1}, \NexOption{V1}, \NexOption{S1}, \NexOption{S2}, \NexOption{V2}, \NexOption{D2}, \NexOption{B1}, \NexOption{B2})}}}
+function nx_tokenize(D1, V1, S1, S2, V2, D2, B1, B2, v1, v2, c, s, i, l, t) {
+    if (D1 != "") {
+        if (! length(V2))
+            __nx_quote_map(V2)
+        S1 = __nx_else(S1, ",")
+        V2[S1] = ""
+        if (S2) {
+            V2[S2] = ""
+            nx_bijective(v1, S1, S2)
+            c = v1[S1]
+        }
+        while (D1) {
+            i = nx_next_pair(D1, V2, v2, D2, 1, B1)
+            t = substr(D1, v2[i], v2[i "_" v2[i]])
+            l = v2[i] + v2[i "_" v2[i]]
+            s = s substr(D1, 1, v2[i] - 1)
+            if (V2[t] == "" || s == D1) {
+                s = __nx_if(B2, nx_trim_str(s), s)
+                if (S2 && (t in v1 || s == D1)) {
+                    if (c == t || s == D1) {
+                        if (c == S2)
+                            V1[++V1[0]] = s
+                        else
+                            V1[V1[V1[0]]] = s
+                        c = v1[c]
+                    } else {
+                        V1[++V1[0]] = s
+                        if (t == S1 || (s == D1 && c = S1))
+                            V1[V1[V1[0]]] = 1
+                    }
+                } else {
+                    V1[++V1[0]] = s
+                }
+                s = ""
+            } else {
+                s = s substr(D1, l, v2[++i])
+                l = l + v2[i] + v2[i "_" v2[i]]
+            }
+            D1 = substr(D1, l)
+        }
+        delete v1
+        delete v2
+        return V1[0]
+    }
 }
 \end{NexCodeBox}
 
 \begin{NexMainBox}[light, hdrA, sdwA, crnA, grwB, ssecB]
-	\begin{NexMainBox}[dark, crnA]
-		Processes an input string (\NexOption{D1}) to extract and tokenize content into an output vector (\NexOption{V1}). Tokens are defined based on start and end pairs in (\NexOption{V2}). Handles constraints (\NexOption{D2}) and logical prioritization (\NexOption{B1}, \NexOption{B2}).
-	\end{NexMainBox}
-	\begin{NexMainBox}[dark, crnA]
-		\begin{NexListDark}
-			\NexItemDark{\NexOption{D1}: The input string to be tokenized.}
-			\NexItemDark{\NexOption{V1}: A vector to store tokenized outputs. Each entry represents a complete token.}
-			\NexItemDark{\NexOption{V2}: An associative array containing start and end delimiters for tokenization.}
-			\NexItemDark{\NexOption{D2}: Constraints to handle escape sequences or special rules during tokenization.}
-			\NexItemDark{\NexOption{B1}: A flag to determine logical prioritization for the next token (e.g., based on position).}
-			\NexItemDark{\NexOption{B2}: A flag to control fallback behavior or logical prioritization when matching pairs.}
-		\end{NexListDark}
-	\end{NexMainBox}
+    \begin{NexMainBox}[dark, crnA]
+        Tokenizes an input string (\NexOption{D1}) into multiple segments by finding token boundaries using a customizable delimiter setup.  
+        The primary delimiter (\NexOption{S1}) defaults to a comma (via __nx_else), and if a secondary delimiter (\NexOption{S2}) is provided, a reciprocal mapping is created using nx_bijective.  
+        A mapping array (\NexOption{V2}) – automatically populated by __nx_quote_map if empty – drives pair-based token detection (via nx_next_pair).  
+        Depending on the flag (\NexOption{B2}), tokens are optionally trimmed (using nx_trim_str), and the tokens are stored in the array (\NexOption{V1}) with the count in V1[0].
+    \end{NexMainBox}
+    \begin{NexMainBox}[dark, crnA]
+        \begin{NexListDark}
+            \NexItemDark{\NexOption{D1}: The input string to be tokenized.}
+            \NexItemDark{\NexOption{V1}: An array (destination table) in which tokens are accumulated; V1[0] holds the token count.}
+            \NexItemDark{\NexOption{S1}: The primary delimiter (defaults to "," if not provided).}
+            \NexItemDark{\NexOption{S2}: An optional secondary delimiter for creating bidirectional token mappings.}
+            \NexItemDark{\NexOption{V2}: A mapping array for quotes/delimiters; if empty, it's populated by __nx_quote_map.}
+            \NexItemDark{\NexOption{D2}: An optional pattern used in token boundary detection.}
+            \NexItemDark{\NexOption{B1}: A flag passed on to nx_next_pair for controlling pairing behavior.}
+            \NexItemDark{\NexOption{B2}: A flag that, when true, applies trimming to tokens via nx_trim_str.}
+        \end{NexListDark}
+    \end{NexMainBox}
 \end{NexMainBox}
 
-\begin{NexCodeBox}{bash}{title={Tokenizing with basic delimiters}}
-	D1 = "token1, token2, token3"
-	V2[""] = ","
-	V1[0] = 0
-	result = nx_tokenize(D1, V1, V2, "")
-	# Result:
-	# V1[1] = "token1"
-	# V1[2] = "token2"
-	# V1[3] = "token3"
-	# Explanation: Tokenizes based on the delimiter "," and stores the tokens in V1.
+
+
+
+\begin{NexCodeBox}{bash}{title={Basic tokenization with comma}}
+    # Suppose V1 and V2 are pre-declared (e.g., V1 = [] and V2 = [])
+    print nx_tokenize("apple,banana,cherry", V1, ",", "", V2, "", 0, 0)
+    # Expected Result: 3
+    # Where V1[1] = "apple", V1[2] = "banana", V1[3] = "cherry"
 \end{NexCodeBox}
 
-\begin{NexCodeBox}{bash}{title={Handling nested delimiters}}
-	D1 = "start1(content1)end1 start2(content2)end2"
-	V2["start1"] = "end1"
-	V2["start2"] = "end2"
-	V1[0] = 0
-	result = nx_tokenize(D1, V1, V2, "")
-	# Result:
-	# V1[1] = "content1"
-	# V1[2] = "content2"
-	# Explanation: Matches "start1" with "end1" and "start2" with "end2", extracting content between them.
-\end{NexCodeBox}
-
-\begin{NexCodeBox}{bash}{title={Tokenizing with escapes}}
-	D1 = "token1\,token2, token3"
-	V2[""] = ","
-	V1[0] = 0
-	result = nx_tokenize(D1, V1, V2, "\\")
-	# Result:
-	# V1[1] = "token1\,token2"
-	# V1[2] = "token3"
-	# Explanation: Accounts for escaped commas ("\,") and ensures they are not treated as delimiters.
-\end{NexCodeBox}
-
-\newpage
-\subsection{nx_vector}
-\label{nx_vector}
-\begin{NexCodeBox}{bash}{title={\NexFunction{nx_vector(\NexOption{D}, \NexOption{V1}, \NexOption{S}, \NexOption{V2})}}}
-function nx_vector(D, V1, S, V2) {
-	__nx_quote_map(V2)
-	V2[__nx_else(S, ",")] = ""
-	return nx_tokenize(D, V1, V2)
-}
-\end{NexCodeBox}
-
-\begin{NexMainBox}[light, hdrA, sdwA, crnA, grwB, ssecB]
-	\begin{NexMainBox}[dark, crnA]
-		The \NexFunction{nx_vector} function tokenizes an input string (\NexOption{D}) based on tokens (\NexOption{V1}), a delimiter (\NexOption{S}), and custom mappings (\NexOption{V2}). It uses \texttt{__nx_quote_map} to initialize mappings in \NexOption{V2} and \texttt{nx_tokenize} to perform the tokenization.
-	\end{NexMainBox}
-	\begin{NexMainBox}[dark, crnA]
-		\begin{NexListDark}
-			\NexItemDark{\NexOption{D}: The input data string to be tokenized.}
-			\NexItemDark{\NexOption{V1}: A vector for storing the parsed tokens.}
-			\NexItemDark{\NexOption{S}: The delimiter for separating tokens. Defaults to \texttt{','} if unspecified.}
-			\NexItemDark{\NexOption{V2}: An associative array for custom mappings, initialized using \NexFunction{__nx_quote_map}.}
-			\NexItemDark{\NexOption{Return Value}: The processed vector (\NexOption{V1}) containing the extracted tokens.}
-		\end{NexListDark}
-	\end{NexMainBox}
-\end{NexMainBox}
-
-\begin{NexCodeBox}{bash}{title={Tokenizing a simple list}}
-	D = "item1, item2, item3"
-	V1[0] = 0
-	S = ","
-	__nx_quote_map(V2)
-	result = nx_vector(D, V1, S, V2)
-	# Result:
-	# V1[1] = "item1"
-	# V1[2] = "item2"
-	# V1[3] = "item3"
-	# Explanation: Splits the input string by the delimiter "," and stores tokens in \NexOption{V1}.
-\end{NexCodeBox}
-
-\begin{NexCodeBox}{bash}{title={Using custom mappings}}
-	D = "value1|value2,value3"
-	V1[0] = 0
-	S = "|"
-	__nx_quote_map(V2)
-	V2[","] = ""
-	result = nx_vector(D, V1, S, V2)
-	# Result:
-	# V1[1] = "value1"
-	# V1[2] = "value2,value3"
-	# Explanation: Splits D by "|", but retains commas in tokens due to custom mapping in V2.
-\end{NexCodeBox}
-
-\newpage
-\subsection{nx_trim_vector}
-\label{nx_trim_vector}
-\begin{NexCodeBox}{bash}{title={\NexFunction{nx_trim_vector(\NexOption{D}, \NexOption{V1}, \NexOption{S}, \NexOption{V2})}}}
-function nx_trim_vector(D, V1, S, V2,   i)
-{
-	nx_vector(D, V1, S, V2)
-	for (i = 1; i <= V1[0]; i++)
-		V1[i] = nx_trim_str(V1[i])
-	return V1[0]
-}
-\end{NexCodeBox}
-
-\begin{NexMainBox}[light, hdrA, sdwA, crnA, grwB, ssecB]
-	\begin{NexMainBox}[dark, crnA]
-		Processes a data string (\NexOption{D}) by tokenizing it into parts using delimiters and associative array mappings (\NexOption{V2}), and then trims each token to remove any leading or trailing whitespace or unwanted characters.
-	\end{NexMainBox}
-	\begin{NexMainBox}[dark, crnA]
-		\begin{NexListDark}
-			\NexItemDark{\NexOption{D}: The input string to be tokenized and trimmed.}
-			\NexItemDark{\NexOption{V1}: A vector to store the processed and trimmed tokens.}
-			\NexItemDark{\NexOption{S}: The delimiter used to split the input string (\NexOption{D}) into tokens. Defaults to `,`.}
-			\NexItemDark{\NexOption{V2}: An associative array mapping delimiters or escape sequences used during tokenization.}
-		\end{NexListDark}
-	\end{NexMainBox}
-\end{NexMainBox}
-
-\begin{NexCodeBox}{bash}{title={Trimming tokens from a string}}
-	D = "  token1 ,  token2 ,  token3  "
-	V1[0] = 0
-	S = ","
-	result = nx_trim_vector(D, V1, S)
-	# Result:
-	# V1[1] = "token1"
-	# V1[2] = "token2"
-	# V1[3] = "token3"
-	# Explanation: Splits the input string on commas, trims whitespace from each token, and stores them in the vector V1.
-\end{NexCodeBox}
-
-\newpage
-\subsection{nx_uniq_vector}
-\label{nx_uniq_vector}
-\begin{NexCodeBox}{awk}{title={\NexFunction{nx_uniq_vector(\NexOption{D}, \NexOption{V1}, \NexOption{S}, \NexOption{V2}, \NexOption{B1}, \NexOption{B2})}}}
-function nx_uniq_vector(D, V1, S, V2, B1, B2, v, i) {
-	if (B1)
-		i = nx_vector(D, v, S, V2)
-	else
-		i = nx_trim_vector(D, v, S, V2)
-	if (i) {
-		for (i = 1; i <= v[0]; i++) {
-			if (! (v[i] in V1)) {
-				V1[v[i]] = __nx_if(B2, 0, ++V1[0])
-				V1[V1[0]] = v[i]
-			}
-			if (B2)
-				V1[v[i]]++
-		}
-		i = V1[0]
-	}
-	delete v
-	return i
-}
-\end{NexCodeBox}
-
-\begin{NexMainBox}[light, hdrA, sdwA, crnA, grwB, ssecB]
-	\begin{NexMainBox}[dark, crnA]
-		The \NexFunction{nx_uniq_vector} function creates a unique vector (\NexOption{V1}) from input data (\NexOption{D}). It ensures that only distinct elements are added, with optional occurrence counts, while leveraging auxiliary vectors for processing.
-	\end{NexMainBox}
-	\begin{NexMainBox}[dark, crnA]
-		\begin{NexListDark}
-			\NexItemDark{\NexOption{D}: Input data to be processed for unique elements.}
-			\NexItemDark{\NexOption{V1}: Output vector storing unique elements and optional occurrence counts.}
-			\NexItemDark{\NexOption{S}: Separator used for splitting or processing input data.}
-			\NexItemDark{\NexOption{V2}: Auxiliary vector used during the processing of \NexOption{D}.}
-			\NexItemDark{\NexOption{B1}: Flag indicating whether to use \NexFunction{nx_vector} or \NexFunction{nx_trim_vector} for processing.}
-			\NexItemDark{\NexOption{B2}: Optional flag for maintaining occurrence counts of unique elements.}
-		\end{NexListDark}
-	\end{NexMainBox}
-\end{NexMainBox}
-
-\begin{NexCodeBox}{awk}{title={Processing with occurrence counts}}
-	D = "apple,orange,apple,banana,orange"
-	V1[0] = 0
-	S = ","
-	V2[0] = 0
-	nx_uniq_vector(D, V1, S, V2, 1, 1)
-	# Result:
-	# V1[1] = "apple", V1["apple"] = 2
-	# V1[2] = "orange", V1["orange"] = 2
-	# V1[3] = "banana", V1["banana"] = 1
-\end{NexCodeBox}
-
-\begin{NexCodeBox}{awk}{title={Processing without occurrence counts}}
-	D = "apple,orange,apple,banana,orange"
-	V1[0] = 0
-	S = ","
-	V2[0] = 0
-	nx_uniq_vector(D, V1, S, V2, 0, 0)
-	# Result:
-	# V1[1] = "apple"
-	# V1[2] = "orange"
-	# V1[3] = "banana"
+\begin{NexCodeBox}{bash}{title={Tokenization with trimming}}
+    # Here B2 is set to 1 (true) so that leading/trailing spaces are trimmed.
+    print nx_tokenize("  dog , cat ,  bird  ", V1, ",", "", V2, "", 0, 1)
+    # Expected Result: 3
+    # With trimmed tokens: V1[1] = "dog", V1[2] = "cat", V1[3] = "bird"
 \end{NexCodeBox}
 
 \newpage

@@ -133,7 +133,7 @@ function nx_random_str(N, D, S, B,	i, v1, v2, v3, s, r, f)
 {
 	N = int(__nx_if(__nx_is_natural(N), N, 8))
 	__nx_str_map(v1)
-	nx_trim_vector(__nx_else(D, "print"), v2, S)
+	nx_vector(__nx_else(D, "print"), v2, S, 1)
 	for (i = 1; i <= v2[0]; i++) {
 		if (D = nx_option(v2[i], v1, v3))
 			r = r v1[D]

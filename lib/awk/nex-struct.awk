@@ -61,7 +61,7 @@ function nx_next_pair(D1, V1, V2, D2, B1, B2,	s, s_l, e, e_l, f, i)
 	}
 }
 
-function nx_map(D1, V1, S1, S2, V2, D2, B1, B2,		v1, v2, c, s, i, l, t)
+function nx_tokenize(D1, V1, S1, S2, V2, D2, B1, B2,	v1, v2, c, s, i, l, t)
 {
 	if (D1 != "") {
 		if (! length(V2))
@@ -108,67 +108,43 @@ function nx_map(D1, V1, S1, S2, V2, D2, B1, B2,		v1, v2, c, s, i, l, t)
 	}
 }
 
-function nx_tokenize(D1, V1, V2, D2, B1, B2,	i, j, m, v, s)
+function nx_vector(D1, V1, S1, S2, B1, V2, D2, B2)
 {
-	if (D1 != "") {
-		while (D1) {
-			i = nx_next_pair(D1, V2, v, D2, 1, B1)
-			m = substr(D1, v[i], v[i "_" v[i]])
-			j = v[i] + v[i "_" v[i]]
-			s = s substr(D1, 1, v[i] - 1)
-			if (length(V2[m])) {
-				s = s substr(D1, j, v[++i])
-				j = j + v[i] + v[i "_" v[i]]
-			} else {
-				V1[++V1[0]] = s
-				s = ""
-			}
-			D1 = substr(D1, j)
-		}
-		if (s != "")
-			V1[++V1[0]] = s
-		delete v
-		return V1[0]
-	}
+	if (D1 != "")
+		return nx_tokenize(D1, V1, S1, S2, V2, D2, B2, B1)
 }
 
-function nx_vector(D, V1, S, V2)
+function nx_uniq_vector(D1, V1, S, B1, V2, D2, B2, B3,	v, i)
 {
-	if (D != "") {
-		__nx_quote_map(V2)
-		V2[__nx_else(S, ",")] = ""
-		return nx_tokenize(D, V1, V2)
-	}
-}
-
-function nx_trim_vector(D, V1, S, V2,	i)
-{
-	if (nx_vector(D, V1, S, V2)) {
-		for (i = 1; i <= V1[0]; i++)
-			V1[i] = nx_trim_str(V1[i])
-		return V1[0]
-	}
-}
-
-function nx_uniq_vector(D, V1, S, V2, B1, B2,	v, i)
-{
-	if (B1)
-		i = nx_vector(D, v, S, V2)
-	else
-		i = nx_trim_vector(D, v, S, V2)
-	if (i) {
+	if (i = nx_vector(D1, v, S, "", B1, V2, D2, B2)) {
 		for (i = 1; i <= v[0]; i++) {
 			if (! (v[i] in V1)) {
-				V1[v[i]] = __nx_if(B2, 0, ++V1[0])
+				V1[v[i]] = __nx_if(B3, 0, ++V1[0])
 				V1[V1[0]] = v[i]
 			}
-			if (B2)
+			if (B3)
 				V1[v[i]]++
 		}
 		i = V1[0]
 	}
 	delete v
 	return i
+}
+
+function nx_pop_vector(D, V1, S, B1, V2, D2, B2, V3,	v)
+{
+	if (length(V1) && 0 in V1 && V1[0] > 0) {
+		if (D != "") {
+			nx_uniq_vector(D, V3, ",", B1, V2, D2, B2)
+			for (i = 1; i <= v[0]; i++) {
+				if (V1[0] v[i] in V1)
+					delete V1[V1[0] v[i]]
+			}
+			delete v
+		}
+		delete V1[V1[0]--]
+		return V1[0]
+	}
 }
 
 function nx_length(V, B,	i, j, k)
