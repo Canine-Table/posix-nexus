@@ -311,9 +311,9 @@ function __nx_load_base(N, V)
 		__nx_num_map(V)
 }
 
-function __nx_get_base(N1, V)
+function __nx_get_base(N, V)
 {
-	return __nx_else(__nx_base(N1, V), 10)
+	return __nx_else(__nx_base(N, V), 10)
 }
 
 function __nx_base_regex(N, V, B)
@@ -356,6 +356,11 @@ function __nx_pad_bits(V, N1, N2)
 		if (N1 "_flt" in V && V[N1 "_flt"])
 			V[N1 "_flt"] = V[N1 "_flt"] nx_append_str("0", nx_remainder(length(V[N1 "_flt"]), N2))
 	}
+}
+
+function __nx_reuse_number(N1, V2, N2, V2)
+{
+	return __nx_is_natural(N1) && N1 "_bs" in V1 && V1[N1 "_bs"] == __nx_get_base(N2, V2)
 }
 
 function nx_number_map(V1, N1, V2, N2, N3,	b)
@@ -498,15 +503,19 @@ function nx_convert_base(N1, N2, N3, N4, V1, V2, N5,	v, l, n, i, j)
 	}
 }
 
-function nx_add(N1, N2, N3, V1, V2,	sn, j, i, f, c, d, e, v1, v2)
+function nx_add(N1, N2, N3, V1, V2, N4, N5	sn, j, i, f, c, d, e, v1, v2)
 {
 	if (N3 = __nx_get_base(N3, V2)) {
-		if (nx_number_map(V1, N1, V2, N3) && nx_number_map(V1, N2, V2, N3)) {
-			if (__nx_else(V1[(V1[0] - 1) "_sn"], "+") == __nx_else(V1[V1[0] "_sn"], "+")) {
-				sn = substr(V1[(V1[0] - 1) "_sn"] V1[V1[0] "_sn"], 1, 1)
-				f = nx_same_length((V1[0] - 1) "_flt", V1[0] "_flt", V1)
-				if (split(V1[(V1[0] - 1) "_flt"], v1, "")) {
-					for (i = split(V1[V1[0] "_flt"], v2, ""); i > 0; i--) {
+		if (! __nx_reuse_number(N4, V1, N3, V2))
+			N4 = nx_number_map(V1, N1, V2, N3)
+		if (! __nx_reuse_number(N5, V1, N3, V2))
+			N5 = nx_number_map(V1, N2, V2, N3)
+		if (N4 && N5) {
+			if (__nx_else(V1[N4 "_sn"], "+") == __nx_else(V1[N5 "_sn"], "+")) {
+				sn = substr(V1[N4 "_sn"] V1[N5 "_sn"], 1, 1)
+				f = nx_same_length(N4 "_flt", N5 "_flt", V1)
+				if (split(V1[N4 "_flt"], v1, "")) {
+					for (i = split(V1[N5 "_flt"], v2, ""); i > 0; i--) {
 						if ((j = c + V2[v1[i]] + V2[v2[i]]) > (N3 - 1)) {
 							f = V2[int(j % N3)] f
 							c = int(j / N3)
@@ -516,10 +525,10 @@ function nx_add(N1, N2, N3, V1, V2,	sn, j, i, f, c, d, e, v1, v2)
 						}
 					}
 				}
-				if ((j = split(nx_reverse_str(V1[(V1[0] - 1) "_num"]), v1, "") - split(nx_reverse_str(V1[V1[0] "_num"]), v2, "")) > 0)
-					e = V1[(V1[0] - 1) "_num"]
+				if ((j = split(nx_reverse_str(V1[N4 "_num"]), v1, "") - split(nx_reverse_str(V1[N5 "_num"]), v2, "")) > 0)
+					e = V1[N4 "_num"]
 				else if (j < 0)
-					e = V1[V1[0] "_num"]
+					e = V1[N5 "_num"]
 				i = 1
 				do {
 					if ((j = c + V2[v1[i]] + V2[v2[i]]) > (N3 - 1)) {
