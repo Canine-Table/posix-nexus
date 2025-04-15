@@ -61,7 +61,7 @@ function nx_tau(N)
 		return N * 2
 }
 
-function nx_summation(N1, N2, i)
+function nx_summation(N1, N2,	i)
 {
 	if ((N1 = int(N1)) > (N2 = __nx_else(int(N2), 1)) && __nx_is_natural(N1)) {
 		i = N2
@@ -84,13 +84,14 @@ function nx_factoral(N,		n)
 	}
 }
 
-function nx_fibonacci(N, n1, n2)
+function nx_fibonacci(N,	n1, n2, n3)
 {
 	if (__nx_is_natural(N = int(N))) {
 		while (--N > 0) {
-			n2 += n1
+			n3 = n2
+			n2 = n1 + n2
 			if (n2)
-				n1 = n2
+				n1 = n3
 			else
 				n2 = 1
 		}
@@ -143,7 +144,6 @@ function nx_floor(N)
 	if (__nx_is_digit(N, 1))
 		return int(N)
 }
-
 
 function nx_divisible(N1, N2)
 {
@@ -358,7 +358,7 @@ function __nx_pad_bits(V, N1, N2)
 	}
 }
 
-function __nx_reuse_number(N1, V2, N2, V2)
+function __nx_reuse_number(N1, V1, N2, V2)
 {
 	return __nx_is_natural(N1) && N1 "_bs" in V1 && V1[N1 "_bs"] == __nx_get_base(N2, V2)
 }
@@ -371,7 +371,6 @@ function nx_number_map(V1, N1, V2, N2, N3,	b)
 		N3 = V1[0] + 1
 	else
 		b = 1
-	print b " = " N3 " = " V1[0]
 	N2 = __nx_get_base(N2, V2)
 	if (N2 >= 2 && N2 <= 62) {
 		__nx_load_base(N2, V2)
@@ -427,9 +426,9 @@ function nx_number(V, N, B1, B2, B3,	t)
 		}
 		if (N "_num" in V && B1)
 			t = __nx_else(V[N "_num"], 0)
-		if (N "_flt" in V && B2 && V[N "_flt"])
+		if (N "_flt" in V && B2)
 			t = __nx_else(t, 0) __nx_if(V[N "_flt"], "." V[N "_flt"], "")
-		if (N "_sn" in V && B3 && V[N "_sn"])
+		if (N "_sn" in V && B3)
 			t = __nx_else(V[N "_sn"], "") t
 		return t
 	}
@@ -503,7 +502,7 @@ function nx_convert_base(N1, N2, N3, N4, V1, V2, N5,	v, l, n, i, j)
 	}
 }
 
-function nx_add(N1, N2, N3, V1, V2, N4, N5	sn, j, i, f, c, d, e, v1, v2)
+function nx_add(N1, N2, N3, V1, V2, N4, N5,	sn, j, i, c, d, e, v1, v2)
 {
 	if (N3 = __nx_get_base(N3, V2)) {
 		if (! __nx_reuse_number(N4, V1, N3, V2))
@@ -512,54 +511,58 @@ function nx_add(N1, N2, N3, V1, V2, N4, N5	sn, j, i, f, c, d, e, v1, v2)
 			N5 = nx_number_map(V1, N2, V2, N3)
 		if (N4 && N5) {
 			if (__nx_else(V1[N4 "_sn"], "+") == __nx_else(V1[N5 "_sn"], "+")) {
-				sn = substr(V1[N4 "_sn"] V1[N5 "_sn"], 1, 1)
-				f = nx_same_length(N4 "_flt", N5 "_flt", V1)
+				V1[N4 "_sn"] = substr(V1[N4 "_sn"] V1[N5 "_sn"], 1, 1)
+				d = nx_same_length(N4 "_flt", N5 "_flt", V1, 0, 1)
 				if (split(V1[N4 "_flt"], v1, "")) {
 					for (i = split(V1[N5 "_flt"], v2, ""); i > 0; i--) {
-						if ((j = c + V2[v1[i]] + V2[v2[i]]) > (N3 - 1)) {
-							f = V2[int(j % N3)] f
+						if ((j = c + V2[v1[i]] + V2[v2[i]]) > (N3 - 1))
 							c = int(j / N3)
-						} else {
-							f = V2[j] f
+						else
 							c = 0
-						}
+						d = V2[int(j % N3)] d
 					}
 				}
+				V1[N4 "_flt"] = d
 				if ((j = split(nx_reverse_str(V1[N4 "_num"]), v1, "") - split(nx_reverse_str(V1[N5 "_num"]), v2, "")) > 0)
 					e = V1[N4 "_num"]
 				else if (j < 0)
 					e = V1[N5 "_num"]
+				V1[N4 "_num"] = ""
 				i = 1
 				do {
-					if ((j = c + V2[v1[i]] + V2[v2[i]]) > (N3 - 1)) {
-						d = V2[int(j % N3)] d
+					if ((j = c + V2[v1[i]] + V2[v2[i]]) > (N3 - 1))
 						c = int(j / N3)
-					} else {
-						d = V2[j] d
+					else
 						c = 0
-					}
-					i++
+					++i
+					V1[N4 "_num"] = V2[int(j % N3)] V1[N4 "_num"]
 				} while (c || (v1[i] != "" && v2[i] != ""))
 				if ((j = length(e) - i + 1) > 0)
-					d = substr(e, 1, j) d
+					V1[N4 "_num"] = substr(e, 1, j) V1[N4 "_num"]
 				delete v1
 				delete v2
-				return sn __nx_else(d, 0) __nx_if(f != "", "." f, "")
+				nx_pop_vector("_bs,_flt,_num,_sn", V1, ",")
+				return nx_number(V1, N4, 1, 1, 1)
 			}
 		}
 	}
 }
 
-function nx_subtract(N1, N2, N3, N4, V1, V2,	sn, j, i, f, c, d, e, v1, v2)
+function nx_subtract(N1, N2, N3, N4, V1, V2, N5, N6,	sn, j, i, f, c, d, e, v1, v2)
 {
 	if (N3 = __nx_get_base(N3, V2)) {
-		if (nx_number_map(V1, N1, V2, N3) && nx_number_map(V1, N2, V2, N3)) {
-			if (__nx_else(nx_number(V1, -1, 0, 0, 1), "+") != __nx_else(nx_number(V1, -0, 0, 0, 1), "+")) {
-				return nx_number(V1, -1, 0, 0, 1) nx_add(nx_number(V1, -1, 1, 1, 0), nx_number(V1, -0, 1, 1, 0), N3, V1, V2)
+		if (! __nx_reuse_number(N5, V1, N3, V2))
+			N5 = nx_number_map(V1, N1, V2, N3)
+		if (! __nx_reuse_number(N6, V1, N3, V2))
+			N6 = nx_number_map(V1, N2, V2, N3)
+		if (N5 && N6) {
+			if (__nx_else(V1[N5 "_sn"], "+") != __nx_else(V1[N6 "_sn"], "+")) {
+				V1[N6 "_sn"] = V1[N5 "_sn"]
+				return nx_add(0, 0, N3, V1, V2, N5, N6)
 			} else {
-				if (nx_number(V1, -1, 1, 0, 0) < nx_number(V1, -0, 1, 0, 0)) {
-					__nx_swap(V1, V1[0] "_flt", (V1[0] - 1) "_flt")
-					__nx_swap(V1, V1[0] "_num", (V1[0] - 1) "_num")
+				if (__nx_equality(V1[N5 "_num"], "<0", V1[N6 "_num"])) {
+					__nx_swap(V1, N5 "_flt", N6 "_flt")
+					__nx_swap(V1, N5 "_num", N6 "_num")
 				}
 				nx_convert_base(nx_number(V1, -1, 1, 1, 1), N3, 2, N4, V1, V2, V1[0] - 1)
 				__nx_pad_bits(V1, V1[0] - 1, N3)

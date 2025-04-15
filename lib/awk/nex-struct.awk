@@ -135,7 +135,7 @@ function nx_pop_vector(D, V1, S, B1, V2, D2, B2, V3,	v)
 {
 	if (length(V1) && 0 in V1 && V1[0] > 0) {
 		if (D != "") {
-			nx_uniq_vector(D, V3, ",", B1, V2, D2, B2)
+			nx_uniq_vector(D, V3, S, B1, V2, D2, B2)
 			for (i = 1; i <= v[0]; i++) {
 				if (V1[0] v[i] in V1)
 					delete V1[V1[0] v[i]]

@@ -25,14 +25,14 @@ function nx_join_str(D1, D2, S, D3)
 	return D1 D3 D2 D3
 }
 
-function nx_same_length(N1, N2, V, B,		k, n, n1, n2, l, l1, l2, b, b1, b2)
+function nx_same_length(N1, N2, V, B1, B2,		k, n, n1, n2, l, l1, l2, b, b1, b2)
 {
 	if (N1 in V)
 		b1 = 1
-	l1 = length(n1 = __nx_if(b1, V[N1], N1))
+	l1 = length(n1 = __nx_if(b1, V[N1], __nx_if(B2, "", N1)))
 	if (N2 in V)
 		b2 = 1
-	l2 = length(n2 = __nx_if(b2, V[N2], N2))
+	l2 = length(n2 = __nx_if(b2, V[N2], __nx_if(B2, "", N2)))
 	if ((l = l1 - l2) > 0) {
 		if (b = b1)
 			k = N1
@@ -45,8 +45,8 @@ function nx_same_length(N1, N2, V, B,		k, n, n1, n2, l, l1, l2, b, b1, b2)
 		return
 	}
 	if (b)
-		V[k] = nx_slice_str(n, l, "", !B)
-	return nx_slice_str(n, l, "", B)
+		V[k] = nx_slice_str(n, l, "", !B1)
+	return nx_slice_str(n, l, "", B1)
 }
 
 function nx_slice_str(D, N, B1, B2,	s, e, l)

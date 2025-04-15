@@ -35,7 +35,7 @@ get_json_parser()
 			#nx_vector("a,b,c,d,e,f,g", abc)
 			#nx_pop_vector(abc, "a,b,c,d")
 			#print __nx_pad_bits(arr, tmpa, 10)
-			print nx_subtract(tmpa, tmpb, tmpc)
+			#print nx_add(tmpa, tmpb, tmpc)
 		}
 	'
 }
