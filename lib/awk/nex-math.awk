@@ -434,12 +434,14 @@ function nx_number(V, N, B1, B2, B3,	t)
 	}
 }
 
-function nx_compliment(N1, N2, V1, V2,		i, v, n, l)
+function nx_compliment(N1, N2, V1, V2, N3,	i, v, n, l)
 {
 	if (N2 = __nx_get_base(N2, V2)) {
-		if (nx_number_map(V1, N1, V2, N2)) {
+		if (! __nx_reuse_number(N3, V1, N2, V2))
+			N3 = nx_number_map(V1, N1, V2, N2)
+		if (N3) {
 			N2 = N2 - 1
-			l = split(N1, v, "")
+			l = split(nx_number(V1, N3, 1, 1, 1), v, "")
 			for (i = 1; i <= l; i++) {
 				if (v[i] ~ /[.]|[+]|[-]/)
 					n = n v[i]
@@ -447,6 +449,7 @@ function nx_compliment(N1, N2, V1, V2,		i, v, n, l)
 					n = n V2[N2 - v[i]]
 			}
 			delete v
+			nx_number_map(V1, n, V2, N2 + 1, N3)
 			return n
 		}
 	}
@@ -454,8 +457,6 @@ function nx_compliment(N1, N2, V1, V2,		i, v, n, l)
 
 function nx_convert_base(N1, N2, N3, N4, V1, V2, N5,	v, l, n, i, j)
 {
-	if (__nx_is_natural(N5) && length(V1) && 0 in V1 && N5 <= V1[0])
-		N2 = V1[N5 "_bs"]
 	if (N3 = __nx_get_base(N3, V2)) {
 		if (! N5)
 			N5 = nx_number_map(V1, N1, V2, N2)
@@ -502,7 +503,7 @@ function nx_convert_base(N1, N2, N3, N4, V1, V2, N5,	v, l, n, i, j)
 	}
 }
 
-function nx_add(N1, N2, N3, V1, V2, N4, N5,	sn, j, i, c, d, e, v1, v2)
+function nx_add(N1, N2, N3, V1, V2, N4, N5,	j, i, c, d, e, v1, v2)
 {
 	if (N3 = __nx_get_base(N3, V2)) {
 		if (! __nx_reuse_number(N4, V1, N3, V2))
@@ -543,6 +544,8 @@ function nx_add(N1, N2, N3, V1, V2, N4, N5,	sn, j, i, c, d, e, v1, v2)
 				delete v2
 				nx_pop_vector("_bs,_flt,_num,_sn", V1, ",")
 				return nx_number(V1, N4, 1, 1, 1)
+			} else {
+				# TODO
 			}
 		}
 	}
@@ -563,24 +566,30 @@ function nx_subtract(N1, N2, N3, N4, V1, V2, N5, N6,	sn, j, i, f, c, d, e, v1, v
 				if (__nx_equality(V1[N5 "_num"], "<0", V1[N6 "_num"])) {
 					__nx_swap(V1, N5 "_flt", N6 "_flt")
 					__nx_swap(V1, N5 "_num", N6 "_num")
+					sn = __nx_if(V1[N5 "_sn"] == "-", "", "-")
+				} else {
+					sn = V1[N5 "_sn"]
 				}
-				nx_convert_base(nx_number(V1, -1, 1, 1, 1), N3, 2, N4, V1, V2, V1[0] - 1)
-				__nx_pad_bits(V1, V1[0] - 1, N3)
-				nx_convert_base(nx_number(V1, -0, 1, 1, 1), N3, 2, N4, V1, V2, V1[0])
-				__nx_pad_bits(V1, V1[0], N3)
-				if ((i = length(nx_number(V1, -1, 1, 0, 0)) - length(nx_number(V1, -0, 1, 0, 0))) > 0)
-					V1[V1[0] "_num"] = nx_append_str("0", i) nx_number(V1, -0, 1, 0, 0)
+				nx_convert_base(N1, N3, 2, N4, V1, V2, N5)
+				__nx_pad_bits(V1, N5, N3)
+				nx_convert_base(N2, N3, 2, N4, V1, V2, N6)
+				__nx_pad_bits(V1, N6, N3)
+				if ((i = length(V1[N5 "_num"]) - length(V1[N6 "_num"])) > 0)
+					V1[N6 "_num"] = nx_append_str("0", i) V1[N6 "_num"]
 				else if (i = nx_absolute(i))
-					V1[(V1[0] - 1) "_num"] = nx_append_str("0", i) nx_number(V1, -1, 1, 0, 0)
-				if ((i = length(V1[(V1[0] - 1) "_flt"]) - length(V1[V1[0] "_flt"])) > 0)
-					V1[V1[0] "_flt"] = nx_number(V1, -0, 0, 1, 0) nx_append_str("0", i)
+					V1[N5 "_num"] = nx_append_str("0", i) V1[N5 "_num"]
+				if ((i = length(V1[N5 "_flt"]) - length(V1[N6 "_flt"])) > 0)
+					V1[N6 "_flt"] = nx_append_str("0", i) V1[N6 "_flt"]
 				else if (i = nx_absolute(i))
-					V1[(V1[0] - 1) "_flt"] = nx_number(V1, -1, 0, 1, 0) nx_append_str("0", i)
-				print nx_number(V1, -1, 1, 1, 1)
-				print nx_number(V1, -0, 1, 1, 1)
-				# TODO
-				# include use of nx_number struct to nx_add
-				#print nx_add(nx_number(V1, -0, 0, 1, 1), 1, 2)
+					V1[N5 "_flt"] = nx_append_str("0", i) V1[N5 "_flt"]
+				i = length(V1[N5 "_num"])
+				nx_compliment(0, 2, V1, V2, N6)
+				nx_add(0, 1, 2, V1, V2, N6)
+				nx_add(0, 0, 2, V1, V2, N5, N6)
+				V1[N5 "_num"] = substr(V1[N5 "_num"], length(V1[N5 "_num"]) - i + 1)
+				V1[N5 "_sn"] = sn
+				nx_convert_base(0, 2, N3, N4, V1, V2, N5)
+				return nx_number(V1, N5, 1, 1, 1)
 			}
 		}
 	}
