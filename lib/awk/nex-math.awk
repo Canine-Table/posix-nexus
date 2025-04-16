@@ -491,31 +491,31 @@ function nx_convert_base(N1, N2, N3, N4, V1, V2, N5,	v, l, n, i, j)
 						V1[N5 "_flt"] = "0." V1[N5 "_flt"]
 						do {
 							n = n V2[i = int(V1[N5 "_flt"] = V1[N5 "_flt"] * N3)]
-						} while((V1[N5 "_flt"] = V1[N5 "_flt"] - i) > 0.01 && --j)
+						} while((V1[N5 "_flt"] = V1[N5 "_flt"] - i) > 0.1 && --j)
 						V1[N5 "_flt"] = n
 					}
-					V1[N5 "_bs"] = N3
 				}
 				delete v
+				V1[N5 "_bs"] = N3
 				return nx_number(V1, N5, 1, 1, 1)
 			}
 		}
 	}
 }
 
-function nx_add(N1, N2, N3, V1, V2, N4, N5,	j, i, c, d, e, v1, v2)
+function nx_add(N1, N2, N3, N4, V1, V2, N5, N6,		j, i, c, d, e, v1, v2)
 {
 	if (N3 = __nx_get_base(N3, V2)) {
-		if (! __nx_reuse_number(N4, V1, N3, V2))
-			N4 = nx_number_map(V1, N1, V2, N3)
 		if (! __nx_reuse_number(N5, V1, N3, V2))
-			N5 = nx_number_map(V1, N2, V2, N3)
-		if (N4 && N5) {
-			if (__nx_else(V1[N4 "_sn"], "+") == __nx_else(V1[N5 "_sn"], "+")) {
-				V1[N4 "_sn"] = substr(V1[N4 "_sn"] V1[N5 "_sn"], 1, 1)
-				d = nx_same_length(N4 "_flt", N5 "_flt", V1, 0, 1)
-				if (split(V1[N4 "_flt"], v1, "")) {
-					for (i = split(V1[N5 "_flt"], v2, ""); i > 0; i--) {
+			N5 = nx_number_map(V1, N1, V2, N3)
+		if (! __nx_reuse_number(N6, V1, N3, V2))
+			N6 = nx_number_map(V1, N2, V2, N3)
+		if (N5 && N6) {
+			if (__nx_else(V1[N5 "_sn"], "+") == __nx_else(V1[N6 "_sn"], "+")) {
+				V1[N5 "_sn"] = substr(V1[N5 "_sn"] V1[N6 "_sn"], 1, 1)
+				d = nx_same_length(N5 "_flt", N6 "_flt", V1, 0, 1)
+				if (split(V1[N5 "_flt"], v1, "")) {
+					for (i = split(V1[N6 "_flt"], v2, ""); i > 0; i--) {
 						if ((j = c + V2[v1[i]] + V2[v2[i]]) > (N3 - 1))
 							c = int(j / N3)
 						else
@@ -523,12 +523,12 @@ function nx_add(N1, N2, N3, V1, V2, N4, N5,	j, i, c, d, e, v1, v2)
 						d = V2[int(j % N3)] d
 					}
 				}
-				V1[N4 "_flt"] = d
-				if ((j = split(nx_reverse_str(V1[N4 "_num"]), v1, "") - split(nx_reverse_str(V1[N5 "_num"]), v2, "")) > 0)
-					e = V1[N4 "_num"]
-				else if (j < 0)
+				V1[N5 "_flt"] = d
+				if ((j = split(nx_reverse_str(V1[N5 "_num"]), v1, "") - split(nx_reverse_str(V1[N6 "_num"]), v2, "")) > 0)
 					e = V1[N5 "_num"]
-				V1[N4 "_num"] = ""
+				else if (j < 0)
+					e = V1[N6 "_num"]
+				V1[N5 "_num"] = ""
 				i = 1
 				do {
 					if ((j = c + V2[v1[i]] + V2[v2[i]]) > (N3 - 1))
@@ -536,16 +536,17 @@ function nx_add(N1, N2, N3, V1, V2, N4, N5,	j, i, c, d, e, v1, v2)
 					else
 						c = 0
 					++i
-					V1[N4 "_num"] = V2[int(j % N3)] V1[N4 "_num"]
+					V1[N5 "_num"] = V2[int(j % N3)] V1[N5 "_num"]
 				} while (c || (v1[i] != "" && v2[i] != ""))
 				if ((j = length(e) - i + 1) > 0)
-					V1[N4 "_num"] = substr(e, 1, j) V1[N4 "_num"]
+					V1[N5 "_num"] = substr(e, 1, j) V1[N5 "_num"]
 				delete v1
 				delete v2
 				nx_pop_vector("_bs,_flt,_num,_sn", V1, ",")
-				return nx_number(V1, N4, 1, 1, 1)
+				return nx_number(V1, N5, 1, 1, 1)
 			} else {
-				# TODO
+				V1[N5 "_sn"] = V1[N6 "_sn"]
+				return nx_subtract(0, 0, N3, N4, V1, V2, N5, N6)
 			}
 		}
 	}
@@ -561,7 +562,7 @@ function nx_subtract(N1, N2, N3, N4, V1, V2, N5, N6,	sn, j, i, f, c, d, e, v1, v
 		if (N5 && N6) {
 			if (__nx_else(V1[N5 "_sn"], "+") != __nx_else(V1[N6 "_sn"], "+")) {
 				V1[N6 "_sn"] = V1[N5 "_sn"]
-				return nx_add(0, 0, N3, V1, V2, N5, N6)
+				return nx_add(0, 0, N3, N4, V1, V2, N5, N6)
 			} else {
 				if (__nx_equality(V1[N5 "_num"], "<0", V1[N6 "_num"])) {
 					__nx_swap(V1, N5 "_flt", N6 "_flt")
@@ -584,8 +585,8 @@ function nx_subtract(N1, N2, N3, N4, V1, V2, N5, N6,	sn, j, i, f, c, d, e, v1, v
 					V1[N5 "_flt"] = nx_append_str("0", i) V1[N5 "_flt"]
 				i = length(V1[N5 "_num"])
 				nx_compliment(0, 2, V1, V2, N6)
-				nx_add(0, 1, 2, V1, V2, N6)
-				nx_add(0, 0, 2, V1, V2, N5, N6)
+				nx_add(0, 1, 2, N4, V1, V2, N6)
+				nx_add(0, 0, 2, N4, V1, V2, N5, N6)
 				V1[N5 "_num"] = substr(V1[N5 "_num"], length(V1[N5 "_num"]) - i + 1)
 				V1[N5 "_sn"] = sn
 				nx_convert_base(0, 2, N3, N4, V1, V2, N5)

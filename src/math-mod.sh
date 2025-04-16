@@ -219,7 +219,8 @@ nx_add()
 	${AWK:-$(get_cmd_awk)} \
 		-v n1="$1" \
 		-v n2="$2" \
-		-v n3="$3" "
+		-v n3="$3" \
+		-v n4="$4" "
 		$(cat \
 			"$G_NEX_MOD_LIB/awk/nex-misc.awk" \
 			"$G_NEX_MOD_LIB/awk/nex-math.awk" \
@@ -228,7 +229,7 @@ nx_add()
 		)
 	"'
 		BEGIN {
-			if ((n = nx_add(n1, n2, n3)) != "")
+			if ((n = nx_add(n1, n2, n3, n4)) != "")
 				print n
 			else
 				exit 1
