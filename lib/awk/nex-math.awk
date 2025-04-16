@@ -491,7 +491,7 @@ function nx_convert_base(N1, N2, N3, N4, V1, V2, N5,	v, l, n, i, j)
 						V1[N5 "_flt"] = "0." V1[N5 "_flt"]
 						do {
 							n = n V2[i = int(V1[N5 "_flt"] = V1[N5 "_flt"] * N3)]
-						} while((V1[N5 "_flt"] = V1[N5 "_flt"] - i) > 0.1 && --j)
+						} while((V1[N5 "_flt"] = V1[N5 "_flt"] - i) > 0.01 && --j)
 						V1[N5 "_flt"] = n
 					}
 				}
@@ -545,7 +545,11 @@ function nx_add(N1, N2, N3, N4, V1, V2, N5, N6,		j, i, c, d, e, v1, v2)
 				nx_pop_vector("_bs,_flt,_num,_sn", V1, ",")
 				return nx_number(V1, N5, 1, 1, 1)
 			} else {
-				V1[N5 "_sn"] = V1[N6 "_sn"]
+				# TODO
+				if (__nx_equality(nx_number(V1, N5, 1, 1), ">0", nx_number(V1, N6, 1, 1)))
+					V1[N5 "_sn"] = V1[N6 "_sn"]
+				else
+					V1[N6 "_sn"] = V1[N5 "_sn"]
 				return nx_subtract(0, 0, N3, N4, V1, V2, N5, N6)
 			}
 		}

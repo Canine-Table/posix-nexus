@@ -32,8 +32,14 @@ get_json_parser()
 			#for (i = 1; i <= arr[0]; i++) {
 			#	print arr[i]
 			#}
-			#nx_vector("a,b,c,d,e,f,g", abc)
-			#nx_pop_vector(abc, "a,b,c,d")
+			nx_uniq_vector("a,d,e,f,g", arra)
+			nx_uniq_vector("a,b,c", arrb)
+			nx_compare_vector(tmpa, arra, arrb, arrc, 1)
+			print nx_tostring_vector(arrc, ",", 1)
+			#nx_pop_vector(arrb,"a,b,c,d")
+			#print __nx_pad_bits(arr, tmpa, 10)
+			#print nx_add(tmpa, tmpb, tmpc)
+			#nx_pop_vector(arrb,"a,b,c,d")
 			#print __nx_pad_bits(arr, tmpa, 10)
 			#print nx_add(tmpa, tmpb, tmpc)
 		}

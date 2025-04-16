@@ -131,6 +131,18 @@ function nx_uniq_vector(D1, V1, S, B1, V2, D2, B2, B3,	v, i)
 	return i
 }
 
+function nx_tostring_vector(V, S, B,	i, s)
+{
+	if (length(V) && 0 in V && V[0] > 0) {
+		S = __nx_else(S, ",")
+		for (i = 1; i <= V[0]; i++)
+			s = nx_join_str(s, V[i], S, 0)
+		if (B)
+			delete V
+		return s
+	}
+}
+
 function nx_pop_vector(D, V1, S, B1, V2, D2, B2, V3,	v)
 {
 	if (length(V1) && 0 in V1 && V1[0] > 0) {
@@ -204,6 +216,32 @@ function nx_option(D, V1, V2, B1, B2,	i, v1)
 
 function nx_trim_split(D, V, S)
 {
-	return split(nx_trim_str(D), V, "[ \v\t\n\f]*" __nx_else(S, ",") "[ \v\t\n\f]*")
+	return (V[0] = split(nx_trim_str(D), V, "[ \v\t\n\f]*" __nx_else(S, ",") "[ \v\t\n\f]*"))
+}
+
+function nx_compare_vector(D, V1, V2, V3, S, B,		i, v)
+{
+	if (length(V1) && 0 in V1 && length(V2) && 0 in V2) {
+		nx_vector("left,intersect,difference", v)
+		if (D = __nx_else(nx_option(D, v), "left")) {
+			for (i = 1; i <= V1[0]; i++) {
+				if ((V1[i] in V2) == (D == "intersect")) {
+					V3[++V3[0]] = V1[i]
+				}
+			}
+			if (D == "difference") {
+				for (i = 1; i <= V2[0]; i++) {
+					if (! (V2[i] in V1))
+						V3[++V3[0]] = V1[i]
+				}
+			}
+		}
+		delete v
+		if (B) {
+			delete V1
+			delete V2
+		}
+		return V3[0]
+	}
 }
 
