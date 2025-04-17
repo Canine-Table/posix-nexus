@@ -23,10 +23,15 @@ get_json_parser()
 	)
 	"'
 		BEGIN {
-			#print __nx_horentropy(5)
-			j = 15
+			#(startingValue - minimumValue + (offset % modulus) + modulus) % modulus + minimumValue
+			#print (tmpa - 10 + (1 % (10 - 5)) + (10 - 5)) % (10 - 5) + 5
+			#while (nx_generator(arr, 9, 1, 1, 0, 1))
+			#	print arr[0 "_idx"]
+			#while (nx_generator(arr, 1, 10, 1, 0, 1))
+			#	print arr[0 "_idx"]
+			j = 25
 			while (--j)
-				print nx_range(arr, 5, 15, 1, 1)
+				print nx_generator(arrc, 0, 10, 3, 1)
 		}
 	'
 }

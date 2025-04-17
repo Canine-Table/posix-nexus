@@ -170,38 +170,39 @@ function nx_remainder(N1, N2)
 		return (N2 - N1 % N2) % N2
 }
 
-function nx_range(V, N1, N2, N3, B,	d)
+function nx_generator(V, N1, N2, N3, B1, B2)
 {
-	if (! (length(V) && 0 in V) && (N1 = nx_digit(N1, 1)) != "") {
+	if (! (length(V) && 0 "_idx" in V) && (N1 = nx_digit(N1, 1)) != "") {
 		N2 = __nx_else(nx_digit(N2, 1), 0)
 		N3 = __nx_else(nx_not_zero(N3, 1), 1)
 		if (N1 > N2) {
 			N3 = nx_absolute(N3)
-			V[2] = N1
-			V[4] = N2
-			V[3] = "<=0"
-		} else if (N1 < N2) {
+			V[0 "_cmp"] = "<=0"
+		} else if (N2 > N1) {
 			N3 = -nx_absolute(N3)
-			V[2] = N2
-			V[4] = N1
-			V[3] = ">=0"
+			V[0 "_cmp"] = ">=0"
 		} else {
 			return "" N2
 		}
-		V[0] = V[2]
-		V[1] = N3
-		if (B)
-			delete V[3]
+		V[0 "_ed"] = N1
+		V[0 "_st"] = N2
+		V[0 "_idx"] = V[0 "_st"]
+		V[0 "_sk"] = N3
+		if (B1 != "")
+			delete V[0 "_cmp"]
 		else
-			delete V[4]
-		return "" V[0]
+			delete V[0 "_st"]
+		return "" V[0 "_idx"]
 	} else {
-		if (4 in V)
-			return "" (V[0] = nx_modulus_range(V[0] + V[1], V[4], V[2]))
-		else if (__nx_equality((V[0] = V[0] + V[1]), V[3], V[2]))
-			return "" V[0]
-		else
+		if (! (0 "_cmp" in V)) {
+			if (B1 == 0)
+				return "" (V[0 "_idx"] = V[0 "_idx"] + V[0 "_sk"])
+			return "" (V[0 "_idx"] = nx_modulus_range(V[0 "_idx"], V[0 "_ed"], V[0 "_st"], V[0 "_sk"]))
+		} else if (i = __nx_equality((V[0 "_idx"] = V[0 "_idx"] + V[0 "_sk"]), V[0 "_cmp"], V[0 "_ed"])) {
+			return "" V[0 "_idx"]
+		} else if (B2) {
 			delete V
+		}
 	}
 }
 
@@ -215,17 +216,10 @@ function nx_modulus_range(N1, N2, N3, N4)
 {
 	if ((N1 = nx_digit(N1, 1)) != "") {
 		if ((N2 = nx_digit(N2, 1)) != "") {
-			N4 = __nx_else(nx_not_zero(N1, 1), 1)
-			if ((N3 = nx_digit(N3, 1)) != "") {
-				while (__nx_equality(N1, "<0", N3)) {
-					N1 = N2 + (N1 - N2) % (N3 - N2 + 1)
-					N2 = N2 + N4
-				}
-			}
-			while (__nx_equality(N1, ">0", N2)) {
-				N1 = N2 + (N1 - N2 + N3) % (N3 - N2 + 1)
-				N2 = N2 + N4
-			}
+			if ((N3 = nx_digit(N3, 1)) == "")
+				return N1 % N2
+			N2 = N2 - N3
+			return (N1 - N3 + (__nx_else(nx_digit(N4, 1), 0) % N2) + N2) % N2 + N3
 		}
 		return N1
 	}
@@ -244,20 +238,21 @@ function nx_modular_exponentiation(N1, N2,	r, n)
 	return r
 }
 
-function nx_fermats_little_theorm(N, V,		i, p)
+function nx_fermats_little_theorm(N, V, B,		i, p, l)
 {
 	if (__nx_is_integral(N)) {
-		if (N < 2)
+		if ((N = int(N)) < 2)
 			return
-		if (! length(V))
-		l = split("2,3,5,7,11,13,17,19,23,29,31,37,41,43,47,53", V, ",")
+		if (! (l = length(V)))
+			l = split("2,3,5,7,11,13,17,19,23,29,31,37,41,43,47,53", V, ",")
 		for (i = 1; i <= l; i++) {
-			if (! (nx_divisible(N, v[i]) && N == v[i])) {
-				p = v[i]
+			if (! (nx_divisible(N, V[i]) && N == V[i])) {
+				p = V[i]
 				break
 			}
 		}
-		delete v
+		if (B)
+			delete V
 		if (p)
 			return nx_modular_exponentiation(p, N - 1) % N
 	}
