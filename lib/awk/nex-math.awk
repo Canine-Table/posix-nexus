@@ -24,25 +24,27 @@ function __nx_is_float(N, B)
 	return __nx_or(B, N ~ /^([-]|[+])?[0-9]+[.][0-9]+$/, N ~ /^[0-9]+[.][0-9]+$/)
 }
 
-function __nx_is_digit(N, B1, B2)
+function nx_natural(N, B)
 {
-	return (__nx_is_integral(N, B1) || __nx_is_float(N, __nx_else(B2, B1)))
+	if (__nx_is_integral(N, B) && +N > 0)
+		return +N
 }
 
-function __nx_is_natural(N, B)
+function nx_not_zero(N, B)
 {
-	return (__nx_is_integral(N, B) && N > 0)
+	if (nx_digit(N, B) && +N != 0)
+		return +N
 }
 
-function __nx_not_zero(N, B)
+function nx_digit(N, B1, B2)
 {
-	if (__nx_is_digit(N, B) && N != 0)
-		return N
+	if (__nx_is_integral(N, B1) || __nx_is_float(N, __nx_else(B2, B1)))
+		return +N
 }
 
 function __nx_precision(N1, N2)
 {
-	if (__nx_is_digit(N1, 1)) {
+	if (nx_digit(N1, 1)) {
 		N1 = sprintf("%." __nx_if(__nx_is_integral(N2), N2, "") "f", N1)
 		if (__nx_is_float(N1, 1))
 			gsub(/(00+$)/, "", N1)
@@ -63,7 +65,7 @@ function nx_tau(N)
 
 function nx_summation(N1, N2,	i)
 {
-	if ((N1 = int(N1)) > (N2 = __nx_else(int(N2), 1)) && __nx_is_natural(N1)) {
+	if ((N1 = int(N1)) > (N2 = __nx_else(int(N2), 1)) && nx_natural(N1)) {
 		i = N2
 		while (N1 > i)
 			N2 += N1--
@@ -86,7 +88,7 @@ function nx_factoral(N,		n)
 
 function nx_fibonacci(N,	n1, n2, n3)
 {
-	if (__nx_is_natural(N = int(N))) {
+	if (nx_natural(N = int(N))) {
 		while (--N > 0) {
 			n3 = n2
 			n2 = n1 + n2
@@ -100,7 +102,7 @@ function nx_fibonacci(N,	n1, n2, n3)
 }
 
 function nx_euclidean(N1, N2,	n) {
-	if (__nx_is_natural(N1 = int(N1)) && __nx_is_natural(N2 = int(N2))) {
+	if (nx_natural(N1 = int(N1)) && nx_natural(N2 = int(N2))) {
 		while (N1) {
 			n = N1
 			N1 = N2 % N1
@@ -118,7 +120,7 @@ function nx_lcd(N1, N2,		n)
 
 function nx_absolute(N)
 {
-	if (__nx_is_digit(N, 1)) {
+	if (nx_digit(N, 1)) {
 		if (__nx_equality(N, "<0", 0))
 			return N * -1
 		return N
@@ -127,7 +129,7 @@ function nx_absolute(N)
 
 function nx_ceiling(N)
 {
-	if (__nx_is_digit(N, 1)) {
+	if (nx_digit(N, 1)) {
 		if (N != int(N))
 			return int(N) + 1
 		return N
@@ -136,25 +138,25 @@ function nx_ceiling(N)
 
 function nx_round(N)
 {
-	return __nx_if(__nx_is_digit(N, 1), int(N + 0.5), 0)
+	return __nx_if(nx_digit(N, 1), int(N + 0.5), 0)
 }
 
 function nx_floor(N)
 {
-	if (__nx_is_digit(N, 1))
+	if (nx_digit(N, 1))
 		return int(N)
 }
 
 function nx_divisible(N1, N2)
 {
-	if (__nx_is_digit(N1, 1) && __nx_is_digit(N2, 1)) {
+	if (nx_digit(N1, 1) && nx_digit(N2, 1)) {
 		return ! __nx_is_float(N1 / N2, 1)
 	}
 }
 
 function nx_percent(N1, N2, B)
 {
-	if (__nx_is_digit(N1) && __nx_is_digit(N2)) {
+	if (nx_digit(N1) && nx_digit(N2)) {
 		if (B)
 			return N2 / (N1 / 100)
 		else
@@ -164,23 +166,67 @@ function nx_percent(N1, N2, B)
 
 function nx_remainder(N1, N2)
 {
-	if (__nx_is_digit(N1) && __nx_is_natural(N2))
+	if (nx_digit(N1) && nx_natural(N2))
 		return (N2 - N1 % N2) % N2
+}
+
+function nx_range(V, N1, N2, N3, B,	d)
+{
+	if (! (length(V) && 0 in V) && (N1 = nx_digit(N1, 1)) != "") {
+		N2 = __nx_else(nx_digit(N2, 1), 0)
+		N3 = __nx_else(nx_not_zero(N3, 1), 1)
+		if (N1 > N2) {
+			N3 = nx_absolute(N3)
+			V[2] = N1
+			V[4] = N2
+			V[3] = "<=0"
+		} else if (N1 < N2) {
+			N3 = -nx_absolute(N3)
+			V[2] = N2
+			V[4] = N1
+			V[3] = ">=0"
+		} else {
+			return "" N2
+		}
+		V[0] = V[2]
+		V[1] = N3
+		if (B)
+			delete V[3]
+		else
+			delete V[4]
+		return "" V[0]
+	} else {
+		if (4 in V)
+			return "" (V[0] = nx_modulus_range(V[0] + V[1], V[4], V[2]))
+		else if (__nx_equality((V[0] = V[0] + V[1]), V[3], V[2]))
+			return "" V[0]
+		else
+			delete V
+	}
 }
 
 function nx_scaled_ratio(N1, N2, N3)
 {
-	if (__nx_not_zero(N1 = N1 - N3, 1) && __nx_not_zero(N2 = N2 - N3))
+	if (nx_not_zero(N1 = N1 - N3, 1) && nx_not_zero(N2 = N2 - N3))
 		return N1 / N2
 }
 
-function nx_modulus_range(N1, N2, N3)
+function nx_modulus_range(N1, N2, N3, N4)
 {
-	if (__nx_is_digit(N1, 1)) {
-		if (__nx_is_digit(N2, 1) && N1 < N2)
-			return N2 + (N1 - N2 + N3) % (N3 - N2 + 1)
-		if (__nx_is_digit(N3, 1) && N1 > N3)
-			return N2 + (N1 - N2) % (N3 - N2 + 1)
+	if ((N1 = nx_digit(N1, 1)) != "") {
+		if ((N2 = nx_digit(N2, 1)) != "") {
+			N4 = __nx_else(nx_not_zero(N1, 1), 1)
+			if ((N3 = nx_digit(N3, 1)) != "") {
+				while (__nx_equality(N1, "<0", N3)) {
+					N1 = N2 + (N1 - N2) % (N3 - N2 + 1)
+					N2 = N2 + N4
+				}
+			}
+			while (__nx_equality(N1, ">0", N2)) {
+				N1 = N2 + (N1 - N2 + N3) % (N3 - N2 + 1)
+				N2 = N2 + N4
+			}
+		}
 		return N1
 	}
 }
@@ -294,7 +340,7 @@ function __nx_base(D, V)
 			__nx_upper_map(V)
 		D = V[D]
 	}
-	if (__nx_is_natural(D)) {
+	if (nx_natural(D)) {
 		D = int(D)
 		if (D >= 2 && D <= 62)
 			return D
@@ -348,7 +394,7 @@ function __nx_bit_width(N)
 
 function __nx_pad_bits(V, N1, N2)
 {
-	if (N1 "_bs" in V && V[N1 "_bs"] == 2 && __nx_is_natural(N2)) {
+	if (N1 "_bs" in V && V[N1 "_bs"] == 2 && nx_natural(N2)) {
 		N2 = __nx_bit_width(N2)
 		if (N1 "_num" in V && V[N1 "_num"]) {
 			V[N1 "_num"] = nx_append_str("0", nx_remainder(length(V[N1 "_num"]), N2)) V[N1 "_num"]
@@ -360,14 +406,14 @@ function __nx_pad_bits(V, N1, N2)
 
 function __nx_reuse_number(N1, V1, N2, V2)
 {
-	return __nx_is_natural(N1) && N1 "_bs" in V1 && V1[N1 "_bs"] == __nx_get_base(N2, V2)
+	return nx_natural(N1) && N1 "_bs" in V1 && V1[N1 "_bs"] == __nx_get_base(N2, V2)
 }
 
 function nx_number_map(V1, N1, V2, N2, N3,	b)
 {
 	if (! (length(V1) && 0 in V1))
 		V1[0] = 0
-	if (! (__nx_is_natural(N3) && N3 <= V1[0]))
+	if (! (nx_natural(N3) && N3 <= V1[0]))
 		N3 = V1[0] + 1
 	else
 		b = 1
@@ -394,7 +440,7 @@ function nx_number_map(V1, N1, V2, N2, N3,	b)
 
 function nx_power(N1, N2, B, V)
 {
-	if (__nx_is_digit(N1, 1)) {
+	if (nx_digit(N1, 1)) {
 		if (nx_absolute(N1) == 0)
 			return "0"
 		if (nx_absolute(N2) == 0)
@@ -471,7 +517,7 @@ function nx_convert_base(N1, N2, N3, N4, V1, V2, N5,	v, l, n, i, j)
 					}
 					V1[N5 "_num"] = n
 					n = 0
-					if (N5 "_flt" in V1 && __nx_is_natural(V1[N5 "_flt"])) {
+					if (N5 "_flt" in V1 && nx_natural(V1[N5 "_flt"])) {
 						l = split(V1[N5 "_flt"], v, "")
 						for (i = 1; i <= l; i++)
 							n = __nx_precision(n + V2[v[i]] * nx_power(V1[N5 "_bs"], -i, 1), N4)
@@ -486,7 +532,7 @@ function nx_convert_base(N1, N2, N3, N4, V1, V2, N5,	v, l, n, i, j)
 					} while (int(V1[N5 "_num"]))
 					V1[N5 "_num"] = n
 					n = ""
-					if (N5 "_flt" in V1 && __nx_is_natural(V1[N5 "_flt"])) {
+					if (N5 "_flt" in V1 && nx_natural(V1[N5 "_flt"])) {
 						j = N4
 						V1[N5 "_flt"] = "0." V1[N5 "_flt"]
 						do {

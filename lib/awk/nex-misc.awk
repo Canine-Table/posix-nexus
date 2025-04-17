@@ -105,7 +105,7 @@ function __nx_compare(B1, B2, B3, B4)
 		if (length(B3)) {
 			B1 = length(B1)
 			B2 = length(B2)
-		} else if (__nx_is_digit(B1, 1) && __nx_is_digit(B2, 1)) {
+		} else if (nx_digit(B1, 1) && nx_digit(B2, 1)) {
 			B1 = +B1
 			B2 = +B2
 		} else {
@@ -114,14 +114,11 @@ function __nx_compare(B1, B2, B3, B4)
 		}
 		B3 = 1
 	}
-
-	if (B4) {
-		return __nx_if(__nx_is_digit(B4), B1 > B2, B1 < B2) || __nx_if(__nx_else(B4 == 1, tolower(B4) == "i"), B1 == B2, 0)
-	} else if (length(B4)) {
+	if (B4)
+		return __nx_if(nx_digit(B4), B1 > B2, B1 < B2) || __nx_if(__nx_else(nx_digit(B4) == 1, tolower(B4) == "i"), B1 == B2, 0)
+	if (length(B4))
 		return B1 ~ B2
-	} else {
-		return B1 == B2
-	}
+	return B1 == B2
 }
 
 function __nx_equality(B1, B2, B3,	b, e, g)

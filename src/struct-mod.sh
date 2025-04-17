@@ -2,72 +2,17 @@
 
 ##:( get ):##################################################################################
 
-get_struct_ref()
+nx_struct_ref()
 {
 	[ -n "$1" ] && eval "echo \$$1"
 }
 
-get_struct_ref_append()
+nx_struct_append_ref()
 {
 	(
-		var=$(get_struct_ref "$1")
-		[ -n "$var" ] && var="$var${3:-\\n}"
-		echo "$var$2"
-	)
-}
-
-get_struct_compare()
-{
-	(
-		while getopts :s:o:a:b:irclrnd OPT; do
-			case $OPT in
-				l|r|i|d) m="$OPT";;
-				c|s|o) eval "$OPT"="'${OPTARG:-true}'";;
-				a|b) eval "$OPT"="'$(get_struct_ref_append $OPT "$OPTARG")'";;
-			esac
-		done
-		shift $((OPTIND - 1))
-		${AWK:-$(get_cmd_awk)} \
-			-v inptlst="${a:-"$1"}" \
-			-v reflst="${b:-"$2"}" \
-			-v mde="$m" \
-			-v cs="$c" \
-			-v sep="$s" \
-			-v osep="$o" "
-			$(cat \
-				"$G_NEX_MOD_LIB/awk/misc.awk" \
-				"$G_NEX_MOD_LIB/awk/str.awk" \
-				"$G_NEX_MOD_LIB/awk/bool.awk" \
-				"$G_NEX_MOD_LIB/awk/structs.awk" \
-				"$G_NEX_MOD_LIB/awk/algor.awk" \
-				"$G_NEX_MOD_LIB/awk/bases.awk" \
-				"$G_NEX_MOD_LIB/awk/math.awk" \
-				"$G_NEX_MOD_LIB/awk/types.awk"
-			)
-		"'
-			BEGIN {
-				if (! inptlst || ! reflst)
-					exit 1
-				__load_delim(dlm, sep, osep)
-				if (! cs) {
-					dlm["ics"] = IGNORECASE
-					IGNORECASE = 1
-				}
-				gsub(/\n/, dlm["s"], inptlst)
-				gsub(/\n/, dlm["s"], reflst)
-				if (! mde)
-					mde = "left"
-				str = compare_arrays(inptlst, reflst, mde, dlm["s"], dlm["o"])
-				if ("isc" in dlm)
-					IGNORECASE = dlm["isc"]
-				delete dlm
-				if (length(str)) {
-					print str
-					exit 0
-				}
-				exit 2
-			}
-		'
+		v=$(nx_struct_ref "$1")
+		[ -n "$v" -a -n "$2" ] && v="${v}${3:-,}"
+		echo "$v$2"
 	)
 }
 
@@ -75,7 +20,7 @@ get_struct_list() {
 	(
 		while getopts :s:o:cru OPT; do
 			case $OPT in
-				c|s|o) eval "$OPT"="'$OPTARG'";;
+				c|s|k|o) eval "$OPT"="'${OPTARG:-true}'";;
 				r|u) t="$OPT";;
 			esac
 		done
@@ -83,6 +28,7 @@ get_struct_list() {
 		${AWK:-$(get_cmd_awk)} \
 			-v inpt="$(echo $*)" \
 			-v sep="$s" \
+			-v ksep="$s" \
 			-v osep="$o" \
 			-v typ="$t" \
 			-v cs="$c" "
@@ -168,61 +114,7 @@ get_struct_map() {
 	)
 }
 
-
-###:( new ):##################################################################################
-
-new_struct_task()
-{
-	(
-		while getopts :s:t:ueob OPT; do
-			case $OPT in
-				t|s|ueob) eval "$OPT"="'${OPTARG:-true}'";;
-			esac
-		done
-		shift $((OPTIND - 1))
-		"${e:-false}" && e='/dev/null' || e='/dev/stderr'
-		"${o:-false}" && o='/dev/null' || o='/dev/stdout'
-		"${b:-false}" && b='&' || unset b
-		[ -n "$t" ] && for i in $(get_struct_list ${u:+-u} -s ${s:-" "} "$@"); do
-			eval '$t $i 2>"$e" 1>"$o" $b'
-		done
-	)
-}
-
 ###:( set ):##################################################################################
-
-set_struct_noexpand()
-{
-	[ ${#@} -gt 0 ] && {
-		$AWK \
-			-v var="$1" \
-			-v val="$(get_struct_ref $1)" "
-			$(cat \
-				"$G_NEX_MOD_LIB/awk/misc.awk" \
-				"$G_NEX_MOD_LIB/awk/types.awk" \
-				"$G_NEX_MOD_LIB/awk/structs.awk" \
-				"$G_NEX_MOD_LIB/awk/str.awk"
-			)
-		"'
-			BEGIN {
-				if (var && length(val)) {
-					gsub(" ", "\\x20", val)
-					arr["b"] = "x08"
-					arr["t"] = "x09"
-					arr["n"] = "x0a"
-					arr["v"] = "x0b"
-					arr["f"] = "x0c"
-					for (i in arr)
-						gsub("\x5c" i, "\x5c" arr[i], val) 
-					delete arr
-					print var "=\x22" val "\x22"
-				}
-			}
-		'
-		shift
-		set_struct_noexpand $@
-	}
-}
 
 set_struct_opt()
 {

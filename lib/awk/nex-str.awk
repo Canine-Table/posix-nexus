@@ -51,7 +51,7 @@ function nx_same_length(N1, N2, V, B1, B2,		k, n, n1, n2, l, l1, l2, b, b1, b2)
 
 function nx_slice_str(D, N, B1, B2,	s, e, l)
 {
-	if (__nx_is_natural(N) && N <= (l = length(D))) {
+	if (nx_natural(N) && N <= (l = length(D))) {
 		if (B1) {
 			if (B2) {
 				s = N + 1
@@ -89,7 +89,7 @@ function nx_trim_str(D, S)
 
 function nx_append_str(D1, N, D2, B,	s)
 {
-	if (__nx_is_natural(N) && __nx_defined(D1, 1)) {
+	if (nx_natural(N) && __nx_defined(D1, 1)) {
 		if (D2 != "")
 			s = D2
 		do {
@@ -131,7 +131,7 @@ function nx_totitle(D, B1, V2,		j, i, s, v1, v2)
 
 function nx_random_str(N, D, S, B,	i, v1, v2, v3, s, r, f)
 {
-	N = int(__nx_if(__nx_is_natural(N), N, 8))
+	N = int(__nx_if(nx_natural(N), N, 8))
 	__nx_str_map(v1)
 	nx_vector(__nx_else(D, "print"), v2, S, 1)
 	for (i = 1; i <= v2[0]; i++) {

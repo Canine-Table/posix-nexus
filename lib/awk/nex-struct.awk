@@ -143,6 +143,14 @@ function nx_tostring_vector(V, S, B,	i, s)
 	}
 }
 
+function nx_reverse_vector(V,	i, j)
+{
+	if (length(V) && 0 in V && V[0] > 0) {
+		for (i = V[0]; i > j; i--)
+			__nx_swap(V, ++j, i)
+	}
+}
+
 function nx_pop_vector(D, V1, S, B1, V2, D2, B2, V3,	v)
 {
 	if (length(V1) && 0 in V1 && V1[0] > 0) {
@@ -219,7 +227,7 @@ function nx_trim_split(D, V, S)
 	return (V[0] = split(nx_trim_str(D), V, "[ \v\t\n\f]*" __nx_else(S, ",") "[ \v\t\n\f]*"))
 }
 
-function nx_compare_vector(D, V1, V2, V3, S, B,		i, v)
+function nx_compare_vector(D, V1, V2, V3, B,		i, v)
 {
 	if (length(V1) && 0 in V1 && length(V2) && 0 in V2) {
 		nx_vector("left,intersect,difference", v)
@@ -232,7 +240,7 @@ function nx_compare_vector(D, V1, V2, V3, S, B,		i, v)
 			if (D == "difference") {
 				for (i = 1; i <= V2[0]; i++) {
 					if (! (V2[i] in V1))
-						V3[++V3[0]] = V1[i]
+						V3[++V3[0]] = V2[i]
 				}
 			}
 		}
