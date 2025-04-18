@@ -1,13 +1,13 @@
 #include <stdlib.h>
 
-NexNode *create_nex_node(int d)
+nx_nd_s *new_nx_node(int d)
 {
-	NexNode *new_nex_node = (NexNode*)malloc(sizeof(NexNode));
-	if (new_nex_node != NULL) {
-		new_nex_node->data = d;
-		new_nex_node->left = NULL;
-		new_nex_node->right = NULL;
+	nx_nd_s *nx_nd = (nx_nd_s*)malloc(sizeof(nx_nd_s));
+	if (nx_nd != NULL) {
+		nx_nd->d = d;
+		nx_nd->l = NULL;
+		nx_nd->r = NULL;
 	}
-	return new_nex_node;
+	return nx_nd;
 }
 

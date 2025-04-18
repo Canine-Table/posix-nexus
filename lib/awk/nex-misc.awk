@@ -55,6 +55,14 @@ function __nx_escape_map(V)
 	V["\x0c"] = ""
 }
 
+function nx_bool(V, D)
+{
+	if (V[D] == "<nx:true/>")
+		V[D] = "<nx:false/>"
+	else if (V[D] == "" || V[D] == "<nx:false/>")
+		V[D] = "<nx:true/>"
+}
+
 function __nx_defined(D, B)
 {
 	return (D || (length(D) && B))

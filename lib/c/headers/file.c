@@ -1,9 +1,9 @@
 #include<stdio.h>
 #include<string.h>
 
-NexFE* nex_fopen(const char *f, const char *c)
+nx_fe_s* nex_fopen(const char *f, const char *c)
 {
-	NexFE *fe = (NexFE*)malloc(sizeof(NexFE));
+	nx_fe_s *fe = (nx_fe_s*)malloc(sizeof(nx_fe_s));
 	if (fe == NULL) {
 		perror("Memory allocation failed");
 		return NULL;
@@ -68,7 +68,7 @@ NexFE* nex_fopen(const char *f, const char *c)
 	abort();
 }
 
-void nex_fread(NexFE *f)
+void nx_fread(nx_fe_s *f)
 {
 	char str;
 	while (1) {
@@ -80,21 +80,21 @@ void nex_fread(NexFE *f)
 	free(f);
 }
 
-void nex_fwrite(NexFE *f, const char *str)
+void nx_fwrite(nx_fe_s *f, const char *str)
 {
 	fprintf(f->fh, str);
 	fclose(f->fh);
 	free(f);
 }
 
-void nex_fdel(const char *f)
+void nx_fdel(const char *f)
 {
 	if (remove(f))
 		perror("Error deleting file");
 }
 
 
-void nex_fcp(NexFE *s, NexFE *d)
+void nx_fcp(nx_fe_s *s, nx_fe_s *d)
 {
 	if (s->fh == NULL) {
 		perror("Error opening source file");
@@ -112,14 +112,14 @@ void nex_fcp(NexFE *s, NexFE *d)
 	free(d);
 }
 
-void nex_chrs()
+void nx_chrs()
 {
 	int c;
 	while ((c = getchar()) != EOF)
 		putchar(c);
 }
 
-long nex_cchrs()
+long nx_cchrs()
 {
 	int c;
 	long l;
@@ -128,7 +128,7 @@ long nex_cchrs()
 	return l;
 }
 
-long nex_lchrs()
+long nx_lchrs()
 {
 	int c;
 	long l;
@@ -138,7 +138,7 @@ long nex_lchrs()
 	return l;
 }
 
-long nex_wchrs()
+long nx_wchrs()
 {
 	int c;
 	long l;
@@ -147,3 +147,4 @@ long nex_wchrs()
 			++l;
 	return l;
 }
+

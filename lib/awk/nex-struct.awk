@@ -1,3 +1,14 @@
+###########################################
+# O(1)			Contant Time
+# O(log(n))		Logarithmic Time
+# O(n)			Leanear Time
+# O(nlog(n)		Linearithmic Time
+# O(n^2)		Quadratic Time
+# O(n^3)		Cubic Time
+# O(b^n), b > 1		Exponential Time
+# O(n!):		Factoral Time
+###########################################
+
 function nx_bijective(V, D1, D2, D3)
 {
 	if (D1 != "") {
@@ -61,7 +72,7 @@ function nx_next_pair(D1, V1, V2, D2, B1, B2,	s, s_l, e, e_l, f, i)
 	}
 }
 
-function nx_tokenize(D1, V1, S1, S2, V2, D2, B1, B2,	v1, v2, c, s, i, l, t)
+function nx_tokenize(D1, V1, S1, S2, V2, D2, B1, B2,	v1, v2, c, s, i, l, t, k)
 {
 	if (D1 != "") {
 		if (! length(V2))
@@ -82,15 +93,32 @@ function nx_tokenize(D1, V1, S1, S2, V2, D2, B1, B2,	v1, v2, c, s, i, l, t)
 				s = __nx_if(B2, nx_trim_str(s), s)
 				if (S2 && (t in v1 || s == D1)) {
 					if (c == t || s == D1) {
-						if (c == S2)
+						if (c == S2) {
 							V1[++V1[0]] = s
-						else
+							if (s == D1)
+								nx_bool(V1, V1[V1[0]])
+						} else if (k) {
+							V1[k] = s
+						} else {
 							V1[V1[V1[0]]] = s
+						}
 						c = v1[c]
+						k = ""
 					} else {
-						V1[++V1[0]] = s
-						if (t == S1 || (s == D1 && c = S1))
-							V1[V1[V1[0]]] = 1
+						if (t == S2) {
+							if (k) {
+								V1[k] = s
+							} else {
+								V1[V1[V1[0]]] = s
+								k = V1[V1[0]]
+							}
+							k = nx_join_str(k, s, ".")
+						} else {
+							V1[++V1[0]] = s
+							if (t == S1 || (s == D1 && c = S1)) {
+								nx_bool(V1, V1[V1[0]])
+							}
+						}
 					}
 				} else {
 					V1[++V1[0]] = s

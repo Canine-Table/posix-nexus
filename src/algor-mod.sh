@@ -150,3 +150,66 @@ nx_algor_opt() {
 	)
 }
 
+nx_algor_list() {
+	(
+		while getopts :i:k:s:o:l:m:ctbev OPT; do
+			case $OPT in
+				t|i|k|o|s|m|c|b|v|e) eval "$OPT"="'${OPTARG:-true}'";;
+				l) l="$(get_struct_ref_append l "$OPTARG")";;
+			esac
+		done
+		shift $((OPTIND - 1))
+		${AWK:-$(get_cmd_awk)} \
+			-v inpt="$i" \
+			-v lst="$l" \
+			-v sep="$s" \
+			-v ksep="$k" \
+			-v cs="$c" \
+			-v bnd="$b" \
+			-v ed="$e" \
+			-v tm="$t" \
+			-v vrb="$v" \
+			-v osep="$o" "
+			$(cat \
+				"$G_NEX_MOD_LIB/awk/nex-misc.awk" \
+				"$G_NEX_MOD_LIB/awk/nex-struct.awk" \
+				"$G_NEX_MOD_LIB/awk/nex-str.awk" \
+				"$G_NEX_MOD_LIB/awk/nex-math.awk" \
+				"$G_NEX_MOD_LIB/awk/nex-algor.awk"
+			)
+		"'
+			BEGIN {
+				sep = __nx_else(sep, ",")
+				osep = __nx_else(osep, "\x0a")
+				if (! cs) {
+					ics = IGNORECASE
+					IGNORECASE = 1
+				}
+				nx_vector(lst, arra, sep, ksep, tm)
+				for (i = 1; i <= arra[0]; i++) {
+					if (arra[i] in arra) {
+						s = arra[i]
+						r = r sprintf("\x22%s\x22%s\x22%s\x22", s, ksep, arra[s])
+						s = s "." arra[s]
+						while(k = arra[s]) {
+							r = r sprintf("->\x22%s\x22", k)
+							s = s "." k
+						}
+					} else {
+						r = r sprintf("\x22%s\x22", arra[i])
+					}
+					if (i < arra[0])
+						r = r sprintf("%s", osep)
+				}
+				if (isc != "")
+					IGNORECASE = isc
+				delete arra
+				if (r)
+					print r
+				else
+					exit 1
+			}
+		'
+	)
+}
+

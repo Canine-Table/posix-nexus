@@ -121,7 +121,7 @@ function nx_totitle(D, B1, V2,		j, i, s, v1, v2)
 		i = nx_next_pair(D, v1, v2, B1, 1)
 		j = v2[i] + v2[i "_s"]
 		k = substr(D, 1, j)
-		s = toupper(substr(k, 1, 1)) tolower(substr(k, 2))
+		s = s toupper(substr(k, 1, 1)) tolower(substr(k, 2))
 		D = substr(D, j + 1)
 	}
 	delete v1

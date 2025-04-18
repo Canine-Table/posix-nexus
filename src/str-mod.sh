@@ -2,7 +2,7 @@
 
 ##:( get ):##################################################################################
 
-get_str_rand()
+nx_str_rand()
 {
 	(
 		${AWK:-$(get_cmd_awk)} \
@@ -10,19 +10,16 @@ get_str_rand()
 			-v chars="${2:-alnum}" \
 		"
 			$(cat \
-				"$G_NEX_MOD_LIB/awk/misc.awk" \
-				"$G_NEX_MOD_LIB/awk/algor.awk" \
-				"$G_NEX_MOD_LIB/awk/structs.awk" \
-				"$G_NEX_MOD_LIB/awk/types.awk" \
-				"$G_NEX_MOD_LIB/awk/math.awk" \
-				"$G_NEX_MOD_LIB/awk/str.awk"
+				"$G_NEX_MOD_LIB/awk/nex-misc.awk" \
+				"$G_NEX_MOD_LIB/awk/nex-struct.awk" \
+				"$G_NEX_MOD_LIB/awk/nex-str.awk" \
+				"$G_NEX_MOD_LIB/awk/nex-math.awk"
 			)
 		"'
 			BEGIN {
-				if (! is_integral(num))
+				if (! __nx_is_integral(num))
 					num = 8
-				val = random_str(num, chars)
-				if (val)
+				if (val = nx_random_str(num, chars))
 					print val
 				else
 					exit 1
@@ -151,7 +148,7 @@ get_str_search()
 
 ###:( set ):##################################################################################
 
-set_str_case()
+nx_str_case()
 {
 	(
 		while getopts ult OPT; do
@@ -161,17 +158,18 @@ set_str_case()
 		done
 		shift $((OPTIND - 1))
 		${AWK:-$(get_cmd_awk)} \
-			-v inpt="$*" \
+			-v inpt="$@" \
 			-v strcase="$c" "
 			$(cat \
-				"$G_NEX_MOD_LIB/awk/algor.awk" \
-				"$G_NEX_MOD_LIB/awk/structs.awk" \
-				"$G_NEX_MOD_LIB/awk/str.awk"
+				"$G_NEX_MOD_LIB/awk/nex-misc.awk" \
+				"$G_NEX_MOD_LIB/awk/nex-struct.awk" \
+				"$G_NEX_MOD_LIB/awk/nex-str.awk" \
+				"$G_NEX_MOD_LIB/awk/nex-math.awk"
 			)
 		"'
 			BEGIN {
 				if (strcase == "t")
-					print totitle(inpt)
+					print nx_totitle(inpt)
 				else if (strcase == "u")
 					print toupper(inpt)
 				else if (strcase == "l")
