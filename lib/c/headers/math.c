@@ -1,63 +1,100 @@
 #include <stdio.h>
-#include "str.h"
-#include "type.h"
 
-void nex_fahcel(double *arr, unsigned int len)
+nx_f128_t nx_factoral(nx_f128_t fc)
 {
-	for (int i = 0; i < len; i++)
-		arr[i] = 5.0 / 9.0 * (arr[i] - 32.0);
-}
-
-void nex_celfah(double *arr, unsigned int len)
-{
-	for (int i = 0; i < len; i++)
-		arr[i] = 9.0 / 5.0 * arr[i] + 32.0;
-}
-
-static long __fibonacci(long, long, long);
-static long __factoral(long, long);
-
-long factoral(long n1)
-{
-	return __factoral(n1, 0);
-}
-
-static long __factoral(long n1, long n2)
-{
-	if (n1 < 2)
+	if (fc <= 0)
+		return 0;
+	if (fc < 2)
 		return 1;
-	if (! n2)
-		n2 = n1 - 1;
-	printf("%ld * %ld = %ld\n", n1, n2, n2 * n1);
-	if (n2 > 1)
-		return __factoral(n2 * n1, n2 - 1);
+	nx_f128_t n = 1;
+	do {
+		n = n * fc;
+	} while (--fc > 0);
+	return n;
+}
+
+nx_f128_t nx_power(nx_f128_t b, nx_f128_t e)
+{
+	if (b == 0)
+		return 0;
+	if (e == 0)
+		return 1;
+	int d = 0;
+	nx_f128_t p;
+	if (e < 0) {
+		d = 1;
+		e = e * -1;
+	}
+	for (p = 1; e > 0; e--)
+		p = p * b;
+	if (d)
+		return 1.0 / p;
+	return p;
+}
+
+
+nx_f128_t nx_fibonacci(nx_f128_t n)
+{
+	if (n <= 0)
+		return -1;
+	if (n == 1)
+		return 0;
+	if (n == 2)
+		return 1;
+	nx_f128_t n1 = 0, n2 = 0, n3 = 0;
+	while (--n > 0) {
+		n3 = n1 + n2;
+		n1 = n2;
+		n2 = n3;
+	}
+	return n2;
+}
+
+nx_f128_t nx_summation(nx_f128_t n1, nx_f128_t n2)
+{
+	if (n1 < n2)
+		return n1;
+	nx_f128_t i = n1;
+	while (n1 > i)
+		n1 += n1--;
 	return n1;
 }
 
-long fibonacci(long n1)
+nx_f128_t nx_absolute(nx_f128_t n)
 {
-	return __fibonacci(n1, 0, 0);
+	if (n < 0)
+		return n * -1;
+	return n;
 }
 
-long lcd(long n1, long n2)
+/*
+nx_f128_t nx_euclidean(nx_f128_t n1, nx_f128_t n2)
 {
-	return (n1 * n2) / euclidean(n1, n2);
+	if (n1 < 1 || n2 < 1)
+		return -1;
+	nx_f128_t n;
+	while (n1) {
+		n = n1;
+		n1 = n2 % n1;
+		n2 = n;
+	}
+	return n;
 }
 
-long euclidean(long n1, long n2)
+nx_f128_t nx_lcd(nx_f128_t n1, nx_f128_t n2)
 {
-	if (n2)
-		return euclidean(n2, n1 % n2);
-	return n1;
+	nx_f128_t n;
+	if ((n = nx_euclidean(n1, n2)) < 0)
+		return n;
+	return n1 * n2 / n;
 }
 
-static long __fibonacci(long n1, long n2, long n3)
+nx_f128_t nx_remainder(nx_f128_t n1, nx_f128_t n2)
 {
-	printf("%ld + %ld = %ld\n", n3, n2, n2 + n3);
-	if (! n3)
-		return __fibonacci(--n1, 0, 1);
-	if (--n1 > 1)
-		return __fibonacci(n1, n3, n2 + n3);
-	return n2 + n3;
+	if (n2 < 1)
+		return -1;
+	return (n2 - n1 % n2) % n2;
 }
+
+*/
 

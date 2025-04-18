@@ -281,3 +281,4 @@ function nx_compare_vector(D, V1, V2, V3, B,		i, v)
 	}
 }
 
+
