@@ -214,50 +214,41 @@ nx_lcd()
 	'
 }
 
-nx_add()
+nx_round()
 {
-	${AWK:-$(get_cmd_awk)} \
-		-v n1="$1" \
-		-v n2="$2" \
-		-v n3="$3" \
-		-v n4="$4" "
-		$(cat \
-			"$G_NEX_MOD_LIB/awk/nex-misc.awk" \
-			"$G_NEX_MOD_LIB/awk/nex-math.awk" \
-			"$G_NEX_MOD_LIB/awk/nex-str.awk" \
-			"$G_NEX_MOD_LIB/awk/nex-struct.awk"
-		)
-	"'
-		BEGIN {
-			if ((n = nx_add(n1, n2, n3, n4)) != "")
-				print n
-			else
-				exit 1
-		}
-	'
+	(
+		case $1 in
+			-f|-c|-r|-t)
+				{
+					m="$1"
+					shift
+				};;
+		esac
+		${AWK:-$(get_cmd_awk)} \
+			-v num="$1" \
+			-v meh="$m" "
+			$(cat \
+				"$G_NEX_MOD_LIB/awk/nex-misc.awk" \
+				"$G_NEX_MOD_LIB/awk/nex-str.awk" \
+				"$G_NEX_MOD_LIB/awk/nex-math.awk" \
+				"$G_NEX_MOD_LIB/awk/nex-struct.awk"
+			)
+		"'
+			BEGIN {
+				if (! (num = nx_digit(num, 1)))
+					exit 1
+				if (! meh)
+					print int(num)
+				if (meh == "-t")
+					print nx_trunc(num)
+				if (meh == "-f")
+					print nx_floor(num)
+				if (meh == "-r")
+					print nx_round(num)
+				if (meh == "-c")
+					print nx_ceiling(num)
+			}
+		'
+	)
 }
-
-nx_subtract()
-{
-	${AWK:-$(get_cmd_awk)} \
-		-v n1="$1" \
-		-v n2="$2" \
-		-v n3="$3" \
-		-v n4="$4" "
-		$(cat \
-			"$G_NEX_MOD_LIB/awk/nex-misc.awk" \
-			"$G_NEX_MOD_LIB/awk/nex-math.awk" \
-			"$G_NEX_MOD_LIB/awk/nex-str.awk" \
-			"$G_NEX_MOD_LIB/awk/nex-struct.awk"
-		)
-	"'
-		BEGIN {
-			if ((n = nx_subtract(n1, n2, n3, n4)) != "")
-				print n
-			else
-				exit 1
-		}
-	'
-}
-
 

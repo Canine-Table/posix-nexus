@@ -1,6 +1,8 @@
 #ifndef NX_MATH_H
 #define NX_MATH_H
 
+#define NX_NAN 0x7FF8000000000000
+
 // Mathematical Constants
 #define NX_GOLDEN_RATIO 1.618033988749895 // Golden Ratio (phi)
 #define NX_PI 3.141592653589793        // Value of Pi
@@ -102,13 +104,20 @@ typedef unsigned int nx_u32_t;  // 32-bit unsigned integer
 typedef unsigned long long nx_u64_t; // 64-bit unsigned integer
 
 // Function Definitions
+nx_f128_t nx_floor(nx_f128_t);
+nx_f128_t nx_ceiling(nx_f128_t);
+nx_f128_t nx_round(nx_f128_t);
+nx_f128_t nx_trunc(nx_f128_t);
+nx_f128_t nx_fmod(nx_f128_t, nx_f128_t);
+nx_f128_t nx_trunc(nx_f128_t);
+
 nx_f128_t nx_fibonacci(nx_f128_t);
 nx_f128_t nx_power(nx_f128_t, nx_f128_t);
 nx_f128_t nx_factoral(nx_f128_t);
 nx_f128_t nx_summation(nx_f128_t, nx_f128_t);
 nx_f128_t nx_absolute(nx_f128_t);
-//nx_f128_t nx_lcd(nx_f128_t, nx_f128_t);
-//nx_f128_t nx_euclidean(nx_f128_t, nx_f128_t;
-//nx_f128_t nx_remainder(nx_f128_t, nx_f128_t)
+nx_f128_t nx_euclidean(nx_f128_t, nx_f128_t);
+nx_f128_t nx_lcd(nx_f128_t, nx_f128_t);
+nx_f128_t nx_remainder(nx_f128_t, nx_f128_t);
 #include "math.c"
 #endif

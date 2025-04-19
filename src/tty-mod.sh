@@ -2,9 +2,9 @@
 
 ###:( get ):##################################################################################
 
-get_tty_prop_list()
+nx_tty_prop_list()
 {
-	[ -n "$(tty)" ] && stty -a | ${AWK:-$(get_cmd_awk)} '
+	[ -n "$(tty)" ] && stty -a | ${AWK:-$(nx_cmd_awk)} '
 		{
 			gsub(/= /, "")
 			cnt_t = split($0, arr_t, "; *")
@@ -30,7 +30,7 @@ get_tty_prop_list()
 	'
 }
 
-get_tty_prop()
+nx_tty_prop()
 {
 	[ -n "$(tty)" ] && (
 		while getopts :k:v: OPT; do
@@ -39,7 +39,7 @@ get_tty_prop()
 			esac
 		done
 		shift $((OPTIND - 1))
-		get_tty_prop_list | ${AWK:-$(get_cmd_awk)} \
+		nx_tty_prop_list | ${AWK:-$(nx_cmd_awk)} \
 			-v key="$k" \
 			-v val="$v" '
 			{
@@ -57,7 +57,7 @@ get_tty_prop()
 	)
 }
 
-set_tty_hault()
+nx_tty_hault()
 {
 	command -v setterm 1>/dev/null 2>&1 && {
 		setterm -cursor off

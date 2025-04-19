@@ -1,6 +1,6 @@
 #!/bin/sh
 
-get_pkgmgr()
+nx_pkgmgr()
 {
 	[ -n "$PKGMGR" ] && (
 		#	-u: Update and upgrade all packages
@@ -10,7 +10,7 @@ get_pkgmgr()
 		#	-r: Remove a package
 		#	-c: Clean the cache
 		TTY_DIV=$(add_str_div)
-		PKGMGR=$(get_content_leaf $PKGMGR)
+		PKGMGR=$(nx_content_leaf $PKGMGR)
 		while getopts :s:i:r:q:uc OPT; do
 			case $OPT in
 				s|i|r|q|u|c) eval "$OPT"="'${OPTARG:-true}'";;
@@ -25,13 +25,13 @@ get_pkgmgr()
 __set_pkgmgr()
 {
 	[ ${#@} -gt 0 ] && {
-		V="$(get_struct_ref $1)"
+		V="$(nx_struct_ref $1)"
 		[ "${V:-false}" = true ] && {
 			case $1 in
 				u|c) V="";;
 			esac
 		}
-		__get_pkgmgr_$PKGMGR $1
+		__nx_pkgmgr_$PKGMGR $1
 		$PKGMGR $K $V
 		echo $TTY_DIV
 		shift
@@ -39,7 +39,7 @@ __set_pkgmgr()
 	}
 }
 
-__get_pkgmgr_pacman()
+__nx_pkgmgr_pacman()
 {
 	case $1 in
 		q) K='-Si';;
@@ -51,7 +51,7 @@ __get_pkgmgr_pacman()
 	esac
 }
 
-__get_pkgmgr_apk()
+__nx_pkgmgr_apk()
 {
 	case $1 in
 		s) K='search';;
@@ -63,7 +63,7 @@ __get_pkgmgr_apk()
 	esac
 }
 
-__get_pkgmgr_apt()
+__nx_pkgmgr_apt()
 {
 	case $1 in
 		s) K='search';;
@@ -75,7 +75,7 @@ __get_pkgmgr_apt()
 	esac
 }
 
-__get_pkgmgr_zypper()
+__nx_pkgmgr_zypper()
 {
 	case $1 in
 		s) K='search';;
@@ -88,7 +88,7 @@ __get_pkgmgr_zypper()
 }
 
 
-__get_pkgmgr_yum()
+__nx_pkgmgr_yum()
 {
 	case $1 in
 		s) K='search';;
@@ -100,7 +100,7 @@ __get_pkgmgr_yum()
 	esac
 }
 
-__get_pkgmgr_emerge()
+__nx_pkgmgr_emerge()
 {
 	case $1 in
 		s) K='--search';;
@@ -112,7 +112,7 @@ __get_pkgmgr_emerge()
 	esac
 }
 
-__get_pkgmgr_pkg()
+__nx_pkgmgr_pkg()
 {
     case $1 in
 	s) K='search';;
@@ -124,7 +124,7 @@ __get_pkgmgr_pkg()
     esac
 }
 
-__get_pkgmgr_brew()
+__nx_pkgmgr_brew()
 {
 	case $1 in
 		s) K='search';;
@@ -136,7 +136,7 @@ __get_pkgmgr_brew()
 	esac
 }
 
-__get_pkgmgr_port()
+__nx_pkgmgr_port()
 {
 	case $1 in
 		s) K='search';;
@@ -148,7 +148,7 @@ __get_pkgmgr_port()
 	esac
 }
 
-alias get_pkgmgr_yay=get_pkgmgr_pacman
-alias get_pkgmgr_dnf=get_pkgmgr_yum
+alias nx_pkgmgr_yay=nx_pkgmgr_pacman
+alias nx_pkgmgr_dnf=nx_pkgmgr_yum
 
 

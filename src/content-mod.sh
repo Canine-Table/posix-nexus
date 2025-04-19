@@ -1,32 +1,28 @@
 #!/bin/sh
 
-##:( set ):##################################################################################
-
-set_content_root()
+nx_content_root()
 {
 	(
 		for f in env cnf; do
-			[ "$(get_content_leaf "$G_NEX_ROOT/$f")" = "$f" ] || mkdir "$G_NEX_ROOT/$f"
+			[ "$(nx_content_leaf "$G_NEX_ROOT/$f")" = "$f" ] || mkdir "$G_NEX_ROOT/$f"
 		done
 	)
 }
 
-##:( get ):##################################################################################
-
-get_content_trim()
+nx_content_trim()
 {
 	echo "$*" | sed 's|\./|/|g; s|/\+|/|g; s|/\+$||'
 }
 
-get_content_leaf()
+nx_content_leaf()
 {
 	(
-		b="$(get_content_container "$*")" || exit 2
+		b="$(nx_content_container "$*")" || exit 2
 		echo "$*" | sed 's|/\+$||; s|.*/||'
 	)
 }
 
-get_content_container()
+nx_content_container()
 {
 	(
 		if [ -d "$*/." ]; then
@@ -36,36 +32,34 @@ get_content_container()
 		else
 			exit 1
 		fi
-		get_content_trim "$(cd "$(dirname "$d")" && pwd)"
+		nx_content_trim "$(cd "$(dirname "$d")" && pwd)"
 	)
 }
 
-get_content_path()
+nx_content_path()
 {
 	(
-		p="$(get_content_leaf "$*")" || exit 3
-		get_content_trim "$(cd $(dirname "$*") && pwd)/$p"
+		p="$(nx_content_leaf "$*")" || exit 3
+		nx_content_trim "$(cd $(dirname "$*") && pwd)/$p"
 	)
 }
 
-get_content_list()
+nx_content_list()
 {
 	(
 		for i in "$@"; do
-			j="$(get_content_path "$i")" && {
-				k="$(get_content_container "$i")"
+			j="$(nx_content_path "$i")" && {
+				k="$(nx_content_container "$i")"
 				[ "$k" != "$j" ] && ls -l "$j" || ls -dl "$j"
 			}
 		done
 	)
 }
 
-###:( add ):##################################################################################
-
-add_content_modules()
+nx_content_modules()
 {
-	for f in "$(get_content_path "$G_NEX_MOD_SRC")/"*"-mod.sh"; do
-		[ -f "$f" -a -r "$f" -a "$(get_content_leaf "$f")" != 'content-mod.sh' ] && . "$f"
+	for f in "$(nx_content_path "$G_NEX_MOD_SRC")/"*"-mod.sh"; do
+		[ -f "$f" -a -r "$f" -a "$(nx_content_leaf "$f")" != 'content-mod.sh' ] && . "$f"
 	done
 	unset f
 }
@@ -80,24 +74,25 @@ export G_NEX_MOD_ENV="$G_NEX_ROOT/env"
 export G_NEX_MOD_DOC="$G_NEX_ROOT/docs"
 export G_NEX_MOD_LOG="$G_NEX_MOD_ENV"
 
-set_content_root
-add_content_modules
+nx_content_root
+nx_content_modules
 
 export LESS='-R'
 export COLORFGBG=';0'
 export DIALOGRC="$G_NEX_MOD_CNF/.dialogrc"
-export PAGER="$(get_cmd_pager)"
-export EDITOR="$(get_cmd_editor)"
-export SHELL="$(get_cmd_shell)"
-export AWK="$(get_cmd_awk)"
-export PKGMGR="$(get_cmd_pkgmgr)"
-export TEXCPL="$(get_cmd_tex_compiler)"
-export VPDF="$(get_cmd_pdf_viewer)"
+export PAGER="$(nx_cmd_pager)"
+export EDITOR="$(nx_cmd_editor)"
+export SHELL="$(nx_cmd_shell)"
+export AWK="$(nx_cmd_awk)"
+export PKGMGR="$(nx_cmd_pkgmgr)"
+export TEXCPL="$(nx_cmd_tex_compiler)"
+export VPDF="$(nx_cmd_pdf_viewer)"
 
 alias nex='. "$G_NEX_MOD_SRC/content-mod.sh"'
+alias nx=nex
 alias vi='$EDITOR'
 alias pgr='$PAGER'
-alias pkgmgr='get_pkgmgr'
+alias pkgmgr='nx_pkgmgr'
 
 ##############################################################################################
 

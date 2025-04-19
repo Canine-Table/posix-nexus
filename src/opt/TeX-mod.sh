@@ -1,5 +1,5 @@
 
-del_tex_int()
+d_nx_tex_int()
 {
 	[ -n "$G_NEX_MOD_DOC" ] && (
 		for i in "${G_NEX_MOD_DOC}/"*; do

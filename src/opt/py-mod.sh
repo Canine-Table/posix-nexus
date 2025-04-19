@@ -1,6 +1,6 @@
 #!/bin/sh
 
-set_py_venv()
+nx_py_venv()
 {
 	[ ${#@} -gt 0 ] && {
 		[ "$1" = '-a' ] && {
@@ -22,7 +22,7 @@ set_py_venv()
 			}
 		}
 		shift
-		set_py_venv $@
+		nx_py_venv $@
 	}
 }
 

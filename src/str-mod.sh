@@ -1,7 +1,5 @@
 #!/bin/sh
 
-##:( get ):##################################################################################
-
 nx_str_rand()
 {
 	(
@@ -17,8 +15,7 @@ nx_str_rand()
 			)
 		"'
 			BEGIN {
-				if (! __nx_is_integral(num))
-					num = 8
+				num __nx_if(__nx_is_integral(num), num, 8)
 				if (val = nx_random_str(num, chars))
 					print val
 				else
@@ -28,125 +25,17 @@ nx_str_rand()
 	)
 }
 
-get_str_parser()
-{
-	(
-		opt="$1"
-		shift
-		${AWK:-$(get_cmd_awk)} \
-			-v inpt="$(get_str_print "$@")" \
-			-v opt="$opt" "
-			$(cat \
-				"$G_NEX_MOD_LIB/awk/misc.awk" \
-				"$G_NEX_MOD_LIB/awk/algor.awk" \
-				"$G_NEX_MOD_LIB/awk/structs.awk" \
-				"$G_NEX_MOD_LIB/awk/types.awk" \
-				"$G_NEX_MOD_LIB/awk/str.awk"
-			)
-		"'
-			BEGIN {
-				print str_parser(opt, inpt)
-			}
-		'
-	)
-}
-
-get_str_print()
+nx_str_print()
 {
 	[ "${#@}" -gt 0 ] && {
 		echo -n "$1"
 		[ "${#@}" -gt 1 ] && {
-			echo -n "<NULL>"
+			echo -n "<nx:null/>"
 		}
 		shift
 		get_str_print "$@"
 	}
 }
-
-get_str_param()
-{
-	(
-		while getopts :s:o:n OPT; do
-			case $OPT in
-				s|o|n) eval "$OPT"="'${OPTARG:-true}'";;
-			esac
-		done
-		shift $((OPTIND - 1))
-		${AWK:-$(get_cmd_awk)} \
-			-v sep="${s:-=}" \
-			-v nil="$n" \
-			-v osep="${o:-,}" \
-			-v param="$*" "
-			$(cat \
-				"$G_NEX_MOD_LIB/awk/misc.awk" \
-				"$G_NEX_MOD_LIB/awk/str.awk" \
-				"$G_NEX_MOD_LIB/awk/bool.awk" \
-				"$G_NEX_MOD_LIB/awk/structs.awk" \
-				"$G_NEX_MOD_LIB/awk/algor.awk" \
-				"$G_NEX_MOD_LIB/awk/bases.awk" \
-				"$G_NEX_MOD_LIB/awk/math.awk" \
-				"$G_NEX_MOD_LIB/awk/types.awk"
-			)
-		"'
-			BEGIN {
-				split_parameters(param, arr, osep, sep, nil)
-				if (str = __join_parameters(arr, osep, sep))
-					print str
-				else
-					exit 1
-			}
-		'
-	)
-}
-
-get_str_search()
-{
-	(
-		while getopts :f:s:o:r:d:n: OPT; do
-			case $OPT in
-				f|r|s|o|d|n) eval "$OPT"="'${OPTARG:-true}'";;
-			esac
-		done
-		shift $((OPTIND - 1))
-		eval "$*" 2>/dev/null | ${AWK:-$(get_cmd_awk)} \
-			-v sep="$s" \
-			-v osep="$o" \
-			-v div="$d" \
-			-v ndiv="$n" \
-			-v fnd="$f" \
-			-v rpl="$r" "
-			$(cat \
-				"$G_NEX_MOD_LIB/awk/misc.awk" \
-				"$G_NEX_MOD_LIB/awk/algor.awk" \
-				"$G_NEX_MOD_LIB/awk/structs.awk" \
-				"$G_NEX_MOD_LIB/awk/bool.awk" \
-				"$G_NEX_MOD_LIB/awk/types.awk" \
-				"$G_NEX_MOD_LIB/awk/math.awk" \
-				"$G_NEX_MOD_LIB/awk/str.awk"
-			)
-		"'
-			BEGIN {
-				if (! div)
-					div = "/"
-				if (! sep)
-					sep = "\x20"
-				__load_delim(dlm, sep, osep)
-				o = ""
-				v = ""
-			} {
-				if (str = str_search($0, dlm["s"], div, ndiv, dlm["o"], fnd, rpl)) {
-					printf("%s%s", o, str)
-					if (! o)
-						o = dlm["o"]
-				}
-			} END {
-				delete dlm
-			}
-		' || eval "$*"
-	)
-}
-
-###:( set ):##################################################################################
 
 nx_str_case()
 {
@@ -181,77 +70,55 @@ nx_str_case()
 	)
 }
 
-set_str_format()
+nx_str_reverse()
 {
-	(
-		while getopts :i:s:f:l:r:k OPT; do
-			case $OPT in
-				i|s|f|l|r|k) eval "$OPT"="'${OPTARG:-true}'";;
-			esac
-		done
-		shift $((OPTIND - 1))
-		[ -n "$f" ] || {
-			f="$1"
-			shift
+	${AWK:-$(get_cmd_awk)} \
+		-v str="$*" "
+		$(cat \
+			"$G_NEX_MOD_LIB/awk/nex-misc.awk" \
+			"$G_NEX_MOD_LIB/awk/nex-struct.awk" \
+			"$G_NEX_MOD_LIB/awk/nex-str.awk" \
+			"$G_NEX_MOD_LIB/awk/nex-math.awk"
+		)
+	"'
+		BEGIN {
+			print nx_reverse_str(str)
 		}
-		${AWK:-$(get_cmd_awk)} \
-			-v fmt="$f" \
-			-v inpt="${i:-"$*"}" \
-			-v sep="$s" \
-			-v lft="$l" \
-			-v rgt="$r" \
-			-v kp="$k" "
-			$(cat \
-				"$G_NEX_MOD_LIB/awk/misc.awk" \
-				"$G_NEX_MOD_LIB/awk/str.awk" \
-				"$G_NEX_MOD_LIB/awk/structs.awk"
-			)
-		"'
-			BEGIN {
-				print format_str(fmt, inpt, sep, lft, rgt, kp)
-			}
-		'
-	)
+	'
 }
 
-###:( add ):##################################################################################
-
-add_str_append()
+nx_str_append()
 {
 	(
-		while getopts :c:n:e OPT; do
+		while getopts :c:n:s: OPT; do
 			case $OPT in
-				n|c|e) eval "$OPT"="'${OPTARG:-true}'";;
+				n|c|s) eval "$OPT"="'$OPTARG'";;
 			esac
 		done
 		shift $((OPTIND - 1))
 		${AWK:-$(get_cmd_awk)} \
-			-v ed="$e" \
+			-v str="$s" \
 			-v num="${n:-"$1"}" \
 			-v char="${c:-"$2"}" "
 			$(cat \
-					"$G_NEX_MOD_LIB/awk/misc.awk" \
-					"$G_NEX_MOD_LIB/awk/structs.awk" \
-					"$G_NEX_MOD_LIB/awk/types.awk" \
-					"$G_NEX_MOD_LIB/awk/str.awk"
+				"$G_NEX_MOD_LIB/awk/nex-misc.awk" \
+				"$G_NEX_MOD_LIB/awk/nex-struct.awk" \
+				"$G_NEX_MOD_LIB/awk/nex-str.awk" \
+				"$G_NEX_MOD_LIB/awk/nex-math.awk"
 			)
 		"'
 			BEGIN {
-				print append_str(num, char, ed)
+				print nx_append_str(char, num, str)
 			}
 		'
 	)
 }
 
-add_str_div()
+nx_str_div()
 {
 	n="$(get_tty_prop -k "columns")"
 	[ -n "$(tty)" ] && {
-		add_str_append -n "$n" -c "─"
+		nx_str_append -n "$n" -c "─"
 	}
 }
-
-##:( del ):##################################################################################
-###:( is ):###################################################################################
-##############################################################################################
 

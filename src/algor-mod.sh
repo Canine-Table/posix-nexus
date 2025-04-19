@@ -11,7 +11,7 @@ nx_algor_qsort() {
 			esac
 		done
 		shift $((OPTIND - 1))
-		${AWK:-$(get_cmd_awk)} \
+		${AWK:-$(nx_cmd_awk)} \
 			-v meh="$m" \
 			-v lst="${l:-"$*"}" \
 			-v sep="$s" \
@@ -57,7 +57,7 @@ nx_algor_compare()
 			esac
 		done
 		shift $((OPTIND - 1))
-		${AWK:-$(get_cmd_awk)} \
+		${AWK:-$(nx_cmd_awk)} \
 			-v inptlst="${l:-"$1"}" \
 			-v reflst="${r:-"$2"}" \
 			-v mde="$m" \
@@ -100,11 +100,11 @@ nx_algor_opt() {
 		while getopts :i:k:s:o:l:m:ctbev OPT; do
 			case $OPT in
 				t|i|k|o|s|m|c|b|v|e) eval "$OPT"="'${OPTARG:-true}'";;
-				l) l="$(get_struct_ref_append l "$OPTARG")";;
+				l) l="$(nx_struct_ref_append l "$OPTARG")";;
 			esac
 		done
 		shift $((OPTIND - 1))
-		${AWK:-$(get_cmd_awk)} \
+		${AWK:-$(nx_cmd_awk)} \
 			-v inpt="$i" \
 			-v lst="$l" \
 			-v sep="$s" \
@@ -155,11 +155,11 @@ nx_algor_list() {
 		while getopts :i:k:s:o:l:m:ctbev OPT; do
 			case $OPT in
 				t|i|k|o|s|m|c|b|v|e) eval "$OPT"="'${OPTARG:-true}'";;
-				l) l="$(get_struct_ref_append l "$OPTARG")";;
+				l) l="$(nx_struct_ref_append l "$OPTARG")";;
 			esac
 		done
 		shift $((OPTIND - 1))
-		${AWK:-$(get_cmd_awk)} \
+		${AWK:-$(nx_cmd_awk)} \
 			-v inpt="$i" \
 			-v lst="$l" \
 			-v sep="$s" \

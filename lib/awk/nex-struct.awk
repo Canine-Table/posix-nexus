@@ -281,4 +281,13 @@ function nx_compare_vector(D, V1, V2, V3, B,		i, v)
 	}
 }
 
+function nx_map(V1, V2, B)
+{
+	if (length(V1) && 0 in V1 && length(V2) && 0 in V2 && V2[0] == V1[0]) {
+		for (i = 1; i <= V1[0]; i++)
+			V1[V1[i]] = V2[i]
+		if (B)
+			delete V2
+	}
+}
 

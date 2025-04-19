@@ -75,7 +75,7 @@ function nx_summation(N1, N2,	i)
 
 function nx_factoral(N,		n)
 {
-	if (__nx_is_integral(N = int(N))) {
+	if (__nx_is_integral(N = nx_digit(N))) {
 		if (N < 2)
 			return 1
 		n = 1
@@ -129,34 +129,52 @@ function nx_absolute(N)
 
 function nx_ceiling(N)
 {
-	if (nx_digit(N, 1)) {
-		if (N != int(N))
+	if (N = nx_digit(N, 1)) {
+		if (N > int(N))
 			return int(N) + 1
-		return N
+		return int(N)
+	}
+}
+
+function nx_floor(N)
+{
+	if (N = nx_digit(N, 1)) {
+		if (N < int(N))
+			return int(N - 1)
+		return int(N)
 	}
 }
 
 function nx_round(N)
 {
-	return __nx_if(nx_digit(N, 1), int(N + 0.5), 0)
+	if (N = nx_digit(N, 1))
+		return nx_floor(N + 0.5)
 }
 
-function nx_floor(N)
+function nx_trunc(N)
 {
-	if (nx_digit(N, 1))
-		return int(N)
+	if (N = nx_digit(N, 1)) {
+		if (N > 0)
+			return nx_floor(N)
+		return nx_ceiling(N)
+	}
+}
+
+function nx_mod(N1, N2)
+{
+	if ((N2 = nx_digit(N2, 1)) && (N1 = nx_digit(N1, 1)) != "")
+		return N1 - nx_trunc(N1 / N2) * N2
 }
 
 function nx_divisible(N1, N2)
 {
-	if (nx_digit(N1, 1) && nx_digit(N2, 1)) {
+	if (nx_digit(N1, 1) && nx_digit(N2, 1))
 		return ! __nx_is_float(N1 / N2, 1)
-	}
 }
 
 function nx_percent(N1, N2, B)
 {
-	if (nx_digit(N1) && nx_digit(N2)) {
+	if ((N1 = nx_digit(N1)) && (N2 = nx_digit(N2))) {
 		if (B)
 			return N2 / (N1 / 100)
 		else

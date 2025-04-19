@@ -468,7 +468,29 @@ function nx_cut_str(D1, D2, B) {
 \end{NexMainBox}
 
 \begin{NexCodeBox}{bash}{title={Simple title casing}}
-    print nx_totitle("hello world", 0, 0)
-    # Result: "Hello World"
+	print nx_totitle("hello world", 0, 0)
+	# Result: "Hello World"
 \end{NexCodeBox}
+
+\begin{NexCodeBox}{bash}{title={Handling escaped characters}}
+	print nx_totitle("hello\\ world", 1, 0)
+	# Result: "Hello World"
+\end{NexCodeBox}
+
+\begin{NexCodeBox}{bash}{title={Using mappings for segmentation}}
+	print nx_totitle("greetings_from_mars", 0, 1)
+	# Result: "Greetings From Mars"
+\end{NexCodeBox}
+
+\begin{NexCodeBox}{bash}{title={Complex input with mixed cases}}
+	print nx_totitle("WELCOME_TO_EARTH", 0, 0)
+	# Result: "Welcome To Earth"
+\end{NexCodeBox}
+
+\begin{NexCodeBox}{bash}{title={Empty string}}
+	print nx_totitle("", 0, 0)
+	# Result: ""
+\end{NexCodeBox}
+
+
 
