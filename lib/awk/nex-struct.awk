@@ -33,7 +33,7 @@ function nx_find_index(D1, S, D2,	f)
 {
 	if (D1 != "") {
 		f = 0
-		S = __nx_else(S, " ")
+		S = __nx_else(S, "")
 		D2 = __nx_else(__nx_defined(D2, 1), "\\\\")
 		while (match(D1, S)) {
 			f = f + RSTART

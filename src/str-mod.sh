@@ -3,7 +3,7 @@
 nx_str_rand()
 {
 	(
-		${AWK:-$(get_cmd_awk)} \
+		${AWK:-$(nx_cmd_awk)} \
 			-v num="${1:-8}" \
 			-v chars="${2:-alnum}" \
 		"
@@ -33,8 +33,28 @@ nx_str_print()
 			echo -n "<nx:null/>"
 		}
 		shift
-		get_str_print "$@"
+		nx_str_print "$@"
 	}
+}
+
+nx_str_optarg()
+{
+	(
+		${AWK:-$(nx_cmd_awk)} \
+			-v str="$(nx_str_print "$@")" "
+			$(cat \
+				"$G_NEX_MOD_LIB/awk/nex-misc.awk" \
+				"$G_NEX_MOD_LIB/awk/nex-struct.awk" \
+				"$G_NEX_MOD_LIB/awk/nex-shell.awk" \
+				"$G_NEX_MOD_LIB/awk/nex-str.awk" \
+				"$G_NEX_MOD_LIB/awk/nex-math.awk"
+			)
+		"'
+			BEGIN {
+				print nx_parser(str, "<nx:null/>")
+			}
+		'
+	)
 }
 
 nx_str_case()
@@ -46,7 +66,7 @@ nx_str_case()
 			esac
 		done
 		shift $((OPTIND - 1))
-		${AWK:-$(get_cmd_awk)} \
+		${AWK:-$(nx_cmd_awk)} \
 			-v inpt="$@" \
 			-v strcase="$c" "
 			$(cat \
@@ -72,7 +92,7 @@ nx_str_case()
 
 nx_str_reverse()
 {
-	${AWK:-$(get_cmd_awk)} \
+	${AWK:-$(nx_cmd_awk)} \
 		-v str="$*" "
 		$(cat \
 			"$G_NEX_MOD_LIB/awk/nex-misc.awk" \
@@ -96,7 +116,7 @@ nx_str_append()
 			esac
 		done
 		shift $((OPTIND - 1))
-		${AWK:-$(get_cmd_awk)} \
+		${AWK:-$(nx_cmd_awk)} \
 			-v str="$s" \
 			-v num="${n:-"$1"}" \
 			-v char="${c:-"$2"}" "
@@ -116,7 +136,7 @@ nx_str_append()
 
 nx_str_div()
 {
-	n="$(get_tty_prop -k "columns")"
+	n="$(nx_tty_prop -k "columns")"
 	[ -n "$(tty)" ] && {
 		nx_str_append -n "$n" -c "─"
 	}
