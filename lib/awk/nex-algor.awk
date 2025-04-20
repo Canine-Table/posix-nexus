@@ -1,9 +1,3 @@
-function __nx_entropy(N,	s)
-{
-	if (s = nx_convert_base(nx_random_str(N, "alnum"), 62, 10))
-		return substr(s, 1, N)
-}
-
 function __nx_hoares_partition(V, N1, N2, D,	md)
 {
 	md = nx_modulus_range(__nx_entropy(N2), N1, N2)

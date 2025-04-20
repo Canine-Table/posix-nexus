@@ -25,7 +25,7 @@ nx_str_rand()
 	)
 }
 
-nx_str_print()
+nx_str_chain()
 {
 	[ "${#@}" -gt 0 ] && {
 		echo -n "$1"
@@ -33,7 +33,7 @@ nx_str_print()
 			echo -n "<nx:null/>"
 		}
 		shift
-		nx_str_print "$@"
+		nx_str_chain "$@"
 	}
 }
 
@@ -41,7 +41,7 @@ nx_str_optarg()
 {
 	(
 		${AWK:-$(nx_cmd_awk)} \
-			-v str="$(nx_str_print "$@")" "
+			-v str="$(nx_str_chain "$@")" "
 			$(cat \
 				"$G_NEX_MOD_LIB/awk/nex-misc.awk" \
 				"$G_NEX_MOD_LIB/awk/nex-struct.awk" \

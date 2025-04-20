@@ -1,0 +1,148 @@
+\newpage
+\section{Configurations}
+\label{Configurations}
+\begin{NexMainBox}[light, hdrA, sdwA, crnA, grwB, secA]
+	\begin{NexMainBox}[dark, crnA]
+	\end{NexMainBox}
+	\begin{NexMainBox}[dark, crnA]
+		\begin{NexListDark}
+			\NexItemDark{\NexLink{iOS Device Management Utilities}{iOS Device Management Utilities}: Tools and libraries for managing, restoring, and interfacing with iOS devices.}
+			\NexItemDark{\NexLink{Linux Containers}{Linux Containers}: Details container networking setups and their alternative modes.}
+		\end{NexListDark}
+	\end{NexMainBox}
+\end{NexMainBox}
+
+\newpage
+\section{Linux Containers}
+\label{Linux Containers}
+\begin{NexMainBox}[light, hdrA, sdwA, crnA, grwB, secA]
+	\begin{NexMainBox}[dark, crnA]
+	\end{NexMainBox}
+	\begin{NexMainBox}[dark, crnA]
+		\begin{NexListDark}
+			\NexItemDark{\NexLink{Core Concept}{Core Concept}: Docker is fundamentally a daemon that manages containers. Containers are lightweight, portable units that package applications with all their dependencies to ensure they run consistently across environments.}
+			\NexItemDark{\NexLink{Linux Origins}{Linux Origins}: Containers are built on Linux kernel features like namespaces and cgroups, which provide isolation and resource control. These technologies make containers inherently tied to Linux, and platforms like Docker adapt these concepts for other systems, such as Windows.}
+			\NexItemDark{\NexLink{Container Networking}{Container Networking}: Details how containers are networked, including default setups and alternatives.}
+		\end{NexListDark}
+	\end{NexMainBox}
+\end{NexMainBox}
+
+\newpage
+\subsection{Core Concept}
+\label{Core Concept}
+\begin{NexMainBox}[light, hdrA, sdwA, crnA, grwB, ssecA]
+	\begin{NexMainBox}[dark, crnA]
+		Docker is fundamentally a daemon that manages containers. Containers are lightweight, portable units that package applications with all their dependencies to ensure they run consistently across environments.
+	\end{NexMainBox}
+\end{NexMainBox}
+
+\subsection{Linux Origins}
+\label{Linux Origins}
+\begin{NexMainBox}[light, hdrA, sdwA, crnA, grwB, ssecA]
+	\begin{NexMainBox}[dark, crnA]
+		Containers are built on Linux kernel features like namespaces and cgroups, which provide isolation and resource control. These technologies make containers inherently tied to Linux, and platforms like Docker adapt these concepts for other systems, such as Windows.
+	\end{NexMainBox}
+\end{NexMainBox}
+
+\subsection{Container Networking}
+\label{Container Networking}
+\begin{NexMainBox}[light, hdrA, sdwA, crnA, grwB, ssecB]
+	\begin{NexMainBox}[dark, crnA]
+		Container Networking involves connecting containers to each other, the host, and external systems through various networking modes and technologies.
+	\end{NexMainBox}
+	\begin{NexMainBox}[dark, crnA]
+		\begin{NexListDark}
+			\NexItemDark{\textbf{Default Networking}: Utilizes \texttt{veth} devices connected to a bridge interface for isolated yet interconnected environments.}
+			\NexItemDark{\textbf{Alternative Modes}: Includes configurations like \texttt{macvlan}, \texttt{ipvlan}, and \texttt{host} mode for specialized use cases.}
+		\end{NexListDark}
+	\end{NexMainBox}
+\end{NexMainBox}
+
+\subsubsection{Default Networking}
+\label{Default Networking}
+\begin{NexMainBox}[light, hdrA, sdwA, crnA, grwB, sssecA]
+	\begin{NexMainBox}[dark, crnA]
+		Docker's default networking mode relies on \texttt{veth} pairs. One end resides in the container, and the other connects to a bridge on the host. This setup provides network isolation while enabling communication between containers via the bridge.
+	\end{NexMainBox}
+	\begin{NexMainBox}[dark, crnA]
+		\begin{NexListDark}
+			\NexItemDark{\textbf{Bridge Functionality}: Operates as a Layer 3 switch for IP-level routing and traffic management.}
+			\NexItemDark{\textbf{Firewall Integration}: Uses \texttt{iptables-nft} for managing rules and securing traffic (\hyperref[https://wiki.gentoo.org/wiki/Nftables]{Gentoo Wiki on nftables}).}
+		\end{NexListDark}
+	\end{NexMainBox}
+\end{NexMainBox}
+
+\subsubsection{Alternative Modes}
+\label{Alternative Modes}
+\begin{NexMainBox}[light, hdrA, sdwA, crnA, grwB, sssecA]
+	\begin{NexMainBox}[dark, crnA]
+		Containers can employ specialized networking modes for advanced use cases or performance optimization. These modes include \texttt{macvlan}, \texttt{ipvlan}, and \texttt{host}.
+	\end{NexMainBox}
+	\begin{NexMainBox}[dark, crnA]
+		\begin{NexListDark}
+			\NexItemDark{\textbf{Macvlan}: Assigns unique MAC addresses to containers, making them appear as physical devices on the network.}
+			\NexItemDark{\textbf{Ipvlan}: Focuses on simplifying Layer 2 configurations while controlling IPv4 and IPv6 traffic.}
+			\NexItemDark{\textbf{Host Mode}: Shares the host's network namespace (\texttt{netns}), bypassing Docker's default isolation mechanisms (\hyperref[https://developers.redhat.com/articles/2022/04/06/introduction-linux-bridging-commands-and-features]{Red Hat on Linux Bridging}).}
+		\end{NexListDark}
+	\end{NexMainBox}
+\end{NexMainBox}
+
+
+
+\newpage
+\subsection{iOS Device Management Utilities}
+\label{iOS Device Management Utilities}
+\begin{NexMainBox}[light, hdrA, sdwA, crnA, grwB, ssecA]
+	\begin{NexMainBox}[dark, crnA]
+	\end{NexMainBox}
+	\begin{NexMainBox}[dark, crnA]
+		\begin{NexListDark}
+			\NexItemDark{\NexLink{libimobiledevice}{libimobiledevice}: An open-source library that enables communication with iOS devices without requiring proprietary software from Apple.}
+			\NexItemDark{\NexLink{usbmuxd}{usbmuxd}: A daemon for multiplexing USB connections to support syncing, app debugging, and other interactions with iOS devices.}
+			\NexItemDark{\NexLink{idevicerestore}{idevicerestore}: A tool designed for restoring iOS firmware on devices, complementing libimobiledevice for complete device management.}
+		\end{NexListDark}
+	\end{NexMainBox}
+\end{NexMainBox}
+
+\subsubsection{libimobiledevice}
+\label{libimobiledevice}
+\begin{NexMainBox}[light, hdrA, sdwA, crnA, grwB, sssecA]
+	\begin{NexMainBox}[dark, crnA]
+		libimobiledevice is a cross-platform library that provides tools to interact with iOS devices. It supports operations such as data transfer, debugging, and diagnostics without relying on proprietary Apple software.
+	\end{NexMainBox}
+	\begin{NexMainBox}[dark, crnA]
+		\begin{NexListDark}
+			\NexItemDark{\textbf{Key Features}: Communication with iOS devices for tasks like file access, backup, and restore.}
+			\NexItemDark{\textbf{Compatibility}: Operates on Linux, macOS, and Windows, offering broad support.}
+		\end{NexListDark}
+	\end{NexMainBox}
+\end{NexMainBox}
+
+\subsubsection{usbmuxd}
+\label{usbmuxd}
+\begin{NexMainBox}[light, hdrA, sdwA, crnA, grwB, sssecA]
+	\begin{NexMainBox}[dark, crnA]
+		usbmuxd is a critical component for managing USB connections to iOS devices. It enables data multiplexing, allowing simultaneous operations like syncing, debugging, and diagnostics.
+	\end{NexMainBox}
+	\begin{NexMainBox}[dark, crnA]
+		\begin{NexListDark}
+			\NexItemDark{\textbf{Role in Communication}: Facilitates USB connection sharing across applications.}
+			\NexItemDark{\textbf{Integration}: Works seamlessly with libimobiledevice for device management.}
+		\end{NexListDark}
+	\end{NexMainBox}
+\end{NexMainBox}
+
+\subsubsection{idevicerestore}
+\label{idevicerestore}
+\begin{NexMainBox}[light, hdrA, sdwA, crnA, grwB, sssecA]
+	\begin{NexMainBox}[dark, crnA]
+		idevicerestore is a specialized tool designed for restoring iOS firmware. It complements libimobiledevice and usbmuxd to provide end-to-end device management capabilities.
+	\end{NexMainBox}
+	\begin{NexMainBox}[dark, crnA]
+		\begin{NexListDark}
+			\NexItemDark{\textbf{Restoration Tasks}: Performs firmware installation and recovery.}
+			\NexItemDark{\textbf{Use Case}: Useful for developers and users needing to recover or reinitialize iOS devices.}
+		\end{NexListDark}
+	\end{NexMainBox}
+\end{NexMainBox}
+

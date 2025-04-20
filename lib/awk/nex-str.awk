@@ -10,9 +10,17 @@ function nx_reverse_str(D,	i, v)
 	return D
 }
 
-function nx_escape_str(D)
+function nx_escape_str(D, N, B,		e)
 {
-	gsub(/./, "\\\\&", D)
+	N = __nx_if(nx_natural(N), nx_digit(N), 1)
+	do {
+		if (B)
+			e = e "\\\\"
+		else
+			gsub(/./, "\\\\&", D)
+	} while (--N)
+	if (B)
+		gsub(/./, e "&", D)
 	return D
 }
 

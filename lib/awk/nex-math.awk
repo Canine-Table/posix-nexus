@@ -160,12 +160,6 @@ function nx_trunc(N)
 	}
 }
 
-function nx_mod(N1, N2)
-{
-	if ((N2 = nx_digit(N2, 1)) && (N1 = nx_digit(N1, 1)) != "")
-		return N1 - nx_trunc(N1 / N2) * N2
-}
-
 function nx_divisible(N1, N2)
 {
 	if (nx_digit(N1, 1) && nx_digit(N2, 1))
@@ -230,6 +224,12 @@ function nx_scaled_ratio(N1, N2, N3)
 		return N1 / N2
 }
 
+function nx_modulo(N1, N2)
+{
+	if (nx_not_zero((N2 = nx_digit(N2, 1))) != "" && (N1 = nx_digit(N1, 1)))
+		return N1 - nx_trunc(N1 / N2) * N2
+}
+
 function nx_modulus_range(N1, N2, N3, N4)
 {
 	if ((N1 = nx_digit(N1, 1)) != "") {
@@ -243,17 +243,32 @@ function nx_modulus_range(N1, N2, N3, N4)
 	}
 }
 
-function nx_modular_exponentiation(N1, N2,	r, n)
+function nx_modular_exponentiation(N1, N2,	r, n, b)
 {
-	r = 1
-	n = 100000007
-	while (N2 > 0) {
-		if (N2 % 2 == 1)
-			r = (r * N1) % n
-		N1 = (N1 * N1) % n
-		N2 = int(N2 / 2)
+	if ((N1 = nx_digit(N1, 1)) != "") {
+		if ((N2 = nx_digit(N2, 1)) != "") {
+			if (N1 == 0)
+				return 0
+			if (N2 == 0)
+				return 1
+			if (N2 < 0) {
+				N2 = nx_absolute(N2)
+				b = 1
+			}
+			r = 1
+			n = 100000007
+			N1 = (N1 % n) + n
+			while (N2 > 0) {
+				if (N2 % 2 == 1)
+					r = (r * N1) % n
+				N1 = (N1 * N1) % n
+				N2 = int(N2 / 2)
+			}
+			if (b)
+				return 1.0 / r
+			return r
+		}
 	}
-	return r
 }
 
 function nx_fermats_little_theorm(N, V, B,		i, p, l)
@@ -343,6 +358,22 @@ function nx_miller_rabin(N, S,		v, t, d, s, a, x, i, j)
 		}
 		delete v
 		return 1
+	}
+}
+
+function __nx_entropy(N,	s)
+{
+	if (s = nx_convert_base(nx_random_str(N, "alnum"), 62, 10))
+		return substr(s, 1, N)
+}
+
+function nx_prime(N,	n)
+{
+	if (nx_natural(N = nx_digit(N, 1))) {
+		do {
+			n = substr(__nx_entropy(N), 1, N)
+		} while (! nx_miller_rabin(n))
+		return n
 	}
 }
 
@@ -451,29 +482,6 @@ function nx_number_map(V1, N1, V2, N2, N3,	b)
 	}
 }
 
-function nx_power(N1, N2, B, V)
-{
-	if (nx_digit(N1, 1)) {
-		if (nx_absolute(N1) == 0)
-			return "0"
-		if (nx_absolute(N2) == 0)
-			return 1
-		if (! length(V)) {
-			nx_number_map(V, N1)
-			nx_number_map(V, N2)
-		}
-		N1 = nx_modular_exponentiation(nx_number(V, V[0] - 1, 1, 1), nx_number(V, V[0], 1, 1))
-		N2 = V[(V[0] - 1) "_sn"]
-		if (V[V[0] "_sn"] == "-")
-			N1 = N2 (1 / N1)
-		else
-			N1 = N2 N1
-		if (B)
-			delete V
-		return N1
-	}
-}
-
 function nx_number(V, N, B1, B2, B3,	t)
 {
 	if (length(V) && 0 in V) {
@@ -526,14 +534,14 @@ function nx_convert_base(N1, N2, N3, N4, V1, V2, N5,	v, l, n, i, j)
 				if (V1[N5 "_bs"] != 10) {
 					l = split(V1[N5 "_num"], v, "")
 					for (i = l; i > 0; i--) {
-						n = __nx_precision(n + nx_power(V2[v[++j]] * V1[N5 "_bs"], i - 1, 1))
+						n = __nx_precision(n + nx_modular_exponentiation(V2[v[++j]] * V1[N5 "_bs"], i - 1))
 					}
 					V1[N5 "_num"] = n
 					n = 0
 					if (N5 "_flt" in V1 && nx_natural(V1[N5 "_flt"])) {
 						l = split(V1[N5 "_flt"], v, "")
 						for (i = 1; i <= l; i++)
-							n = __nx_precision(n + V2[v[i]] * nx_power(V1[N5 "_bs"], -i, 1), N4)
+							n = __nx_precision(n + V2[v[i]] * nx_modular_exponentiation(V1[N5 "_bs"], -i), N4)
 						V1[N5 "_flt"] = substr(n, 3)
 					}
 				}

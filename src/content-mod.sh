@@ -73,6 +73,7 @@ export G_NEX_MOD_CNF="$G_NEX_ROOT/cnf"
 export G_NEX_MOD_ENV="$G_NEX_ROOT/env"
 export G_NEX_MOD_DOC="$G_NEX_ROOT/docs"
 export G_NEX_MOD_LOG="$G_NEX_MOD_ENV"
+export TMPDIR="$G_NEX_MOD_ENV"
 
 nx_content_root
 nx_content_modules
