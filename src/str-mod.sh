@@ -51,7 +51,11 @@ nx_str_optarg()
 			)
 		"'
 			BEGIN {
-				print nx_parser(str, "<nx:null/>")
+				print substr(str, nx_escape_index(str, "*"))
+				#print substr(str, nx_escape_index(str, "[{"))
+				#print substr(str, nx_escape_index(str, "->"))
+				#print substr(str, nx_escape_index(str, "=>>"))
+				#print substr(str, nx_escape_index(str, "=>"))
 			}
 		'
 	)

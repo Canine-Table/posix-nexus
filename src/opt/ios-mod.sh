@@ -86,7 +86,7 @@ nx_ios_update()
 			}
 			h_nx_cmd idevicerestore && {
 				echo "Initiating firmware installation..."
-				idevicerestore -u "$udid" "$f/$d" || echo "Error: Failed to extract firmware download link."
+				idevicerestore -d -u "$udid" "$f/$d" || idevicerestore -d -u "$udid" -l || echo "Error: Failed to extract firmware download link."
 			} || echo "Error: idevicerestore not found. Please install it first."
 		}
 	)

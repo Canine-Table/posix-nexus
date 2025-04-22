@@ -10,18 +10,64 @@ function nx_reverse_str(D,	i, v)
 	return D
 }
 
-function nx_escape_str(D, N, B,		e)
+function nx_count_str(D, S)
 {
-	N = __nx_if(nx_natural(N), nx_digit(N), 1)
+	return gsub(__nx_else(S, "."), "&", D)
+}
+
+function nx_count_backslashes(D, S,	a, i, c, p)
+{
+	if (split(D, a, "")) {
+		S = __nx_else(S, "\\")
+		for (p = p - 1; p > 0; p--) {
+			if (a[i] == S)
+				c++
+			else
+				break
+		}
+	}
+	delete a
+	return c
+}
+
+function nx_apply_nested_escapes(D, S, N,	i, c, t)
+{
+	if (D != "") {
+		S = __nx_else(S, "\\")
+		for (i = 1; i <= N; i++) {
+			c = D
+			gsub(S S, S, c)
+			D = c
+		}
+		return D
+	}
+}
+
+function nx_transform_backslashes(D, S,		l, p, o)
+{
+	if (l = length(D)) {
+		p = nx_floor(l / 2)
+		l = l % 2
+		if (l && D ~ __nx_else(S, "\\") "$")
+			return p
+		return p + l
+	}
+}
+
+function nx_escape_str(D1, N, B, D2, D3,	e)
+{
+	N = __nx_else(nx_natural(N), 1)
+	D2 = __nx_else(D2, "[\[\]\{\}\(\)\.\+\-\*\?\^\$\|\&]|\\")
+	D3 = __nx_else(D3, "\\")
 	do {
 		if (B)
-			e = e "\\\\"
+			e = e D3
 		else
-			gsub(/./, "\\\\&", D)
+			gsub(D2, D3 "\\&", D1)
 	} while (--N)
 	if (B)
-		gsub(/./, e "&", D)
-	return D
+		gsub(D2, e "\\&", D1)
+	return D1
 }
 
 function nx_join_str(D1, D2, S, D3)

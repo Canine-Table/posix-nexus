@@ -1,6 +1,6 @@
 nx_convert_base()
 {
-	${AWK:-$(get_cmd_awk)} \
+	${AWK:-$(nx_cmd_awk)} \
 		-v n1="$1" \
 		-v n2="${2:-10}" \
 		-v n3="${3:-10}" \
@@ -24,9 +24,9 @@ nx_convert_base()
 
 nx_compliment_base()
 {
-	${AWK:-$(get_cmd_awk)} \
-		-v num="$1" \
-		-v ibs="${2:-10}" "
+	${AWK:-$(nx_cmd_awk)} \
+		-v n="$1" \
+		-v b="${2:-10}" "
 		$(cat \
 			"$G_NEX_MOD_LIB/awk/nex-misc.awk" \
 			"$G_NEX_MOD_LIB/awk/nex-math.awk" \
@@ -35,8 +35,8 @@ nx_compliment_base()
 		)
 	"'
 		BEGIN {
-			n = nx_compliment(num, ibs)
-			if (n != "")
+			
+			if ((n = nx_compliment(n, b)) != "")
 				print n
 			else
 				exit 1
@@ -46,7 +46,7 @@ nx_compliment_base()
 
 nx_power()
 {
-	${AWK:-$(get_cmd_awk)} \
+	${AWK:-$(nx_cmd_awk)} \
 		-v n1="$1" \
 		-v n2="$2" "
 		$(cat \
@@ -57,7 +57,7 @@ nx_power()
 		)
 	"'
 		BEGIN {
-			if (n = nx_power(n1, n2, 1, v))
+			if (n = nx_modular_exponentiation(n1, n2, 1, v)
 				print n
 			else
 				exit 1
@@ -65,9 +65,30 @@ nx_power()
 	'
 }
 
-nx_remainder()
+nx_math_sqrt()
 {
-	${AWK:-$(get_cmd_awk)} \
+	${AWK:-$(nx_cmd_awk)} \
+		-v n="$1" "
+		$(cat \
+			"$G_NEX_MOD_LIB/awk/nex-misc.awk" \
+			"$G_NEX_MOD_LIB/awk/nex-math.awk" \
+			"$G_NEX_MOD_LIB/awk/nex-str.awk" \
+			"$G_NEX_MOD_LIB/awk/nex-struct.awk"
+		)
+	"'
+		BEGIN {
+			print nx_square_root(n)
+			if (n = nx_square_root(n))
+				print n
+			else
+				exit 1
+		}
+	'
+}
+
+nx_math_rmainder()
+{
+	${AWK:-$(nx_cmd_awk)} \
 		-v n1="$1" \
 		-v n2="$2" "
 		$(cat \
@@ -87,9 +108,9 @@ nx_remainder()
 	'
 }
 
-nx_percent()
+nx_math_percent()
 {
-	${AWK:-$(get_cmd_awk)} \
+	${AWK:-$(nx_cmd_awk)} \
 		-v n1="$1" \
 		-v n2="$2" \
 		-v b1="$3" "
@@ -110,9 +131,9 @@ nx_percent()
 	'
 }
 
-nx_summation()
+nx_math_summation()
 {
-	${AWK:-$(get_cmd_awk)} \
+	${AWK:-$(nx_cmd_awk)} \
 		-v n1="$1" \
 		-v n2="$2" "
 		$(cat \
@@ -132,9 +153,9 @@ nx_summation()
 	'
 }
 
-nx_factoral()
+nx_math_factoral()
 {
-	${AWK:-$(get_cmd_awk)} \
+	${AWK:-$(nx_cmd_awk)} \
 		-v n1="$1" "
 		$(cat \
 			"$G_NEX_MOD_LIB/awk/nex-misc.awk" \
@@ -152,9 +173,9 @@ nx_factoral()
 	'
 }
 
-nx_fibonacci()
+nx_math_fibonacci()
 {
-	${AWK:-$(get_cmd_awk)} \
+	${AWK:-$(nx_cmd_awk)} \
 		-v n1="$1" "
 		$(cat \
 			"$G_NEX_MOD_LIB/awk/nex-misc.awk" \
@@ -172,9 +193,9 @@ nx_fibonacci()
 	'
 }
 
-nx_euclidean()
+nx_math_euclidean()
 {
-	${AWK:-$(get_cmd_awk)} \
+	${AWK:-$(nx_cmd_awk)} \
 		-v n1="$1" \
 		-v n2="$2" "
 		$(cat \
@@ -193,9 +214,9 @@ nx_euclidean()
 	'
 }
 
-nx_lcd()
+nx_math_lcd()
 {
-	${AWK:-$(get_cmd_awk)} \
+	${AWK:-$(nx_cmd_awk)} \
 		-v n1="$1" \
 		-v n2="$2" "
 		$(cat \
@@ -214,7 +235,7 @@ nx_lcd()
 	'
 }
 
-nx_round()
+nx_math_round()
 {
 	(
 		case $1 in
@@ -224,7 +245,7 @@ nx_round()
 					shift
 				};;
 		esac
-		${AWK:-$(get_cmd_awk)} \
+		${AWK:-$(nx_cmd_awk)} \
 			-v num="$1" \
 			-v meh="$m" "
 			$(cat \

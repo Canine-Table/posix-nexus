@@ -63,6 +63,19 @@ function nx_tau(N)
 		return N * 2
 }
 
+function nx_square_root(N,	n1, n2)
+{
+	if ((N = nx_digit(N)) >= 0) {
+		n1 = N
+		while (n1 * n1 > N)
+			n1 = (n1 + N / n1) / 2
+		n2 = n1
+		while (n2 * n2 < n1)
+			n2 = (n2 + n1) / 2
+		return n2
+	}
+}
+
 function nx_summation(N1, N2,	i)
 {
 	if ((N1 = int(N1)) > (N2 = __nx_else(int(N2), 1)) && nx_natural(N1)) {

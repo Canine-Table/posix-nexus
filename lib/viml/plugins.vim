@@ -22,8 +22,8 @@ Plug 'lukas-reineke/indent-blankline.nvim'
 Plug 'nvim-lua/plenary.nvim'
 Plug 'ellisonleao/glow.nvim'
 Plug 'godlygeek/tabular'
-Plug 'iamcco/markdown.nvim'
 Plug 'nvim-lua/plenary.nvim'
+Plug 'github/copilot.vim'
 
 call plug#end()
 
