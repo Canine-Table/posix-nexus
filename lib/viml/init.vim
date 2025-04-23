@@ -1,4 +1,4 @@
-function! Main()
+function! s:Main()
 	filetype plugin indent on
 	set number textwidth=0 encoding=utf-8
 	set incsearch ignorecase smartcase hlsearch
@@ -13,7 +13,7 @@ function! Main()
 	set history=10000
 	set nowrap
 	set belloff=all
-	call CallFile(
+	call s:CallFile(
 		\ 'types.vim',
 		\ 'str.vim',
 		\ 'LaTeX.vim',
@@ -23,36 +23,67 @@ function! Main()
 		\ 'misc.vim',
 		\ 'snippets.vim',
 	\)
-	call SetupPlugins()
-	call ColorTheme()
+	call s:SetupPlugins()
+	call s:LoadInit()
+	call s:ColorTheme()
 endfunction
 
-function! CallFile(...)
-	if ! exists('g:nex_mod_viml') && exists(getenv($G_NEX_MOD_LIB))
-		let l:tmpa = $G_NEX_MOD_LIB . "/viml"
+function! s:CallFile(...)
+	if ! exists('g:nex_mod_viml') && ! empty(getenv('G_NEX_MOD_LIB'))
+		let l:tmpa = expand(getenv('G_NEX_MOD_LIB'))
 		if isdirectory(l:tmpa)
-			let g:nex_mod_viml = l:tmpa . "/"
+			let g:nex_mod_viml = getenv('G_NEX_MOD_LIB') . '/viml/'
+			if ! isdirectory(g:nex_mod_viml)
+				unlet! g:nex_mod_viml
+			endif
+			let g:nex_mod_lua = getenv('G_NEX_MOD_LIB') . '/lua/nvim/'
+			if ! isdirectory(g:nex_mod_lua)
+				unlet! g:nex_mod_lua
+			endif
 		endif
-		unlet! l:tmpa
-	endif
+	endif,w
 	for a in a:000
-		if filereadable(a)
-			execute "source " . a
-		elseif exists('g:nex_mod_viml') && filereadable(g:nex_mod_viml . a)
+        	let l:file = expand(a)
+		if exists('g:nex_mod_viml') && filereadable(g:nex_mod_viml . a) && match(a, '\.vim$') >= 0
 			execute "source " . g:nex_mod_viml . a
+		elseif exists('g:nex_mod_lua') && filereadable(g:nex_mod_lua . a) && match(a, '\.lua$') >= 0
+			execute 'luafile ' . g:nex_mod_lua . a
+		elseif filereadable(l:file)
+			if match(a, '\.vim$') >= 0
+				execute 'source ' . a
+			elseif match(a, '\.lua$') >= 0
+				execute 'luafile ' . a
+			endif
+
 		endif
 	endfor
 endfunction
 
-function! SetupPlugins()
-	let l:tmpa = glob('~/.local/share/nvim/site/autoload/plug.vim')
+function! s:LoadInit()
+	if has('nvim')
+		call s:CallFile('/lua/nvim/init.lua', expand(stdpath('config') . '/lua/nvim/init.lua'))
+	endif
+endfunction
+
+function! s:SetupPlugins()
+	let l:plug_path = glob(stdpath('data') . '/site/autoload/plug.vim')
 	if filereadable(l:tmpa)
-		unlet! l:tmpa
-		silent !mkdir -p ~/.config/nvim/plugged
-		call CallFile("plugins.vim")
+		call mkdir('~/.config/nvim/plugged', 'p')
+		call s:CallFile('plugins.vim')
 	else
-		silent !curl -fLo ~/.local/share/nvim/site/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-		PlugInstall
+		if has('curl')
+			let l:download_cmd = 'curl -fLo '
+			let l:options = '--create-dirs'
+		elseif has('wget')
+			let l:download_cmd = 'wget -O '
+			let l:options = ''
+		else
+			echoerr 'Error: No curl or wget found.'
+			return
+		endif
+		execute l:download_cmd . l:plug_path . ' ' . l:options . ' https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
+		call s:CallFile('plugins.vim')
+		execute 'PlugInstall'
 	endif
 endfunction
 
@@ -64,5 +95,5 @@ function! ColorTheme()
 	endtry
 endfunction
 
-call Main()
+call s:Main()
 

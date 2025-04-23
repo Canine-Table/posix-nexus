@@ -260,45 +260,28 @@ static inline nx_u64_t nx_swap64(nx_u64_t v)
 	\begin{NexMainBox}[dark, crnA, title=\textbf{What Are These Functions Doing?}]
 		These functions take a number in memory and flip the order of its bytes. This is necessary when converting data between big-endian and little-endian systems.
 	\end{NexMainBox}
-
 	\begin{NexMainBox}[dark, crnA, title=\textbf{How does nx\_swap32 work? (32-bit swap)}]
 		A 32-bit integer is made up of 4 bytes. Imagine it like this:
-
-		\begin{NexMainBox}[light]
-		\begin{center}
-		Byte0\hspace{1em}|\hspace{1em}Byte1\hspace{1em}|\hspace{1em}Byte2\hspace{1em}|\hspace{1em}Byte3
-		\end{center}
-
-	\end{NexMainBox}
+		\begin{NexMainBox}[light, halign=center]
+			Byte0\hspace{1em}|\hspace{1em}Byte1\hspace{1em}|\hspace{1em}Byte2\hspace{1em}|\hspace{1em}Byte3
+		\end{NexMainBox}
 		In big-endian, it would be stored like this:
-
-		\begin{NexMainBox}[light]
-		\begin{center}
-		[AB] [CD] [EF] [GH] (Most significant byte first)
-		\end{center}
-	\end{NexMainBox}
+		\begin{NexMainBox}[light, halign=center]
+			[AB] [CD] [EF] [GH] (Most significant byte first)
+		\end{NexMainBox}
 		In little-endian, it would be:
-
-		\begin{NexMainBox}[light]
-		\begin{center}
-		[GH] [EF] [CD] [AB] (Least significant byte first)
-		\end{center}
-	\end{NexMainBox}
-
+		\begin{NexMainBox}[light, halign=center]
+			[GH] [EF] [CD] [AB] (Least significant byte first)
+		\end{NexMainBox}
 		The nx\_swap32 function rearranges the bytes by shifting them left or right, then using bitwise operations (\&) to isolate each chunk before placing it into its new position.
 	\end{NexMainBox}
-
 	\begin{NexMainBox}[dark, crnA, title=\textbf{How does nx\_swap64 work? (64-bit swap)}]
 		This does the same thing, but for a 64-bit number (which has 8 bytes). It follows the same pattern:
-
-		\begin{NexMainBox}[light]
-		\begin{center}
-		Byte0 | Byte1 | Byte2 | Byte3 | Byte4 | Byte5 | Byte6 | Byte7
-		\end{center}
-	\end{NexMainBox}
+		\begin{NexMainBox}[light, halign=center]
+			Byte0 | Byte1 | Byte2 | Byte3 | Byte4 | Byte5 | Byte6 | Byte7
+		\end{NexMainBox}
 		Just like before, it shifts and isolates bytes to reverse their order.
 	\end{NexMainBox}
-
 	\begin{NexMainBox}[dark, crnA, title=\textbf{Why Is This Important?}]
 		If you're working on cross-platform applications or network protocols, you might need to convert data between formats to ensure all systems interpret it correctly. That’s why these functions exist—to swap the byte order and avoid misinterpretation.
 	\end{NexMainBox}
@@ -307,44 +290,28 @@ static inline nx_u64_t nx_swap64(nx_u64_t v)
 \begin{NexMainBox}[light, hdrA, sdwA, crnA, grwB, ssecB]
 	\begin{NexMainBox}[dark, crnA, title=\textbf{What happens when you use >> (bit shifting)?}]
 		When you use \texttt{>>}, you’re shifting bits to the right. Each shift moves everything one position to the right, and depending on the system, new bits are filled with either zeros or sign bits.
-
 		\textbf{Example with [AB] [CD] [EF] [GH] (assuming a 32-bit number):}
-
 		\texttt{v >> 8} means everything moves 8 bits to the right:
-
-		\begin{NexMainBox}[light]
-		\begin{center}
-		Before:  [AB] [CD] [EF] [GH]\\
-		After \texttt{>>8}:  [00] [AB] [CD] [EF]  (GH gets pushed out)
-		\end{center}
-	\end{NexMainBox}
+		\begin{NexMainBox}[light, halign=center]
+			Before:  [AB] [CD] [EF] [GH]\\
+			After \texttt{>>8}:  [00] [AB] [CD] [EF]  (GH gets pushed out)
+		\end{NexMainBox}
 		If you shift by 24:
-		\begin{NexMainBox}[light]
-		\begin{center}
-		Before:  [AB] [CD] [EF] [GH]\\
-		After \texttt{>>24}:  [00] [00] [00] [AB]  (Only the most significant byte remains)
-		\end{center}
-
+		\begin{NexMainBox}[light, halign=center]
+			Before:  [AB] [CD] [EF] [GH]\\
+			After \texttt{>>24}:  [00] [00] [00] [AB]  (Only the most significant byte remains)
+		\end{NexMainBox}
 	\end{NexMainBox}
-	\end{NexMainBox}
-
 	\begin{NexMainBox}[dark, crnA, title=\textbf{What happens when you use \& (bit masking)?}]
 		The \texttt{\&} operator compares two numbers bit by bit. If both bits are 1, the result is 1; otherwise, it’s 0.
-
 		\textbf{Example:} \texttt{v \& 0x000000FF} keeps only the last byte, because \texttt{0x000000FF} in binary is:
-
 		\texttt{00000000 00000000 00000000 11111111}
-
-		\begin{NexMainBox}[light]
-		\begin{center}
-		[AB] [CD] [EF] [GH] \& 00000000 00000000 00000000 11111111\\
-		= [00] [00] [00] [GH]
-		\end{center}
-	\end{NexMainBox}
-
+		\begin{NexMainBox}[light, halign=center]
+			[AB] [CD] [EF] [GH] \& 00000000 00000000 00000000 11111111\\
+			= [00] [00] [00] [GH]
+		\end{NexMainBox}
 		Essentially, \texttt{\&} helps extract specific parts of the number, while \texttt{>>} moves things around.
 	\end{NexMainBox}
-
 	\begin{NexMainBox}[dark, crnA, title=\textbf{How this applies to swapping endianness}]
 		The swap functions use:
 		\begin{NexListDark}
@@ -352,33 +319,26 @@ static inline nx_u64_t nx_swap64(nx_u64_t v)
 			\NexItemDark{\texttt{\&} to extract only the parts we want before combining them into a new order}
 		\end{NexListDark}
 	\end{NexMainBox}
-
 	\begin{NexMainBox}[dark, crnA, title=\textbf{Bitmasking in CIDR notation}]
 		CIDR (Classless Inter-Domain Routing) uses bitmasking to define IP address ranges and subnet sizes.
 	\end{NexMainBox}
 \end{NexMainBox}
 
-
 \begin{NexMainBox}[light, hdrA, sdwA, crnA, grwB, ssecB]
-
 	\begin{NexMainBox}[dark, crnA, title=\textbf{How Bitmasking Works in CIDR}]
 		CIDR notation looks like this: \texttt{192.168.1.0/24}
-
 		The "/24" part is the subnet mask, which means:
 		\begin{NexListDark}
 			\NexItemDark{The first 24 bits of the IP address are fixed.}
 			\NexItemDark{The remaining 8 bits can vary (allowing for 256 possible addresses).}
 		\end{NexListDark}
 		The subnet mask for /24 in binary:
-
-		\begin{NexMainBox}[light]
-		\begin{center}
-		11111111 11111111 11111111 00000000  = 255.255.255.0
-		\end{center}
+		\begin{NexMainBox}[light, halign=center]
+			11111111 11111111 11111111 00000000  = 255.255.255.0
 		\end{NexMainBox}
 		Using a bitwise AND (\&) operation, you can filter out the network portion of an IP address.
 		\textbf{Example:}
-		\begin{NexMainBox}[light]
+		\begin{NexMainBox}[light, halign=center]
 			\begin{verbatim}
 IP:	  192.168.1.73	->  11000000 10101000 00000001 01001001
 MASK:	255.255.255.0   ->  11111111 11111111 11111111 00000000
@@ -396,84 +356,6 @@ Result:  192.168.1.0	 ->  11000000 10101000 00000001 00000000
 			\NexItemDark{Prevents overlapping IP addresses in large-scale networking.}
 		\end{NexListDark}
 		So, in essence, CIDR uses bitmasks to group IP addresses together efficiently. That means networking and endianness both rely on shifting and masking bits, but for different reasons!
-	\end{NexMainBox}
-\end{NexMainBox}
-
-\begin{NexMainBox}[light, hdrA, sdwA, crnA, grwB, ssecA]
-	\begin{NexMainBox}[dark, crnA, title=\textbf{The Trick: Shifting and Masking}]
-		The trick is in shifting (\texttt{>>} and \texttt{<<}) and masking (\texttt{\&}) to move bytes around and extract them properly.
-	\end{NexMainBox}
-	\begin{NexMainBox}[dark, crnA, title=\textbf{Step-by-Step: How We Flip Bytes}]
-		Let's say we have a 32-bit number like this (big-endian format):
-
-		\begin{NexMainBox}[light]
-		\begin{center}
-		\texttt{[AB] [CD] [EF] [GH]} \ (stored as big-endian)
-		\end{center}
-
-	\end{NexMainBox}
-		Now, we want to convert it to little-endian, so it becomes:
-
-		\begin{NexMainBox}[light]
-		\begin{center}
-		\texttt{[GH] [EF] [CD] [AB]}
-		\end{center}
-
-	\end{NexMainBox}
-		\textbf{Step 1: Using \texttt{>>} to Isolate Bytes} \\
-		Shifting moves bytes to the correct positions.\\
-
-		\texttt{v >> 24} moves [AB] all the way to the least significant byte: \\
-		\texttt{[00] [00] [00] [AB]}  (only [AB] remains)\\
-		\texttt{v >> 8} moves [CD] down two slots, but we need to remove extra bits, so we use \texttt{\&} to keep only [CD].
-
-		\textbf{Step 2: Using \texttt{\&} to Mask Out Unwanted Bytes} \\
-		The \texttt{\&} operation clears unnecessary data.\\
-
-		\texttt{v >> 8 \& 0x0000FF00} makes sure only [CD] remains.\\
-		\texttt{v >> 24 \& 0x000000FF} ensures we just get [AB].
-
-		\textbf{Step 3: Using \texttt{<<} to Put Bytes in the New Order} \\
-		Now that we’ve extracted each byte separately, we shift them into their new locations:
-
-		\begin{NexListDark}
-			\NexItemDark{[GH] should move left 24 bits (\texttt{v << 24}).}
-			\NexItemDark{[EF] should move left 8 bits (\texttt{v << 8}).}
-			\NexItemDark{[CD] stays where it is.}
-			\NexItemDark{[AB] was isolated earlier and now moves to the least significant byte.}
-		\end{NexListDark}
-
-		\textbf{Final Assembly Using \texttt{|} (Bitwise OR)}\\
-		After shifting, we combine everything:
-
-		\begin{NexMainBox}[light]
-		\begin{verbatim}
-(nx_swap32) = (v >> 24 & 0x000000FF) | (v >> 8 & 0x0000FF00) |
-              (v << 8 & 0x00FF0000) | (v << 24 & 0xFF000000);
-		\end{verbatim}
-
-	\end{NexMainBox}
-			\end{NexMainBox}
-
-\end{NexMainBox}
-
-\begin{NexMainBox}[light, hdrA, sdwA, crnA, grwB, ssecA]
-	\begin{NexMainBox}[dark, crnA, title=\textbf{Summary}]
-Now, everything is reversed, so:
-
-		\begin{NexMainBox}[light]
-		\begin{center}
-		Before (Big-Endian):  [AB] [CD] [EF] [GH]\\
-		After (Little-Endian): [GH] [EF] [CD] [AB]
-		\end{center}
-	\end{NexMainBox}
-
-		\begin{NexListDark}
-			\NexItemDark{\texttt{>>} moves bytes right to extract them.}
-			\NexItemDark{\texttt{\&} masks out unwanted bits to keep the correct ones.}
-			\NexItemDark{\texttt{<<} moves bytes left to their new positions.}
-			\NexItemDark{\texttt{|} combines the results to form the reversed number.}
-		\end{NexListDark}
 	\end{NexMainBox}
 \end{NexMainBox}
 
@@ -614,6 +496,15 @@ Now, everything is reversed, so:
 	#define NX_HAS_NEON 0
 #endif
 
+#if defined(__CACHE_LINE_SIZE)
+	#define NX_CACHE_LINE_SIZE __CACHE_LINE_SIZE /* Cache line size */
+#elif defined(__GNUC__) && defined(__x86_64__)
+	#include <unistd.h>
+	#define NX_CACHE_LINE_SIZE sysconf(_SC_LEVEL1_DCACHE_LINESIZE) /* Retrieve cache line size */
+#else
+	#define NX_CACHE_LINE_SIZE 64 /* Default to 64 bytes (common architecture) */
+#endif
+
 /* Branch Prediction Macros */
 #if defined(__GNUC__) || defined(__clang__)
 	#define NX_LIKELY(x) __builtin_expect(!!(x), 1) /* Likely branch */
@@ -633,6 +524,231 @@ Now, everything is reversed, so:
 	#define NX_PREFETCH(addr) /* No prefetch available */
 #endif
 \end{NexCodeBox}
+
+\begin{NexMainBox}[light, hdrA, sdwA, crnA, grwB, ssecB]
+	\begin{NexMainBox}[dark, crnA, title=\textbf{What is SSE (Streaming SIMD Extensions)?}]
+		SSE (Streaming SIMD Extensions) is a set of CPU instructions designed to improve performance when handling vectorized operations, especially for multimedia, gaming, and scientific computing. \textbf{SIMD} (Single Instruction, Multiple Data) means the CPU can apply the same operation to multiple data elements simultaneously—great for speed!
+	\end{NexMainBox}
+	\begin{NexMainBox}[dark, crnA, title=\textbf{Key Features of SSE Instructions}]
+		\begin{NexListDark}
+			\NexItemDark{\textbf{Parallel Processing:} SSE allows the CPU to process multiple numbers at once, instead of one at a time.}
+			\NexItemDark{\textbf{Floating-Point Optimization:} Speeds up tasks involving floating-point calculations, such as graphics rendering, physics simulations, and audio processing.}
+			\NexItemDark{\textbf{Enhanced Vector Math:} Ideal for operations on arrays of numbers—common in physics engines, machine learning, image processing, and more.}
+		\end{NexListDark}
+	\end{NexMainBox}
+	\begin{NexMainBox}[dark, crnA, title=\textbf{Evolution of SSE}]
+		Intel introduced SSE with the Pentium III (1999), and expanded it over time:
+		\begin{NexListDark}
+			\NexItemDark{\textbf{SSE (1999):} Introduced 128-bit registers for floating-point calculations.}
+			\NexItemDark{\textbf{SSE2 (2001):} Added support for integer operations alongside floating-point.}
+			\NexItemDark{\textbf{SSE3 (2004):} Improved multimedia performance and added horizontal operations.}
+			\NexItemDark{\textbf{SSSE3 (2006):} Advanced shuffle and blend operations for greater efficiency.}
+			\NexItemDark{\textbf{SSE4 (2007-2008):} Added text processing optimizations and more arithmetic functions.}
+			\NexItemDark{\textbf{AVX (2011+):} The successor to SSE, introducing 256-bit vector registers for even faster computation.}
+		\end{NexListDark}
+	\end{NexMainBox}
+	\begin{NexMainBox}[dark, crnA, title=\textbf{Real-World Uses of SSE}]
+		\begin{NexListDark}
+			\NexItemDark{Video encoding/decoding (e.g., accelerating codecs like H.264)}
+			\NexItemDark{Game physics calculations (e.g., handling objects in motion)}
+			\NexItemDark{AI and deep learning (matrix multiplications)}
+			\NexItemDark{Image processing and graphics rendering}
+		\end{NexListDark}
+	\end{NexMainBox}
+\end{NexMainBox}
+
+\begin{NexMainBox}[light, hdrA, sdwA, crnA, grwB, ssecB]
+	\begin{NexMainBox}[dark, crnA]
+		In short, SSE makes complex mathematical operations much faster by allowing multiple calculations to happen at once instead of one at a time!
+	\end{NexMainBox}
+	\begin{NexMainBox}[dark, crnA, title=\textbf{What is AVX (Advanced Vector Extensions)?}]
+		AVX (Advanced Vector Extensions) is a set of CPU instructions that extends the capabilities of SSE (Streaming SIMD Extensions) to allow even more powerful parallel processing and high-performance computing. AVX is especially useful for workloads involving heavy mathematical calculations, like scientific simulations, deep learning, and multimedia processing.
+	\end{NexMainBox}
+	\begin{NexMainBox}[dark, crnA, title=\textbf{How AVX Improves Performance}]
+		Compared to SSE, AVX:
+		\begin{NexListDark}
+			\NexItemDark{Uses 256-bit registers (instead of 128-bit in SSE), allowing double the amount of data to be processed at once.}
+			\NexItemDark{Introduces new floating-point operations, boosting performance for graphics rendering, physics simulations, and machine learning.}
+			\NexItemDark{Supports fused multiply-add (FMA) operations, letting the CPU perform multiplication and addition in a single step—saving both time and energy.}
+		\end{NexListDark}
+	\end{NexMainBox}
+
+	\begin{NexMainBox}[dark, crnA, title=\textbf{Evolution of AVX}]
+		AVX has evolved through multiple generations:
+		\begin{NexListDark}
+			\NexItemDark{\textbf{AVX (2011):} Introduced 256-bit vector processing, ideal for floating-point calculations.}
+			\NexItemDark{\textbf{AVX2 (2013):} Added integer processing and better memory handling, improving workloads like video encoding and matrix operations.}
+			\NexItemDark{\textbf{AVX-512 (2017):} Uses 512-bit registers, supporting even larger parallel computations (common in high-performance computing and AI).}
+		\end{NexListDark}
+	\end{NexMainBox}
+
+	\begin{NexMainBox}[dark, crnA, title=\textbf{Real-World Uses of AVX}]
+		\begin{NexListDark}
+			\NexItemDark{Cryptography – Encrypting and decrypting data efficiently.}
+			\NexItemDark{Machine learning – Accelerating deep learning operations.}
+			\NexItemDark{Video processing – Faster encoding and decoding.}
+			\NexItemDark{Scientific simulations – Modeling physics, fluid dynamics, and more.}
+		\end{NexListDark}
+	\end{NexMainBox}
+
+\end{NexMainBox}
+
+\begin{NexMainBox}[light, hdrA, sdwA, crnA, grwB, ssecB]
+	\begin{NexMainBox}[dark, crnA]
+		Basically, AVX is SSE on steroids, making CPU calculations way faster and more efficient.
+	\end{NexMainBox}
+\end{NexMainBox}
+
+\begin{NexMainBox}[light, hdrA, sdwA, crnA, grwB, ssecA]
+	\begin{NexMainBox}[dark, crnA, title={What is FMA (Fused Multiply-Add)?}]
+		FMA stands for \textbf{Fused Multiply-Add}, a specialized CPU instruction that performs multiplication and addition in a single step. This improves both efficiency and precision in mathematical computations, especially in areas like graphics, physics simulations, machine learning, and scientific computing.
+	\end{NexMainBox}
+
+	\begin{NexMainBox}[dark, crnA, title={How Does FMA Work?}]
+		Instead of computing:
+		\begin{NexCodeBox}{c}{inA}
+result = (a * b) + c;
+		\end{NexCodeBox}
+		as two separate operations (multiplication followed by addition), FMA combines both into a single instruction:
+		\begin{NexCodeBox}{c}{inA}
+result = FMA(a, b, c);
+		\end{NexCodeBox}
+
+		\textbf{Why is this better?}
+		\begin{NexListDark}
+			\NexItemDark{Normally, CPUs round after each arithmetic operation, which can reduce precision.}
+			\NexItemDark{With FMA, the multiplication and addition happen together, with only one rounding at the end.}
+			\NexItemDark{This reduces precision loss and improves accuracy.}
+		\end{NexListDark}
+	\end{NexMainBox}
+
+	\begin{NexMainBox}[dark, crnA, title={Why is FMA Important?}]
+		\begin{NexListDark}
+			\NexCheckDark{Improves Performance – FMA can process calculations twice as fast compared to separate multiplication and addition.}
+			\NexCheckDark{Reduces Rounding Errors – Floating-point math suffers from precision loss due to repeated rounding; FMA minimizes this.}
+			\NexCheckDark{Optimized for Vectorized Math – Works great in SIMD instruction sets like AVX, AVX2, and AVX-512, making complex computations much faster.}
+		\end{NexListDark}
+	\end{NexMainBox}
+
+	\begin{NexMainBox}[dark, crnA, title={Where is FMA Used?}]
+		\begin{NexListDark}
+			\NexItemDark{Computer Graphics \& Game Engines – Faster lighting and physics calculations.}
+			\NexItemDark{Machine Learning \& AI – Accelerating matrix multiplications.}
+			\NexItemDark{Cryptography – Efficient mathematical computations in encryption algorithms.}
+			\NexItemDark{Scientific Simulations – Fluid dynamics, particle physics, financial modeling.}
+		\end{NexListDark}
+	\end{NexMainBox}
+\end{NexMainBox}
+
+
+\begin{NexMainBox}[light, hdrA, sdwA, crnA, grwB, ssecB]
+	\begin{NexMainBox}[dark, crnA, title=\textbf{What is NEON?}]
+		NEON is ARM's SIMD (Single Instruction, Multiple Data) extension, designed to accelerate tasks like multimedia processing, cryptography, AI computations, and gaming on ARM-based processors (which are found in most smartphones and embedded systems).
+	\end{NexMainBox}
+	\begin{NexMainBox}[dark, crnA, title=\textbf{What Makes NEON Special?}]
+		\begin{NexListDark}
+			\NexItemDark{\textbf{Vector Processing:} NEON can process multiple data elements in parallel, making it much faster than handling data one-by-one.}
+			\NexItemDark{\textbf{Optimized for Mobile:} Unlike Intel’s SSE and AVX, NEON is tailored for ARM-based CPUs, commonly used in mobile devices, tablets, and embedded systems.}
+			\NexItemDark{\textbf{Efficient Floating-Point and Integer Computation:} Speeds up operations like image filters, audio processing, physics calculations, and machine learning inference.}
+		\end{NexListDark}
+	\end{NexMainBox}
+	\begin{NexMainBox}[dark, crnA, title=\textbf{How NEON Improves Performance}]
+		Imagine you need to add up multiple pairs of numbers:
+		\begin{NexListDark}
+			\NexItemDark{A regular CPU would do one addition at a time.}
+			\NexItemDark{NEON can process multiple additions at once using vectorized instructions.}
+		\end{NexListDark}
+	\end{NexMainBox}
+	\begin{NexMainBox}[dark, crnA, title=\textbf{NEON vs. SSE/AVX}]
+		\begin{NexListDark}
+			\NexItemDark{SSE/AVX (on x86 processors) also do SIMD, but AVX supports 256-bit and 512-bit registers for even higher parallelism.}
+			\NexItemDark{NEON (on ARM processors) uses 128-bit registers, optimized for lower power consumption (great for mobile devices).}
+			\NexItemDark{NEON is more power-efficient, making it the preferred SIMD option for smartphones and embedded systems.}
+		\end{NexListDark}
+	\end{NexMainBox}
+	\begin{NexMainBox}[dark, crnA, title=\textbf{Where NEON is Used}]
+		\begin{NexListDark}
+			\NexItemDark{Graphics \& Image Processing – Filters, scaling, transformations}
+			\NexItemDark{Audio Processing – Sound effects, speech recognition}
+			\NexItemDark{Cryptography – Secure hashing and encryption operations}
+			\NexItemDark{Machine Learning – Accelerating deep learning inference}
+			\NexItemDark{Physics Engines – Collision detection in mobile games}
+		\end{NexListDark}
+	\end{NexMainBox}
+\end{NexMainBox}
+
+\begin{NexMainBox}[light, hdrA, sdwA, crnA, grwB, ssecB]
+	\begin{NexMainBox}[dark, crnA, title=\textbf{How SIMD Instructions Use Large Registers}]
+		When we talk about SSE being 128-bit or AVX being 256-bit, we’re referring to special registers inside the CPU designed for vectorized operations (\textbf{SIMD}: Single Instruction, Multiple Data).
+
+		Even if the CPU architecture is 64-bit, it still has dedicated SIMD registers (like \textbf{XMM} for SSE and \textbf{YMM} for AVX) that hold larger chunks of data at once.
+	\end{NexMainBox}
+
+	\begin{NexMainBox}[dark, crnA, title=\textbf{Example: SIMD Register Capacity}]
+		Let’s say we’re doing math on four 32-bit numbers at once:
+		\begin{NexListDark}
+			\NexItemDark{A normal CPU register (64-bit) would only hold two 32-bit numbers.}
+			\NexItemDark{An SSE register (128-bit) can hold four 32-bit numbers.}
+			\NexItemDark{An AVX register (256-bit) can hold eight 32-bit numbers!}
+		\end{NexListDark}
+		This lets the CPU process multiple data points in a single instruction, improving speed for tasks like image processing, AI computations, and physics simulations.
+	\end{NexMainBox}
+
+	\begin{NexMainBox}[dark, crnA, title=\textbf{Architectural Bits vs. SIMD Bits}]
+		\begin{NexListDark}
+			\NexItemDark{\textbf{Architecture} (16-bit, 32-bit, 64-bit) refers to general CPU capabilities like memory addressing and instruction execution.}
+			\NexItemDark{\textbf{SSE and AVX registers} are special-purpose registers inside the CPU designed to handle larger data chunks, independently of the standard architecture.}
+		\end{NexListDark}
+		That’s how a 64-bit CPU can still have 128-bit SSE and 256-bit AVX instructions—they’re simply using separate vector registers for fast parallel computation!
+	\end{NexMainBox}
+	\begin{NexMainBox}[dark, crnA, title=\textbf{Cache Line Size (\texttt{NX_CACHE_LINE_SIZE})}]
+		This macro defines the size of a cache line—the smallest chunk of memory a CPU loads into the cache when accessing data.
+	\end{NexMainBox}
+	\begin{NexMainBox}[dark, crnA, title=\textbf{How the Macro Works}]
+		\begin{NexListDark}
+			\NexItemDark{If the system provides \texttt{__CACHE_LINE_SIZE}, we use it.}
+			\NexItemDark{If using GNU C and x86_64, it retrieves the L1 data cache line size via \texttt{sysconf(_SC_LEVEL1_DCACHE_LINESIZE)}.}
+			\NexItemDark{Otherwise, we default to 64 bytes, a common cache line size in modern processors.}
+		\end{NexListDark}
+	\end{NexMainBox}
+\end{NexMainBox}
+
+\begin{NexMainBox}[light, hdrA, sdwA, crnA, grwB, ssecB]
+	\begin{NexMainBox}[dark, crnA, title=\textbf{Why Does Cache Line Size Matter?}]
+		Efficient cache use minimizes cache thrashing and improves memory access speed. If data structures are aligned properly to match the cache line size, we reduce unnecessary cache misses and improve performance.
+	\end{NexMainBox}
+	\begin{NexMainBox}[dark, crnA, title={Branch Prediction Macros (NX_LIKELY and NX_UNLIKELY)}]
+		Branch prediction is a CPU technique that tries to guess which way an \texttt{if} statement or loop condition will go.
+
+		\texttt{__builtin_expect(x, 1)} tells the compiler that \texttt{x} is very likely to be true.
+
+		\texttt{__builtin_expect(x, 0)} tells the compiler that \texttt{x} is unlikely to be true.
+	\end{NexMainBox}
+
+	\begin{NexMainBox}[dark, crnA, title={Why is this important?}]
+		CPUs use pipelines to execute instructions efficiently. If the CPU incorrectly predicts a branch, it must flush its pipeline and restart—hurting performance.
+
+		Using branch prediction hints helps the compiler generate optimized machine code, reducing the number of branch mispredictions.
+	\end{NexMainBox}
+\end{NexMainBox}
+
+\begin{NexCodeBox}{c}{title={Branch Prediction Example}}
+if (NX_LIKELY(value > 0)) {
+	// Fast path: Most of the time, value is > 0
+} else {
+	// Slow path: Rare case
+}
+\end{NexCodeBox}
+
+\begin{NexMainBox}[light, hdrA, sdwA, crnA, grwB, ssecB]
+	\begin{NexMainBox}[dark, crnA]
+		This allows the CPU to optimize for the most common case, improving execution speed.
+	\end{NexMainBox}
+
+	\begin{NexMainBox}[dark, crnA, title={Final Thoughts}]
+		Both cache line optimizations and branch prediction hints help squeeze extra performance out of the CPU by minimizing wasted cycles. The goal is to make memory access efficient and ensure the processor doesn't waste time on incorrect predictions.
+	\end{NexMainBox}
+\end{NexMainBox}
 
 \newpage
 \subsubsection{CPU Core Detection}
@@ -655,4 +771,5 @@ static inline nx_u32_t nx_cpu_cores()
 #define NX_CPU_CORES nx_cpu_cores()
 #endif
 \end{NexCodeBox}
+
 

@@ -26,6 +26,10 @@
 \newtcblisting{NexCodeBox}[2]{
 	grow to right by=1.5cm,
 	grow to left by=1.5cm,
+	inA/.style={
+		grow to right by=0cm,
+		grow to left by=0cm,
+	},
 	listing engine=minted,
 	minted style=colorful,
 	minted language=#1,
@@ -287,7 +291,6 @@
 	borderline west={1mm}{0pt}{nex.dark.frame},
 	coltext=nex.dark.text,
 }
-
 
 \newenvironment{NexListLight}{%
 	\begin{itemize}%
