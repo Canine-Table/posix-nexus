@@ -271,11 +271,19 @@
 	\end{itemize}%
 }
 
-\long\def\NexItemDark#1{\item[\textcolor{nex.dark.frame}{\faArrowAltCircleRight}] #1}
+\long\def\NexItem#1#2#3{\item[\textcolor{nex.#1.frame}{#2}] #3}
+\long\def\NexItemD#1#2{\NexItem{dark}{#1}{#2}}
+
+\long\def\NexItemDark#1{\NexItemD{\faArrowAltCircleRight}{#1}}
+\long\def\NexCheckDark#1{\NexItemD{\faCheckCircle}{#1}}
+\long\def\NexXDark#1{\NexItemD{\faTimesCircle}{#1}}
+\long\def\NexCircleDark#1{\NexItemD{\faCircle}{#1}}
+\long\def\NexDotDark#1{\NexItemD{\faDotCircle}{#1}}
+
 \tcolorboxenvironment{NexListDark}{
 	blanker,
-	before skip=1mm,
-	after skip=1mm,
+	before skip=5mm,
+	after skip=5mm,
 	borderline west={1mm}{0pt}{nex.dark.frame},
 	coltext=nex.dark.text,
 }
@@ -287,7 +295,14 @@
 	\end{itemize}%
 }
 
-\long\def\NexItemLight#1{\item[\textcolor{nex.light.frame}{\faArrowAltCircleRight[regular]}] #1}
+
+\long\def\NexItemL#1#2{\NexItem{light}{#1}{#2}}
+
+\long\def\NexItemLight#1{\NexItemL{\faArrowAltCircleRight[regular]}{#1}}
+\long\def\NexCheckLight#1{\NexItemL{\faCheckCircle[regular]}{#1}}
+\long\def\NexXLight#1{\NexItemL{\faTimesCircle[regular]}{#1}}
+\long\def\NexCircleLight#1{\NexItemL{\faCircle[regular]}{#1}}
+\long\def\NexDotLight#1{\NexItemL{\faDotCircle[regular]}{#1}}
 
 \tcolorboxenvironment{NexListLight}{
 	enhanced,
