@@ -39,7 +39,7 @@ nx_cmd_editor()
 
 nx_cmd_tex_compiler()
 {
-	g_nx_cmd latexmk pdflatex lualatex xelatex
+	g_nx_cmd lualatex luatex latexmk pdflatex xelatex
 }
 
 nx_cmd_pdf_viewer()

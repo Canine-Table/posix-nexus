@@ -1,5 +1,5 @@
 " Main LaTeX Settings function
-function! LaTeXSettings()
+function! NxTeXSettings()
 	let g:vimtex_compiler_method = BaseName($TEXCPL)
 	let g:vimtex_docs_directory = $G_NEX_MOD_DOCS
 	let g:vimtex_quickfix_ignore_filters = [
@@ -15,6 +15,7 @@ function! LaTeXSettings()
 	let l:compiler_config = {
 		\ 'pdflatex': 's:ConfigurePDFLaTeX',
 		\ 'latexmk': 's:ConfigureLateXMK',
+		\ 'lualatex': 's:ConfigureLuaLaTeX',
 		\ 'luatex': 's:ConfigureLuaTeX',
 		\ 'xelatex': 's:ConfigureXeLaTeX'
 	\}
@@ -41,6 +42,8 @@ endfunction
 
 " Helper function for LuaTeX configuration
 function! s:ConfigureLuaTeX()
+
+	echo 'lu'
 	let g:vimtex_compiler_luatex = {
 		\ 'executable' : 'luatex',
 		\ 'options' : [
@@ -50,6 +53,22 @@ function! s:ConfigureLuaTeX()
 			\ '-shell-escape',
 		\ ],
 	\}
+endfunction
+
+" Function to configure VimTeX for LuaLaTeX
+function! s:ConfigureLuaLaTeX()
+	let g:vimtex_compiler_luatex = {
+	    \ 'name' : 'lualatex',
+	    \ 'exe' : 'lualatex',
+	    \ 'opts' : [
+		\ '-interaction=nonstopmode',
+		\ '-output-directory=' . g:vimtex_docs_directory,
+		\ '-synctex=1',
+		\ '-shell-escape',
+	    \ ],
+	\}
+	g:vimtex_compiler_method = 'luatex'
+
 endfunction
 
 " Helper function for LatexMK configuration
@@ -78,5 +97,6 @@ function! s:ConfigureXeLaTeX()
 	\}
 endfunction
 
+
 " Call the main function to set up all configurations
-autocmd Filetype tex call LaTeXSettings()
+autocmd Filetype tex call NxTeXSettings()

@@ -19,4 +19,3 @@ else
 	echo "required:	python3, python-pynvim:
 endif
 
-":pacman -Ss pynvoii:qi

@@ -8,6 +8,7 @@ function! s:Main()
 	set list listchars=trail:▓,tab:▒░
 	set wrap breakindent
 	set magic
+	set verbose=1
 	set title
 	set hidden
 	set history=10000
@@ -41,34 +42,36 @@ function! s:CallFile(...)
 				unlet! g:nex_mod_lua
 			endif
 		endif
-	endif,w
+	endif
 	for a in a:000
-        	let l:file = expand(a)
 		if exists('g:nex_mod_viml') && filereadable(g:nex_mod_viml . a) && match(a, '\.vim$') >= 0
-			execute "source " . g:nex_mod_viml . a
+			execute 'source ' . g:nex_mod_viml . a
 		elseif exists('g:nex_mod_lua') && filereadable(g:nex_mod_lua . a) && match(a, '\.lua$') >= 0
 			execute 'luafile ' . g:nex_mod_lua . a
-		elseif filereadable(l:file)
+		elseif filereadable(a)
 			if match(a, '\.vim$') >= 0
 				execute 'source ' . a
 			elseif match(a, '\.lua$') >= 0
 				execute 'luafile ' . a
 			endif
-
 		endif
 	endfor
+	unlet! a
 endfunction
 
 function! s:LoadInit()
 	if has('nvim')
-		call s:CallFile('/lua/nvim/init.lua', expand(stdpath('config') . '/lua/nvim/init.lua'))
+		call s:CallFile('init.lua')
 	endif
 endfunction
 
 function! s:SetupPlugins()
 	let l:plug_path = glob(stdpath('data') . '/site/autoload/plug.vim')
-	if filereadable(l:tmpa)
-		call mkdir('~/.config/nvim/plugged', 'p')
+	if filereadable(l:plug_path)
+		let l:plug_directory = glob(stdpath('config') . '/plugged')
+		if ! isdirectory(l:plug_directory)
+			mkdir(l:plug_directory, 'p')
+		endif
 		call s:CallFile('plugins.vim')
 	else
 		if has('curl')
@@ -87,7 +90,7 @@ function! s:SetupPlugins()
 	endif
 endfunction
 
-function! ColorTheme()
+function! s:ColorTheme()
 	try
 		colorscheme dracula
 	catch /^Vim\%((\a\+)\)\=:E185/

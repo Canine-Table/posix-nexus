@@ -39,8 +39,11 @@ function! MapNex()
 	nnoremap <leader>pu :call PlugUpdateUpgrade()<CR>
 	nnoremap <Leader>lv :VimtexView<CR>
 	nnoremap <Leader>ll :VimtexCompile<CR>
+	noremap <Leader>lL :VimtexCompileSS<CR>
+	nnoremap <Leader>LL :VimtexCompileSelected<CR>
 	nnoremap <Leader>lq :VimtexStop<CR>
 	noremap <Leader>lm :VimtexToggleMain<CR>
+	noremap <Leader>lt :VimtexLog<CR>
 	noremap <leader>wc <Cmd>VimtexCountWords<CR>
 	nnoremap <leader>u <Cmd>call UltiSnips#RefreshSnippets()<CR>
 	echo "Nexus Mapping: enabled"
@@ -61,3 +64,4 @@ function! UnMapNex()
 endfunction
 
 call NexMap()
+

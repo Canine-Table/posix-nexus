@@ -4,6 +4,3 @@ function! CallFunction(fn, ...)
 	endif
 endfunction
 
-function! CapsLockStatus()
-	return systemlist('xset -q | grep "Caps Lock" | awk ''{print $4}''')[0]
-endfunction

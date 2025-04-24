@@ -3,8 +3,7 @@ function! PlugUpdateUpgrade()
 	PlugUpgrade
 endfunction
 
-call plug#begin('~/.config/nvim/plugged')
-
+call plug#begin(stdpath('config') . "/plugged")
 Plug 'lervag/vimtex'
 Plug 'Mofiqul/dracula.nvim'
 Plug 'hrsh7th/nvim-cmp'
@@ -24,6 +23,5 @@ Plug 'ellisonleao/glow.nvim'
 Plug 'godlygeek/tabular'
 Plug 'nvim-lua/plenary.nvim'
 Plug 'github/copilot.vim'
-
 call plug#end()
 
