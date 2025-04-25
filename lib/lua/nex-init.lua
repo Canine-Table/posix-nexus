@@ -3,7 +3,7 @@
 ]=]
 
 function nx_location(B)
-	local nx_path = debug.getinfo(1, "S").source:sub(2)
+	local nx_path = debug.getinfo(1, 'S').source:sub(2)
 	local nx_slash = '/'
 	if nx_system() == 'Windows' then
 		nx_slash = '\\'
@@ -11,9 +11,9 @@ function nx_location(B)
 	if B == nil then
 		return nx_path
 	elseif B == true then
-		return nx_path:match(".*" .. nx_slash)
+		return nx_path:match('.*' .. nx_slash)
 	else
-		return nx_path:match("[^" .. nx_slash .. "]+$")
+		return nx_path:match('[^' .. nx_slash .. ']+$')
 	end
 end
 
@@ -26,15 +26,21 @@ function nx_system()
 	end
 end
 
-function nx_init(cont, leaf, lib)
+function nx_list_files(cont, ext)
+	cont = cont or nx_location(true)
+	ext = ext or 'lua'
+	return nx_system() == 'Unix' and 'ls ' .. cont .. '*.' .. ext or 'dir /b ' .. cont .. ' | findstr \\.' .. ext
+end
+
+function nx_init(cont, leaf, lib, ext)
 	lib = lib or os.getenv('G_NEX_MOD_LIB')
+	ext = ext or 'lua'
 	cont = cont or nx_location(true)
 	leaf = leaf or nx_location(false)
 	local path = cont .. leaf
 	local nex = nx_location()
-	if path and path:match("^" .. lib) then
-		local cmd = nx_system() == 'Unix' and "ls " .. cont .. '*.lua' or "dir /b " .. cont .. ' | findstr \\.lua'
-		local fh = io.popen(cmd)
+	if path and path:match('^' .. lib) then
+		local fh = assert(io.popen(nx_list_files(cont, ext)), 'error opening file: ')
 		for ln in fh:lines() do
 			if not (ln == path or ln == nex) then
 				vim.cmd('source ' .. ln)

@@ -1,5 +1,7 @@
 function! s:Main()
-	filetype plugin indent on
+	filetype on
+	filetype plugin on
+	filetype indent on
 	set number textwidth=0 encoding=utf-8
 	set incsearch ignorecase smartcase hlsearch
 	set tabstop=8 softtabstop=0 shiftwidth=8 noexpandtab autoindent
@@ -15,13 +17,13 @@ function! s:Main()
 	set nowrap
 	set belloff=all
 	call s:CallFile(
+		\ 'misc.vim',
 		\ 'types.vim',
 		\ 'str.vim',
 		\ 'LaTeX.vim',
 		\ 'xml.vim',
 		\ 'mappings.vim',
 		\ 'plugins.vim',
-		\ 'misc.vim',
 		\ 'snippets.vim',
 	\)
 	call s:SetupPlugins()
@@ -56,7 +58,6 @@ function! s:CallFile(...)
 			endif
 		endif
 	endfor
-	unlet! a
 endfunction
 
 function! s:LoadInit()
@@ -86,13 +87,17 @@ function! s:SetupPlugins()
 		endif
 		execute l:download_cmd . l:plug_path . ' ' . l:options . ' https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
 		call s:CallFile('plugins.vim')
-		execute 'PlugInstall'
+		call PlugUpdateUpgrade()
 	endif
 endfunction
 
 function! s:ColorTheme()
 	try
+		colorscheme nord
+	catch /^Vim\%((\a\+)\)\=:E185/
 		colorscheme dracula
+	catch /^Vim\%((\a\+)\)\=:E185/
+		colorscheme dracula-soft
 	catch /^Vim\%((\a\+)\)\=:E185/
 		colorscheme industry
 	endtry

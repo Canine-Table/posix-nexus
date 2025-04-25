@@ -44,7 +44,7 @@ nx_cmd_tex_compiler()
 
 nx_cmd_pdf_viewer()
 {
-	g_nx_cmd zathura mupdf evince
+	g_nx_cmd zathura mupdf evince skim
 }
 
 nx_cmd_pkgmgr()
