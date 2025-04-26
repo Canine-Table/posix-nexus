@@ -1,0 +1,24 @@
+\pagestyle{fancy}
+\pgfplotsset{compat=1.18}
+\tcbuselibrary{minted, vignette}
+\usetikzlibrary{decorations.fractals, patterns, positioning}
+\renewcommand{\headrulewidth}{0.4pt}\renewcommand{\footrulewidth}{0.4pt}
+\nxNoParIndent\nxSnowFlakeHeader\nxRomainFooter\fancyhead{}
+\titleformat{\section}[block]{\Large\bfseries}{\thesection}{1em}{}
+\titleformat{\subsection}[block]{\large\bfseries}{\thesubsection}{1em}{}
+\titleformat{\subsubsection}[block]{\normalsize\bfseries}{\thesubsubsection}{1em}{}
+\fancyfoot[LE,RO]{\textsl{\rightmark}}\fancyfoot[LO,RE]{\textsl{\leftmark}}
+\setlength{\headheight}{20.97897pt}
+\renewcommand{\contentsname}{}
+\AddToShipoutPictureBG{%
+	\AtPageLowerLeft{%
+		\begin{tikzpicture}[remember picture, overlay]
+			\expandafter\shade\expandafter[%
+				top color={\ifodd\the\count0 nex.page.bottom\else nex.page.top\fi},
+				middle color=nex.page.middle,%
+				bottom color={\ifodd\the\count0 nex.page.top\else nex.page.bottom\fi},
+			](current page.south west) rectangle (current page.north east);
+		\end{tikzpicture}
+	}
+}
+

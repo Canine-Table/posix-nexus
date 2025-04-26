@@ -1,0 +1,103 @@
+\long\def\nxItalic#1{\textit{#1}}
+\long\def\nxBold#1{\textbf{#1}}
+\def\nxLDash{\unskip\ --\nobreak\ \ignorespaces}
+\def\nxRDash{\unskip\nobreak\ --\ \ignorespaces}
+\def\nxTab{$\qquad$}
+\long\def\nxTerm#1\par{\index{#1}}
+\def\nxCs#1{\char`\\#1}
+\def\nxExpr#1{\the\numexpr#1\relax}
+\def\nxDefault#1#2{\nxEmpty{#1}{#2}{#1}}
+
+\def\nxLBracket{\char`\{}
+\def\nxRBracket{\char`\}}
+
+\def\nxLAngle{$\langle$}
+\def\nxRAngle{$\rangle$}
+
+\def\nxHDotFill{%
+	\noindent\leaders\hbox{%
+		\vrule width 1pt height 1pt 
+		\kern 4pt 
+		\vrule width.5pt height 0.4pt
+	}\hfill\hbox{}\par%
+}
+
+\def\nxHDLineFill{%
+	\noindent\leaders\hbox{%
+		\vrule width 5.5pt height 0.4pt
+	}\hfill\hbox{}\par%
+}
+
+\def\nxNoParIndent{\setlength{\parindent}{0pt}}
+\def\nxSnowFlakeHeader{%
+	\global\renewcommand\headrule{%
+		\vspace{-0.75in}%
+		\def\SnowFlake{%
+			\tikz[decoration=Koch snowflake]{%
+				\draw decorate{%
+					decorate{%
+						decorate{(0,-2) -- (3,-2)}%
+					}%
+				};%
+			}%
+		}%
+		\ifodd\the\count0%
+			\hrulefill{\SnowFlake}%
+		\else%
+			\SnowFlake\hrulefill{}%
+		\fi%
+	}
+}
+
+\def\nxRomainFooter{%
+	\pagenumbering{Roman}%
+	\renewcommand{\thesection}{\Roman{section}}%
+	\renewcommand{\thesubsection}{\Roman{section}}%
+	\renewcommand{\thesubsubsection}{\Roman{section}}%
+	\global\renewcommand\footrule{%
+		\hrulefill%
+		\raisebox{-2.1pt}{%
+			\quad\decofourleft\decotwo\decofourright\quad%
+		}%
+		\hrulefill%
+	}%
+}
+
+\def\nxChars#1{%
+	\def\nxChar##1{%
+		\ifx##1\relax\else \nxLBracket##1\nxRBracket\expandafter\nxChar\fi%
+	}%
+	\nxChar #1\relax%
+}
+
+\def\nxNumbers#1{{%
+	\def\nxNum{}%
+	\def\nxNumber##1{%
+		\ifx##1\relax\else
+			\edef\nxN{\number`##1}%
+			\ifnum\nxN>47 \ifnum\nxN<58
+				\xdef\nxNum{\nxNum##1}%
+			\fi \fi
+			\expandafter\nxNumber\expandafter{\romannumeral-`0#1}%
+		\fi%
+	}%
+	\expandafter\nxNumber\expandafter{\romannumeral-`0#1}\relax
+	\nxNum%
+}}
+
+\def\nxDefinedCs#1{%
+	\expandafter\ifx\csname #1\endcsname\relax%
+		\expandafter\nxSecondOfTwo%
+	\else%
+		\expandafter\nxFirstOfTwo%
+	\fi%
+}
+
+\def\nxEmpty#1{%
+	\if\relax\detokenize{#1}\relax%
+		\expandafter\nxFirstOfTwo%
+	\else%
+		\expandafter\nxSecondOfTwo%
+	\fi%
+}
+
