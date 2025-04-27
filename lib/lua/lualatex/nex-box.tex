@@ -1,27 +1,11 @@
-\renewcommand{\section}[1]{%
-	\def\sectiontitle{#1}%
-	\oldsection{#1}%
-}
 
-\let\oldphantomsection\phantomsection
-\renewcommand{\phantomsection}[1]{%
-	\def\sectionitle{#1}%
-	\oldphantomsection{#1}%
-}
-
-\let\oldsubsection\subsection
-\renewcommand{\subsection}[1]{%
-	\def\subsectiontitle{#1}%
-	\oldsubsection{#1}%
-}
-
-\let\oldsubsubsection\subsubsection
-\renewcommand{\subsubsection}[1]{%
-	\def\subsubsectiontitle{#1}%
-	\oldsubsubsection{#1}%
-}
+\makeatletter
+%\newcommand*\l@tcolorbox{\@dottedtocline{1}{1.5em}{2.3em}}
+\makeatother
 
 \tcbset{%
+	enhanced,
+	autoparskip,
 	dark/.style={
 		colframe=nex.dark.frame,
 		colback=nex.dark.back,
@@ -108,24 +92,6 @@
 		valign=center,
 		circular arc
 	},
-	secA/.style={
-		title=\textbf{\thesection~\sectiontitle}
-	},
-	secB/.style={
-		title=\NexUpSecRef\sectiontitle\thesection
-	},
-	ssecA/.style={
-		title=\textbf{\thesubsection~\subsectiontitle}
-	},
-	ssecB/.style={
-		title=\NexUpSecRef\subsectiontitle\thesubsection
-	},
-	sssecA/.style={
-		title=\textbf{\thesubsubsection~\subsubsectiontitle}
-	},
-	sssecB/.style={
-		title=\NexUpSecRef\subsubsectiontitle\thesubsubsection
-	},
 	crnA/.style={
 		arc=8pt,
 		if odd page={
@@ -161,6 +127,91 @@
 	},
 	frmA/.style={
 		frame style={pattern=crosshatch dots light steel blue}
+	},
+	frmB/.style={
+		frame code={
+			\foreach \n in {north east,north west,south east,south west}{%
+				\path[fill=tcbcolframe] (interior.\n) circle (3mm);
+			}
+		}
+	},
+	frmC/.style={
+		frame style={
+			left color={\ifodd\the\count0 nex.danger.frame\else nex.warning.frame\fi},
+			right color={\ifodd\the\count0 nex.warning.frame\else nex.danger.frame\fi}
+		},
+		title style={
+			left color={\ifodd\the\count0 nex.danger.frame\else nex.warning.frame\fi},
+			right color={\ifodd\the\count0 nex.warning.frame\else nex.danger.frame\fi}
+		}
+	},
+	frmD/.style={
+		frame style={
+		left color={\ifodd\the\count0 nex.success.frame\else nex.secondary.back.title\fi},
+			right color={\ifodd\the\count0 nex.secondary.back.title\else nex.success.frame\fi}
+		}
+	},
+	frmE/.style={
+		frame style={
+			left color={\ifodd\the\count0 nex.info.back\else nex.warning.frame\fi},
+			right color={\ifodd\the\count0 nex.warning.frame\else nex.info.back\fi}
+		}
+	},
+	inrA/.style={
+		interior code={
+			\path[draw=red!5!white,line width=5mm,line cap=round]
+			([xshift=3mm,yshift=-3mm]interior.north west)
+				--([xshift=-3mm,yshift=3mm]interior.south east)
+			([xshift=3mm,yshift=3mm]interior.south west)
+				--([xshift=-3mm,yshift=-3mm]interior.north east);
+		}
+	},
+	inrB/.style={
+		drop fuzzy shadow,
+		borderline={0.3mm}{0.35mm}{tcbcolback},
+		finish={
+			\ifodd\the\count0%
+				\begin{tcbclipframe}
+					\path[bottom color=black,top color=black!50!white,opacity=0.1]
+						(frame.south west) -- (frame.south east) -- (frame.north east) -- cycle;
+					\path[top color=white,bottom color=black!50!white,opacity=0.1]
+					(frame.south west) -- (frame.north east) -- (frame.north west) -- cycle;
+				\end{tcbclipframe}
+			\else%
+				\begin{tcbclipframe}
+					\path[top color=white,bottom color=black!50!white,opacity=0.1]
+						(frame.north east) -- (frame.south west) -- (frame.south east) -- cycle;
+					\path[bottom color=black,top color=black!50!white,opacity=0.1]
+						(frame.north west) -- (frame.north east) -- (frame.south east) -- cycle;
+				\end{tcbclipframe}
+			\fi%
+		}
+	},
+	segA/.style={
+		segmentation code={
+			\path[top color=tcbcolframe,bottom color=tcbcolframe,middle color=tcbcolback]
+				(segmentation.south west) rectangle (segmentation.north east);
+			}
+	},
+	segB/.style={
+		segmentation style={
+			double=white,
+			draw=tcbcolframe,
+			double distance=1pt,
+			solid
+		}
+	},
+	titA/.style={
+		title code={
+			\path[draw=tcbcolback,decorate,line width=2mm, decoration={coil,aspect=0,segment length=10.1mm}]
+				([xshift=1mm]title.west) -- ([xshift=-1mm]title.east);
+		}
+	},
+	titB/.style={
+		title style={
+			left color=blue!15!yellow,
+			right color=red!85!black
+		}
 	},
 	hdrA/.style={
 		boxed title style={%
@@ -222,10 +273,10 @@
 		boxed title style={empty,boxrule=0.5mm},
 		varwidth boxed title=0.5\linewidth,
 		underlay boxed title={
-		\draw[white,line width=0.5mm]
+		\draw[tcbcolframe,line width=0.5mm]
 		([xshift=0.3mm-\tcboxedtitleheight*2,yshift=0.3mm]title.north west)
 			--([xshift=-0.3mm+\tcboxedtitleheight*2,yshift=0.3mm]title.north east);
-			\path[draw=tcbcolframe,top color=white,bottom color=tcbcolbacktitle!50!white,line width=0.5mm]
+			\path[draw=tcbcolbacktitle,top color=tcbcolframe,bottom color=tcbcolbacktitle,line width=0.5mm]
 			([xshift=0.25mm-\tcboxedtitleheight*2,yshift=0.25mm]title.north west)
 			cos +(\tcboxedtitleheight,-\tcboxedtitleheight/2)
 			sin +(\tcboxedtitleheight,-\tcboxedtitleheight/2)
@@ -263,11 +314,67 @@
 }
 
 \NewTColorBox{NxMainBox}{O{}}{
-	enhanced,
-	autoparskip,
 	hyphenationfix,
 	IfBlankF={#1}{#1}
 }
+
+\def\nxRef#1#2#3{\hyperref[#1]{\textcolor{nex.primary.back}{\nxBox{primary}{#2}\bf~~#3}}}
+\def\nxUpRef#1#2#3{\nxRef{#1}{\faAngleUp~#2}{#3}}
+\def\nxDownRef#1#2#3{\nxRef{#1}{\faAnglDown~#2}{#3}}
+
+\nxNCount{nxSN}
+\nxSN=0
+\nxNCount{nxSSN}
+\nxSSN=0
+\nxNCount{nxSSSN}
+\nxSSSN=0
+
+\NewDocumentEnvironment{NxSBox}{O{}O{}}
+{
+	\nxEmpty{#2}{\def\nxTa{\nxUpRef{sec:\nxS}{\nxRoman{\the\nxSN}}{\nxS}}}{%
+		\global\def\nxS{#2}
+		\nxAdd{nxSN}{1}
+		\global\def\nxSS{}
+		\nxAssign{nxSSN}{0}
+		\global\def\nxSSS{}
+		\nxAssign{nxSSSN}{0}
+		\phantomsection{}
+		\label{sec:#2}
+		\addcontentsline{toc}{section}{#2}
+		\def\nxTa{\nxBox{light}{\nxRoman{\the\nxSN}}\bf~~\nxS}
+	}
+	\begin{NxMainBox}[#1, light, frmC, inrB, crnA, hdrA, sdwA, title=\nxTa]
+}{\end{NxMainBox}\bigskip}
+
+\NewDocumentEnvironment{NxSSBox}{O{}O{}}
+{
+
+	\nxEmpty{#2}{\def\nxTa{\nxUpRef{ssec:\nxSS}{\nxRoman{\the\nxSSN}}{\nxSS}}}{%
+		\global\def\nxSS{#2}
+		\nxAdd{nxSSN}{1}
+		\global\def\nxSSS{}
+		\nxAssign{nxSSSN}{0}
+		\phantomsection{}
+		\label{ssec:#2}
+		\addcontentsline{toc}{subsection}{#2}
+		\def\nxTa{\nxBox{light}{\nxRoman{\the\nxSN}.\nxRoman{\the\nxSSN}}\bf~~\nxSS}
+	}
+	\begin{NxMainBox}[#1, light, inrB, frmD, crnA, hdrA, sdwA, title=\nxTa]
+}{\end{NxMainBox}\bigskip}
+
+\NewDocumentEnvironment{NxSSSBox}{O{}O{}}
+{
+
+	\nxEmpty{#2}{\def\nxTa{\nxUpRef{sssec:\nxSSS}{\nxRoman{\the\nxSSSN}}{\nxSSS}}}{%
+		\global\def\nxSSS{#2}
+		\nxAdd{nxSSSN}{1}
+		\phantomsection{}
+		\label{#2}
+		\addcontentsline{toc}{subsubsection}{#2}
+		\def\nxTa{\nxBox{light}{\nxRoman{\the\nxSN}.\nxRoman{\the\nxSSN}.\nxRoman{\the\nxSSSN}}\bf~~\nxSSS}
+	}
+	\begin{NxMainBox}[#1, light, frmE, inrB, crnA, hdrA, sdwA, title=\nxTa]
+}{\end{NxMainBox}\bigskip}
 
 \newtcblisting{NxCodeBox}[2]{
 	listing engine=minted,
@@ -305,4 +412,40 @@
 	IfBlankF={#2}{#2}
 }
 
+\long\def\nxItem#1#2#3{\item[\textcolor{nex.#1.frame}{#2}] #3}
+\long\def\nxItemD#1#2{\NexItem{dark}{#1}{#2}}
+\long\def\nxItemL#1#2{\NexItem{light}{#1}{#2}}
+
+\tcolorboxenvironment{NexListDark}{
+        blanker,
+        before skip=5mm,
+        after skip=5mm,
+        borderline west={1mm}{0pt}{nex.dark.frame},
+        coltext=nex.dark.text,
+}
+
+\tcolorboxenvironment{NexListLight}{
+        enhanced,
+        before skip=6pt,
+        after skip=6pt,
+        borderline west={8mm}{0pt}{nex.light.frame},
+        colframe={nex.light.frame},
+        coltext=nex.light.text,
+}
+
+\long\def\NexItemDark#1{\NexItemD{\faArrowAltCircleRight}{#1}}
+\long\def\NexCheckDark#1{\NexItemD{\faCheckCircle}{#1}}
+\long\def\NexXDark#1{\NexItemD{\faTimesCircle}{#1}}
+\long\def\NexCircleDark#1{\NexItemD{\faCircle}{#1}}
+\long\def\NexDotDark#1{\NexItemD{\faDotCircle}{#1}}
+
+\long\def\NexItemLight#1{\NexItemL{\faArrowAltCircleRight[regular]}{#1}}
+\long\def\NexCheckLight#1{\NexItemL{\faCheckCircle[regular]}{#1}}
+\long\def\NexXLight#1{\NexItemL{\faTimesCircle[regular]}{#1}}
+\long\def\NexCircleLight#1{\NexItemL{\faCircle[regular]}{#1}}
+\long\def\NexDotLight#1{\NexItemL{\faDotCircle[regular]}{#1}}
+
+\long\def\nxBox#1#2{\tcbox[on line, size=fbox, #1]{#2}}
+
+%frame style={top color=blue,bottom color=red,middle color=green}
 

@@ -1,3 +1,5 @@
+\makeatletter
+
 \long\def\nxItalic#1{\textit{#1}}
 \long\def\nxBold#1{\textbf{#1}}
 \def\nxLDash{\unskip\ --\nobreak\ \ignorespaces}
@@ -7,6 +9,8 @@
 \def\nxCs#1{\char`\\#1}
 \def\nxExpr#1{\the\numexpr#1\relax}
 \def\nxDefault#1#2{\nxEmpty{#1}{#2}{#1}}
+\def\nxRoman#1{\uppercase{\expandafter\romannumeral #1}}
+
 
 \def\nxLBracket{\char`\{}
 \def\nxRBracket{\char`\}}
@@ -70,20 +74,20 @@
 	\nxChar #1\relax%
 }
 
-\def\nxNumbers#1{{%
-	\def\nxNum{}%
-	\def\nxNumber##1{%
-		\ifx##1\relax\else
-			\edef\nxN{\number`##1}%
-			\ifnum\nxN>47 \ifnum\nxN<58
-				\xdef\nxNum{\nxNum##1}%
-			\fi \fi
-			\expandafter\nxNumber\expandafter{\romannumeral-`0#1}%
-		\fi%
-	}%
-	\expandafter\nxNumber\expandafter{\romannumeral-`0#1}\relax
-	\nxNum%
-}}
+\def\nxN{}
+\newif\ifnxV
+\def\nxDigit#1{%
+	\nxVtrue
+	\def\nxN{}\def\nxNumber##1{%
+		\ifx##1\relax\else%
+			\edef\nxD{\number`##1}%
+			\ifnum\nxD>47%
+				\ifnum\nxD<58%
+					\edef\nxN{\nxN##1}%
+				\else\nxVfalse\fi%
+			\else\nxVfalse\fi\expandafter\nxNumber\fi%
+	}\nxNumber #1\relax\ifnxV\else\def\nxN\fi%
+}
 
 \def\nxDefinedCs#1{%
 	\expandafter\ifx\csname #1\endcsname\relax%
@@ -101,3 +105,4 @@
 	\fi%
 }
 
+\makeatother

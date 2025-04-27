@@ -1,20 +1,14 @@
+\documentclass[a4paper,12pt]{article}
 \RequirePackage{ifluatex} % Checks if the document is compiled with LuaLaTeX
 \ifluatex%
 	\usepackage{luacode} % Allows embedding Lua code directly in LaTeX
 	\edef\nxPath{\directlua{tex.sprint(os.getenv('G_NEX_MOD_LIB') .. "/lua/lualatex")}}
-	\makeatletter
-	\input{\nxPath/nex-package.tex}
-	\input{\nxPath/nex-color.tex}
-	\input{\nxPath/nex-param.tex}
-	\input{\nxPath/nex-misc.tex}
-	\input{\nxPath/nex-register.tex}
-	\input{\nxPath/nex-env.tex}
-	\input{\nxPath/nex-renew.tex}
-	\input{\nxPath/nex-box.tex}
-	\input{\nxPath/nex-config.tex}
-	\makeatother
 	\message{Posix-Nexus LuaLaTeX preamble fully loaded!}
 \else%
 	\PackageError{luacode}{LuaTeX is required, but not detected}{}%
 \fi%
 
+
+\begin{document}
+\documentclass[a4paper,12pt]{article}
+\end{document}
