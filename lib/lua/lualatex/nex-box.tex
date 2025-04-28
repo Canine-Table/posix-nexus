@@ -6,6 +6,7 @@
 \tcbset{%
 	enhanced,
 	autoparskip,
+	hyphenationfix,
 	dark/.style={
 		colframe=nex.dark.frame,
 		colback=nex.dark.back,
@@ -137,10 +138,6 @@
 	},
 	frmC/.style={
 		frame style={
-			left color={\ifodd\the\count0 nex.danger.frame\else nex.warning.frame\fi},
-			right color={\ifodd\the\count0 nex.warning.frame\else nex.danger.frame\fi}
-		},
-		title style={
 			left color={\ifodd\the\count0 nex.danger.frame\else nex.warning.frame\fi},
 			right color={\ifodd\the\count0 nex.warning.frame\else nex.danger.frame\fi}
 		}
@@ -314,8 +311,63 @@
 }
 
 \NewTColorBox{NxMainBox}{O{}}{
-	hyphenationfix,
 	IfBlankF={#1}{#1}
+}
+
+\NewTColorBox{NxIWBox}{O{}}{
+	IfBlankF={#1}{#1},
+	inrB,
+	crnA,
+	warning
+}
+
+\NewTColorBox{NxIGBox}{O{}}{
+	IfBlankF={#1}{#1},
+	inrB,
+	crnA,
+	success
+}
+
+\NewTColorBox{NxIIBox}{O{}}{
+	IfBlankF={#1}{#1},
+	inrB,
+	crnA,
+	info
+}
+
+\NewTColorBox{NxIEBox}{O{}}{
+	IfBlankF={#1}{#1},
+	inrB,
+	crnA,
+	danger
+}
+
+\NewTColorBox{NxISBox}{O{}}{
+	IfBlankF={#1}{#1},
+	inrB,
+	crnA,
+	secondary
+}
+
+\NewTColorBox{NxIPBox}{O{}}{
+	IfBlankF={#1}{#1},
+	inrB,
+	crnA,
+	primary
+}
+
+\NewTColorBox{NxILBox}{O{}}{
+	IfBlankF={#1}{#1},
+	inrB,
+	crnA,
+	light
+}
+
+\NewTColorBox{NxIDBox}{O{}}{
+	IfBlankF={#1}{#1},
+	inrB,
+	crnA,
+	dark
 }
 
 \def\nxRef#1#2#3{\hyperref[#1]{\textcolor{nex.primary.back}{\nxBox{primary}{#2}\bf~~#3}}}
@@ -343,8 +395,8 @@
 		\addcontentsline{toc}{section}{#2}
 		\def\nxTa{\nxBox{light}{\nxRoman{\the\nxSN}}\bf~~\nxS}
 	}
-	\begin{NxMainBox}[#1, light, frmC, inrB, crnA, hdrA, sdwA, title=\nxTa]
-}{\end{NxMainBox}\bigskip}
+	\begin{NxILBox}[#1, hdrA, sdwA, frmC, title=\nxTa]
+}{\end{NxILBox}\bigskip}
 
 \NewDocumentEnvironment{NxSSBox}{O{}O{}}
 {
@@ -359,12 +411,11 @@
 		\addcontentsline{toc}{subsection}{#2}
 		\def\nxTa{\nxBox{light}{\nxRoman{\the\nxSN}.\nxRoman{\the\nxSSN}}\bf~~\nxSS}
 	}
-	\begin{NxMainBox}[#1, light, inrB, frmD, crnA, hdrA, sdwA, title=\nxTa]
-}{\end{NxMainBox}\bigskip}
+	\begin{NxILBox}[#1, hdrA, sdwA, frmD, title=\nxTa]
+}{\end{NxILBox}\bigskip}
 
 \NewDocumentEnvironment{NxSSSBox}{O{}O{}}
 {
-
 	\nxEmpty{#2}{\def\nxTa{\nxUpRef{sssec:\nxSSS}{\nxRoman{\the\nxSSSN}}{\nxSSS}}}{%
 		\global\def\nxSSS{#2}
 		\nxAdd{nxSSSN}{1}
@@ -373,8 +424,8 @@
 		\addcontentsline{toc}{subsubsection}{#2}
 		\def\nxTa{\nxBox{light}{\nxRoman{\the\nxSN}.\nxRoman{\the\nxSSN}.\nxRoman{\the\nxSSSN}}\bf~~\nxSSS}
 	}
-	\begin{NxMainBox}[#1, light, frmE, inrB, crnA, hdrA, sdwA, title=\nxTa]
-}{\end{NxMainBox}\bigskip}
+	\begin{NxILBox}[#1, hdrA, sdwA, frmE, title=\nxTa]
+}{\end{NxILBox}\bigskip}
 
 \newtcblisting{NxCodeBox}[2]{
 	listing engine=minted,
@@ -413,10 +464,10 @@
 }
 
 \long\def\nxItem#1#2#3{\item[\textcolor{nex.#1.frame}{#2}] #3}
-\long\def\nxItemD#1#2{\NexItem{dark}{#1}{#2}}
-\long\def\nxItemL#1#2{\NexItem{light}{#1}{#2}}
+\long\def\nxItemD#1#2{\nxItem{dark}{#1}{#2}}
+\long\def\nxItemL#1#2{\nxItem{light}{#1}{#2}}
 
-\tcolorboxenvironment{NexListDark}{
+\tcolorboxenvironment{NxListDark}{
         blanker,
         before skip=5mm,
         after skip=5mm,
@@ -424,7 +475,7 @@
         coltext=nex.dark.text,
 }
 
-\tcolorboxenvironment{NexListLight}{
+\tcolorboxenvironment{NxListLight}{
         enhanced,
         before skip=6pt,
         after skip=6pt,
@@ -433,19 +484,36 @@
         coltext=nex.light.text,
 }
 
-\long\def\NexItemDark#1{\NexItemD{\faArrowAltCircleRight}{#1}}
-\long\def\NexCheckDark#1{\NexItemD{\faCheckCircle}{#1}}
-\long\def\NexXDark#1{\NexItemD{\faTimesCircle}{#1}}
-\long\def\NexCircleDark#1{\NexItemD{\faCircle}{#1}}
-\long\def\NexDotDark#1{\NexItemD{\faDotCircle}{#1}}
+\NewDocumentEnvironment{NxIDBoxL}{O{}}
+{
+	\begin{NxIDBox}[#1]
+		\begin{NxListDark}
+}{
+		\end{NxListDark}
+	\end{NxIDBox}
+}
 
-\long\def\NexItemLight#1{\NexItemL{\faArrowAltCircleRight[regular]}{#1}}
-\long\def\NexCheckLight#1{\NexItemL{\faCheckCircle[regular]}{#1}}
-\long\def\NexXLight#1{\NexItemL{\faTimesCircle[regular]}{#1}}
-\long\def\NexCircleLight#1{\NexItemL{\faCircle[regular]}{#1}}
-\long\def\NexDotLight#1{\NexItemL{\faDotCircle[regular]}{#1}}
+
+\NewDocumentEnvironment{NxILBoxL}{O{}}
+{
+	\begin{NxILBox}[#1]
+		\begin{NxListLight}
+}{
+		\end{NxListLight}
+	\end{NxILBox}
+}
+
+\long\def\nxItemDark#1{\nxItemD{\faArrowAltCircleRight}{#1}}
+\long\def\nxCheckDark#1{\nxItemD{\faCheckCircle}{#1}}
+\long\def\nxXDark#1{\nxItemD{\faTimesCircle}{#1}}
+\long\def\nxCircleDark#1{\nxItemD{\faCircle}{#1}}
+\long\def\nxDotDark#1{\nxItemD{\faDotCircle}{#1}}
+
+\long\def\nxItemLight#1{\nxItemL{\faArrowAltCircleRight[regular]}{#1}}
+\long\def\nxCheckLight#1{\nxItemL{\faCheckCircle[regular]}{#1}}
+\long\def\nxXLight#1{\nxItemL{\faTimesCircle[regular]}{#1}}
+\long\def\nxCircleLight#1{\nxItemL{\faCircle[regular]}{#1}}
+\long\def\nxDotLight#1{\nxItemL{\faDotCircle[regular]}{#1}}
 
 \long\def\nxBox#1#2{\tcbox[on line, size=fbox, #1]{#2}}
-
-%frame style={top color=blue,bottom color=red,middle color=green}
 

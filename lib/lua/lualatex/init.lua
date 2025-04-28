@@ -1,21 +1,17 @@
 --[=[
 	This function initializes a custom POSIX-based Neovim setup.
-]=]
-
 function nx_luatex_init()
-	local nx_path = debug.getinfo(1, "S").source:sub(2):gsub("\\", "/")
-	local nx_cont = nx_path:match('.*[/]')
-	local nx_leaf = nx_path:match('[^/]+$')
-	vim.cmd('source ' .. nx_cont .. '../nex-init.lua')
-	nx_init(nx_cont, nx_leaf)
+	dofile(os.getenv('G_NEX_MOD_LIB') .. '/lua/nex-init.lua')
+end
+
+function nx_hello_world()
+	for i = 1, 10 do
+		print(i)
+	end
 end
 
 nx_luatex_init()
 
-require("nvim-treesitter.configs").setup({
-	highlight = {
-		enable = true,
-		disable = { "latex", },
-	},
-})
+]=]
+
 
