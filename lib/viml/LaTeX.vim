@@ -4,7 +4,6 @@ function! s:NxTeXSettings()
 	let g:vimtex_docs_directory = getenv('G_NEX_MOD_DOCS')
 	let g:vimtex_view_enabled = 1
 	let g:vimtex_fold_manual = 1
-	let g:vimtex_latexmk_continuous = 1
 	let g:tex_flavor = 'latex'
 	let g:vimtex_view_method = BaseName(getenv('VPDF'))
 	let g:vimtex_quickfix_open_on_warning = 0

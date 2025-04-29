@@ -1,5 +1,5 @@
-\makeatletter
-
+\begingroup\expandafter\expandafter\expandafter\endgroup\expandafter\ifx\csname nxCommand\endcsname\relax
+\def\nxDefined#1#2{\ifx#1\undefined#2\else\errmessage{\string#1 already defined}!\fi}
 \long\def\nxItalic#1{\textit{#1}}
 \long\def\nxBold#1{\textbf{#1}}
 \def\nxLDash{\unskip\ --\nobreak\ \ignorespaces}
@@ -10,7 +10,7 @@
 \def\nxExpr#1{\the\numexpr#1\relax}
 \def\nxDefault#1#2{\nxEmpty{#1}{#2}{#1}}
 \def\nxRoman#1{\uppercase{\expandafter\romannumeral #1}}
-
+\def\nx@Empty{}
 
 \def\nxLBracket{\char`\{}
 \def\nxRBracket{\char`\}}
@@ -105,4 +105,4 @@
 	\fi%
 }
 
-\makeatother
+

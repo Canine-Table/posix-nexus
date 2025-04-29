@@ -62,7 +62,7 @@ endfunction
 
 function! s:LoadInit()
 	if has('nvim')
-		call s:CallFile('init.lua')
+		call s:CallFile('nex-nvim-init.lua')
 	endif
 endfunction
 

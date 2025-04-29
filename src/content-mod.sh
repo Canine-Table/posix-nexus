@@ -64,6 +64,28 @@ nx_content_modules()
 	unset f
 }
 
+nx_content_append()
+{
+	echo "$(
+		v="$(nx_struct_ref "$1")"
+		[ -z "$2" ] && {
+			echo "$v"
+			exit
+		}
+		s="${3:-:}"
+		case "$s$v$s" in
+			*"$s$2$s"*) echo "$v";;
+			*) {
+				if [ -n "$4" ]; then
+					echo "$2${v:+$s$v}"
+				else
+					echo "${v:+$v$s}$2"
+				fi
+			};;
+		esac
+	)"
+}
+
 ##############################################################################################
 
 export G_NEX_ROOT="/usr/local/bin/nex"
@@ -88,6 +110,9 @@ export AWK="$(nx_cmd_awk)"
 export PKGMGR="$(nx_cmd_pkgmgr)"
 export TEXCPL="$(nx_cmd_tex_compiler)"
 export VPDF="$(nx_cmd_pdf_viewer)"
+
+nx_tex_var 'TEXMFCNF' "${G_NEX_MOD_CNF}//" ':' 1
+export TEXMFHOME="${G_NEX_MOD_LIB}/lua/lualatex"
 
 alias nex='. "$G_NEX_MOD_SRC/content-mod.sh"'
 alias nx=nex
