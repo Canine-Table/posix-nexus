@@ -517,3 +517,10 @@
 
 \long\def\nxBox#1#2{\tcbox[on line, size=fbox, #1]{#2}}
 
+\long\def\nxEmph#1#2{\textcolor{nex.#1}{#2}}
+
+\long\def\nxTopic#1#2{\nxEmph{#1}{\dashuline{\bf\it#2}}~$\Rightarrow$~}
+
+\long\def\nxIDTopic#1{\nxTopic{warning.back}{#1}}
+\long\def\nxILTopic#1{\nxTopic{primary.back}{#1}}
+

@@ -1,0 +1,7 @@
+This is makeindex, version 2.17 [TeX Live 2026/dev] (kpathsea + Thai support).
+Scanning style file ./nex-lua.ist...........................done (27 attributes redefined, 0 ignored).
+Scanning input file nex-lua.acn....done (1 entries accepted, 0 rejected).
+Sorting entries...done (0 comparisons).
+Generating output file nex-lua.acr....done (6 lines written, 0 warnings).
+Output written in nex-lua.acr.
+Transcript written in nex-lua.alg.

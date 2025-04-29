@@ -34,9 +34,6 @@
 \usepackage{minted} % Uses Pygments for syntax highlighting of code
 \usepackage{listings} % Alternative package for displaying code snippets
 
-\usepackage{makeidx} % Generates an index for quick reference of keywords
-\usepackage{glossaries} % Manages glossaries, acronyms, and abbreviations
-
 \usepackage{amsmath} % Provides advanced mathematical formatting
 \usepackage{svg} % Supports inclusion of scalable vector graphics
 
@@ -48,7 +45,8 @@
 \usepackage{lipsum} % Provides placeholder text for document drafts
 \usepackage{incgraph} % Enables incremental graphics drawing within the document
 \usepackage{emoji} % Adds support for emojis in LaTeX
+\usepackage[normalem]{ulem}
 
-\usepackage{biblatex} % Manages bibliographies and citations using an external .bib file
-\usepackage{glossaries} % Handles glossaries, acronyms, and term definitions with automated referencing
-
+\usepackage{makeidx} % Generates an index for quick reference of keywords
+\usepackage[acronym]{glossaries} % Handles glossaries, acronyms, and term definitions with automated referencing
+\usepackage[backend=biber,style=ieee]{biblatex} % Manages bibliographies and citations using an external .bib file
