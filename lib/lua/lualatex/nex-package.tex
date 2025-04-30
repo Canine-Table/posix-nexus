@@ -31,7 +31,7 @@
 \usepackage{tocloft} % Customizes table of contents, list of figures, and list of tables
 \usepackage{titlesec} % Modifies section headings for improved typography
 
-\usepackage{minted} % Uses Pygments for syntax highlighting of code
+\usepackage[cache]{minted} % Uses Pygments for syntax highlighting of code
 \usepackage{listings} % Alternative package for displaying code snippets
 
 \usepackage{amsmath} % Provides advanced mathematical formatting
@@ -48,5 +48,20 @@
 \usepackage[normalem]{ulem}
 
 \usepackage{makeidx} % Generates an index for quick reference of keywords
-\usepackage[acronym]{glossaries} % Handles glossaries, acronyms, and term definitions with automated referencing
-\usepackage[backend=biber,style=ieee]{biblatex} % Manages bibliographies and citations using an external .bib file
+\usepackage[
+	toc,
+	acronym,
+	nopostdot,
+	nonumberlist,
+	style=tree
+]{glossaries} % Handles glossaries, acronyms, and term definitions with automated referencing
+\usepackage[
+	abbreviations,
+	symbols,
+	automake,
+	numbers
+]{glossaries-extra}
+\usepackage[
+	backend=biber,
+	style=ieee
+]{biblatex} % Manages bibliographies and citations using an external .bib file

@@ -93,6 +93,16 @@
 		valign=center,
 		circular arc
 	},
+	ovrA/.style={
+		overlay={
+			\foreach \x in {2cm,3.5cm}{
+				\begin{scope}[shift={([xshift=\x]frame.north west)}]
+					\path[draw=tcbcolframe,fill=tcbcolframe!10,line width=1mm] (0,0) arc (0:180:5mm);
+					\path[fill=black] (-0.2,0) arc (0:180:1mm);
+				\end{scope}
+			}
+		}
+	},
 	crnA/.style={
 		arc=8pt,
 		if odd page={
@@ -208,6 +218,13 @@
 		title style={
 			left color=blue!15!yellow,
 			right color=red!85!black
+		}
+	},
+	titC/.style={
+		titlerule style={
+			arrows ={
+				Hooks[arc=270]-Hooks[arc=270]
+			}
 		}
 	},
 	hdrA/.style={
@@ -375,11 +392,9 @@
 \def\nxDownRef#1#2#3{\nxRef{#1}{\faAnglDown~#2}{#3}}
 
 \nxNCount{nxSN}
-\nxSN=0
 \nxNCount{nxSSN}
-\nxSSN=0
 \nxNCount{nxSSSN}
-\nxSSSN=0
+\nxNCount{nxSSSSN}
 
 \NewDocumentEnvironment{NxSBox}{O{}O{}}
 {
@@ -390,28 +405,31 @@
 		\nxAssign{nxSSN}{0}
 		\global\def\nxSSS{}
 		\nxAssign{nxSSSN}{0}
+		\global\def\nxSSSS{}
+		\nxAssign{nxSSSSN}{0}
 		\phantomsection{}
 		\label{sec:#2}
 		\addcontentsline{toc}{section}{#2}
 		\def\nxTa{\nxBox{light}{\nxRoman{\the\nxSN}}\bf~~\nxS}
 	}
-	\begin{NxILBox}[#1, hdrA, sdwA, frmC, title=\nxTa]
+	\begin{NxILBox}[#1, hdrA, sdwA, frmC, title={\nxTa}]
 }{\end{NxILBox}\bigskip}
 
 \NewDocumentEnvironment{NxSSBox}{O{}O{}}
 {
-
 	\nxEmpty{#2}{\def\nxTa{\nxUpRef{ssec:\nxSS}{\nxRoman{\the\nxSSN}}{\nxSS}}}{%
 		\global\def\nxSS{#2}
 		\nxAdd{nxSSN}{1}
 		\global\def\nxSSS{}
 		\nxAssign{nxSSSN}{0}
+		\global\def\nxSSSS{}
+		\nxAssign{nxSSSSN}{0}
 		\phantomsection{}
 		\label{ssec:#2}
 		\addcontentsline{toc}{subsection}{#2}
 		\def\nxTa{\nxBox{light}{\nxRoman{\the\nxSN}.\nxRoman{\the\nxSSN}}\bf~~\nxSS}
 	}
-	\begin{NxILBox}[#1, hdrA, sdwA, frmD, title=\nxTa]
+	\begin{NxILBox}[#1, hdrA, sdwA, frmD, title={\nxTa}]
 }{\end{NxILBox}\bigskip}
 
 \NewDocumentEnvironment{NxSSSBox}{O{}O{}}
@@ -419,13 +437,28 @@
 	\nxEmpty{#2}{\def\nxTa{\nxUpRef{sssec:\nxSSS}{\nxRoman{\the\nxSSSN}}{\nxSSS}}}{%
 		\global\def\nxSSS{#2}
 		\nxAdd{nxSSSN}{1}
+		\global\def\nxSSSS{}
+		\nxAssign{nxSSSSN}{0}
 		\phantomsection{}
 		\label{#2}
 		\addcontentsline{toc}{subsubsection}{#2}
 		\def\nxTa{\nxBox{light}{\nxRoman{\the\nxSN}.\nxRoman{\the\nxSSN}.\nxRoman{\the\nxSSSN}}\bf~~\nxSSS}
 	}
-	\begin{NxILBox}[#1, hdrA, sdwA, frmE, title=\nxTa]
+	\begin{NxILBox}[#1, hdrA, sdwA, frmE, title={\nxTa}]
 }{\end{NxILBox}\bigskip}
+
+\NewDocumentEnvironment{NxSSSSBox}{O{}O{}}
+{
+	\nxEmpty{#2}{\def\nxTa{\nxUpRef{ssssec:\nxSSSS}{\nxRoman{\the\nxSSSSN}}{\nxSSSS}}}{%
+		\global\def\nxSSSS{#2}
+		\nxAdd{nxSSSSN}{1}
+		\phantomsection{}
+		\label{#2}
+		\def\nxTa{\nxBox{light}{\nxRoman{\the\nxSN}.\nxRoman{\the\nxSSN}.\nxRoman{\the\nxSSSN}.\nxRoman{\the\nxSSSSN}}\bf~~\nxSSSS}
+	}
+	\begin{NxILBox}[#1, hdrA, sdwA, frmE, title={\nxTa}]
+}{\end{NxILBox}\bigskip}
+
 
 \newtcblisting{NxCodeBox}[2]{
 	listing engine=minted,
@@ -433,12 +466,19 @@
 	minted language=#1,
 	skin=spartan,
 	left=14mm,
+	toprule=1mm,
+	titlerule=1mm,
+	lefttitle=4mm,
+	toptitle=1mm,
+	bottomtitle=1mm,
+	listing only,
 	enhanced,
 	breakable,
 	overlay={
 		\begin{tcbclipinterior}
 			\fill[nex.dark.frame] (frame.south west) rectangle ([xshift=10mm]frame.north west);
 		\end{tcbclipinterior}
+		\node[below left, text width=\textwidth, align=left] at (frame.north west) {\tcbtitle}; % Make the title wrap & fill
 	},
 	minted options={
 		linenos,
@@ -466,22 +506,23 @@
 \long\def\nxItem#1#2#3{\item[\textcolor{nex.#1.frame}{#2}] #3}
 \long\def\nxItemD#1#2{\nxItem{dark}{#1}{#2}}
 \long\def\nxItemL#1#2{\nxItem{light}{#1}{#2}}
+\long\def\nxItemN#1{\item[]#1}
 
 \tcolorboxenvironment{NxListDark}{
-        blanker,
-        before skip=5mm,
-        after skip=5mm,
-        borderline west={1mm}{0pt}{nex.dark.frame},
-        coltext=nex.dark.text,
+	blanker,
+	before skip=5mm,
+	after skip=5mm,
+	borderline west={1mm}{0pt}{nex.dark.frame},
+	coltext=nex.dark.text,
 }
 
 \tcolorboxenvironment{NxListLight}{
-        enhanced,
-        before skip=6pt,
-        after skip=6pt,
-        borderline west={8mm}{0pt}{nex.light.frame},
-        colframe={nex.light.frame},
-        coltext=nex.light.text,
+	enhanced,
+	before skip=6pt,
+	after skip=6pt,
+	borderline west={8mm}{0pt}{nex.light.frame},
+	colframe={nex.light.frame},
+	coltext=nex.light.text,
 }
 
 \NewDocumentEnvironment{NxIDBoxL}{O{}}
@@ -516,10 +557,16 @@
 \long\def\nxDotLight#1{\nxItemL{\faDotCircle[regular]}{#1}}
 
 \long\def\nxBox#1#2{\tcbox[on line, size=fbox, #1]{#2}}
+\long\def\nxBoxI#1#2{\nxItemN{\nxBox{#1}{#2}}}
 
 \long\def\nxEmph#1#2{\textcolor{nex.#1}{#2}}
 
-\long\def\nxTopic#1#2{\nxEmph{#1}{\dashuline{\bf\it#2}}~$\Rightarrow$~}
+\long\def\nxTopicBlueprint#1#2{\nxEmph{#1}{\dashuline{\bf\it#2}}}
+\long\def\nxTopic#1#2{\nxTopicBlueprint{#1}{#2}~$\Rightarrow$~}
+
+\long\def\nxTopicRefBlueprint#1#2#3{\item[\nxBox{primary}{#2}]\hyperref[#1]{\nxTopicBlueprint{primary.link}{#3}}~$\Rightarrow$~}
+\long\def\nxTopicU#1#2{\nxTopicRefBlueprint{#1}{\faAngleUp}{#2}}
+\long\def\nxTopicD#1#2{\nxTopicRefBlueprint{#1}{\faAngleDown}{#2}}
 
 \long\def\nxIDTopic#1{\nxTopic{warning.back}{#1}}
 \long\def\nxILTopic#1{\nxTopic{primary.back}{#1}}

@@ -111,8 +111,9 @@ export PKGMGR="$(nx_cmd_pkgmgr)"
 export TEXCPL="$(nx_cmd_tex_compiler)"
 export VPDF="$(nx_cmd_pdf_viewer)"
 
-nx_tex_var 'TEXMFCNF' "${G_NEX_MOD_CNF}//" ':' 1
+#nx_tex_var 'TEXMFCNF' "${G_NEX_MOD_CNF}//" ':' 1
 export TEXMFHOME="${G_NEX_MOD_LIB}/lua/lualatex"
+#export TEXMF_OUTPUT_DIRECTORY="$G_NEX_MOD_DOC"
 
 alias nex='. "$G_NEX_MOD_SRC/content-mod.sh"'
 alias nx=nex

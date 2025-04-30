@@ -1,0 +1,20 @@
+\glossarysection[\glossarytoctitle]{\glossarytitle}\glossarypreamble
+\begin{theglossary}\glossaryheader
+\glsgroupheading{A}\relax \glsresetentrylist %
+\glossentry{algol}{\glossaryentrynumbers{\relax 
+		\setentrycounter[]{page}\glsnumberformat{IV\delimN V}}}\glsgroupskip
+\glsgroupheading{B}\relax \glsresetentrylist %
+\glossentry{bcpl}{\glossaryentrynumbers{\relax 
+		\setentrycounter[]{page}\glsnumberformat{IV\delimN V}}}%
+\glossentry{bell_labs}{\glossaryentrynumbers{\relax 
+		\setentrycounter[]{page}\glsnumberformat{V\delimN VI}}}\glsgroupskip
+\glsgroupheading{C}\relax \glsresetentrylist %
+\glossentry{c_language}{\glossaryentrynumbers{\relax 
+		\setentrycounter[]{page}\glsnumberformat{VI}}}\glsgroupskip
+\glsgroupheading{D}\relax \glsresetentrylist %
+\glossentry{ritchie}{\glossaryentrynumbers{\relax 
+		\setentrycounter[]{page}\glsnumberformat{V\delimN VI}}}\glsgroupskip
+\glsgroupheading{U}\relax \glsresetentrylist %
+\glossentry{unix}{\glossaryentrynumbers{\relax 
+		\setentrycounter[]{page}\glsnumberformat{VI}}}%
+\end{theglossary}\glossarypostamble

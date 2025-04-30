@@ -1,7 +1,6 @@
 " Main LaTeX Settings function
 function! s:NxTeXSettings()
 	let g:vimtex_compiler_method = BaseName(getenv('TEXCPL'))
-	let g:vimtex_docs_directory = getenv('G_NEX_MOD_DOCS')
 	let g:vimtex_view_enabled = 1
 	let g:vimtex_fold_manual = 1
 	let g:tex_flavor = 'latex'
@@ -38,7 +37,6 @@ function! ConfigureLaTeXMK()
 		\ 'executable' : 'latexmk',
 		\ 'options' : [
 			\ '-pdf',
-			\ '-output-directory=' . g:vimtex_docs_directory,
 			\ '-interaction=nonstopmode',
 			\ '-shell-escape',
 		\ ],
@@ -54,7 +52,6 @@ function! ConfigureLuaTeX()
 			\ '--file-line-error',
 			\ '--socket',
 			\ '--debug-format',
-			\ '--output-directory=' . g:vimtex_docs_directory,
 			\ '--synctex=1',
 			\ '--shell-escape',
 		\],
@@ -71,7 +68,6 @@ function! ConfigureLuaLaTeX()
 			\ '--file-line-error',
 			\ '--socket',
 			\ '--debug-format',
-			\ '--output-directory=' . g:vimtex_docs_directory,
 			\ '--synctex=1',
 			\ '--shell-escape',
 		\],
@@ -84,7 +80,6 @@ function! ConfigurePDFLaTeX()
 		\ 'executable' : 'pdflatex',
 		\ 'options' : [
 			\ '-interaction=nonstopmode',
-			\ '-output-directory=' . g:vimtex_docs_directory,
 			\ '-synctex=1',
 			\ '-shell-escape',
 		\ ],
@@ -97,7 +92,6 @@ function! ConfigureXeLaTeX()
 		\ 'executable' : 'xelatex',
 		\ 'options' : [
 			\ '-interaction=nonstopmode',
-			\ '-output-directory=' . g:vimtex_docs_directory,
 			\ '-synctex=1',
 			\ '-shell-escape',
 		\ ],

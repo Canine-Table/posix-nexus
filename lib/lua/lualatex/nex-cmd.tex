@@ -1,0 +1,28 @@
+\def\nxSize#1{
+	\nxDigit{#1}
+	\def\nxTa{#1}
+	\ifx\nxN\nxTa%
+		\ifcase#1
+			\tiny
+		\or%
+			\scriptsize
+		\or%
+			\footnotesize
+		\or%
+			\small
+		\or%
+			\normalsize
+		\or%
+			\large
+		\or%
+			\Large
+		\or%
+			\LARGE
+		\or%
+			\huge
+		\else%
+			\Huge
+		\fi
+	\fi
+}
+
