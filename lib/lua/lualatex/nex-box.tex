@@ -300,6 +300,14 @@
 			sin +(\tcboxedtitleheight,\tcboxedtitleheight/2);
 		}%
 	},
+	hdrE/.style={
+		toprule=1mm,
+		titlerule=1mm,
+		lefttitle=4mm,
+		righttitle=4mm,
+		toptitle=1mm,
+		bottomtitle=1mm
+	},
 	nexcols/.style={
 		nobeforeafter,
 		leftright skip=0mm,
@@ -332,59 +340,59 @@
 }
 
 \NewTColorBox{NxIWBox}{O{}}{
-	IfBlankF={#1}{#1},
 	inrB,
 	crnA,
 	warning
+	IfBlankF={#1}{#1},
 }
 
 \NewTColorBox{NxIGBox}{O{}}{
-	IfBlankF={#1}{#1},
 	inrB,
 	crnA,
-	success
+	success,
+	IfBlankF={#1}{#1}
 }
 
 \NewTColorBox{NxIIBox}{O{}}{
-	IfBlankF={#1}{#1},
 	inrB,
 	crnA,
-	info
+	info,
+	IfBlankF={#1}{#1}
 }
 
 \NewTColorBox{NxIEBox}{O{}}{
-	IfBlankF={#1}{#1},
 	inrB,
 	crnA,
-	danger
+	danger,
+	IfBlankF={#1}{#1}
 }
 
 \NewTColorBox{NxISBox}{O{}}{
-	IfBlankF={#1}{#1},
 	inrB,
 	crnA,
-	secondary
+	secondary,
+	IfBlankF={#1}{#1}
 }
 
 \NewTColorBox{NxIPBox}{O{}}{
-	IfBlankF={#1}{#1},
 	inrB,
 	crnA,
-	primary
+	primary,
+	IfBlankF={#1}{#1}
 }
 
 \NewTColorBox{NxILBox}{O{}}{
-	IfBlankF={#1}{#1},
 	inrB,
 	crnA,
-	light
+	light,
+	IfBlankF={#1}{#1}
 }
 
 \NewTColorBox{NxIDBox}{O{}}{
-	IfBlankF={#1}{#1},
 	inrB,
 	crnA,
-	dark
+	dark,
+	IfBlankF={#1}{#1}
 }
 
 \def\nxRef#1#2#3{\hyperref[#1]{\textcolor{nex.primary.back}{\nxBox{primary}{#2}\bf~~#3}}}
@@ -410,6 +418,7 @@
 		\phantomsection{}
 		\label{sec:#2}
 		\addcontentsline{toc}{section}{#2}
+		\global\def\nxSDepth{0}
 		\def\nxTa{\nxBox{light}{\nxRoman{\the\nxSN}}\bf~~\nxS}
 	}
 	\begin{NxILBox}[#1, hdrA, sdwA, frmC, title={\nxTa}]
@@ -427,6 +436,7 @@
 		\phantomsection{}
 		\label{ssec:#2}
 		\addcontentsline{toc}{subsection}{#2}
+		\global\def\nxSDepth{1}
 		\def\nxTa{\nxBox{light}{\nxRoman{\the\nxSN}.\nxRoman{\the\nxSSN}}\bf~~\nxSS}
 	}
 	\begin{NxILBox}[#1, hdrA, sdwA, frmD, title={\nxTa}]
@@ -440,8 +450,9 @@
 		\global\def\nxSSSS{}
 		\nxAssign{nxSSSSN}{0}
 		\phantomsection{}
-		\label{#2}
+		\label{sssec:#2}
 		\addcontentsline{toc}{subsubsection}{#2}
+		\global\def\nxSDepth{2}
 		\def\nxTa{\nxBox{light}{\nxRoman{\the\nxSN}.\nxRoman{\the\nxSSN}.\nxRoman{\the\nxSSSN}}\bf~~\nxSSS}
 	}
 	\begin{NxILBox}[#1, hdrA, sdwA, frmE, title={\nxTa}]
@@ -453,12 +464,12 @@
 		\global\def\nxSSSS{#2}
 		\nxAdd{nxSSSSN}{1}
 		\phantomsection{}
-		\label{#2}
+		\label{ssssec:#2}
+		\global\def\nxSDepth{3}
 		\def\nxTa{\nxBox{light}{\nxRoman{\the\nxSN}.\nxRoman{\the\nxSSN}.\nxRoman{\the\nxSSSN}.\nxRoman{\the\nxSSSSN}}\bf~~\nxSSSS}
 	}
 	\begin{NxILBox}[#1, hdrA, sdwA, frmE, title={\nxTa}]
 }{\end{NxILBox}\bigskip}
-
 
 \newtcblisting{NxCodeBox}[2]{
 	listing engine=minted,
@@ -466,11 +477,7 @@
 	minted language=#1,
 	skin=spartan,
 	left=14mm,
-	toprule=1mm,
-	titlerule=1mm,
-	lefttitle=4mm,
-	toptitle=1mm,
-	bottomtitle=1mm,
+	hdrE,
 	listing only,
 	enhanced,
 	breakable,
@@ -565,8 +572,8 @@
 \long\def\nxTopic#1#2{\nxTopicBlueprint{#1}{#2}~$\Rightarrow$~}
 
 \long\def\nxTopicRefBlueprint#1#2#3{\item[\nxBox{primary}{#2}]\hyperref[#1]{\nxTopicBlueprint{primary.link}{#3}}~$\Rightarrow$~}
-\long\def\nxTopicU#1#2{\nxTopicRefBlueprint{#1}{\faAngleUp}{#2}}
-\long\def\nxTopicD#1#2{\nxTopicRefBlueprint{#1}{\faAngleDown}{#2}}
+\long\def\nxTopicU#1{\nxTopicRefBlueprint{{\ifcase\nxSDepth sec:\or ssec:\or sssec:\fi#1}}{\faAngleUp}{#1}}
+\long\def\nxTopicD#1{\nxTopicRefBlueprint{{\ifcase\nxSDepth ssec:\or sssec:\or ssssec:\fi#1}}{\faAngleDown}{#1}}
 
 \long\def\nxIDTopic#1{\nxTopic{warning.back}{#1}}
 \long\def\nxILTopic#1{\nxTopic{primary.back}{#1}}

@@ -1,6 +1,6 @@
 \def\nxAssign#1{
 	\nxDefinedCs{#1}{%
-		\expandafter\csname#1\endcsname=\expandafter\nxFirstOfOne
+		\global\expandafter\csname#1\endcsname=\expandafter\nxFirstOfOne
 	}{}%
 }
 

@@ -12,7 +12,13 @@
 \def\nxRoman#1{\uppercase{\expandafter\romannumeral #1}}
 \def\nx@Empty{}
 \def\nxGI#1{\gls{#1}\index{#1@}}
-\def\nxGID#1{\textcolor{nex.primary.link}{\nxGI{#1}}}
+\def\nxGID#1{\nxGI{#1}}
+\long\def\nxGLSE#1#2#3{%
+	\newglossaryentry{#1}{%
+		name={\bfseries \textcolor{nex.primary.link}{#2}},%
+		description={#3}%
+	}%
+}
 
 \def\nxLBracket{\char`\{}
 \def\nxRBracket{\char`\}}

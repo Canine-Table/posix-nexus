@@ -25,11 +25,13 @@
 \NewDocumentCommand{\nxLnk}{O{} O{Canine-Table} O{Contents} O{}}{
 	\global\def\nxS{#3}
 	\fancyhead[LO, RE]{%
-		\tcbox[on line, size=fbox]{\hyperref[sec:\nxS]{Posix-Nexus}}\hspace{5pt}%
-		\tcbox[on line, size=fbox]{\hyperref[sec:#3]{#1}}%
+		\tcbox[on line, size=fbox]{\hyperref[sec:\nxS]{\textcolor{nex.primary.back}{\bf Posix-Nexus}}}\hspace{5pt}%
+		\tcbox[on line, size=fbox]{\hyperref[sec:#3]{\textcolor{nex.primary.back}{\bf#1}}}%
 	}
 	\hypersetup{
 		linktoc=all,
+		colorlinks=true,
+		linkcolor=nex.primary.back,
 		pdfborder={0 0 0},
 		pdftitle={Posix-Nexus #1},
 		pdfauthor={#2},

@@ -1,46 +1,110 @@
 \makeglossaries
-\addbibresource{\nxPath//bibliography.bib}
-\newglossaryentry{latex}{
-	name=LaTeX,
-	description={A document preparation system}
-}
+\addbibresource{\nxPath/nex-bibliography.bib}
 
-\newglossaryentry{ritchie}{
-	name=Dennis Ritchie,
-	description={American computer scientist who developed the C programming language, co-created the Unix operating system at Bell Labs, and significantly influenced modern software engineering. His contributions to system programming, compiler design, and operating system development shaped computing as we know it.}
-}
+\nxGLSE{dennis_ritchie}{Dennis Ritchie}{American computer scientist who developed the C programming language, co-created the Unix operating system at Bell Labs, and significantly influenced modern software engineering. His contributions to system programming, compiler design, and operating system development shaped computing as we know it.\cite{ritchie-profile}}
 
-\newglossaryentry{bell_labs}{
-	name=Bell Labs,
-	description={A pioneering research laboratory founded in 1925, responsible for groundbreaking innovations such as the transistor, Unix operating system, C programming language, information theory, lasers, and more. Now known as Nokia Bell Labs, it has been home to multiple Nobel Prize and Turing Award winners.}
-}
+\nxGLSE{bell_labs}{Bell Labs}{A pioneering research laboratory founded in 1925, responsible for groundbreaking innovations such as the transistor, Unix operating system, C programming language, information theory, lasers, and more. Now known as Nokia Bell Labs, it has been home to multiple Nobel Prize and Turing Award winners.\cite{bell_labs-history}}
 
-\newglossaryentry{unix}{
-	name=UNIX,
-	description={A multiuser, multitasking operating system developed in 1969 at Bell Labs by Ken Thompson, Dennis Ritchie, and others. Unix introduced portability, modularity, and powerful command-line tools, influencing modern OSes like Linux, macOS, and BSD.}
-}
+\nxGLSE{unix}{UNIX}{A multiuser, multitasking operating system developed in 1969 at Bell Labs by Ken Thompson, Dennis Ritchie, and others. Unix introduced portability, modularity, and powerful command-line tools, influencing modern OSes like Linux, macOS, and BSD. \cite{unix-history}}
 
-\newglossaryentry{c_language}{
-	name=C,
-	description={A general-purpose, procedural programming language developed by Dennis Ritchie at Bell Labs in 1972. C is known for its efficiency, portability, and direct access to system resources, making it widely used in operating systems, embedded systems, and application development. It influenced many modern languages, including C++, Java, and Python.}
-}
+\nxGLSE{c_language}{C}{A general-purpose, procedural programming language developed by Dennis Ritchie at Bell Labs in 1972. C is known for its efficiency, portability, and direct access to system resources, making it widely used in operating systems, embedded systems, and application development. It influenced many modern languages, including C++, Java, and Python.\cite{c_language-history}}
 
-\newglossaryentry{bsd}{
-	name=Berkeley Software Distribution (BSD),
-	description={A Unix-based operating system developed at the University of California, Berkeley, starting in 1978. BSD introduced key advancements such as the TCP/IP networking stack and virtual memory. Though the original BSD is discontinued, its open-source descendants—FreeBSD, OpenBSD, NetBSD, and DragonFly BSD—continue to be widely used in servers, networking, and security applications.}
-}
+\nxGLSE{bsd}{Berkeley Software Distribution (BSD)}{A Unix-based operating system developed at the University of California, Berkeley, starting in 1978. BSD introduced key advancements such as the TCP/IP networking stack and virtual memory. Though the original BSD is discontinued, its open-source descendants—FreeBSD, OpenBSD, NetBSD, and DragonFly BSD—continue to be widely used in servers, networking, and security applications.\cite{bsd-history}}
 
-\newglossaryentry{algol}{
-	name=ALGOL,
-	description={A family of imperative programming languages developed between the 1950s and 1970s. ALGOL introduced structured programming concepts, block scope, and recursive functions, influencing languages like Pascal, C, and Ada. Variants include ALGOL 58, ALGOL 60, and ALGOL 68, each refining syntax and capabilities.}
-}
+\nxGLSE{algol}{ALGOL}{A family of imperative programming languages developed between the 1950s and 1970s. ALGOL introduced structured programming concepts, block scope, and recursive functions, influencing languages like Pascal, C, and Ada. Variants include ALGOL 58, ALGOL 60, and ALGOL 68, each refining syntax and capabilities.\cite{algol-history}}
 
-\newglossaryentry{bcpl}{
-	name=BCPL (Basic Combined Programming Language),
-	description={A procedural, imperative programming language developed by Martin Richards in 1967. BCPL was designed for writing compilers and influenced later languages like B and C. It introduced features such as typeless data handling and curly braces for block structuring, making it a foundational step in programming language evolution.}
-}
+\nxGLSE{bcpl}{Basic Combined Programming Language (BCPL)}{A procedural, imperative programming language developed by Martin Richards in 1967. BCPL was designed for writing compilers and influenced later languages like B and C. It introduced features such as typeless data handling and curly braces for block structuring, making it a foundational step in programming language evolution.\cite{bcpl-history}}
 
-\setabbreviationstyle[acronym]{long-short}
-\newacronym{svm}{SVM}{support vector machine}
-\newacronym{ai}{AI}{Artificial Intelligence}
+\nxGLSE{martin_richards}{Martin Richards}{A British computer scientist born in 1940, known for developing the BCPL programming language, which influenced B and C. He contributed to system software portability and worked on the TRIPOS operating system. Richards was a senior lecturer at the University of Cambridge and received the IEEE Computer Pioneer Award in 2003.\cite{martin_richards-profile}}
 
+\nxGLSE{ken_thompson}{Ken Thompson}{An American computer scientist born in 1943, best known for designing and implementing the Unix operating system at Bell Labs. He also created the B programming language, which directly influenced C, and co-developed the UTF-8 encoding standard. Thompson received the Turing Award in 1983 for his contributions to operating systems and programming languages.\cite{ken_thompson-profile}}
+
+\nxGLSE{b_language}{B Programming Language}{A typeless, procedural programming language developed at Bell Labs by Ken Thompson and Dennis Ritchie in 1969. B was derived from BCPL and designed for system programming and language development. It introduced simplified syntax and influenced the creation of the C programming language. \cite{b_language-history}}
+
+\nxGLSE{tripos}{TRIPOS}{A lightweight, multi-tasking operating system developed between 1976 and 1982 at the University of Cambridge by Dr. Martin Richards and others. Originally designed for minicomputers, TRIPOS was later adapted for the Motorola 68000 architecture and became the foundation for AmigaDOS, the disk operating system of Amiga computers.\cite{tripos-history}}
+
+\nxGLSE{minix}{Minix}{A Unix-like operating system developed in 1987 by Andrew S. Tanenbaum. Designed for educational purposes, Minix features a microkernel architecture, promoting modularity and reliability. It influenced the development of Linux, as Linus Torvalds studied Minix while creating the Linux kernel.\cite{minix-history}}
+
+\nxGLSE{tanenbaum}{Andrew S. Tanenbaum}{An American-born Dutch computer scientist, born in 1944, known for developing the Minix operating system and authoring influential textbooks on computer science. Tanenbaum was a professor at Vrije Universiteit Amsterdam and contributed to research in distributed systems and microkernels.\cite{tanenbaum-profile}}
+
+\nxGLSE{torvalds}{Linus Torvalds}{A Finnish-American software engineer born in 1969, best known for creating the Linux kernel and the Git version control system. Torvalds developed Linux in 1991 while studying at the University of Helsinki, leading to one of the most widely used open-source operating systems. He has received numerous awards, including the Millennium Technology Prize and the IEEE Computer Pioneer Award.\cite{torvalds-profile}}
+
+\nxGLSE{git}{Git}{A distributed version control system created by Linus Torvalds in 2005. Git allows developers to track changes, collaborate efficiently, and manage source code across multiple repositories. It features branching, merging, and decentralized workflows, making it a cornerstone of modern software development.\cite{git-history}}
+
+\nxGLSE{linux}{Linux}{An open-source, Unix-like operating system based on the Linux kernel, first released by Linus Torvalds in 1991. Linux is widely used in servers, embedded systems, and personal computing, with distributions like Ubuntu, Debian, Fedora, and Arch Linux. It powers most of the world's supercomputers and is a cornerstone of modern computing.\cite{linux-history}}
+
+
+\nxGLSE{utf8}{UTF-8}{A character encoding standard defined by the Unicode Consortium. UTF-8 is a variable-length encoding that supports all Unicode characters while maintaining backward compatibility with ASCII. It is widely used in web development, operating systems, and international text processing.\cite{utf8-history}}
+
+\nxGLSE{brian_kernighan}{Brian Kernighan}{A Canadian computer scientist born in 1942, known for his contributions to Unix and co-authoring *The C Programming Language* with Dennis Ritchie. Kernighan worked at Bell Labs, helped develop AWK and AMPL, and contributed to algorithms for graph partitioning and the traveling salesman problem. He has been a professor at Princeton University since 2000.\cite{kernighan-profile}}
+
+\nxGLSE{c_book}{The C Programming Language}{A seminal book on C programming, authored by Brian W. Kernighan and Dennis M. Ritchie. First published in 1978, it serves as both a tutorial and reference for the C language, defining its syntax, structure, and best practices. The second edition (1988) covers ANSI C, making it a foundational text for programmers.\cite{c_book-history}}
+
+\nxGLSE{c_book_first}{The C Programming Language (First Edition)}{The first edition of \textbf{The C Programming Language} by Brian W. Kernighan and Dennis M. Ritchie was published in 1978. It introduced the C programming language and served as the de facto standard for early C development. This edition is often referred to as K\&R C and laid the foundation for ANSI C.\cite{c_book_first-history}}
+
+\nxGLSE{ansi}{ANSI (American National Standards Institute)}{A private, nonprofit organization founded in 1918 that oversees the development of voluntary consensus standards in the United States. ANSI coordinates U.S. standards with international standards to ensure compatibility and global trade efficiency. It accredits organizations that develop standards for products, services, and personnel.\cite{ansi-history}}
+
+\nxGLSE{c89}{C89}{The first standardized version of the C programming language, formally known as ANSI X3.159-1989. C89 was ratified by the American National Standards Institute (ANSI) in 1989 and later adopted by ISO as C90. It introduced function prototypes, standard libraries, and improved portability, forming the foundation for modern C development.\cite{c89-history}}
+
+\nxGLSE{c90}{C90}{The ISO-standardized version of the C programming language, formally known as ISO/IEC 9899:1990. C90 is functionally identical to ANSI C89, with only formatting changes. It introduced standard libraries, function prototypes, and improved portability, forming the foundation for later C standards.\cite{c90-history}}
+
+\nxGLSE{iso}{ISO (International Organization for Standardization)}{A global organization founded in 1947 that develops and publishes international standards across various industries, including technology, manufacturing, and environmental management. ISO standards ensure quality, safety, and efficiency in global trade and industry.\cite{iso-history}}
+
+\nxGLSE{iec}{IEC (International Electrotechnical Commission)}{A global organization founded in 1906 that develops international standards for electrical, electronic, and related technologies. IEC standards ensure compatibility, safety, and efficiency in electrical systems worldwide.\cite{iec-history}}
+
+\nxGLSE{ieee}{IEEE (Institute of Electrical and Electronics Engineers)}{The world's largest technical professional organization, dedicated to advancing technology for the benefit of humanity. IEEE sets global standards, publishes research, and hosts conferences in fields like electrical engineering, computing, and telecommunications.\cite{ieee-history}}
+
+\nxGLSE{kr}{K\&R}{A common abbreviation for Brian Kernighan and Dennis Ritchie, co-authors of The C Programming Language. The term K\&R C refers to the version of the C programming language described in the first edition of their book, published in 1978, which served as the de facto standard before ANSI C.\cite{kr-history}}
+
+\nxGLSE{c99}{C99}{A standardized version of the C programming language, formally known as ISO/IEC 9899:1999. C99 introduced several enhancements over C90, including inline functions, variable-length arrays, new data types like `long long int`, and improved IEEE floating-point support. It also added single-line comments (`//`), designated initializers, and type-generic macros.\cite{c99-history}}
+
+\nxGLSE{c11}{C11}{A standardized version of the C programming language, formally known as ISO/IEC 9899:2011. C11 introduced features such as improved multi-threading support, atomic operations, type-generic macros, and better Unicode handling. It also removed the unsafe `gets` function and added static assertions for compile-time checks.\cite{c11-history}}
+
+\nxGLSE{c18}{C18}{A minor revision of the C programming language standard, formally known as ISO/IEC 9899:2018. C18, sometimes referred to as C17, primarily focused on fixing defects in C11 without introducing new language features. It clarified existing specifications and improved compiler compatibility.\cite{c18-history}}
+
+\nxGLSE{stroustrup}{Bjarne Stroustrup}{A Danish computer scientist born in 1950, best known for designing and implementing the C++ programming language. Stroustrup developed C++ at Bell Labs in the 1980s, combining object-oriented programming with C's efficiency. He has authored several influential books on C++ and has held academic and industry positions, including at Texas A&M University and Columbia University.\cite{stroustrup-profile}}
+
+\nxGLSE{cpp}{C++}{A high-level, general-purpose programming language created by Bjarne Stroustrup in 1985 as an extension of C. C++ supports multiple programming paradigms, including object-oriented, procedural, and generic programming. It is widely used in system software, game development, embedded systems, and high-performance applications.\cite{cpp-history}}
+
+\nxGLSE{golang}{Go (Golang)}{A statically typed, compiled programming language designed at Google in 2007 by Robert Griesemer, Rob Pike, and Ken Thompson. Go is known for its simplicity, efficiency, and built-in concurrency features. It is widely used in cloud computing, networking, and microservices development.\cite{golang-history}}
+
+\nxGLSE{rust}{Rust}{A systems programming language designed for safety, concurrency, and performance. Rust was created by Graydon Hoare in 2006 and later developed by Mozilla. It features memory safety without a garbage collector, a strong type system, and an ownership model that prevents data races. Rust is widely used in web development, embedded systems, and operating systems.\cite{rust-history}}
+
+\nxGLSE{java}{Java}{A high-level, object-oriented programming language designed by James Gosling and released by Sun Microsystems in 1995. Java follows the write once, run anywhere principle, meaning compiled Java code can run on any platform with a Java Virtual Machine (JVM). It is widely used in enterprise applications, mobile development (Android), and web services.\cite{java-history}}
+
+\nxGLSE{csharp}{C\#}{A modern, object-oriented programming language developed by Microsoft and first released in 2000. C\# is designed for building applications on the .NET framework and supports multiple paradigms, including structured, imperative, functional, and concurrent programming. It is widely used in enterprise software, game development (via Unity), and cloud-based applications.\cite{csharp-history}}
+
+\nxGLSE{javascript}{JavaScript}{A high-level, multi-paradigm programming language that is a core technology of the World Wide Web, alongside HTML and CSS. JavaScript was created by Brendan Eich in 1995 and is widely used for client-side and server-side development. It supports event-driven, functional, and object-oriented programming.\cite{javascript-history}}
+
+\nxGLSE{python}{Python}{A high-level, general-purpose programming language designed by Guido van Rossum and first released in 1991. Python emphasizes readability, simplicity, and versatility, supporting multiple programming paradigms such as procedural, object-oriented, and functional programming. It is widely used in web development, data science, artificial intelligence, and automation.\cite{python-history}}
+
+\nxGLSE{ruby}{Ruby}{A high-level, general-purpose programming language designed by Yukihiro Matz Matsumoto in 1995. Ruby emphasizes simplicity and productivity, featuring an elegant syntax that is easy to read and write. It supports multiple programming paradigms, including object-oriented, functional, and procedural programming. Ruby is widely used in web development, particularly with the Ruby on Rails framework.\cite{ruby-history}}
+
+\nxGLSE{stroustrup}{Bjarne Stroustrup}{A Danish computer scientist best known for designing and implementing the C++ programming language. Stroustrup developed C++ at Bell Labs in the 1980s, combining object-oriented programming with C's efficiency. He has authored several influential books on C++ and has held academic and industry positions at institutions like Texas A\&M University and Columbia University.\cite{stroustrup-history}}
+
+\nxGLSE{jvm}{Java Virtual Machine (JVM)}{An abstract computing machine that enables a computer to run Java programs and other languages that compile to Java bytecode. The JVM is a key part of the Java Runtime Environment (JRE), ensuring platform independence and efficient execution through features like Just-In-Time (JIT) compilation and automated memory management.\cite{jvm-history}}
+
+\nxGLSE{dotnet}{.NET}{A free, open-source development platform created by Microsoft for building applications across multiple environments, including web, mobile, desktop, and cloud. .NET supports multiple programming languages, including C\#, F\#, and Visual Basic, and provides a unified runtime and extensive libraries for efficient software development.\cite{dotnet-history}}
+
+\nxGLSE{postgresql}{PostgreSQL}{A powerful, open-source object-relational database system with over 35 years of active development. PostgreSQL is known for its reliability, feature robustness, and performance. It supports advanced data types, extensibility, and ACID-compliant transactions, making it a popular choice for enterprise applications, web services, and data analytics.\cite{postgresql-history}}
+
+
+\nxGLSE{mariadb}{MariaDB}{An open-source relational database management system (RDBMS) that originated as a fork of MySQL in 2009. MariaDB was developed by the original MySQL creators to ensure continued open-source availability. It offers high performance, scalability, and compatibility with MySQL while introducing new features such as advanced storage engines and improved security.\cite{mariadb-history}}
+
+\nxGLSE{mongodb}{MongoDB}{A modern, document-oriented NoSQL database system designed for scalability, flexibility, and high performance. MongoDB stores data in JSON-like documents, allowing dynamic schemas and efficient querying. It is widely used in web applications, big data processing, and cloud-based services.\cite{mongodb-history}}
+
+\nxGLSE{sqlite}{SQLite}{A lightweight, self-contained, and high-reliability relational database management system (RDBMS). SQLite is an embedded database engine written in C, widely used in mobile applications, browsers, and embedded systems. It is known for its simplicity, cross-platform compatibility, and minimal setup requirements.\cite{sqlite-history}}
+
+\nxGLSE{mysql}{MySQL}{An open-source relational database management system (RDBMS) originally developed by MySQL AB in 1995 and later acquired by Oracle Corporation. MySQL is widely used for web applications, enterprise solutions, and cloud-based services due to its scalability, reliability, and support for structured query language (SQL).\cite{mysql-history}}
+
+\nxGLSE{macos}{macOS}{A Unix-based operating system developed by Apple for Mac computers. Originally released as Mac OS X in 2001, macOS is known for its sleek design, security features, and seamless integration with Apple's ecosystem. It supports advanced multitasking, a powerful terminal, and a wide range of applications for productivity and creativity.\cite{macos-history}}
+
+\nxGLSE{windows}{Microsoft Windows}{A family of graphical operating systems developed by Microsoft, first released in 1985. Windows provides a user-friendly interface, supports a wide range of applications, and is widely used for personal computing, enterprise environments, and gaming. The latest versions, such as Windows 11, introduce AI-powered features, enhanced security, and productivity tools.\cite{windows-history}}
+
+\nxGLSE{llvm}{LLVM}{A collection of modular and reusable compiler and toolchain technologies originally developed as a research project at the University of Illinois. LLVM provides a modern, SSA-based compilation strategy capable of supporting both static and dynamic compilation for various programming languages. It includes components such as Clang, LLDB, and libc++, making it widely used in compiler development and optimization.\cite{llvm-history}}
+
+\nxGLSE{llvm}{LLVM}{A collection of modular and reusable compiler and toolchain technologies originally developed as a research project at the University of Illinois. LLVM provides a modern, SSA-based compilation strategy capable of supporting both static and dynamic compilation for various programming languages. It includes components such as Clang, LLDB, and libc++, making it widely used in compiler development and optimization.\cite{llvm-history}}
+
+\nxGLSE{iot}{Internet of Things (IoT)}{A network of physical devices embedded with sensors, software, and connectivity that enables them to collect and exchange data. IoT technology is widely used in smart homes, healthcare, industrial automation, and transportation systems, improving efficiency, automation, and data-driven decision-making.\cite{iot-history}}
+
+\nxGLSE{posix}{Portable Operating System Interface (POSIX)}{A family of standards specified by the IEEE for maintaining compatibility between operating systems. POSIX defines application programming interfaces (APIs), command-line shells, and utility interfaces to ensure software portability across Unix-like and other operating systems. It was originally developed in the 1980s and continues to evolve with modern computing needs.\cite{posix-history}}

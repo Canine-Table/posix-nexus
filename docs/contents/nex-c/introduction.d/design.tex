@@ -1,11 +1,15 @@
-\begin{NxSSBox}[][Design Philosophy of C]
+\begin{NxSSBox}[][Design Philosophy and How C Was Designed]
 	\begin{NxIDBox}
-		C was designed with efficiency, portability, and minimalism in mind. Unlike many modern languages that prioritize abstraction, C maintains a fine balance between human-readable syntax and low-level hardware control.
-		\nxTopicD{sssec:Simplicity and Minimalism}{Simplicity and Minimalism} C avoids excessive abstraction, keeping the language simple, predictable, and lightweight.
-		\nxTopicD{sssec:Portability and Flexibility}{Portability and Flexibility} Programs written in C can run across multiple hardware architectures with little modification.
-		\nxTopicD{sssec:Efficiency and Direct Hardware Access}{Efficiency and Direct Hardware Access} C provides precise memory control, allowing developers to write highly optimized code.
+		C was designed to be simple, efficient, and portable, making it an ideal choice for system programming and embedded development. Its structured approach enables developers to write code that is both performant and predictable.
+	\end{NxIDBox}
+	\begin{NxIDBoxL}
+		\nxTopicD{Minimalism and Predictability} Why C avoids excessive abstraction, ensuring execution remains transparent.
+		\nxTopicD{Portability and Flexibility} The design choices that allow C code to run across multiple architectures with minimal modifications.
+		%\nxTopicD{Direct Hardware Access} How C provides fine-grained control over memory and hardware resources.
 	\end{NxIDBoxL}
 \end{NxSSBox}
 
-\input{./contents/nex-c/introduction.d/design.d/simple.tex}
+\input{./contents/nex-c/introduction.d/design.d/minimal.tex}
+\input{./contents/nex-c/introduction.d/design.d/portable.tex}
+\input{./contents/nex-c/introduction.d/design.d/hardware.tex}
 

@@ -1,7 +1,42 @@
-\glossaryentry{ALGOL?\glossentry{algol}|setentrycounter[]{page}"\glsnumberformat}{IV}
-\glossaryentry{BCPL (Basic Combined Programming Language)?\glossentry{bcpl}|setentrycounter[]{page}"\glsnumberformat}{IV}
-\glossaryentry{C?\glossentry{c_language}|setentrycounter[]{page}"\glsnumberformat}{IV}
-\glossaryentry{Dennis Ritchie?\glossentry{ritchie}|setentrycounter[]{page}"\glsnumberformat}{IV}
-\glossaryentry{Bell Labs?\glossentry{bell_labs}|setentrycounter[]{page}"\glsnumberformat}{IV}
-\glossaryentry{ALGOL?\glossentry{algol}|setentrycounter[]{page}"\glsnumberformat}{V}
-\glossaryentry{BCPL (Basic Combined Programming Language)?\glossentry{bcpl}|setentrycounter[]{page}"\glsnumberformat}{V}
+\glossaryentry{"\bfseries "\textcolor {nex.primary.link}{Bell Labs}?\glossentry{bell_labs}|setentrycounter[]{page}"\glsnumberformat}{IV}
+\glossaryentry{"\bfseries "\textcolor {nex.primary.link}{C}?\glossentry{c_language}|setentrycounter[]{page}"\glsnumberformat}{V}
+\glossaryentry{"\bfseries "\textcolor {nex.primary.link}{Basic Combined Programming Language (BCPL)}?\glossentry{bcpl}|setentrycounter[]{page}"\glsnumberformat}{V}
+\glossaryentry{"\bfseries "\textcolor {nex.primary.link}{Martin Richards}?\glossentry{martin_richards}|setentrycounter[]{page}"\glsnumberformat}{V}
+\glossaryentry{"\bfseries "\textcolor {nex.primary.link}{Ken Thompson}?\glossentry{ken_thompson}|setentrycounter[]{page}"\glsnumberformat}{V}
+\glossaryentry{"\bfseries "\textcolor {nex.primary.link}{UNIX}?\glossentry{unix}|setentrycounter[]{page}"\glsnumberformat}{V}
+\glossaryentry{"\bfseries "\textcolor {nex.primary.link}{B Programming Language}?\glossentry{b_language}|setentrycounter[]{page}"\glsnumberformat}{V}
+\glossaryentry{"\bfseries "\textcolor {nex.primary.link}{Dennis Ritchie}?\glossentry{dennis_ritchie}|setentrycounter[]{page}"\glsnumberformat}{V}
+\glossaryentry{"\bfseries "\textcolor {nex.primary.link}{The C Programming Language (First Edition)}?\glossentry{c_book_first}|setentrycounter[]{page}"\glsnumberformat}{VI}
+\glossaryentry{"\bfseries "\textcolor {nex.primary.link}{Brian Kernighan}?\glossentry{brian_kernighan}|setentrycounter[]{page}"\glsnumberformat}{VI}
+\glossaryentry{"\bfseries "\textcolor {nex.primary.link}{K"\&R}?\glossentry{kr}|setentrycounter[]{page}"\glsnumberformat}{VIII}
+\glossaryentry{"\bfseries "\textcolor {nex.primary.link}{ANSI (American National Standards Institute)}?\glossentry{ansi}|setentrycounter[]{page}"\glsnumberformat}{IX}
+\glossaryentry{"\bfseries "\textcolor {nex.primary.link}{C89}?\glossentry{c89}|setentrycounter[]{page}"\glsnumberformat}{IX}
+\glossaryentry{"\bfseries "\textcolor {nex.primary.link}{ISO (International Organization for Standardization)}?\glossentry{iso}|setentrycounter[]{page}"\glsnumberformat}{IX}
+\glossaryentry{"\bfseries "\textcolor {nex.primary.link}{C99}?\glossentry{c99}|setentrycounter[]{page}"\glsnumberformat}{IX}
+\glossaryentry{"\bfseries "\textcolor {nex.primary.link}{C11}?\glossentry{c11}|setentrycounter[]{page}"\glsnumberformat}{IX}
+\glossaryentry{"\bfseries "\textcolor {nex.primary.link}{C18}?\glossentry{c18}|setentrycounter[]{page}"\glsnumberformat}{IX}
+\glossaryentry{"\bfseries "\textcolor {nex.primary.link}{C++}?\glossentry{cpp}|setentrycounter[]{page}"\glsnumberformat}{X}
+\glossaryentry{"\bfseries "\textcolor {nex.primary.link}{Java}?\glossentry{java}|setentrycounter[]{page}"\glsnumberformat}{X}
+\glossaryentry{"\bfseries "\textcolor {nex.primary.link}{C"\#}?\glossentry{csharp}|setentrycounter[]{page}"\glsnumberformat}{X}
+\glossaryentry{"\bfseries "\textcolor {nex.primary.link}{Rust}?\glossentry{rust}|setentrycounter[]{page}"\glsnumberformat}{X}
+\glossaryentry{"\bfseries "\textcolor {nex.primary.link}{Bjarne Stroustrup}?\glossentry{stroustrup}|setentrycounter[]{page}"\glsnumberformat}{X}
+\glossaryentry{"\bfseries "\textcolor {nex.primary.link}{Java Virtual Machine (JVM)}?\glossentry{jvm}|setentrycounter[]{page}"\glsnumberformat}{X}
+\glossaryentry{"\bfseries "\textcolor {nex.primary.link}{.NET}?\glossentry{dotnet}|setentrycounter[]{page}"\glsnumberformat}{X}
+\glossaryentry{"\bfseries "\textcolor {nex.primary.link}{Rust}?\glossentry{rust}|setentrycounter[]{page}"\glsnumberformat}{X}
+\glossaryentry{"\bfseries "\textcolor {nex.primary.link}{Go (Golang)}?\glossentry{golang}|setentrycounter[]{page}"\glsnumberformat}{X}
+\glossaryentry{"\bfseries "\textcolor {nex.primary.link}{UNIX}?\glossentry{unix}|setentrycounter[]{page}"\glsnumberformat}{XI}
+\glossaryentry{"\bfseries "\textcolor {nex.primary.link}{Linux}?\glossentry{linux}|setentrycounter[]{page}"\glsnumberformat}{XI}
+\glossaryentry{"\bfseries "\textcolor {nex.primary.link}{Microsoft Windows}?\glossentry{windows}|setentrycounter[]{page}"\glsnumberformat}{XI}
+\glossaryentry{"\bfseries "\textcolor {nex.primary.link}{macOS}?\glossentry{macos}|setentrycounter[]{page}"\glsnumberformat}{XI}
+\glossaryentry{"\bfseries "\textcolor {nex.primary.link}{PostgreSQL}?\glossentry{postgresql}|setentrycounter[]{page}"\glsnumberformat}{XI}
+\glossaryentry{"\bfseries "\textcolor {nex.primary.link}{SQLite}?\glossentry{sqlite}|setentrycounter[]{page}"\glsnumberformat}{XI}
+\glossaryentry{"\bfseries "\textcolor {nex.primary.link}{MongoDB}?\glossentry{mongodb}|setentrycounter[]{page}"\glsnumberformat}{XI}
+\glossaryentry{"\bfseries "\textcolor {nex.primary.link}{MariaDB}?\glossentry{mariadb}|setentrycounter[]{page}"\glsnumberformat}{XI}
+\glossaryentry{"\bfseries "\textcolor {nex.primary.link}{MySQL}?\glossentry{mysql}|setentrycounter[]{page}"\glsnumberformat}{XI}
+\glossaryentry{"\bfseries "\textcolor {nex.primary.link}{C89}?\glossentry{c89}|setentrycounter[]{page}"\glsnumberformat}{XII}
+\glossaryentry{"\bfseries "\textcolor {nex.primary.link}{C99}?\glossentry{c99}|setentrycounter[]{page}"\glsnumberformat}{XII}
+\glossaryentry{"\bfseries "\textcolor {nex.primary.link}{C11}?\glossentry{c11}|setentrycounter[]{page}"\glsnumberformat}{XII}
+\glossaryentry{"\bfseries "\textcolor {nex.primary.link}{C18}?\glossentry{c18}|setentrycounter[]{page}"\glsnumberformat}{XII}
+\glossaryentry{"\bfseries "\textcolor {nex.primary.link}{Internet of Things (IoT)}?\glossentry{iot}|setentrycounter[]{page}"\glsnumberformat}{XXI}
+\glossaryentry{"\bfseries "\textcolor {nex.primary.link}{Portable Operating System Interface (POSIX)}?\glossentry{posix}|setentrycounter[]{page}"\glsnumberformat}{XXIII}
+\glossaryentry{"\bfseries "\textcolor {nex.primary.link}{LLVM}?\glossentry{llvm}|setentrycounter[]{page}"\glsnumberformat}{XXIV}
