@@ -33,10 +33,63 @@
 \glossaryentry{"\bfseries "\textcolor {nex.primary.link}{MongoDB}?\glossentry{mongodb}|setentrycounter[]{page}"\glsnumberformat}{XI}
 \glossaryentry{"\bfseries "\textcolor {nex.primary.link}{MariaDB}?\glossentry{mariadb}|setentrycounter[]{page}"\glsnumberformat}{XI}
 \glossaryentry{"\bfseries "\textcolor {nex.primary.link}{MySQL}?\glossentry{mysql}|setentrycounter[]{page}"\glsnumberformat}{XI}
-\glossaryentry{"\bfseries "\textcolor {nex.primary.link}{C89}?\glossentry{c89}|setentrycounter[]{page}"\glsnumberformat}{XII}
-\glossaryentry{"\bfseries "\textcolor {nex.primary.link}{C99}?\glossentry{c99}|setentrycounter[]{page}"\glsnumberformat}{XII}
-\glossaryentry{"\bfseries "\textcolor {nex.primary.link}{C11}?\glossentry{c11}|setentrycounter[]{page}"\glsnumberformat}{XII}
-\glossaryentry{"\bfseries "\textcolor {nex.primary.link}{C18}?\glossentry{c18}|setentrycounter[]{page}"\glsnumberformat}{XII}
+\glossaryentry{"\bfseries "\textcolor {nex.primary.link}{C89}?\glossentry{c89}|setentrycounter[]{page}"\glsnumberformat}{XI}
+\glossaryentry{"\bfseries "\textcolor {nex.primary.link}{C99}?\glossentry{c99}|setentrycounter[]{page}"\glsnumberformat}{XI}
+\glossaryentry{"\bfseries "\textcolor {nex.primary.link}{C11}?\glossentry{c11}|setentrycounter[]{page}"\glsnumberformat}{XI}
+\glossaryentry{"\bfseries "\textcolor {nex.primary.link}{C18}?\glossentry{c18}|setentrycounter[]{page}"\glsnumberformat}{XI}
 \glossaryentry{"\bfseries "\textcolor {nex.primary.link}{Internet of Things (IoT)}?\glossentry{iot}|setentrycounter[]{page}"\glsnumberformat}{XXI}
-\glossaryentry{"\bfseries "\textcolor {nex.primary.link}{Portable Operating System Interface (POSIX)}?\glossentry{posix}|setentrycounter[]{page}"\glsnumberformat}{XXIII}
+\glossaryentry{"\bfseries "\textcolor {nex.primary.link}{ARM Cortex-M}?\glossentry{arm_cortex_m}|setentrycounter[]{page}"\glsnumberformat}{XXII}
+\glossaryentry{"\bfseries "\textcolor {nex.primary.link}{AVR Microcontroller}?\glossentry{avr}|setentrycounter[]{page}"\glsnumberformat}{XXII}
+\glossaryentry{"\bfseries "\textcolor {nex.primary.link}{ESP32}?\glossentry{esp32}|setentrycounter[]{page}"\glsnumberformat}{XXII}
+\glossaryentry{"\bfseries "\textcolor {nex.primary.link}{Interrupt-Driven Programming}?\glossentry{interrupt_driven}|setentrycounter[]{page}"\glsnumberformat}{XXII}
+\glossaryentry{"\bfseries "\textcolor {nex.primary.link}{Real-Time Operating System (RTOS)}?\glossentry{rtos}|setentrycounter[]{page}"\glsnumberformat}{XXII}
+\glossaryentry{"\bfseries "\textcolor {nex.primary.link}{FreeRTOS}?\glossentry{freertos}|setentrycounter[]{page}"\glsnumberformat}{XXII}
+\glossaryentry{"\bfseries "\textcolor {nex.primary.link}{VxWorks}?\glossentry{vxworks}|setentrycounter[]{page}"\glsnumberformat}{XXII}
+\glossaryentry{"\bfseries "\textcolor {nex.primary.link}{RTEMS}?\glossentry{rtems}|setentrycounter[]{page}"\glsnumberformat}{XXII}
+\glossaryentry{"\bfseries "\textcolor {nex.primary.link}{Portable Operating System Interface (POSIX)}?\glossentry{posix}|setentrycounter[]{page}"\glsnumberformat}{XXIV}
 \glossaryentry{"\bfseries "\textcolor {nex.primary.link}{LLVM}?\glossentry{llvm}|setentrycounter[]{page}"\glsnumberformat}{XXIV}
+\glossaryentry{"\bfseries "\textcolor {nex.primary.link}{Application Programming Interfaces (APIs)}?\glossentry{apis}|setentrycounter[]{page}"\glsnumberformat}{XXV}
+\glossaryentry{"\bfseries "\textcolor {nex.primary.link}{OpenGL}?\glossentry{opengl}|setentrycounter[]{page}"\glsnumberformat}{XXVI}
+\glossaryentry{"\bfseries "\textcolor {nex.primary.link}{Vulkan}?\glossentry{vulkan}|setentrycounter[]{page}"\glsnumberformat}{XXVI}
+\glossaryentry{"\bfseries "\textcolor {nex.primary.link}{DirectX}?\glossentry{directx}|setentrycounter[]{page}"\glsnumberformat}{XXVI}
+\glossaryentry{"\bfseries "\textcolor {nex.primary.link}{Havok}?\glossentry{havok}|setentrycounter[]{page}"\glsnumberformat}{XXVI}
+\glossaryentry{"\bfseries "\textcolor {nex.primary.link}{PhysX}?\glossentry{physx}|setentrycounter[]{page}"\glsnumberformat}{XXVI}
+\glossaryentry{"\bfseries "\textcolor {nex.primary.link}{Bullet Physics}?\glossentry{bullet}|setentrycounter[]{page}"\glsnumberformat}{XXVI}
+\glossaryentry{"\bfseries "\textcolor {nex.primary.link}{Basic Linear Algebra Subprograms (BLAS)}?\glossentry{blas}|setentrycounter[]{page}"\glsnumberformat}{XXVI}
+\glossaryentry{"\bfseries "\textcolor {nex.primary.link}{LAPACK}?\glossentry{lapack}|setentrycounter[]{page}"\glsnumberformat}{XXVI}
+\glossaryentry{"\bfseries "\textcolor {nex.primary.link}{Fastest Fourier Transform in the West (FFTW)}?\glossentry{fftw}|setentrycounter[]{page}"\glsnumberformat}{XXVI}
+\glossaryentry{"\bfseries "\textcolor {nex.primary.link}{GNU Compiler Collection (GCC)}?\glossentry{gcc}|setentrycounter[]{page}"\glsnumberformat}{XXVII}
+\glossaryentry{"\bfseries "\textcolor {nex.primary.link}{GNU}?\glossentry{gnu}|setentrycounter[]{page}"\glsnumberformat}{XXIX}
+\glossaryentry{"\bfseries "\textcolor {nex.primary.link}{C}?\glossentry{c_language}|setentrycounter[]{page}"\glsnumberformat}{XXIX}
+\glossaryentry{"\bfseries "\textcolor {nex.primary.link}{C++}?\glossentry{cpp}|setentrycounter[]{page}"\glsnumberformat}{XXIX}
+\glossaryentry{"\bfseries "\textcolor {nex.primary.link}{Fortran}?\glossentry{fortran}|setentrycounter[]{page}"\glsnumberformat}{XXIX}
+\glossaryentry{"\bfseries "\textcolor {nex.primary.link}{Ada}?\glossentry{ada}|setentrycounter[]{page}"\glsnumberformat}{XXIX}
+\glossaryentry{"\bfseries "\textcolor {nex.primary.link}{COBOL}?\glossentry{cobol}|setentrycounter[]{page}"\glsnumberformat}{XXIX}
+\glossaryentry{"\bfseries "\textcolor {nex.primary.link}{Go (Golang)}?\glossentry{golang}|setentrycounter[]{page}"\glsnumberformat}{XXIX}
+\glossaryentry{"\bfseries "\textcolor {nex.primary.link}{Linux}?\glossentry{linux}|setentrycounter[]{page}"\glsnumberformat}{XXX}
+\glossaryentry{"\bfseries "\textcolor {nex.primary.link}{Berkeley Software Distribution (BSD)}?\glossentry{bsd}|setentrycounter[]{page}"\glsnumberformat}{XXX}
+\glossaryentry{"\bfseries "\textcolor {nex.primary.link}{macOS}?\glossentry{macos}|setentrycounter[]{page}"\glsnumberformat}{XXX}
+\glossaryentry{"\bfseries "\textcolor {nex.primary.link}{x86 Architecture}?\glossentry{x86}|setentrycounter[]{page}"\glsnumberformat}{XXX}
+\glossaryentry{"\bfseries "\textcolor {nex.primary.link}{ARM Architecture}?\glossentry{arm}|setentrycounter[]{page}"\glsnumberformat}{XXX}
+\glossaryentry{"\bfseries "\textcolor {nex.primary.link}{PowerPC}?\glossentry{powerpc}|setentrycounter[]{page}"\glsnumberformat}{XXX}
+\glossaryentry{"\bfseries "\textcolor {nex.primary.link}{MIPS Architecture}?\glossentry{mips}|setentrycounter[]{page}"\glsnumberformat}{XXX}
+\glossaryentry{"\bfseries "\textcolor {nex.primary.link}{RISC-V}?\glossentry{riscv}|setentrycounter[]{page}"\glsnumberformat}{XXX}
+\glossaryentry{"\bfseries "\textcolor {nex.primary.link}{GNU Debugger (GDB)}?\glossentry{gdb}|setentrycounter[]{page}"\glsnumberformat}{XXXI}
+\glossaryentry{"\bfseries "\textcolor {nex.primary.link}{Valgrind}?\glossentry{valgrind}|setentrycounter[]{page}"\glsnumberformat}{XXXI}
+\glossaryentry{"\bfseries "\textcolor {nex.primary.link}{Undefined Behavior Sanitizer (UBSan)}?\glossentry{ubsan}|setentrycounter[]{page}"\glsnumberformat}{XXXII}
+\glossaryentry{"\bfseries "\textcolor {nex.primary.link}{Position Independent Executable (PIE)}?\glossentry{pie}|setentrycounter[]{page}"\glsnumberformat}{XXXIV}
+\glossaryentry{"\bfseries "\textcolor {nex.primary.link}{Address Space Layout Randomization (ASLR)}?\glossentry{aslr}|setentrycounter[]{page}"\glsnumberformat}{XXXIV}
+\glossaryentry{"\bfseries "\textcolor {nex.primary.link}{Address Space Layout Randomization (ASLR)}?\glossentry{aslr}|setentrycounter[]{page}"\glsnumberformat}{XXXV}
+\glossaryentry{"\bfseries "\textcolor {nex.primary.link}{Data Execution Prevention (DEP)}?\glossentry{dep}|setentrycounter[]{page}"\glsnumberformat}{XXXV}
+\glossaryentry{"\bfseries "\textcolor {nex.primary.link}{Stack Smashing Protector (SSP)}?\glossentry{ssp}|setentrycounter[]{page}"\glsnumberformat}{XXXV}
+\glossaryentry{"\bfseries "\textcolor {nex.primary.link}{Control Flow Integrity (CFI)}?\glossentry{cfi}|setentrycounter[]{page}"\glsnumberformat}{XXXV}
+\glossaryentry{"\bfseries "\textcolor {nex.primary.link}{Return-Oriented Programming (ROP)}?\glossentry{rop}|setentrycounter[]{page}"\glsnumberformat}{XXXVI}
+\glossaryentry{"\bfseries "\textcolor {nex.primary.link}{Data Execution Prevention (DEP)}?\glossentry{dep}|setentrycounter[]{page}"\glsnumberformat}{XXXVI}
+\glossaryentry{"\bfseries "\textcolor {nex.primary.link}{Address Space Layout Randomization (ASLR)}?\glossentry{aslr}|setentrycounter[]{page}"\glsnumberformat}{XXXVI}
+\glossaryentry{"\bfseries "\textcolor {nex.primary.link}{Position Independent Executable (PIE)}?\glossentry{pie}|setentrycounter[]{page}"\glsnumberformat}{XXXVI}
+\glossaryentry{"\bfseries "\textcolor {nex.primary.link}{Stack Smashing Protector (SSP)}?\glossentry{ssp}|setentrycounter[]{page}"\glsnumberformat}{XXXVI}
+\glossaryentry{"\bfseries "\textcolor {nex.primary.link}{Data Execution Prevention (DEP)}?\glossentry{dep}|setentrycounter[]{page}"\glsnumberformat}{XXXVI}
+\glossaryentry{"\bfseries "\textcolor {nex.primary.link}{Clang}?\glossentry{clang}|setentrycounter[]{page}"\glsnumberformat}{XXXVI}
+\glossaryentry{"\bfseries "\textcolor {nex.primary.link}{LLVM}?\glossentry{llvm}|setentrycounter[]{page}"\glsnumberformat}{XXXVI}
+\glossaryentry{"\bfseries "\textcolor {nex.primary.link}{Link Time Optimization (LTO)}?\glossentry{lto}|setentrycounter[]{page}"\glsnumberformat}{XXXVIII}
+\glossaryentry{"\bfseries "\textcolor {nex.primary.link}{Make}?\glossentry{make}|setentrycounter[]{page}"\glsnumberformat}{XXXIX}

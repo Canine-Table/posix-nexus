@@ -1,0 +1,425 @@
+\begin{NxSSSBox}[breakable][Make]
+	\begin{NxIDBox}
+		\nxGID{make} is a widely used build automation tool that simplifies compilation, dependency tracking, and project management across various platforms. It processes \textbg{Makefiles} to determine how programs should be compiled, linked, and maintained efficiently.
+	\end{NxIDBox}
+	\begin{NxIDBoxL}
+		\nxTopicD{Overview and History} How Make became a fundamental tool for managing large-scale software builds.
+		\nxTopicD{Makefile Structure} Understanding targets, dependencies, rules, and how Make interprets them.
+		\nxTopicD{Command Execution and Recipes} How Make executes shell commands based on defined rules.
+		\nxTopicD{Conditional Execution} Using `ifdef`, `ifeq`, and conditionals to manage platform-specific builds.
+		\nxTopicD{Automatic Variables} Leveraging built-in variables (`\$\@`, `\$<`, `\$\nxHat`) for efficient rule definitions.
+		\nxTopicD{Environment Variables} Integrating system-wide configurations into Makefile execution.
+		\nxTopicD{Implicit Rules and Pattern Matching} How Make automatically determines compilation steps and handles wildcard patterns.
+		\nxTopicD{Macros and Variables} Defining reusable constructs to enhance portability and maintainability.
+		\nxTopicD{Parallel Compilation (-j)} Speeding up builds using multithreading support.
+		\nxTopicD{Dependency Tracking} Understanding how Make intelligently avoids unnecessary recompilation.
+		\nxTopicD{Phony Targets} How `.PHONY` helps prevent conflicts and improves execution reliability.
+		\nxTopicD{Recursive Make} Managing complex builds across multiple directories.
+		\nxTopicD{Include Directives} Using `include` statements to modularize Makefiles.
+		\nxTopicD{Debugging and Troubleshooting} How to diagnose build errors and optimize Makefile execution.
+		\nxTopicD{Alternative Implementations} Comparing GNU Make with BSD Make and other variations.
+	\end{NxIDBoxL}
+\end{NxSSSBox}
+
+\begin{NxSSSSBox}[breakable][Overview and History]
+	\begin{NxIDBox}
+		\textbf{Make} was originally developed in the 1970s as a solution to automate software builds, reducing manual effort by tracking dependencies.
+	\end{NxIDBox}
+	\begin{NxIDBox}
+		\textbf{Unix Make} was one of the earliest implementations, designed to process source files efficiently and avoid unnecessary recompilation.
+	\end{NxIDBox}
+	\begin{NxIDBox}
+		Over time, \textbf{GNU Make} became the most widely used variant, introducing advanced features such as automatic dependency resolution, parallel execution, and extensibility.
+	\end{NxIDBox}
+	\begin{NxIDBox}
+		\textbf{Modern Make implementations} continue to evolve, adapting to complex build environments, large-scale projects, and cross-platform software development.
+	\end{NxIDBox}
+\end{NxSSSSBox}
+
+\begin{NxSSSSBox}[breakable][Makefile Structure]
+	\begin{NxIDBox}
+		A \textbf{Makefile} defines build instructions using a structured set of \textbf{targets, dependencies, and recipes}. It acts as a blueprint for compilation and linking.
+	\end{NxIDBox}
+\end{NxSSSSBox}
+
+\begin{NxCodeBox}{make}{dark, sdwA, frmE, title={Each \textbf{target} specifies an output file, dependencies list the required files, and commands define how to build the target. The fundamental structure follows}}
+	target: dependencies
+		command
+\end{NxCodeBox}
+
+\bigskip
+
+\begin{NxSSSSBox}[breakable]
+	\begin{NxIDBox}
+		Makefiles allow multi-stage builds, ensuring different compilation steps are properly separated for modular and efficient execution.
+	\end{NxIDBox}
+	\begin{NxIDBox}
+		Using a well-structured Makefile improves code maintainability by reducing redundant build steps and enabling precise control over dependency tracking.
+	\end{NxIDBox}
+\end{NxSSSSBox}
+
+\begin{NxSSSSBox}[breakable][Command Execution and Recipes]
+	\begin{NxIDBox}
+		Make executes commands (recipes) based on build rules, defining how targets are created.
+	\end{NxIDBox}
+\end{NxSSSSBox}
+
+\begin{NxCodeBox}{make}{dark, sdwA, frmE, title={Recipes consist of shell commands that run sequentially for each target. Example}}
+	all:
+		gcc main.c -o main
+\end{NxCodeBox}
+
+\bigskip
+
+\begin{NxSSSSBox}[breakable]
+	\begin{NxIDBox}
+		Each command must be indented with a \textbf{tab character}, not spaces.
+	\end{NxIDBox}
+\end{NxSSSSBox}
+
+\begin{NxCodeBox}{make}{dark, sdwA, frmE, title={If a command fails, Make stops execution unless `-` is prefixed to ignore errors}}
+	clean:
+		-rm *.o
+\end{NxCodeBox}
+
+\bigskip
+
+\begin{NxSSSSBox}[breakable][Conditional Execution]
+	\begin{NxIDBox}
+		Conditional execution in Make allows rules to vary based on platform or configuration.
+		\begin{NxListDark}
+			\nxIDSTopic{ifeq} (Equal comparison)
+			\nxIDSTopic{ifneq} (Not equal comparison)
+			\nxIDSTopic{ifdef} (Check if a variable is defined)
+			\nxIDSTopic{ifndef} (Check if a variable is NOT defined)
+			\nxIDSTopic{else} (Alternative condition)
+			\nxIDSTopic{endif} (End of conditional block)
+		\end{NxListDark}
+	\end{NxIDBox}
+\end{NxSSSSBox}
+
+\begin{NxCodeBox}{make}{dark, sdwA, frmE, title={Using `ifdef` to check variable existence}}
+	ifdef DEBUG
+		CFLAGS += -g
+	endif
+\end{NxCodeBox}
+
+\bigskip
+
+\begin{NxCodeBox}{make}{dark, sdwA, frmE, title={Using `ifeq` to compare values}}
+	ifeq ($(OS), Linux)
+		CFLAGS += -DLINUX
+	else
+		CFLAGS += -DOTHER_OS
+	endif
+\end{NxCodeBox}
+
+\bigskip
+
+\begin{NxSSSSBox}[breakable][Automatic Variables]
+	\begin{NxIDBox}
+		Make provides built-in automatic variables to simplify rule definitions.
+		Common automatic variables:
+		\begin{NxListDark}
+			\nxIDSTopic{\$\nxAt} Target filename
+			\nxIDSTopic{\$<} First dependency
+			\nxIDSTopic{\$\nxHat}  All dependencies
+		\end{NxListDark}
+	\end{NxIDBox}
+\end{NxSSSSBox}
+
+\begin{NxCodeBox}{make}{dark, sdwA, frmE, title={Example usage}}
+	%.o: %.c
+		gcc -c $< -o $@
+\end{NxCodeBox}
+
+\bigskip
+
+\begin{NxSSSSBox}[][Environment Variables]
+	\begin{NxIDBox}
+		Make inherits environment variables, allowing system-wide settings to influence builds.
+	\end{NxIDBox}
+\end{NxSSSSBox}
+
+\begin{NxCodeBox}{make}{dark, sdwA, frmE, title={This allows `CC` to be overridden externally. Example of passing an environment variable}}
+	CC ?= gcc
+\end{NxCodeBox}
+
+\bigskip
+
+\begin{NxCodeBox}{make}{dark, sdwA, frmE, title={Running Make with custom settings}}
+		CC=clang make
+\end{NxCodeBox}
+
+\bigskip
+
+\begin{NxSSSSBox}[breakable][Implicit Rules and Pattern Matching]
+	\begin{NxIDBox}
+		\textbf{Make} provides built-in \textbf{implicit rules} that automatically determine how files should be compiled without explicit instructions.
+	\end{NxIDBox}
+	\begin{NxIDBox}
+		By default, Make assumes common suffix rules:
+		\begin{NxListDark}
+			\nxIDSTopic{\%.o: \%.c} Compiling `.c` files into `.o` object files.
+			\nxIDSTopic{\%.o: \%.cpp} Compiling `.cpp` files into `.o` files using C++ compilers.
+			\nxIDSTopic{\%.out: \%.o} Linking object files into executables.
+		\end{NxListDark}
+	\end{NxIDBox}
+\end{NxSSSSBox}
+
+\begin{NxCodeBox}{make}{dark, sdwA, frmE, title={Example of an implicit rule}}
+	%.o: %.c
+		gcc -c $< -o $@
+\end{NxCodeBox}
+
+\bigskip
+
+\begin{NxSSSSBox}[breakable]
+	\begin{NxIDBox}
+		\textbf{Pattern matching} (`\%`) enables dynamic rule expansion, ensuring flexibility across multiple file types.
+	\end{NxIDBox}
+\end{NxSSSSBox}
+
+\begin{NxSSSSBox}[breakable][Macros and Variables]
+	\begin{NxIDBox}
+		Make supports \textbf{user-defined variables} to simplify rule definitions and improve reusability.
+	\end{NxIDBox}
+	\begin{NxIDBox}
+		Commonly used variables:
+		\begin{NxListDark}
+			\nxIDSTopic{CC} Compiler name, such as `gcc` or `clang`.
+			\nxIDSTopic{CFLAGS} Compiler flags for optimizations and warnings.
+			\nxIDSTopic{LDFLAGS} Linker flags for controlling executable output.
+			\nxIDSTopic{OBJS} List of object files to compile.
+		\end{NxListDark}
+	\end{NxIDBox}
+	\begin{NxIDBox}
+		Make file functions:
+		\begin{NxListDark}
+			\nxIDSTopic{\$(filter-out PATTERN, LIST)} function removes any words in LIST that match PATTERN
+			\nxIDSTopic{\$(wildcard PATTERN)} Expands to a list of files matching PATTERN
+			\nxIDSTopic{\$(patsubst SEARCH, REPLACE, LIST)} Performs pattern substitution on a list.
+			\nxIDSTopic{\$(filter MATCHES, LIST)} Keeps only matching elements from LIST
+			\nxIDSTopic{\$(shell COMMAND)} Runs a shell command and captures its output.
+			\nxIDSTopic{\$(foreach VAR, LIST, ACTION)} Iterates over LIST, applying ACTION to each item.
+			\nxIDSTopic{\$(if CONDITION, TRUE_VALUE, FALSE_VALUE)} Conditional evaluation.
+		\end{NxListDark}
+	\end{NxIDBox}
+	\begin{NxIDBox}
+		Make file macros:
+		\begin{NxListDark}
+			\nxIDSTopic{\nxAt} Only prevents Make from printing the command itself.
+			\nxIDSTopic{\nxDash} Ignores errors for a command.
+			\nxIDSTopic{\nxAdd} Forces execution in parallel mode
+		\end{NxListDark}
+	\end{NxIDBox}
+	\begin{NxIDBox}
+		Command modifiers:
+		\begin{NxListDark}
+			\nxIDSTopic{=} The value is evaluated each time it's used.
+			\nxIDSTopic{:=} The value is evaluated once at definition, preventing repeated
+			\nxIDSTopic{?=} Assigns a value only if the variable was not already set.
+		\end{NxListDark}
+	\end{NxIDBox}
+\end{NxSSSSBox}
+
+\begin{NxCodeBox}{make}{dark, sdwA, frmE, title={Auto-detect `.c` files dynamically}}
+	SRC_FILES := $(wildcard src/*.c)
+	OBJ_FILES := $(patsubst %.c, %.o, $(SRC_FILES))
+	CC ?= gcc
+	all:
+		$(CC) -o program $(OBJ_FILES)
+\end{NxCodeBox}
+
+\bigskip
+
+\begin{NxCodeBox}{make}{dark, sdwA, frmE, title={Use `-g` flag only when debugging}}
+	CFLAGS := -O2 -Wall
+	CFLAGS := $(if $(DEBUG), $(CFLAGS) -g, $(CFLAGS))
+
+	all:
+		gcc $(CFLAGS) -o program main.c
+\end{NxCodeBox}
+
+\bigskip
+
+\begin{NxCodeBox}{make}{dark, sdwA, frmE, title={Convert `.c` files to `.o` files}}
+	SRC_FILES := main.c utils.c
+	OBJ_FILES := $(foreach src, $(SRC_FILES), $(patsubst %.c, %.o, $(src)))
+
+	all:
+		gcc -o program $(OBJ_FILES)
+\end{NxCodeBox}
+
+\bigskip
+
+\begin{NxCodeBox}{make}{dark, sdwA, frmE, title={Remove `-g` from compiler flags}}
+	CFLAGS := -Wall -O2 -g
+	CFLAGS := $(filter-out -g, $(CFLAGS))
+
+	all:
+		gcc $(CFLAGS) -o program main.c
+\end{NxCodeBox}
+
+\bigskip
+
+\begin{NxCodeBox}{make}{dark, sdwA, frmE, title={Get latest Git commit hash dynamically}}
+	GIT_VERSION := $(shell git rev-parse HEAD)
+
+	all:
+		@echo "Building version: $(GIT_VERSION)"
+\end{NxCodeBox}
+
+\bigskip
+
+\begin{NxCodeBox}{make}{dark, sdwA, frmE, title={Recursive Make}}
+	SUBDIRS = src tests docs
+
+	all:
+		@for dir in $(SUBDIRS); do $(MAKE) -C $$dir; done
+\end{NxCodeBox}
+
+\bigskip
+
+\begin{NxSSSSBox}[breakable]
+	\begin{NxIDBox}
+		Make variables can be overridden from the command line for dynamic build modifications.
+	\end{NxIDBox}
+\end{NxSSSSBox}
+
+\begin{NxCodeBox}{make}{dark, sdwA, frmE, title={Overriding variables at runtime}}
+	make CFLAGS=-Wall
+\end{NxCodeBox}
+
+\begin{NxSSSSBox}[breakable][Parallel Compilation (-j)]
+	\begin{NxIDBox}
+		Make supports \textbf{parallel execution} using the `-j` flag, enabling simultaneous compilation across multiple threads.
+	\end{NxIDBox}
+	\begin{NxIDBox}
+		Parallel compilation improves efficiency for large projects, significantly reducing build times.
+	\end{NxIDBox}
+\end{NxSSSSBox}
+
+\begin{NxCodeBox}{make}{dark, sdwA, frmE, title={Example usage}}
+	make -j4
+\end{NxCodeBox}
+
+\bigskip
+
+\begin{NxSSSSBox}[breakable]
+	\begin{NxIDBox}
+		Using `-j` with an optimal thread count ensures efficient CPU utilization without overwhelming system resources.
+	\end{NxIDBox}
+\end{NxSSSSBox}
+
+
+\begin{NxSSSSBox}[breakable][Dependency Tracking]
+	\begin{NxIDBox}
+		\textbf{Make} automatically tracks dependencies to prevent unnecessary recompilation, ensuring efficient build times.
+	\end{NxIDBox}
+\end{NxSSSSBox}
+
+\begin{NxCodeBox}{make}{dark, sdwA, frmE, title={Example}}
+	main.o: main.c defs.h
+		gcc -c main.c -o main.o
+\end{NxCodeBox}
+
+\bigskip
+
+\begin{NxSSSSBox}[breakable]
+	\begin{NxIDBox}
+		Here, \textbf{main.o} is rebuilt only if \textbf{main.c} or \textbf{defs.h} changes, preventing unnecessary compilations.
+	\end{NxIDBox}
+\end{NxSSSSBox}
+
+\begin{NxSSSSBox}[breakable][Phony Targets]
+	\begin{NxIDBox}
+		\textbf{Phony targets} are used for commands that don’t produce actual files but perform actions like cleaning or installing.
+	\end{NxIDBox}
+\end{NxSSSSBox}
+
+\begin{NxCodeBox}{make}{dark, sdwA, frmE, title={Declaring a phony target}}
+	.PHONY: clean
+	clean:
+		rm -f *.o
+\end{NxCodeBox}
+
+\bigskip
+
+\begin{NxSSSSBox}[breakable]
+	\begin{NxIDBox}
+		The `.PHONY` declaration prevents conflicts when an actual file named `clean` exists.
+	\end{NxIDBox}
+\end{NxSSSSBox}
+
+\begin{NxSSSSBox}[breakable][Recursive Make]
+	\begin{NxIDBox}
+		\textbf{Recursive Make} allows builds across multiple directories by invoking Make within subdirectories.
+	\end{NxIDBox}
+	\begin{NxIDBox}
+		This approach is useful for modular projects with independent build steps.
+	\end{NxIDBox}
+\end{NxSSSSBox}
+
+\begin{NxCodeBox}{make}{dark, sdwA, frmE, title={Example usage}}
+	subdir:
+		cd src && $(MAKE)
+\end{NxCodeBox}
+
+\bigskip
+
+\begin{NxSSSSBox}[breakable]
+	\begin{NxIDBox}
+		Recursive Make requires proper dependency handling to prevent unnecessary recompilations.
+	\end{NxIDBox}
+\end{NxSSSSBox}
+
+\begin{NxSSSSBox}[breakable][Include Directives]
+	\begin{NxIDBox}
+		Make supports the `include` directive to modularize large Makefiles and reuse common configurations.
+	\end{NxIDBox}
+\end{NxSSSSBox}
+
+\begin{NxCodeBox}{make}{dark, sdwA, frmE, title={Example usage}}
+	include common.mk
+\end{NxCodeBox}
+
+\bigskip
+
+\begin{NxSSSSBox}[breakable]
+	\begin{NxIDBox}
+		This imports `common.mk` at runtime, allowing multiple Makefiles to share common settings.
+	\end{NxIDBox}
+\end{NxSSSSBox}
+
+\begin{NxSSSSBox}[breakable][Debugging and Troubleshooting]
+	\begin{NxIDBox}
+		Make provides several \textbf{debugging options} to diagnose build failures and optimize execution behavior.
+	\end{NxIDBox}
+\end{NxSSSSBox}
+
+\begin{NxCodeBox}{make}{dark, sdwA, frmE, title={Printing detailed debugging output}}
+	make -d
+\end{NxCodeBox}
+
+\bigskip
+
+\begin{NxCodeBox}{make}{dark, sdwA, frmE, title={Displaying internal rule definitions}}
+	make -p
+\end{NxCodeBox}
+
+\begin{NxSSSSBox}[breakable][Alternative Implementations]
+	\begin{NxIDBox}
+		Multiple variations of \textbf{Make} exist across different platforms, each optimized for specific use cases.
+	\end{NxIDBox}
+	\begin{NxIDBox}
+		\textbf{GNU Make}: The most widely used and feature-rich implementation, supporting advanced dependency tracking and parallel execution.
+	\end{NxIDBox}
+	\begin{NxIDBox}
+		\textbf{BSD Make}: Used primarily in BSD-based systems, differing in syntax handling and dependency resolution.
+	\end{NxIDBox}
+	\begin{NxIDBox}
+		\textbf{Ninja}: A lightweight alternative optimized for high-speed parallel builds, commonly used for large projects.
+	\end{NxIDBox}
+\end{NxSSSSBox}
+

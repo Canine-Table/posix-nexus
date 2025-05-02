@@ -37,6 +37,11 @@ nx_cmd_editor()
 	g_nx_cmd nvim vim gvim vi
 }
 
+nx_cmd_cc()
+{
+	g_nx_cmd clang gcc cc
+}
+
 nx_cmd_tex_compiler()
 {
 	g_nx_cmd lualatex luatex latexmk pdflatex xelatex

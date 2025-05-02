@@ -78,6 +78,185 @@
       \verb https://www.ansi.org/
       \endverb
     \endentry
+    \entry{arm-history}{online}{}{}
+      \name{author}{1}{}{%
+        {{hash=4b09386aa992cbec2d7eb19bc0b65eec}{%
+           family={Holdings},
+           familyi={H\bibinitperiod},
+           given={Arm},
+           giveni={A\bibinitperiod}}}%
+      }
+      \strng{namehash}{4b09386aa992cbec2d7eb19bc0b65eec}
+      \strng{fullhash}{4b09386aa992cbec2d7eb19bc0b65eec}
+      \strng{fullhashraw}{4b09386aa992cbec2d7eb19bc0b65eec}
+      \strng{bibnamehash}{4b09386aa992cbec2d7eb19bc0b65eec}
+      \strng{authorbibnamehash}{4b09386aa992cbec2d7eb19bc0b65eec}
+      \strng{authornamehash}{4b09386aa992cbec2d7eb19bc0b65eec}
+      \strng{authorfullhash}{4b09386aa992cbec2d7eb19bc0b65eec}
+      \strng{authorfullhashraw}{4b09386aa992cbec2d7eb19bc0b65eec}
+      \field{extraname}{1}
+      \field{sortinit}{3}
+      \field{sortinithash}{ad6fe7482ffbd7b9f99c9e8b5dccd3d7}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{note}{Accessed: 30 April 2025}
+      \field{title}{ARM Architecture Overview}
+      \field{year}{2025}
+      \verb{urlraw}
+      \verb https://en.wikipedia.org/wiki/ARM_architecture_family
+      \endverb
+      \verb{url}
+      \verb https://en.wikipedia.org/wiki/ARM_architecture_family
+      \endverb
+    \endentry
+    \entry{arm_cortex_m-history}{online}{}{}
+      \name{author}{1}{}{%
+        {{hash=4b09386aa992cbec2d7eb19bc0b65eec}{%
+           family={Holdings},
+           familyi={H\bibinitperiod},
+           given={Arm},
+           giveni={A\bibinitperiod}}}%
+      }
+      \strng{namehash}{4b09386aa992cbec2d7eb19bc0b65eec}
+      \strng{fullhash}{4b09386aa992cbec2d7eb19bc0b65eec}
+      \strng{fullhashraw}{4b09386aa992cbec2d7eb19bc0b65eec}
+      \strng{bibnamehash}{4b09386aa992cbec2d7eb19bc0b65eec}
+      \strng{authorbibnamehash}{4b09386aa992cbec2d7eb19bc0b65eec}
+      \strng{authornamehash}{4b09386aa992cbec2d7eb19bc0b65eec}
+      \strng{authorfullhash}{4b09386aa992cbec2d7eb19bc0b65eec}
+      \strng{authorfullhashraw}{4b09386aa992cbec2d7eb19bc0b65eec}
+      \field{extraname}{2}
+      \field{sortinit}{4}
+      \field{sortinithash}{9381316451d1b9788675a07e972a12a7}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{note}{Accessed: 30 April 2025}
+      \field{title}{ARM Cortex-M Architecture Overview}
+      \field{year}{2025}
+      \verb{urlraw}
+      \verb https://en.wikipedia.org/wiki/ARM_Cortex-M
+      \endverb
+      \verb{url}
+      \verb https://en.wikipedia.org/wiki/ARM_Cortex-M
+      \endverb
+    \endentry
+    \entry{avr-history}{online}{}{}
+      \name{author}{1}{}{%
+        {{hash=5998bf99c9f587bb0118404bcf82b0b7}{%
+           family={Technology},
+           familyi={T\bibinitperiod},
+           given={Microchip},
+           giveni={M\bibinitperiod}}}%
+      }
+      \strng{namehash}{5998bf99c9f587bb0118404bcf82b0b7}
+      \strng{fullhash}{5998bf99c9f587bb0118404bcf82b0b7}
+      \strng{fullhashraw}{5998bf99c9f587bb0118404bcf82b0b7}
+      \strng{bibnamehash}{5998bf99c9f587bb0118404bcf82b0b7}
+      \strng{authorbibnamehash}{5998bf99c9f587bb0118404bcf82b0b7}
+      \strng{authornamehash}{5998bf99c9f587bb0118404bcf82b0b7}
+      \strng{authorfullhash}{5998bf99c9f587bb0118404bcf82b0b7}
+      \strng{authorfullhashraw}{5998bf99c9f587bb0118404bcf82b0b7}
+      \field{sortinit}{5}
+      \field{sortinithash}{20e9b4b0b173788c5dace24730f47d8c}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{note}{Accessed: 30 April 2025}
+      \field{title}{AVR Microcontroller Overview}
+      \field{year}{2025}
+      \verb{urlraw}
+      \verb https://en.wikipedia.org/wiki/AVR_microcontrollers
+      \endverb
+      \verb{url}
+      \verb https://en.wikipedia.org/wiki/AVR_microcontrollers
+      \endverb
+    \endentry
+    \entry{ada-history}{online}{}{}
+      \name{author}{1}{}{%
+        {{hash=6940df84c33f3ade80d5cb9e5e0e84b5}{%
+           family={Clearinghouse},
+           familyi={C\bibinitperiod},
+           given={Ada\bibnamedelima Information},
+           giveni={A\bibinitperiod\bibinitdelim I\bibinitperiod}}}%
+      }
+      \strng{namehash}{6940df84c33f3ade80d5cb9e5e0e84b5}
+      \strng{fullhash}{6940df84c33f3ade80d5cb9e5e0e84b5}
+      \strng{fullhashraw}{6940df84c33f3ade80d5cb9e5e0e84b5}
+      \strng{bibnamehash}{6940df84c33f3ade80d5cb9e5e0e84b5}
+      \strng{authorbibnamehash}{6940df84c33f3ade80d5cb9e5e0e84b5}
+      \strng{authornamehash}{6940df84c33f3ade80d5cb9e5e0e84b5}
+      \strng{authorfullhash}{6940df84c33f3ade80d5cb9e5e0e84b5}
+      \strng{authorfullhashraw}{6940df84c33f3ade80d5cb9e5e0e84b5}
+      \field{sortinit}{6}
+      \field{sortinithash}{b33bc299efb3c36abec520a4c896a66d}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{note}{Accessed: 30 April 2025}
+      \field{title}{Ada Programming Language Overview}
+      \field{year}{2025}
+      \verb{urlraw}
+      \verb https://en.wikipedia.org/wiki/Ada_%28programming_language%29
+      \endverb
+      \verb{url}
+      \verb https://en.wikipedia.org/wiki/Ada_%28programming_language%29
+      \endverb
+    \endentry
+    \entry{aslr-history}{online}{}{}
+      \name{author}{1}{}{%
+        {{hash=0eb5155466e179a46e94fef876396192}{%
+           family={QNX},
+           familyi={Q\bibinitperiod}}}%
+      }
+      \strng{namehash}{0eb5155466e179a46e94fef876396192}
+      \strng{fullhash}{0eb5155466e179a46e94fef876396192}
+      \strng{fullhashraw}{0eb5155466e179a46e94fef876396192}
+      \strng{bibnamehash}{0eb5155466e179a46e94fef876396192}
+      \strng{authorbibnamehash}{0eb5155466e179a46e94fef876396192}
+      \strng{authornamehash}{0eb5155466e179a46e94fef876396192}
+      \strng{authorfullhash}{0eb5155466e179a46e94fef876396192}
+      \strng{authorfullhashraw}{0eb5155466e179a46e94fef876396192}
+      \field{sortinit}{7}
+      \field{sortinithash}{108d0be1b1bee9773a1173443802c0a3}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{note}{Accessed: 1 May 2025}
+      \field{title}{Address Space Layout Randomization (ASLR)}
+      \field{year}{2025}
+      \verb{urlraw}
+      \verb https://www.qnx.com/developers/docs/8.0/com.qnx.doc.security.system/topic/manual/aslr.html
+      \endverb
+      \verb{url}
+      \verb https://www.qnx.com/developers/docs/8.0/com.qnx.doc.security.system/topic/manual/aslr.html
+      \endverb
+    \endentry
+    \entry{apis-history}{online}{}{}
+      \name{author}{1}{}{%
+        {{hash=cbf44511d041dc6d1dd73cc0c033122c}{%
+           family={IBM},
+           familyi={I\bibinitperiod}}}%
+      }
+      \strng{namehash}{cbf44511d041dc6d1dd73cc0c033122c}
+      \strng{fullhash}{cbf44511d041dc6d1dd73cc0c033122c}
+      \strng{fullhashraw}{cbf44511d041dc6d1dd73cc0c033122c}
+      \strng{bibnamehash}{cbf44511d041dc6d1dd73cc0c033122c}
+      \strng{authorbibnamehash}{cbf44511d041dc6d1dd73cc0c033122c}
+      \strng{authornamehash}{cbf44511d041dc6d1dd73cc0c033122c}
+      \strng{authorfullhash}{cbf44511d041dc6d1dd73cc0c033122c}
+      \strng{authorfullhashraw}{cbf44511d041dc6d1dd73cc0c033122c}
+      \field{extraname}{1}
+      \field{sortinit}{8}
+      \field{sortinithash}{a231b008ebf0ecbe0b4d96dcc159445f}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{note}{Accessed: 30 April 2025}
+      \field{title}{What is an API? Application Programming Interface Overview}
+      \field{year}{2025}
+      \verb{urlraw}
+      \verb https://www.ibm.com/think/topics/api
+      \endverb
+      \verb{url}
+      \verb https://www.ibm.com/think/topics/api
+      \endverb
+    \endentry
     \entry{b_language-history}{online}{}{}
       \name{author}{1}{}{%
         {{hash=c127a79ef32d9cc2a02a7facecef3dca}{%
@@ -95,8 +274,8 @@
       \strng{authorfullhash}{c127a79ef32d9cc2a02a7facecef3dca}
       \strng{authorfullhashraw}{c127a79ef32d9cc2a02a7facecef3dca}
       \field{extraname}{1}
-      \field{sortinit}{3}
-      \field{sortinithash}{ad6fe7482ffbd7b9f99c9e8b5dccd3d7}
+      \field{sortinit}{9}
+      \field{sortinithash}{0a5ebc79d83c96b6579069544c73c7d4}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{note}{Accessed: 30 April 2025}
@@ -126,8 +305,8 @@
       \strng{authorfullhash}{1291c54b2fd8c807fd6e16670475b7a0}
       \strng{authorfullhashraw}{1291c54b2fd8c807fd6e16670475b7a0}
       \field{extraname}{1}
-      \field{sortinit}{4}
-      \field{sortinithash}{9381316451d1b9788675a07e972a12a7}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{note}{Accessed: 29 April 2025}
@@ -138,6 +317,35 @@
       \endverb
       \verb{url}
       \verb https://en.wikipedia.org/wiki/BCPL
+      \endverb
+    \endentry
+    \entry{blas-history}{online}{}{}
+      \name{author}{1}{}{%
+        {{hash=0f4a7e403f954f9106ddf68470de9074}{%
+           family={Netlib},
+           familyi={N\bibinitperiod}}}%
+      }
+      \strng{namehash}{0f4a7e403f954f9106ddf68470de9074}
+      \strng{fullhash}{0f4a7e403f954f9106ddf68470de9074}
+      \strng{fullhashraw}{0f4a7e403f954f9106ddf68470de9074}
+      \strng{bibnamehash}{0f4a7e403f954f9106ddf68470de9074}
+      \strng{authorbibnamehash}{0f4a7e403f954f9106ddf68470de9074}
+      \strng{authornamehash}{0f4a7e403f954f9106ddf68470de9074}
+      \strng{authorfullhash}{0f4a7e403f954f9106ddf68470de9074}
+      \strng{authorfullhashraw}{0f4a7e403f954f9106ddf68470de9074}
+      \field{extraname}{1}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{note}{Accessed: 30 April 2025}
+      \field{title}{Basic Linear Algebra Subprograms (BLAS) Overview}
+      \field{year}{2025}
+      \verb{urlraw}
+      \verb https://en.wikipedia.org/wiki/Basic_Linear_Algebra_Subprograms
+      \endverb
+      \verb{url}
+      \verb https://en.wikipedia.org/wiki/Basic_Linear_Algebra_Subprograms
       \endverb
     \endentry
     \entry{bell_labs-history}{online}{}{}
@@ -156,8 +364,8 @@
       \strng{authornamehash}{2703f70a5856b0ad337e94db48be0f5c}
       \strng{authorfullhash}{2703f70a5856b0ad337e94db48be0f5c}
       \strng{authorfullhashraw}{2703f70a5856b0ad337e94db48be0f5c}
-      \field{sortinit}{5}
-      \field{sortinithash}{20e9b4b0b173788c5dace24730f47d8c}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{note}{Accessed: 29 April 2025}
@@ -168,6 +376,37 @@
       \endverb
       \verb{url}
       \verb https://www.bell-labs.com/
+      \endverb
+    \endentry
+    \entry{bsd-history}{online}{}{}
+      \name{author}{1}{}{%
+        {{hash=7e4e0fbc4f670a73d5c274f092eb014a}{%
+           family={Group},
+           familyi={G\bibinitperiod},
+           given={Computer\bibnamedelimb Systems\bibnamedelima Research},
+           giveni={C\bibinitperiod\bibinitdelim S\bibinitperiod\bibinitdelim R\bibinitperiod}}}%
+      }
+      \strng{namehash}{7e4e0fbc4f670a73d5c274f092eb014a}
+      \strng{fullhash}{7e4e0fbc4f670a73d5c274f092eb014a}
+      \strng{fullhashraw}{7e4e0fbc4f670a73d5c274f092eb014a}
+      \strng{bibnamehash}{7e4e0fbc4f670a73d5c274f092eb014a}
+      \strng{authorbibnamehash}{7e4e0fbc4f670a73d5c274f092eb014a}
+      \strng{authornamehash}{7e4e0fbc4f670a73d5c274f092eb014a}
+      \strng{authorfullhash}{7e4e0fbc4f670a73d5c274f092eb014a}
+      \strng{authorfullhashraw}{7e4e0fbc4f670a73d5c274f092eb014a}
+      \field{extraname}{1}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{note}{Accessed: 29 April 2025}
+      \field{title}{History of BSD}
+      \field{year}{1978}
+      \verb{urlraw}
+      \verb https://en.wikipedia.org/wiki/Berkeley_Software_Distribution
+      \endverb
+      \verb{url}
+      \verb https://en.wikipedia.org/wiki/Berkeley_Software_Distribution
       \endverb
     \endentry
     \entry{stroustrup-profile}{online}{}{}
@@ -187,8 +426,8 @@
       \strng{authorfullhash}{4975813514faee20fb6fcdb39a08af6f}
       \strng{authorfullhashraw}{4975813514faee20fb6fcdb39a08af6f}
       \field{extraname}{1}
-      \field{sortinit}{6}
-      \field{sortinithash}{b33bc299efb3c36abec520a4c896a66d}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{note}{Accessed: 30 April 2025}
@@ -217,8 +456,8 @@
       \strng{authornamehash}{158322bf704e40c3e9e80c48baaa29a4}
       \strng{authorfullhash}{158322bf704e40c3e9e80c48baaa29a4}
       \strng{authorfullhashraw}{158322bf704e40c3e9e80c48baaa29a4}
-      \field{sortinit}{7}
-      \field{sortinithash}{108d0be1b1bee9773a1173443802c0a3}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{note}{Accessed: 30 April 2025}
@@ -229,6 +468,37 @@
       \endverb
       \verb{url}
       \verb https://en.wikipedia.org/wiki/Brian_Kernighan
+      \endverb
+    \endentry
+    \entry{bullet-history}{online}{}{}
+      \name{author}{1}{}{%
+        {{hash=c8c76b17834288bf3e8922895102e993}{%
+           family={Project},
+           familyi={P\bibinitperiod},
+           given={Bullet\bibnamedelima Physics},
+           giveni={B\bibinitperiod\bibinitdelim P\bibinitperiod}}}%
+      }
+      \strng{namehash}{c8c76b17834288bf3e8922895102e993}
+      \strng{fullhash}{c8c76b17834288bf3e8922895102e993}
+      \strng{fullhashraw}{c8c76b17834288bf3e8922895102e993}
+      \strng{bibnamehash}{c8c76b17834288bf3e8922895102e993}
+      \strng{authorbibnamehash}{c8c76b17834288bf3e8922895102e993}
+      \strng{authornamehash}{c8c76b17834288bf3e8922895102e993}
+      \strng{authorfullhash}{c8c76b17834288bf3e8922895102e993}
+      \strng{authorfullhashraw}{c8c76b17834288bf3e8922895102e993}
+      \field{extraname}{1}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{note}{Accessed: 30 April 2025}
+      \field{title}{Bullet Physics - Real-Time Simulation Engine}
+      \field{year}{2025}
+      \verb{urlraw}
+      \verb https://en.wikipedia.org/wiki/Bullet_(software)
+      \endverb
+      \verb{url}
+      \verb https://en.wikipedia.org/wiki/Bullet_(software)
       \endverb
     \endentry
     \entry{cpp-history}{online}{}{}
@@ -248,8 +518,8 @@
       \strng{authorfullhash}{4975813514faee20fb6fcdb39a08af6f}
       \strng{authorfullhashraw}{4975813514faee20fb6fcdb39a08af6f}
       \field{extraname}{2}
-      \field{sortinit}{8}
-      \field{sortinithash}{a231b008ebf0ecbe0b4d96dcc159445f}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{note}{Accessed: 30 April 2025}
@@ -277,8 +547,8 @@
       \strng{authorfullhash}{0828a8408614177181026ea908d5594a}
       \strng{authorfullhashraw}{0828a8408614177181026ea908d5594a}
       \field{extraname}{1}
-      \field{sortinit}{9}
-      \field{sortinithash}{0a5ebc79d83c96b6579069544c73c7d4}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{note}{Accessed: 30 April 2025}
@@ -334,8 +604,8 @@
       \strng{authornamehash}{d403321c965e6b83c88e6d3b1eca5270}
       \strng{authorfullhash}{d403321c965e6b83c88e6d3b1eca5270}
       \strng{authorfullhashraw}{d403321c965e6b83c88e6d3b1eca5270}
-      \field{sortinit}{1}
-      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{note}{Accessed: 30 April 2025}
@@ -363,8 +633,8 @@
       \strng{authorfullhash}{0828a8408614177181026ea908d5594a}
       \strng{authorfullhashraw}{0828a8408614177181026ea908d5594a}
       \field{extraname}{3}
-      \field{sortinit}{1}
-      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{note}{Accessed: 30 April 2025}
@@ -375,6 +645,36 @@
       \endverb
       \verb{url}
       \verb https://en.wikipedia.org/wiki/C99
+      \endverb
+    \endentry
+    \entry{cobol-history}{online}{}{}
+      \name{author}{1}{}{%
+        {{hash=5ecb42e28a0ab41db97128d1bed244ba}{%
+           family={Committee},
+           familyi={C\bibinitperiod},
+           given={COBOL\bibnamedelima Standards},
+           giveni={C\bibinitperiod\bibinitdelim S\bibinitperiod}}}%
+      }
+      \strng{namehash}{5ecb42e28a0ab41db97128d1bed244ba}
+      \strng{fullhash}{5ecb42e28a0ab41db97128d1bed244ba}
+      \strng{fullhashraw}{5ecb42e28a0ab41db97128d1bed244ba}
+      \strng{bibnamehash}{5ecb42e28a0ab41db97128d1bed244ba}
+      \strng{authorbibnamehash}{5ecb42e28a0ab41db97128d1bed244ba}
+      \strng{authornamehash}{5ecb42e28a0ab41db97128d1bed244ba}
+      \strng{authorfullhash}{5ecb42e28a0ab41db97128d1bed244ba}
+      \strng{authorfullhashraw}{5ecb42e28a0ab41db97128d1bed244ba}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{note}{Accessed: 30 April 2025}
+      \field{title}{COBOL - Common Business-Oriented Language Overview}
+      \field{year}{2025}
+      \verb{urlraw}
+      \verb https://en.wikipedia.org/wiki/COBOL
+      \endverb
+      \verb{url}
+      \verb https://en.wikipedia.org/wiki/COBOL
       \endverb
     \endentry
     \entry{csharp-history}{online}{}{}
@@ -392,8 +692,8 @@
       \strng{authorfullhash}{140864078aeca1c7c35b4beb33c53c34}
       \strng{authorfullhashraw}{140864078aeca1c7c35b4beb33c53c34}
       \field{extraname}{2}
-      \field{sortinit}{1}
-      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{note}{Accessed: 30 April 2025}
@@ -404,6 +704,67 @@
       \endverb
       \verb{url}
       \verb https://dotnet.microsoft.com/en-us/languages/csharp
+      \endverb
+    \endentry
+    \entry{clang-history}{online}{}{}
+      \name{author}{1}{}{%
+        {{hash=f000658615989a0cc093b2ca0b3b3574}{%
+           family={Project},
+           familyi={P\bibinitperiod},
+           given={LLVM},
+           giveni={L\bibinitperiod}}}%
+      }
+      \strng{namehash}{f000658615989a0cc093b2ca0b3b3574}
+      \strng{fullhash}{f000658615989a0cc093b2ca0b3b3574}
+      \strng{fullhashraw}{f000658615989a0cc093b2ca0b3b3574}
+      \strng{bibnamehash}{f000658615989a0cc093b2ca0b3b3574}
+      \strng{authorbibnamehash}{f000658615989a0cc093b2ca0b3b3574}
+      \strng{authornamehash}{f000658615989a0cc093b2ca0b3b3574}
+      \strng{authorfullhash}{f000658615989a0cc093b2ca0b3b3574}
+      \strng{authorfullhashraw}{f000658615989a0cc093b2ca0b3b3574}
+      \field{extraname}{2}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{note}{Accessed: 30 April 2025}
+      \field{title}{Clang - C Language Family Frontend}
+      \field{year}{2025}
+      \verb{urlraw}
+      \verb https://clang.llvm.org/
+      \endverb
+      \verb{url}
+      \verb https://clang.llvm.org/
+      \endverb
+    \endentry
+    \entry{cfi-history}{online}{}{}
+      \name{author}{1}{}{%
+        {{hash=26ace6802de398439e464688aab181a3}{%
+           family={Security},
+           familyi={S\bibinitperiod},
+           given={IEEE},
+           giveni={I\bibinitperiod}}}%
+      }
+      \strng{namehash}{26ace6802de398439e464688aab181a3}
+      \strng{fullhash}{26ace6802de398439e464688aab181a3}
+      \strng{fullhashraw}{26ace6802de398439e464688aab181a3}
+      \strng{bibnamehash}{26ace6802de398439e464688aab181a3}
+      \strng{authorbibnamehash}{26ace6802de398439e464688aab181a3}
+      \strng{authornamehash}{26ace6802de398439e464688aab181a3}
+      \strng{authorfullhash}{26ace6802de398439e464688aab181a3}
+      \strng{authorfullhashraw}{26ace6802de398439e464688aab181a3}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{note}{Accessed: 1 May 2025}
+      \field{title}{Control Flow Integrity - Overview and Implementation}
+      \field{year}{2025}
+      \verb{urlraw}
+      \verb https://www.ieee-security.org/TC/SP2014/papers/OutOfControl_c_OvercomingControl-FlowIntegrity.pdf
+      \endverb
+      \verb{url}
+      \verb https://www.ieee-security.org/TC/SP2014/papers/OutOfControl_c_OvercomingControl-FlowIntegrity.pdf
       \endverb
     \endentry
     \entry{c_language-history}{online}{}{}
@@ -423,8 +784,8 @@
       \strng{authorfullhash}{b4f4d2a91bba3eedc37498d8d8ea6a90}
       \strng{authorfullhashraw}{b4f4d2a91bba3eedc37498d8d8ea6a90}
       \field{extraname}{1}
-      \field{sortinit}{1}
-      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{note}{Accessed: 29 April 2025}
@@ -435,6 +796,35 @@
       \endverb
       \verb{url}
       \verb https://en.wikipedia.org/wiki/C_(programming_language)
+      \endverb
+    \endentry
+    \entry{dep-history}{online}{}{}
+      \name{author}{1}{}{%
+        {{hash=140864078aeca1c7c35b4beb33c53c34}{%
+           family={Microsoft},
+           familyi={M\bibinitperiod}}}%
+      }
+      \strng{namehash}{140864078aeca1c7c35b4beb33c53c34}
+      \strng{fullhash}{140864078aeca1c7c35b4beb33c53c34}
+      \strng{fullhashraw}{140864078aeca1c7c35b4beb33c53c34}
+      \strng{bibnamehash}{140864078aeca1c7c35b4beb33c53c34}
+      \strng{authorbibnamehash}{140864078aeca1c7c35b4beb33c53c34}
+      \strng{authornamehash}{140864078aeca1c7c35b4beb33c53c34}
+      \strng{authorfullhash}{140864078aeca1c7c35b4beb33c53c34}
+      \strng{authorfullhashraw}{140864078aeca1c7c35b4beb33c53c34}
+      \field{extraname}{3}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{note}{Accessed: 1 May 2025}
+      \field{title}{Data Execution Prevention (DEP) Overview}
+      \field{year}{2025}
+      \verb{urlraw}
+      \verb https://security.stackexchange.com/questions/18556/how-do-aslr-and-dep-work
+      \endverb
+      \verb{url}
+      \verb https://security.stackexchange.com/questions/18556/how-do-aslr-and-dep-work
       \endverb
     \endentry
     \entry{ritchie-profile}{online}{}{}
@@ -454,8 +844,8 @@
       \strng{authorfullhash}{b4f4d2a91bba3eedc37498d8d8ea6a90}
       \strng{authorfullhashraw}{b4f4d2a91bba3eedc37498d8d8ea6a90}
       \field{extraname}{2}
-      \field{sortinit}{1}
-      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{note}{Accessed: 29 April 2025}
@@ -466,6 +856,246 @@
       \endverb
       \verb{url}
       \verb https://en.wikipedia.org/wiki/Dennis_Ritchie
+      \endverb
+    \endentry
+    \entry{directx-history}{online}{}{}
+      \name{author}{1}{}{%
+        {{hash=140864078aeca1c7c35b4beb33c53c34}{%
+           family={Microsoft},
+           familyi={M\bibinitperiod}}}%
+      }
+      \strng{namehash}{140864078aeca1c7c35b4beb33c53c34}
+      \strng{fullhash}{140864078aeca1c7c35b4beb33c53c34}
+      \strng{fullhashraw}{140864078aeca1c7c35b4beb33c53c34}
+      \strng{bibnamehash}{140864078aeca1c7c35b4beb33c53c34}
+      \strng{authorbibnamehash}{140864078aeca1c7c35b4beb33c53c34}
+      \strng{authornamehash}{140864078aeca1c7c35b4beb33c53c34}
+      \strng{authorfullhash}{140864078aeca1c7c35b4beb33c53c34}
+      \strng{authorfullhashraw}{140864078aeca1c7c35b4beb33c53c34}
+      \field{extraname}{4}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{note}{Accessed: 30 April 2025}
+      \field{title}{DirectX - Graphics and Gaming API}
+      \field{year}{2025}
+      \verb{urlraw}
+      \verb https://learn.microsoft.com/en-us/windows/win32/directx
+      \endverb
+      \verb{url}
+      \verb https://learn.microsoft.com/en-us/windows/win32/directx
+      \endverb
+    \endentry
+    \entry{esp32-history}{online}{}{}
+      \name{author}{1}{}{%
+        {{hash=b1d5d0040be4721ebd66cd10ec68502c}{%
+           family={Systems},
+           familyi={S\bibinitperiod},
+           given={Espressif},
+           giveni={E\bibinitperiod}}}%
+      }
+      \strng{namehash}{b1d5d0040be4721ebd66cd10ec68502c}
+      \strng{fullhash}{b1d5d0040be4721ebd66cd10ec68502c}
+      \strng{fullhashraw}{b1d5d0040be4721ebd66cd10ec68502c}
+      \strng{bibnamehash}{b1d5d0040be4721ebd66cd10ec68502c}
+      \strng{authorbibnamehash}{b1d5d0040be4721ebd66cd10ec68502c}
+      \strng{authornamehash}{b1d5d0040be4721ebd66cd10ec68502c}
+      \strng{authorfullhash}{b1d5d0040be4721ebd66cd10ec68502c}
+      \strng{authorfullhashraw}{b1d5d0040be4721ebd66cd10ec68502c}
+      \field{extraname}{1}
+      \field{sortinit}{3}
+      \field{sortinithash}{ad6fe7482ffbd7b9f99c9e8b5dccd3d7}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{note}{Accessed: 30 April 2025}
+      \field{title}{ESP32 Microcontroller Overview}
+      \field{year}{2025}
+      \verb{urlraw}
+      \verb https://en.wikipedia.org/wiki/ESP32
+      \endverb
+      \verb{url}
+      \verb https://en.wikipedia.org/wiki/ESP32
+      \endverb
+    \endentry
+    \entry{fftw-history}{online}{}{}
+      \name{author}{1}{}{%
+        {{hash=7abc1a233092fc104c7af72a89c0829c}{%
+           family={MIT},
+           familyi={M\bibinitperiod}}}%
+      }
+      \strng{namehash}{7abc1a233092fc104c7af72a89c0829c}
+      \strng{fullhash}{7abc1a233092fc104c7af72a89c0829c}
+      \strng{fullhashraw}{7abc1a233092fc104c7af72a89c0829c}
+      \strng{bibnamehash}{7abc1a233092fc104c7af72a89c0829c}
+      \strng{authorbibnamehash}{7abc1a233092fc104c7af72a89c0829c}
+      \strng{authornamehash}{7abc1a233092fc104c7af72a89c0829c}
+      \strng{authorfullhash}{7abc1a233092fc104c7af72a89c0829c}
+      \strng{authorfullhashraw}{7abc1a233092fc104c7af72a89c0829c}
+      \field{sortinit}{3}
+      \field{sortinithash}{ad6fe7482ffbd7b9f99c9e8b5dccd3d7}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{note}{Accessed: 30 April 2025}
+      \field{title}{FFTW - Fastest Fourier Transform in the West}
+      \field{year}{2025}
+      \verb{urlraw}
+      \verb https://en.wikipedia.org/wiki/FFTW
+      \endverb
+      \verb{url}
+      \verb https://en.wikipedia.org/wiki/FFTW
+      \endverb
+    \endentry
+    \entry{fortran-history}{online}{}{}
+      \name{author}{1}{}{%
+        {{hash=cbf44511d041dc6d1dd73cc0c033122c}{%
+           family={IBM},
+           familyi={I\bibinitperiod}}}%
+      }
+      \strng{namehash}{cbf44511d041dc6d1dd73cc0c033122c}
+      \strng{fullhash}{cbf44511d041dc6d1dd73cc0c033122c}
+      \strng{fullhashraw}{cbf44511d041dc6d1dd73cc0c033122c}
+      \strng{bibnamehash}{cbf44511d041dc6d1dd73cc0c033122c}
+      \strng{authorbibnamehash}{cbf44511d041dc6d1dd73cc0c033122c}
+      \strng{authornamehash}{cbf44511d041dc6d1dd73cc0c033122c}
+      \strng{authorfullhash}{cbf44511d041dc6d1dd73cc0c033122c}
+      \strng{authorfullhashraw}{cbf44511d041dc6d1dd73cc0c033122c}
+      \field{extraname}{2}
+      \field{sortinit}{3}
+      \field{sortinithash}{ad6fe7482ffbd7b9f99c9e8b5dccd3d7}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{note}{Accessed: 30 April 2025}
+      \field{title}{Fortran - High-Performance Computing Language}
+      \field{year}{2025}
+      \verb{urlraw}
+      \verb https://en.wikipedia.org/wiki/Fortran
+      \endverb
+      \verb{url}
+      \verb https://en.wikipedia.org/wiki/Fortran
+      \endverb
+    \endentry
+    \entry{freertos-history}{online}{}{}
+      \name{author}{1}{}{%
+        {{hash=4d7e5f784bb5801c23c91ba37ed2649d}{%
+           family={Services},
+           familyi={S\bibinitperiod},
+           given={Amazon\bibnamedelima Web},
+           giveni={A\bibinitperiod\bibinitdelim W\bibinitperiod}}}%
+      }
+      \strng{namehash}{4d7e5f784bb5801c23c91ba37ed2649d}
+      \strng{fullhash}{4d7e5f784bb5801c23c91ba37ed2649d}
+      \strng{fullhashraw}{4d7e5f784bb5801c23c91ba37ed2649d}
+      \strng{bibnamehash}{4d7e5f784bb5801c23c91ba37ed2649d}
+      \strng{authorbibnamehash}{4d7e5f784bb5801c23c91ba37ed2649d}
+      \strng{authornamehash}{4d7e5f784bb5801c23c91ba37ed2649d}
+      \strng{authorfullhash}{4d7e5f784bb5801c23c91ba37ed2649d}
+      \strng{authorfullhashraw}{4d7e5f784bb5801c23c91ba37ed2649d}
+      \field{sortinit}{3}
+      \field{sortinithash}{ad6fe7482ffbd7b9f99c9e8b5dccd3d7}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{note}{Accessed: 30 April 2025}
+      \field{title}{FreeRTOS - Real-Time Operating System}
+      \field{year}{2025}
+      \verb{urlraw}
+      \verb https://www.freertos.org/
+      \endverb
+      \verb{url}
+      \verb https://www.freertos.org/
+      \endverb
+    \endentry
+    \entry{gcc-history}{online}{}{}
+      \name{author}{1}{}{%
+        {{hash=00ae9d24a05a816f79d242c1a8203976}{%
+           family={Project},
+           familyi={P\bibinitperiod},
+           given={GNU},
+           giveni={G\bibinitperiod}}}%
+      }
+      \strng{namehash}{00ae9d24a05a816f79d242c1a8203976}
+      \strng{fullhash}{00ae9d24a05a816f79d242c1a8203976}
+      \strng{fullhashraw}{00ae9d24a05a816f79d242c1a8203976}
+      \strng{bibnamehash}{00ae9d24a05a816f79d242c1a8203976}
+      \strng{authorbibnamehash}{00ae9d24a05a816f79d242c1a8203976}
+      \strng{authornamehash}{00ae9d24a05a816f79d242c1a8203976}
+      \strng{authorfullhash}{00ae9d24a05a816f79d242c1a8203976}
+      \strng{authorfullhashraw}{00ae9d24a05a816f79d242c1a8203976}
+      \field{extraname}{3}
+      \field{sortinit}{3}
+      \field{sortinithash}{ad6fe7482ffbd7b9f99c9e8b5dccd3d7}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{note}{Accessed: 30 April 2025}
+      \field{title}{GNU Compiler Collection (GCC) Overview}
+      \field{year}{2025}
+      \verb{urlraw}
+      \verb https://gcc.gnu.org/
+      \endverb
+      \verb{url}
+      \verb https://gcc.gnu.org/
+      \endverb
+    \endentry
+    \entry{gdb-history}{online}{}{}
+      \name{author}{1}{}{%
+        {{hash=00ae9d24a05a816f79d242c1a8203976}{%
+           family={Project},
+           familyi={P\bibinitperiod},
+           given={GNU},
+           giveni={G\bibinitperiod}}}%
+      }
+      \strng{namehash}{00ae9d24a05a816f79d242c1a8203976}
+      \strng{fullhash}{00ae9d24a05a816f79d242c1a8203976}
+      \strng{fullhashraw}{00ae9d24a05a816f79d242c1a8203976}
+      \strng{bibnamehash}{00ae9d24a05a816f79d242c1a8203976}
+      \strng{authorbibnamehash}{00ae9d24a05a816f79d242c1a8203976}
+      \strng{authornamehash}{00ae9d24a05a816f79d242c1a8203976}
+      \strng{authorfullhash}{00ae9d24a05a816f79d242c1a8203976}
+      \strng{authorfullhashraw}{00ae9d24a05a816f79d242c1a8203976}
+      \field{extraname}{4}
+      \field{sortinit}{3}
+      \field{sortinithash}{ad6fe7482ffbd7b9f99c9e8b5dccd3d7}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{note}{Accessed: 30 April 2025}
+      \field{title}{GNU Debugger (GDB) Overview}
+      \field{year}{2025}
+      \verb{urlraw}
+      \verb https://sourceware.org/gdb/
+      \endverb
+      \verb{url}
+      \verb https://sourceware.org/gdb/
+      \endverb
+    \endentry
+    \entry{gnu-history}{online}{}{}
+      \name{author}{1}{}{%
+        {{hash=00ae9d24a05a816f79d242c1a8203976}{%
+           family={Project},
+           familyi={P\bibinitperiod},
+           given={GNU},
+           giveni={G\bibinitperiod}}}%
+      }
+      \strng{namehash}{00ae9d24a05a816f79d242c1a8203976}
+      \strng{fullhash}{00ae9d24a05a816f79d242c1a8203976}
+      \strng{fullhashraw}{00ae9d24a05a816f79d242c1a8203976}
+      \strng{bibnamehash}{00ae9d24a05a816f79d242c1a8203976}
+      \strng{authorbibnamehash}{00ae9d24a05a816f79d242c1a8203976}
+      \strng{authornamehash}{00ae9d24a05a816f79d242c1a8203976}
+      \strng{authorfullhash}{00ae9d24a05a816f79d242c1a8203976}
+      \strng{authorfullhashraw}{00ae9d24a05a816f79d242c1a8203976}
+      \field{extraname}{5}
+      \field{sortinit}{3}
+      \field{sortinithash}{ad6fe7482ffbd7b9f99c9e8b5dccd3d7}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{note}{Accessed: 30 April 2025}
+      \field{title}{GNU - Free Software Operating System}
+      \field{year}{2025}
+      \verb{urlraw}
+      \verb https://en.wikipedia.org/wiki/GNU_Project
+      \endverb
+      \verb{url}
+      \verb https://en.wikipedia.org/wiki/GNU_Project
       \endverb
     \endentry
     \entry{golang-history}{online}{}{}
@@ -485,8 +1115,8 @@
       \strng{authorfullhash}{12af83d93c09d27ff788a7f9260b12cf}
       \strng{authorfullhashraw}{12af83d93c09d27ff788a7f9260b12cf}
       \field{extraname}{1}
-      \field{sortinit}{1}
-      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{sortinit}{3}
+      \field{sortinithash}{ad6fe7482ffbd7b9f99c9e8b5dccd3d7}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{note}{Accessed: 30 April 2025}
@@ -497,6 +1127,35 @@
       \endverb
       \verb{url}
       \verb https://go.dev/
+      \endverb
+    \endentry
+    \entry{havok-history}{online}{}{}
+      \name{author}{1}{}{%
+        {{hash=140864078aeca1c7c35b4beb33c53c34}{%
+           family={Microsoft},
+           familyi={M\bibinitperiod}}}%
+      }
+      \strng{namehash}{140864078aeca1c7c35b4beb33c53c34}
+      \strng{fullhash}{140864078aeca1c7c35b4beb33c53c34}
+      \strng{fullhashraw}{140864078aeca1c7c35b4beb33c53c34}
+      \strng{bibnamehash}{140864078aeca1c7c35b4beb33c53c34}
+      \strng{authorbibnamehash}{140864078aeca1c7c35b4beb33c53c34}
+      \strng{authornamehash}{140864078aeca1c7c35b4beb33c53c34}
+      \strng{authorfullhash}{140864078aeca1c7c35b4beb33c53c34}
+      \strng{authorfullhashraw}{140864078aeca1c7c35b4beb33c53c34}
+      \field{extraname}{5}
+      \field{sortinit}{3}
+      \field{sortinithash}{ad6fe7482ffbd7b9f99c9e8b5dccd3d7}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{note}{Accessed: 30 April 2025}
+      \field{title}{Havok - Physics Engine for Games}
+      \field{year}{2025}
+      \verb{urlraw}
+      \verb https://en.wikipedia.org/wiki/Havok_%28software%29
+      \endverb
+      \verb{url}
+      \verb https://en.wikipedia.org/wiki/Havok_%28software%29
       \endverb
     \endentry
     \entry{iso-history}{online}{}{}
@@ -517,8 +1176,8 @@
       \strng{authornamehash}{d09e7fcc2435a0349538e27d16bc4365}
       \strng{authorfullhash}{d09e7fcc2435a0349538e27d16bc4365}
       \strng{authorfullhashraw}{d09e7fcc2435a0349538e27d16bc4365}
-      \field{sortinit}{1}
-      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{sortinit}{3}
+      \field{sortinithash}{ad6fe7482ffbd7b9f99c9e8b5dccd3d7}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{note}{Accessed: 30 April 2025}
@@ -529,6 +1188,68 @@
       \endverb
       \verb{url}
       \verb https://www.iso.org/
+      \endverb
+    \endentry
+    \entry{iot-history}{online}{}{}
+      \name{author}{1}{}{%
+        {{hash=7b103121f778e90ba0c264785b50c6f5}{%
+           family={Group},
+           familyi={G\bibinitperiod},
+           given={IoT\bibnamedelima Research},
+           giveni={I\bibinitperiod\bibinitdelim R\bibinitperiod}}}%
+      }
+      \strng{namehash}{7b103121f778e90ba0c264785b50c6f5}
+      \strng{fullhash}{7b103121f778e90ba0c264785b50c6f5}
+      \strng{fullhashraw}{7b103121f778e90ba0c264785b50c6f5}
+      \strng{bibnamehash}{7b103121f778e90ba0c264785b50c6f5}
+      \strng{authorbibnamehash}{7b103121f778e90ba0c264785b50c6f5}
+      \strng{authornamehash}{7b103121f778e90ba0c264785b50c6f5}
+      \strng{authorfullhash}{7b103121f778e90ba0c264785b50c6f5}
+      \strng{authorfullhashraw}{7b103121f778e90ba0c264785b50c6f5}
+      \field{extraname}{2}
+      \field{sortinit}{4}
+      \field{sortinithash}{9381316451d1b9788675a07e972a12a7}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{note}{Accessed: 30 April 2025}
+      \field{title}{Internet of Things Overview}
+      \field{year}{2025}
+      \verb{urlraw}
+      \verb https://en.wikipedia.org/wiki/Internet_of_things
+      \endverb
+      \verb{url}
+      \verb https://en.wikipedia.org/wiki/Internet_of_things
+      \endverb
+    \endentry
+    \entry{interrupt-history}{online}{}{}
+      \name{author}{1}{}{%
+        {{hash=d7e516380100beea42ad1ab83a405b1e}{%
+           family={Society},
+           familyi={S\bibinitperiod},
+           given={IEEE\bibnamedelima Computer},
+           giveni={I\bibinitperiod\bibinitdelim C\bibinitperiod}}}%
+      }
+      \strng{namehash}{d7e516380100beea42ad1ab83a405b1e}
+      \strng{fullhash}{d7e516380100beea42ad1ab83a405b1e}
+      \strng{fullhashraw}{d7e516380100beea42ad1ab83a405b1e}
+      \strng{bibnamehash}{d7e516380100beea42ad1ab83a405b1e}
+      \strng{authorbibnamehash}{d7e516380100beea42ad1ab83a405b1e}
+      \strng{authornamehash}{d7e516380100beea42ad1ab83a405b1e}
+      \strng{authorfullhash}{d7e516380100beea42ad1ab83a405b1e}
+      \strng{authorfullhashraw}{d7e516380100beea42ad1ab83a405b1e}
+      \field{extraname}{1}
+      \field{sortinit}{4}
+      \field{sortinithash}{9381316451d1b9788675a07e972a12a7}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{note}{Accessed: 30 April 2025}
+      \field{title}{Interrupt-Driven Programming Overview}
+      \field{year}{2025}
+      \verb{urlraw}
+      \verb https://en.wikipedia.org/wiki/Interrupt-driven_programming
+      \endverb
+      \verb{url}
+      \verb https://en.wikipedia.org/wiki/Interrupt-driven_programming
       \endverb
     \endentry
     \entry{jvm-history}{online}{}{}
@@ -548,8 +1269,8 @@
       \strng{authorfullhash}{2baf8209f62fd23c32fa375f52fbf33f}
       \strng{authorfullhashraw}{2baf8209f62fd23c32fa375f52fbf33f}
       \field{extraname}{1}
-      \field{sortinit}{1}
-      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{sortinit}{4}
+      \field{sortinithash}{9381316451d1b9788675a07e972a12a7}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{note}{Accessed: 30 April 2025}
@@ -579,8 +1300,8 @@
       \strng{authorfullhash}{2baf8209f62fd23c32fa375f52fbf33f}
       \strng{authorfullhashraw}{2baf8209f62fd23c32fa375f52fbf33f}
       \field{extraname}{2}
-      \field{sortinit}{1}
-      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{sortinit}{4}
+      \field{sortinithash}{9381316451d1b9788675a07e972a12a7}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{note}{Accessed: 30 April 2025}
@@ -609,8 +1330,8 @@
       \strng{authornamehash}{4929d9f14b3b6c0c1abbee8f4f33316e}
       \strng{authorfullhash}{4929d9f14b3b6c0c1abbee8f4f33316e}
       \strng{authorfullhashraw}{4929d9f14b3b6c0c1abbee8f4f33316e}
-      \field{sortinit}{2}
-      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{sortinit}{4}
+      \field{sortinithash}{9381316451d1b9788675a07e972a12a7}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{note}{Accessed: 30 April 2025}
@@ -639,8 +1360,8 @@
       \strng{authornamehash}{0738a39ce7d754134211fbb089ce3a15}
       \strng{authorfullhash}{0738a39ce7d754134211fbb089ce3a15}
       \strng{authorfullhashraw}{0738a39ce7d754134211fbb089ce3a15}
-      \field{sortinit}{2}
-      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{sortinit}{4}
+      \field{sortinithash}{9381316451d1b9788675a07e972a12a7}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{note}{Accessed: 30 April 2025}
@@ -651,6 +1372,97 @@
       \endverb
       \verb{url}
       \verb https://en.wikipedia.org/wiki/Ken_Thompson
+      \endverb
+    \endentry
+    \entry{lapack-history}{online}{}{}
+      \name{author}{1}{}{%
+        {{hash=0f4a7e403f954f9106ddf68470de9074}{%
+           family={Netlib},
+           familyi={N\bibinitperiod}}}%
+      }
+      \strng{namehash}{0f4a7e403f954f9106ddf68470de9074}
+      \strng{fullhash}{0f4a7e403f954f9106ddf68470de9074}
+      \strng{fullhashraw}{0f4a7e403f954f9106ddf68470de9074}
+      \strng{bibnamehash}{0f4a7e403f954f9106ddf68470de9074}
+      \strng{authorbibnamehash}{0f4a7e403f954f9106ddf68470de9074}
+      \strng{authornamehash}{0f4a7e403f954f9106ddf68470de9074}
+      \strng{authorfullhash}{0f4a7e403f954f9106ddf68470de9074}
+      \strng{authorfullhashraw}{0f4a7e403f954f9106ddf68470de9074}
+      \field{extraname}{2}
+      \field{sortinit}{4}
+      \field{sortinithash}{9381316451d1b9788675a07e972a12a7}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{note}{Accessed: 30 April 2025}
+      \field{title}{LAPACK - Linear Algebra Package Overview}
+      \field{year}{2025}
+      \verb{urlraw}
+      \verb https://en.wikipedia.org/wiki/LAPACK
+      \endverb
+      \verb{url}
+      \verb https://en.wikipedia.org/wiki/LAPACK
+      \endverb
+    \endentry
+    \entry{llvm-history}{online}{}{}
+      \name{author}{1}{}{%
+        {{hash=3a21021088580ab552d966eb1c00eb79}{%
+           family={Group},
+           familyi={G\bibinitperiod},
+           given={LLVM\bibnamedelima Developer},
+           giveni={L\bibinitperiod\bibinitdelim D\bibinitperiod}}}%
+      }
+      \strng{namehash}{3a21021088580ab552d966eb1c00eb79}
+      \strng{fullhash}{3a21021088580ab552d966eb1c00eb79}
+      \strng{fullhashraw}{3a21021088580ab552d966eb1c00eb79}
+      \strng{bibnamehash}{3a21021088580ab552d966eb1c00eb79}
+      \strng{authorbibnamehash}{3a21021088580ab552d966eb1c00eb79}
+      \strng{authornamehash}{3a21021088580ab552d966eb1c00eb79}
+      \strng{authorfullhash}{3a21021088580ab552d966eb1c00eb79}
+      \strng{authorfullhashraw}{3a21021088580ab552d966eb1c00eb79}
+      \field{extraname}{3}
+      \field{sortinit}{4}
+      \field{sortinithash}{9381316451d1b9788675a07e972a12a7}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{note}{Accessed: 30 April 2025}
+      \field{title}{LLVM Compiler Infrastructure Overview}
+      \field{year}{2025}
+      \verb{urlraw}
+      \verb https://llvm.org/
+      \endverb
+      \verb{url}
+      \verb https://llvm.org/
+      \endverb
+    \endentry
+    \entry{lto-history}{online}{}{}
+      \name{author}{1}{}{%
+        {{hash=f000658615989a0cc093b2ca0b3b3574}{%
+           family={Project},
+           familyi={P\bibinitperiod},
+           given={LLVM},
+           giveni={L\bibinitperiod}}}%
+      }
+      \strng{namehash}{f000658615989a0cc093b2ca0b3b3574}
+      \strng{fullhash}{f000658615989a0cc093b2ca0b3b3574}
+      \strng{fullhashraw}{f000658615989a0cc093b2ca0b3b3574}
+      \strng{bibnamehash}{f000658615989a0cc093b2ca0b3b3574}
+      \strng{authorbibnamehash}{f000658615989a0cc093b2ca0b3b3574}
+      \strng{authornamehash}{f000658615989a0cc093b2ca0b3b3574}
+      \strng{authorfullhash}{f000658615989a0cc093b2ca0b3b3574}
+      \strng{authorfullhashraw}{f000658615989a0cc093b2ca0b3b3574}
+      \field{extraname}{6}
+      \field{sortinit}{4}
+      \field{sortinithash}{9381316451d1b9788675a07e972a12a7}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{note}{Accessed: 1 May 2025}
+      \field{title}{LLVM Link Time Optimization Overview}
+      \field{year}{2025}
+      \verb{urlraw}
+      \verb https://llvm.org/docs/LinkTimeOptimization.html
+      \endverb
+      \verb{url}
+      \verb https://llvm.org/docs/LinkTimeOptimization.html
       \endverb
     \endentry
     \entry{linux-history}{online}{}{}
@@ -670,8 +1482,8 @@
       \strng{authorfullhash}{436815fc71ee001db86142a51abde5a0}
       \strng{authorfullhashraw}{436815fc71ee001db86142a51abde5a0}
       \field{extraname}{1}
-      \field{sortinit}{2}
-      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{sortinit}{4}
+      \field{sortinithash}{9381316451d1b9788675a07e972a12a7}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{note}{Accessed: 30 April 2025}
@@ -682,6 +1494,36 @@
       \endverb
       \verb{url}
       \verb https://www.linux.com/what-is-linux/
+      \endverb
+    \endentry
+    \entry{mips-history}{online}{}{}
+      \name{author}{1}{}{%
+        {{hash=0ad2508ca998401a85853f52ec4b5d45}{%
+           family={Technologies},
+           familyi={T\bibinitperiod},
+           given={MIPS},
+           giveni={M\bibinitperiod}}}%
+      }
+      \strng{namehash}{0ad2508ca998401a85853f52ec4b5d45}
+      \strng{fullhash}{0ad2508ca998401a85853f52ec4b5d45}
+      \strng{fullhashraw}{0ad2508ca998401a85853f52ec4b5d45}
+      \strng{bibnamehash}{0ad2508ca998401a85853f52ec4b5d45}
+      \strng{authorbibnamehash}{0ad2508ca998401a85853f52ec4b5d45}
+      \strng{authornamehash}{0ad2508ca998401a85853f52ec4b5d45}
+      \strng{authorfullhash}{0ad2508ca998401a85853f52ec4b5d45}
+      \strng{authorfullhashraw}{0ad2508ca998401a85853f52ec4b5d45}
+      \field{sortinit}{5}
+      \field{sortinithash}{20e9b4b0b173788c5dace24730f47d8c}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{note}{Accessed: 30 April 2025}
+      \field{title}{MIPS Architecture Overview}
+      \field{year}{2025}
+      \verb{urlraw}
+      \verb https://en.wikipedia.org/wiki/MIPS_architecture
+      \endverb
+      \verb{url}
+      \verb https://en.wikipedia.org/wiki/MIPS_architecture
       \endverb
     \endentry
     \entry{mariadb-history}{online}{}{}
@@ -701,8 +1543,8 @@
       \strng{authorfullhash}{4a7dc414ab993a0668ed32c62a8d41f9}
       \strng{authorfullhashraw}{4a7dc414ab993a0668ed32c62a8d41f9}
       \field{extraname}{2}
-      \field{sortinit}{2}
-      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{sortinit}{5}
+      \field{sortinithash}{20e9b4b0b173788c5dace24730f47d8c}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{note}{Accessed: 30 April 2025}
@@ -732,8 +1574,8 @@
       \strng{authorfullhash}{1291c54b2fd8c807fd6e16670475b7a0}
       \strng{authorfullhashraw}{1291c54b2fd8c807fd6e16670475b7a0}
       \field{extraname}{2}
-      \field{sortinit}{2}
-      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{sortinit}{5}
+      \field{sortinithash}{20e9b4b0b173788c5dace24730f47d8c}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{note}{Accessed: 29 April 2025}
@@ -760,9 +1602,9 @@
       \strng{authornamehash}{140864078aeca1c7c35b4beb33c53c34}
       \strng{authorfullhash}{140864078aeca1c7c35b4beb33c53c34}
       \strng{authorfullhashraw}{140864078aeca1c7c35b4beb33c53c34}
-      \field{extraname}{3}
-      \field{sortinit}{2}
-      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{extraname}{6}
+      \field{sortinit}{5}
+      \field{sortinithash}{20e9b4b0b173788c5dace24730f47d8c}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{note}{Accessed: 30 April 2025}
@@ -792,8 +1634,8 @@
       \strng{authorfullhash}{c1620b3fc177ad1c188bfc196ffcbb26}
       \strng{authorfullhashraw}{c1620b3fc177ad1c188bfc196ffcbb26}
       \field{extraname}{1}
-      \field{sortinit}{2}
-      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{sortinit}{5}
+      \field{sortinithash}{20e9b4b0b173788c5dace24730f47d8c}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{note}{Accessed: 30 April 2025}
@@ -823,8 +1665,8 @@
       \strng{authorfullhash}{2baf8209f62fd23c32fa375f52fbf33f}
       \strng{authorfullhashraw}{2baf8209f62fd23c32fa375f52fbf33f}
       \field{extraname}{3}
-      \field{sortinit}{2}
-      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{sortinit}{5}
+      \field{sortinithash}{20e9b4b0b173788c5dace24730f47d8c}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{note}{Accessed: 30 April 2025}
@@ -835,6 +1677,129 @@
       \endverb
       \verb{url}
       \verb https://en.wikipedia.org/wiki/MySQL
+      \endverb
+    \endentry
+    \entry{opengl-history}{online}{}{}
+      \name{author}{1}{}{%
+        {{hash=638160ae56a17712d83fafc12a740c80}{%
+           family={Group},
+           familyi={G\bibinitperiod},
+           given={Khronos},
+           giveni={K\bibinitperiod}}}%
+      }
+      \strng{namehash}{638160ae56a17712d83fafc12a740c80}
+      \strng{fullhash}{638160ae56a17712d83fafc12a740c80}
+      \strng{fullhashraw}{638160ae56a17712d83fafc12a740c80}
+      \strng{bibnamehash}{638160ae56a17712d83fafc12a740c80}
+      \strng{authorbibnamehash}{638160ae56a17712d83fafc12a740c80}
+      \strng{authornamehash}{638160ae56a17712d83fafc12a740c80}
+      \strng{authorfullhash}{638160ae56a17712d83fafc12a740c80}
+      \strng{authorfullhashraw}{638160ae56a17712d83fafc12a740c80}
+      \field{extraname}{4}
+      \field{sortinit}{5}
+      \field{sortinithash}{20e9b4b0b173788c5dace24730f47d8c}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{note}{Accessed: 30 April 2025}
+      \field{title}{OpenGL - High-Performance Graphics API}
+      \field{year}{2025}
+      \verb{urlraw}
+      \verb https://en.wikipedia.org/wiki/OpenGL
+      \endverb
+      \verb{url}
+      \verb https://en.wikipedia.org/wiki/OpenGL
+      \endverb
+    \endentry
+    \entry{physx-history}{online}{}{}
+      \name{author}{1}{}{%
+        {{hash=61a23953300b78e83f381e02ca45c5e4}{%
+           family={Corporation},
+           familyi={C\bibinitperiod},
+           given={NVIDIA},
+           giveni={N\bibinitperiod}}}%
+      }
+      \strng{namehash}{61a23953300b78e83f381e02ca45c5e4}
+      \strng{fullhash}{61a23953300b78e83f381e02ca45c5e4}
+      \strng{fullhashraw}{61a23953300b78e83f381e02ca45c5e4}
+      \strng{bibnamehash}{61a23953300b78e83f381e02ca45c5e4}
+      \strng{authorbibnamehash}{61a23953300b78e83f381e02ca45c5e4}
+      \strng{authornamehash}{61a23953300b78e83f381e02ca45c5e4}
+      \strng{authorfullhash}{61a23953300b78e83f381e02ca45c5e4}
+      \strng{authorfullhashraw}{61a23953300b78e83f381e02ca45c5e4}
+      \field{extraname}{4}
+      \field{sortinit}{5}
+      \field{sortinithash}{20e9b4b0b173788c5dace24730f47d8c}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{note}{Accessed: 30 April 2025}
+      \field{title}{PhysX - Real-Time Physics Engine}
+      \field{year}{2025}
+      \verb{urlraw}
+      \verb https://en.wikipedia.org/wiki/PhysX
+      \endverb
+      \verb{url}
+      \verb https://en.wikipedia.org/wiki/PhysX
+      \endverb
+    \endentry
+    \entry{posix-history}{online}{}{}
+      \name{author}{1}{}{%
+        {{hash=d7e516380100beea42ad1ab83a405b1e}{%
+           family={Society},
+           familyi={S\bibinitperiod},
+           given={IEEE\bibnamedelima Computer},
+           giveni={I\bibinitperiod\bibinitdelim C\bibinitperiod}}}%
+      }
+      \strng{namehash}{d7e516380100beea42ad1ab83a405b1e}
+      \strng{fullhash}{d7e516380100beea42ad1ab83a405b1e}
+      \strng{fullhashraw}{d7e516380100beea42ad1ab83a405b1e}
+      \strng{bibnamehash}{d7e516380100beea42ad1ab83a405b1e}
+      \strng{authorbibnamehash}{d7e516380100beea42ad1ab83a405b1e}
+      \strng{authornamehash}{d7e516380100beea42ad1ab83a405b1e}
+      \strng{authorfullhash}{d7e516380100beea42ad1ab83a405b1e}
+      \strng{authorfullhashraw}{d7e516380100beea42ad1ab83a405b1e}
+      \field{extraname}{2}
+      \field{sortinit}{5}
+      \field{sortinithash}{20e9b4b0b173788c5dace24730f47d8c}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{note}{Accessed: 30 April 2025}
+      \field{title}{POSIX - Portable Operating System Interface}
+      \field{year}{2025}
+      \verb{urlraw}
+      \verb https://en.wikipedia.org/wiki/POSIX
+      \endverb
+      \verb{url}
+      \verb https://en.wikipedia.org/wiki/POSIX
+      \endverb
+    \endentry
+    \entry{pie-history}{online}{}{}
+      \name{author}{1}{}{%
+        {{hash=928a3e3d99440ed892dda5028159a3aa}{%
+           family={Overflow},
+           familyi={O\bibinitperiod},
+           given={Stack},
+           giveni={S\bibinitperiod}}}%
+      }
+      \strng{namehash}{928a3e3d99440ed892dda5028159a3aa}
+      \strng{fullhash}{928a3e3d99440ed892dda5028159a3aa}
+      \strng{fullhashraw}{928a3e3d99440ed892dda5028159a3aa}
+      \strng{bibnamehash}{928a3e3d99440ed892dda5028159a3aa}
+      \strng{authorbibnamehash}{928a3e3d99440ed892dda5028159a3aa}
+      \strng{authornamehash}{928a3e3d99440ed892dda5028159a3aa}
+      \strng{authorfullhash}{928a3e3d99440ed892dda5028159a3aa}
+      \strng{authorfullhashraw}{928a3e3d99440ed892dda5028159a3aa}
+      \field{sortinit}{5}
+      \field{sortinithash}{20e9b4b0b173788c5dace24730f47d8c}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{note}{Accessed: 1 May 2025}
+      \field{title}{What is the -fPIE option for position-independent executables?}
+      \field{year}{2025}
+      \verb{urlraw}
+      \verb https://stackoverflow.com/questions/2463150/what-is-the-fpie-option-for-position-independent-executables-in-gcc-and-ld
+      \endverb
+      \verb{url}
+      \verb https://stackoverflow.com/questions/2463150/what-is-the-fpie-option-for-position-independent-executables-in-gcc-and-ld
       \endverb
     \endentry
     \entry{postgresql-history}{online}{}{}
@@ -853,8 +1818,9 @@
       \strng{authornamehash}{b581fcfb94d2e7bd4d4e79744683e3dc}
       \strng{authorfullhash}{b581fcfb94d2e7bd4d4e79744683e3dc}
       \strng{authorfullhashraw}{b581fcfb94d2e7bd4d4e79744683e3dc}
-      \field{sortinit}{2}
-      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{extraname}{5}
+      \field{sortinit}{6}
+      \field{sortinithash}{b33bc299efb3c36abec520a4c896a66d}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{note}{Accessed: 30 April 2025}
@@ -865,6 +1831,157 @@
       \endverb
       \verb{url}
       \verb https://www.postgresql.org/
+      \endverb
+    \endentry
+    \entry{powerpc-history}{online}{}{}
+      \name{author}{1}{}{%
+        {{hash=cbf44511d041dc6d1dd73cc0c033122c}{%
+           family={IBM},
+           familyi={I\bibinitperiod}}}%
+      }
+      \strng{namehash}{cbf44511d041dc6d1dd73cc0c033122c}
+      \strng{fullhash}{cbf44511d041dc6d1dd73cc0c033122c}
+      \strng{fullhashraw}{cbf44511d041dc6d1dd73cc0c033122c}
+      \strng{bibnamehash}{cbf44511d041dc6d1dd73cc0c033122c}
+      \strng{authorbibnamehash}{cbf44511d041dc6d1dd73cc0c033122c}
+      \strng{authornamehash}{cbf44511d041dc6d1dd73cc0c033122c}
+      \strng{authorfullhash}{cbf44511d041dc6d1dd73cc0c033122c}
+      \strng{authorfullhashraw}{cbf44511d041dc6d1dd73cc0c033122c}
+      \field{extraname}{3}
+      \field{sortinit}{6}
+      \field{sortinithash}{b33bc299efb3c36abec520a4c896a66d}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{note}{Accessed: 30 April 2025}
+      \field{title}{PowerPC Architecture Overview}
+      \field{year}{2025}
+      \verb{urlraw}
+      \verb https://en.wikipedia.org/wiki/PowerPC
+      \endverb
+      \verb{url}
+      \verb https://en.wikipedia.org/wiki/PowerPC
+      \endverb
+    \endentry
+    \entry{riscv-history}{online}{}{}
+      \name{author}{1}{}{%
+        {{hash=9c546156b47858c21c73c22b7f3fff43}{%
+           family={International},
+           familyi={I\bibinitperiod},
+           given={RISC-V},
+           giveni={R\bibinithyphendelim V\bibinitperiod}}}%
+      }
+      \strng{namehash}{9c546156b47858c21c73c22b7f3fff43}
+      \strng{fullhash}{9c546156b47858c21c73c22b7f3fff43}
+      \strng{fullhashraw}{9c546156b47858c21c73c22b7f3fff43}
+      \strng{bibnamehash}{9c546156b47858c21c73c22b7f3fff43}
+      \strng{authorbibnamehash}{9c546156b47858c21c73c22b7f3fff43}
+      \strng{authornamehash}{9c546156b47858c21c73c22b7f3fff43}
+      \strng{authorfullhash}{9c546156b47858c21c73c22b7f3fff43}
+      \strng{authorfullhashraw}{9c546156b47858c21c73c22b7f3fff43}
+      \field{sortinit}{6}
+      \field{sortinithash}{b33bc299efb3c36abec520a4c896a66d}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{note}{Accessed: 30 April 2025}
+      \field{title}{RISC-V Architecture Overview}
+      \field{year}{2025}
+      \verb{urlraw}
+      \verb https://en.wikipedia.org/wiki/RISC-V
+      \endverb
+      \verb{url}
+      \verb https://en.wikipedia.org/wiki/RISC-V
+      \endverb
+    \endentry
+    \entry{rtems-history}{online}{}{}
+      \name{author}{1}{}{%
+        {{hash=91e7a87b0d6e7cede1ce19f176b76a31}{%
+           family={Project},
+           familyi={P\bibinitperiod},
+           given={RTEMS},
+           giveni={R\bibinitperiod}}}%
+      }
+      \strng{namehash}{91e7a87b0d6e7cede1ce19f176b76a31}
+      \strng{fullhash}{91e7a87b0d6e7cede1ce19f176b76a31}
+      \strng{fullhashraw}{91e7a87b0d6e7cede1ce19f176b76a31}
+      \strng{bibnamehash}{91e7a87b0d6e7cede1ce19f176b76a31}
+      \strng{authorbibnamehash}{91e7a87b0d6e7cede1ce19f176b76a31}
+      \strng{authornamehash}{91e7a87b0d6e7cede1ce19f176b76a31}
+      \strng{authorfullhash}{91e7a87b0d6e7cede1ce19f176b76a31}
+      \strng{authorfullhashraw}{91e7a87b0d6e7cede1ce19f176b76a31}
+      \field{extraname}{7}
+      \field{sortinit}{6}
+      \field{sortinithash}{b33bc299efb3c36abec520a4c896a66d}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{note}{Accessed: 30 April 2025}
+      \field{title}{RTEMS - Real-Time Executive for Multiprocessor Systems}
+      \field{year}{2025}
+      \verb{urlraw}
+      \verb https://www.rtems.org/
+      \endverb
+      \verb{url}
+      \verb https://www.rtems.org/
+      \endverb
+    \endentry
+    \entry{rtos-history}{online}{}{}
+      \name{author}{1}{}{%
+        {{hash=d7e516380100beea42ad1ab83a405b1e}{%
+           family={Society},
+           familyi={S\bibinitperiod},
+           given={IEEE\bibnamedelima Computer},
+           giveni={I\bibinitperiod\bibinitdelim C\bibinitperiod}}}%
+      }
+      \strng{namehash}{d7e516380100beea42ad1ab83a405b1e}
+      \strng{fullhash}{d7e516380100beea42ad1ab83a405b1e}
+      \strng{fullhashraw}{d7e516380100beea42ad1ab83a405b1e}
+      \strng{bibnamehash}{d7e516380100beea42ad1ab83a405b1e}
+      \strng{authorbibnamehash}{d7e516380100beea42ad1ab83a405b1e}
+      \strng{authornamehash}{d7e516380100beea42ad1ab83a405b1e}
+      \strng{authorfullhash}{d7e516380100beea42ad1ab83a405b1e}
+      \strng{authorfullhashraw}{d7e516380100beea42ad1ab83a405b1e}
+      \field{extraname}{3}
+      \field{sortinit}{6}
+      \field{sortinithash}{b33bc299efb3c36abec520a4c896a66d}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{note}{Accessed: 30 April 2025}
+      \field{title}{Real-Time Operating System (RTOS) Overview}
+      \field{year}{2025}
+      \verb{urlraw}
+      \verb https://en.wikipedia.org/wiki/Real-time_operating_system
+      \endverb
+      \verb{url}
+      \verb https://en.wikipedia.org/wiki/Real-time_operating_system
+      \endverb
+    \endentry
+    \entry{rop-history}{online}{}{}
+      \name{author}{1}{}{%
+        {{hash=463be5897e8d119e5d889d118a882630}{%
+           family={Exchange},
+           familyi={E\bibinitperiod},
+           given={Security\bibnamedelima Stack},
+           giveni={S\bibinitperiod\bibinitdelim S\bibinitperiod}}}%
+      }
+      \strng{namehash}{463be5897e8d119e5d889d118a882630}
+      \strng{fullhash}{463be5897e8d119e5d889d118a882630}
+      \strng{fullhashraw}{463be5897e8d119e5d889d118a882630}
+      \strng{bibnamehash}{463be5897e8d119e5d889d118a882630}
+      \strng{authorbibnamehash}{463be5897e8d119e5d889d118a882630}
+      \strng{authornamehash}{463be5897e8d119e5d889d118a882630}
+      \strng{authorfullhash}{463be5897e8d119e5d889d118a882630}
+      \strng{authorfullhashraw}{463be5897e8d119e5d889d118a882630}
+      \field{sortinit}{6}
+      \field{sortinithash}{b33bc299efb3c36abec520a4c896a66d}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{note}{Accessed: 1 May 2025}
+      \field{title}{How Return-Oriented Programming (ROP) Works}
+      \field{year}{2025}
+      \verb{urlraw}
+      \verb https://security.stackexchange.com/questions/196980/how-do-exploit-developers-counter-control-flow-integrity-cfi-used-to-prevent-r
+      \endverb
+      \verb{url}
+      \verb https://security.stackexchange.com/questions/196980/how-do-exploit-developers-counter-control-flow-integrity-cfi-used-to-prevent-r
       \endverb
     \endentry
     \entry{rust-history}{online}{}{}
@@ -884,8 +2001,8 @@
       \strng{authorfullhash}{9c0ce977a6bdff99cb2fef3d58a2b9b1}
       \strng{authorfullhashraw}{9c0ce977a6bdff99cb2fef3d58a2b9b1}
       \field{extraname}{2}
-      \field{sortinit}{2}
-      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{sortinit}{6}
+      \field{sortinithash}{b33bc299efb3c36abec520a4c896a66d}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{note}{Accessed: 30 April 2025}
@@ -915,8 +2032,8 @@
       \strng{authorfullhash}{b9c14eb14bd67d01ad1a8c53ca922d46}
       \strng{authorfullhashraw}{b9c14eb14bd67d01ad1a8c53ca922d46}
       \field{extraname}{3}
-      \field{sortinit}{3}
-      \field{sortinithash}{ad6fe7482ffbd7b9f99c9e8b5dccd3d7}
+      \field{sortinit}{6}
+      \field{sortinithash}{b33bc299efb3c36abec520a4c896a66d}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{note}{Accessed: 30 April 2025}
@@ -927,6 +2044,34 @@
       \endverb
       \verb{url}
       \verb https://sqlite.org/index.html
+      \endverb
+    \endentry
+    \entry{ssp-history}{online}{}{}
+      \name{author}{1}{}{%
+        {{hash=69f69b59aae6f4ee1a47bbc1086ecdb4}{%
+           family={Socket},
+           familyi={S\bibinitperiod}}}%
+      }
+      \strng{namehash}{69f69b59aae6f4ee1a47bbc1086ecdb4}
+      \strng{fullhash}{69f69b59aae6f4ee1a47bbc1086ecdb4}
+      \strng{fullhashraw}{69f69b59aae6f4ee1a47bbc1086ecdb4}
+      \strng{bibnamehash}{69f69b59aae6f4ee1a47bbc1086ecdb4}
+      \strng{authorbibnamehash}{69f69b59aae6f4ee1a47bbc1086ecdb4}
+      \strng{authornamehash}{69f69b59aae6f4ee1a47bbc1086ecdb4}
+      \strng{authorfullhash}{69f69b59aae6f4ee1a47bbc1086ecdb4}
+      \strng{authorfullhashraw}{69f69b59aae6f4ee1a47bbc1086ecdb4}
+      \field{sortinit}{6}
+      \field{sortinithash}{b33bc299efb3c36abec520a4c896a66d}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{note}{Accessed: 1 May 2025}
+      \field{title}{Stack Smashing Protector (SSP) Overview}
+      \field{year}{2025}
+      \verb{urlraw}
+      \verb https://socket.dev/glossary/stack-smashing-protector-ssp
+      \endverb
+      \verb{url}
+      \verb https://socket.dev/glossary/stack-smashing-protector-ssp
       \endverb
     \endentry
     \entry{c_book_first-history}{online}{}{}
@@ -945,8 +2090,8 @@
       \strng{authornamehash}{5a2e1ec38f607ba6c066dec4b819a8b5}
       \strng{authorfullhash}{5a2e1ec38f607ba6c066dec4b819a8b5}
       \strng{authorfullhashraw}{5a2e1ec38f607ba6c066dec4b819a8b5}
-      \field{sortinit}{3}
-      \field{sortinithash}{ad6fe7482ffbd7b9f99c9e8b5dccd3d7}
+      \field{sortinit}{6}
+      \field{sortinithash}{b33bc299efb3c36abec520a4c896a66d}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{note}{Accessed: 30 April 2025}
@@ -976,8 +2121,8 @@
       \strng{authorfullhash}{c127a79ef32d9cc2a02a7facecef3dca}
       \strng{authorfullhashraw}{c127a79ef32d9cc2a02a7facecef3dca}
       \field{extraname}{2}
-      \field{sortinit}{3}
-      \field{sortinithash}{ad6fe7482ffbd7b9f99c9e8b5dccd3d7}
+      \field{sortinit}{7}
+      \field{sortinithash}{108d0be1b1bee9773a1173443802c0a3}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{note}{Accessed: 29 April 2025}
@@ -988,6 +2133,130 @@
       \endverb
       \verb{url}
       \verb https://en.wikipedia.org/wiki/Unix
+      \endverb
+    \endentry
+    \entry{ubsan-history}{online}{}{}
+      \name{author}{1}{}{%
+        {{hash=f000658615989a0cc093b2ca0b3b3574}{%
+           family={Project},
+           familyi={P\bibinitperiod},
+           given={LLVM},
+           giveni={L\bibinitperiod}}}%
+      }
+      \strng{namehash}{f000658615989a0cc093b2ca0b3b3574}
+      \strng{fullhash}{f000658615989a0cc093b2ca0b3b3574}
+      \strng{fullhashraw}{f000658615989a0cc093b2ca0b3b3574}
+      \strng{bibnamehash}{f000658615989a0cc093b2ca0b3b3574}
+      \strng{authorbibnamehash}{f000658615989a0cc093b2ca0b3b3574}
+      \strng{authornamehash}{f000658615989a0cc093b2ca0b3b3574}
+      \strng{authorfullhash}{f000658615989a0cc093b2ca0b3b3574}
+      \strng{authorfullhashraw}{f000658615989a0cc093b2ca0b3b3574}
+      \field{extraname}{8}
+      \field{sortinit}{7}
+      \field{sortinithash}{108d0be1b1bee9773a1173443802c0a3}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{note}{Accessed: 30 April 2025}
+      \field{title}{Undefined Behavior Sanitizer (UBSan) Overview}
+      \field{year}{2025}
+      \verb{urlraw}
+      \verb https://clang.llvm.org/docs/UndefinedBehaviorSanitizer.html
+      \endverb
+      \verb{url}
+      \verb https://clang.llvm.org/docs/UndefinedBehaviorSanitizer.html
+      \endverb
+    \endentry
+    \entry{valgrind-history}{online}{}{}
+      \name{author}{1}{}{%
+        {{hash=8a873812f443b7bdf8bb19317e9d5e02}{%
+           family={Project},
+           familyi={P\bibinitperiod},
+           given={Valgrind},
+           giveni={V\bibinitperiod}}}%
+      }
+      \strng{namehash}{8a873812f443b7bdf8bb19317e9d5e02}
+      \strng{fullhash}{8a873812f443b7bdf8bb19317e9d5e02}
+      \strng{fullhashraw}{8a873812f443b7bdf8bb19317e9d5e02}
+      \strng{bibnamehash}{8a873812f443b7bdf8bb19317e9d5e02}
+      \strng{authorbibnamehash}{8a873812f443b7bdf8bb19317e9d5e02}
+      \strng{authornamehash}{8a873812f443b7bdf8bb19317e9d5e02}
+      \strng{authorfullhash}{8a873812f443b7bdf8bb19317e9d5e02}
+      \strng{authorfullhashraw}{8a873812f443b7bdf8bb19317e9d5e02}
+      \field{extraname}{9}
+      \field{sortinit}{7}
+      \field{sortinithash}{108d0be1b1bee9773a1173443802c0a3}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{note}{Accessed: 30 April 2025}
+      \field{title}{Valgrind - Memory Debugging and Profiling Tool}
+      \field{year}{2025}
+      \verb{urlraw}
+      \verb https://valgrind.org/
+      \endverb
+      \verb{url}
+      \verb https://valgrind.org/
+      \endverb
+    \endentry
+    \entry{vulkan-history}{online}{}{}
+      \name{author}{1}{}{%
+        {{hash=638160ae56a17712d83fafc12a740c80}{%
+           family={Group},
+           familyi={G\bibinitperiod},
+           given={Khronos},
+           giveni={K\bibinitperiod}}}%
+      }
+      \strng{namehash}{638160ae56a17712d83fafc12a740c80}
+      \strng{fullhash}{638160ae56a17712d83fafc12a740c80}
+      \strng{fullhashraw}{638160ae56a17712d83fafc12a740c80}
+      \strng{bibnamehash}{638160ae56a17712d83fafc12a740c80}
+      \strng{authorbibnamehash}{638160ae56a17712d83fafc12a740c80}
+      \strng{authornamehash}{638160ae56a17712d83fafc12a740c80}
+      \strng{authorfullhash}{638160ae56a17712d83fafc12a740c80}
+      \strng{authorfullhashraw}{638160ae56a17712d83fafc12a740c80}
+      \field{extraname}{6}
+      \field{sortinit}{7}
+      \field{sortinithash}{108d0be1b1bee9773a1173443802c0a3}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{note}{Accessed: 30 April 2025}
+      \field{title}{Vulkan - High-Performance Graphics API}
+      \field{year}{2025}
+      \verb{urlraw}
+      \verb https://en.wikipedia.org/wiki/Vulkan
+      \endverb
+      \verb{url}
+      \verb https://en.wikipedia.org/wiki/Vulkan
+      \endverb
+    \endentry
+    \entry{vxworks-history}{online}{}{}
+      \name{author}{1}{}{%
+        {{hash=9da4d88048da74bc4974557e1c7923c4}{%
+           family={Systems},
+           familyi={S\bibinitperiod},
+           given={Wind\bibnamedelima River},
+           giveni={W\bibinitperiod\bibinitdelim R\bibinitperiod}}}%
+      }
+      \strng{namehash}{9da4d88048da74bc4974557e1c7923c4}
+      \strng{fullhash}{9da4d88048da74bc4974557e1c7923c4}
+      \strng{fullhashraw}{9da4d88048da74bc4974557e1c7923c4}
+      \strng{bibnamehash}{9da4d88048da74bc4974557e1c7923c4}
+      \strng{authorbibnamehash}{9da4d88048da74bc4974557e1c7923c4}
+      \strng{authornamehash}{9da4d88048da74bc4974557e1c7923c4}
+      \strng{authorfullhash}{9da4d88048da74bc4974557e1c7923c4}
+      \strng{authorfullhashraw}{9da4d88048da74bc4974557e1c7923c4}
+      \field{extraname}{2}
+      \field{sortinit}{7}
+      \field{sortinithash}{108d0be1b1bee9773a1173443802c0a3}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{note}{Accessed: 30 April 2025}
+      \field{title}{VxWorks - Real-Time Operating System}
+      \field{year}{2025}
+      \verb{urlraw}
+      \verb https://en.wikipedia.org/wiki/VxWorks
+      \endverb
+      \verb{url}
+      \verb https://en.wikipedia.org/wiki/VxWorks
       \endverb
     \endentry
     \entry{macos-history}{online}{}{}
@@ -1007,8 +2276,8 @@
       \strng{authorfullhash}{f508f8ff22f456b2c8cef697136c83a9}
       \strng{authorfullhashraw}{f508f8ff22f456b2c8cef697136c83a9}
       \field{extraname}{2}
-      \field{sortinit}{3}
-      \field{sortinithash}{ad6fe7482ffbd7b9f99c9e8b5dccd3d7}
+      \field{sortinit}{7}
+      \field{sortinithash}{108d0be1b1bee9773a1173443802c0a3}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{note}{Accessed: 30 April 2025}
@@ -1019,6 +2288,37 @@
       \endverb
       \verb{url}
       \verb https://en.wikipedia.org/wiki/MacOS
+      \endverb
+    \endentry
+    \entry{x86-history}{online}{}{}
+      \name{author}{1}{}{%
+        {{hash=42af28f239d9ce2a4d0f9a032741150e}{%
+           family={Corporation},
+           familyi={C\bibinitperiod},
+           given={Intel},
+           giveni={I\bibinitperiod}}}%
+      }
+      \strng{namehash}{42af28f239d9ce2a4d0f9a032741150e}
+      \strng{fullhash}{42af28f239d9ce2a4d0f9a032741150e}
+      \strng{fullhashraw}{42af28f239d9ce2a4d0f9a032741150e}
+      \strng{bibnamehash}{42af28f239d9ce2a4d0f9a032741150e}
+      \strng{authorbibnamehash}{42af28f239d9ce2a4d0f9a032741150e}
+      \strng{authornamehash}{42af28f239d9ce2a4d0f9a032741150e}
+      \strng{authorfullhash}{42af28f239d9ce2a4d0f9a032741150e}
+      \strng{authorfullhashraw}{42af28f239d9ce2a4d0f9a032741150e}
+      \field{extraname}{5}
+      \field{sortinit}{7}
+      \field{sortinithash}{108d0be1b1bee9773a1173443802c0a3}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{note}{Accessed: 30 April 2025}
+      \field{title}{x86 Architecture Overview}
+      \field{year}{2025}
+      \verb{urlraw}
+      \verb https://en.wikipedia.org/wiki/X86
+      \endverb
+      \verb{url}
+      \verb https://en.wikipedia.org/wiki/X86
       \endverb
     \endentry
   \enddatalist

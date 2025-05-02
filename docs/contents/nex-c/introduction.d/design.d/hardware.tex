@@ -16,30 +16,71 @@
 	\begin{NxIDBox}
 		\textbf{Pointers} are a fundamental feature that enables direct memory manipulation. By storing addresses rather than values, pointers allow developers to dynamically allocate memory, traverse data structures, and optimize performance-critical applications.
 	\end{NxIDBox}
-	\begin{NxCodeBox}{c}{dark, title={The \textbf{malloc()} and \textbf{free()} functions provide explicit control over memory allocation and deallocation. This design choice ensures that programmers can efficiently manage memory usage while avoiding unnecessary overhead.}}
-		#include <stdio.h>
-		#include <stdlib.h>
-		int main() {
-			int *ptr;
-			// Allocate memory for 5 integers
-			ptr = (int*) malloc(5 * sizeof(int));
-			if (ptr == NULL) {
-				printf("Memory allocation failed!\n");
-				return 1;
-			}
-			// Assign values
-			for (int i = 0; i < 5; i++) {
-				ptr[i] = i * 10;
-			}
-			// Print values
-			for (int i = 0; i < 5; i++) {
-				printf("%d ", ptr[i]);
-			}
-			// Free allocated memory
-			free(ptr);
-			return(0);
+\end{NxSSSSBox}
+\begin{NxCodeBox}{c}{dark, sdwA, frmE, title={The \textbf{malloc()}, \textbf{realloc()}, \textbf{calloc()} and \textbf{free()} functions provide explicit control over memory allocation and deallocation. This design choice ensures that programmers can efficiently manage memory usage while avoiding unnecessary overhead.}}
+	#include <stdio.h>
+	#include <stdlib.h>
+
+	int nx_mem_chk(void*);
+
+	int main()
+	{
+		int num = 5;
+		/* Allocate memory using malloc */
+		int *p_num = (int*)malloc(num * sizeof(int));
+		if (nx_mem_chk(p_num) == -1) /* Handle memory allocation failure here */
+			return(-1);
+
+		int i = 0; /* Initialize values */
+
+		int *c_num = (int*)calloc(num, sizeof(int)); // Allocates and initializes to 0
+		if ((i = nx_mem_chk(c_num)) == -1) /* Handle memory allocation failure here */
+			goto malloc_cleanup;
+
+		for (i = 0; i < num; i++) {
+			p_num[i] = i + 1;
+			c_num[i] = i + 1;
 		}
-	\end{NxCodeBox}
+
+		num = num * 2;
+
+		int *t_num = (int*)realloc(p_num, num * sizeof(int));
+		if (nx_mem_chk(t_num) == -1) /* Handle memory allocation failure here */
+			goto calloc_cleanup;
+		p_num = t_num;
+
+		t_num = (int*)realloc(c_num, num * sizeof(int));
+		if ((i = nx_mem_chk(t_num)) == -1) /* Handle memory allocation failure here */
+			goto calloc_cleanup;
+		c_num = t_num;
+
+		for (i = num / 2; i < num; i++) { /* Initialize new values */
+			p_num[i] = (i + 1) * 2;
+			c_num[i] = (i + 1) * 2;
+		}
+		for (i = 1; i < num; i++)
+			printf("%d * %d = %d\n", p_num[i], c_num[i], p_num[i] * c_num[i]); /* Print values */
+
+		calloc_cleanup:
+			free(c_num); /* Free allocated memory */
+		malloc_cleanup:
+			free(p_num); /* Free allocated memory */
+		return(i);
+	}
+
+	int nx_mem_chk(void *p)
+	{
+		if (p == NULL) {
+			fprintf(stderr, "Memory allocation failed!\n");
+			return -1;  /* Return an error indicator */
+		}
+		return 0;  /* Memory allocation was successful */
+	}
+\end{NxCodeBox}
+
+\bigskip
+
+\begin{NxSSSSBox}[breakable]
 	\begin{NxIDBox}
 		Manual memory management introduces risks such as \textbf{buffer overflows and segmentation faults}, requiring careful handling of pointers to prevent unintended behavior. C’s unrestricted memory access makes it powerful but demands disciplined programming practices.
 	\end{NxIDBox}
@@ -49,24 +90,30 @@
 	\begin{NxIDBox}
 		C includes built-in support for bitwise operations, allowing direct manipulation of binary data. This capability is critical for working with hardware registers, optimizing storage, and implementing efficient algorithms.
 	\end{NxIDBox}
-	\begin{NxCodeBox}{c}{dark, title={The \textbf{bitwise AND, OR, XOR, and shift operators} provide precise control over individual bits within a variable. These operations enable efficient flag manipulation, data compression, and low-level protocol implementations.}}
-		#include <stdio.h>
-		int main() {
-			unsigned int x = 0b1100;  // Binary: 1100 (Decimal: 12)
-			unsigned int y = 0b1010;  // Binary: 1010 (Decimal: 10)
-			unsigned int and_result = x & y;  // Bitwise AND
-			unsigned int or_result  = x | y;  // Bitwise OR
-			unsigned int xor_result = x ^ y;  // Bitwise XOR
-			unsigned int left_shift = x << 2; // Left shift by 2
-			unsigned int right_shift = y >> 1; // Right shift by 1
-			printf("AND: %u\n", and_result);  // 1000 (Decimal: 8)
-			printf("OR: %u\n", or_result);	// 1110 (Decimal: 14)
-			printf("XOR: %u\n", xor_result);  // 0110 (Decimal: 6)
-			printf("Left Shift: %u\n", left_shift);  // 110000 (Decimal: 48)
-			printf("Right Shift: %u\n", right_shift); // 0101 (Decimal: 5)
-			return 0;
-		}
-	\end{NxCodeBox}
+\end{NxSSSSBox}
+
+\begin{NxCodeBox}{c}{dark, sdwA, frmE, title={The \textbf{bitwise AND, OR, XOR, and shift operators} provide precise control over individual bits within a variable. These operations enable efficient flag manipulation, data compression, and low-level protocol implementations.}}
+	#include <stdio.h>
+	int main() {
+		unsigned int x = 0b1100;  /* Binary: 1100 (Decimal: 12) */
+		unsigned int y = 0b1010;  /* Binary: 1010 (Decimal: 10) */
+		unsigned int and_result = x & y;  /* Bitwise AND */
+		unsigned int or_result  = x | y;  /* Bitwise OR */
+		unsigned int xor_result = x ^ y;  /* Bitwise XOR */
+		unsigned int left_shift = x << 2; /* Left shift by 2 */
+		unsigned int right_shift = y >> 1; /* Right shift by 1 */
+		printf("AND: %u\n", and_result);  /* 1000 (Decimal: 8) */
+		printf("OR: %u\n", or_result);	/* 1110 (Decimal: 14) */
+		printf("XOR: %u\n", xor_result);  /* 0110 (Decimal: 6) */
+		printf("Left Shift: %u\n", left_shift);  /* 110000 (Decimal: 48) */
+		printf("Right Shift: %u\n", right_shift); /* 0101 (Decimal: 5) */
+		return(0);
+	}
+\end{NxCodeBox}
+
+\bigskip
+
+\begin{NxSSSSBox}[breakable]
 	\begin{NxIDBox}
 		C's ability to interface with \textbf{hardware registers} makes it ideal for embedded development. By modifying register values directly, developers can configure peripheral devices, manage interrupts, and optimize system performance.
 	\end{NxIDBox}
@@ -79,24 +126,30 @@
 	\begin{NxIDBox}
 		C was designed to bridge the gap between software and hardware, enabling developers to integrate system-level components efficiently. It provides mechanisms for direct communication with system APIs and low-level routines.
 	\end{NxIDBox}
-	\begin{NxCodeBox}{c}{dark, title={C supports \textbf{inline assembly}, allowing developers to mix assembly instructions with C code for performance optimization. This ensures minimal instruction overhead and precise hardware control.}}
-		#include<stdio.h>
-		int main()
-		{
-			const char msg[] = "Hello, World!\n";
-			__asm__ (
-				"mov $1, %%rax\n"  // syscall: write
-				"mov $1, %%rdi\n"  // file descriptor: stdout
-				"mov %0, %%rsi\n"  // pointer to message
-				"mov $14, %%rdx\n" // message length
-				"syscall\n"		// invoke syscall
-				:
-				: "r"(msg)		 // input operand
-				: "rax", "rdi", "rsi", "rdx"
-			);
-			return(0);
-		}
-	\end{NxCodeBox}
+\end{NxSSSSBox}
+
+\begin{NxCodeBox}{c}{dark, frmE, sdwA, title={C supports \textbf{inline assembly}, allowing developers to mix assembly instructions with C code for performance optimization. This ensures minimal instruction overhead and precise hardware control.}}
+	#include<stdio.h>
+	int main()
+	{
+		const char msg[] = "Hello, World!\n";
+		__asm__ (
+			"mov $1, %%rax\n"  /* syscall: write */
+			"mov $1, %%rdi\n"  /* file descriptor: stdout */
+			"mov %0, %%rsi\n"  /* pointer to message */
+			"mov $14, %%rdx\n" /* message length */
+			"syscall\n"		/* invoke syscall */
+			:
+			: "r"(msg)		 /* input operand */
+			: "rax", "rdi", "rsi", "rdx"
+		);
+		return(0);
+	}
+\end{NxCodeBox}
+
+\bigskip
+
+\begin{NxSSSSBox}[breakable]
 	\begin{NxIDBox}
 		The ability to interact with \textbf{operating system calls} makes C the foundation for kernel development. Functions like \textbf{syscall()} provide direct access to system resources such as file management, process control, and networking.
 	\end{NxIDBox}

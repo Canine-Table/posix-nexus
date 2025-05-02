@@ -89,15 +89,15 @@ end
 function M.btree:insert(v)
 	if v < self.value then
 		if self.left then
-			self.left:insert(value)
+			self.left:insert(v)
 		else
-			self.left = M.btree:new(value)
+			self.left = M.btree:new(v)
 		end
 	else
 		if self.right then
-			self.right:insert(value)
+			self.right:insert(v)
 		else
-			self.right = M.btree:new(value)
+			self.right = M.btree:new(v)
 		end
 	end
 end

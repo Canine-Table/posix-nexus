@@ -5,18 +5,37 @@
 		\setentrycounter[]{page}\glsnumberformat{X}}}%
 \glossentry{ansi}{\glossaryentrynumbers{\relax 
 		\setentrycounter[]{page}\glsnumberformat{IX}}}%
+\glossentry{arm}{\glossaryentrynumbers{\relax 
+		\setentrycounter[]{page}\glsnumberformat{XXXI}}}%
+\glossentry{arm_cortex_m}{\glossaryentrynumbers{\relax 
+		\setentrycounter[]{page}\glsnumberformat{XXII}}}%
+\glossentry{avr}{\glossaryentrynumbers{\relax 
+		\setentrycounter[]{page}\glsnumberformat{XXII}}}%
+\glossentry{ada}{\glossaryentrynumbers{\relax 
+		\setentrycounter[]{page}\glsnumberformat{XXX}}}%
+\glossentry{aslr}{\glossaryentrynumbers{\relax 
+		\setentrycounter[]{page}\glsnumberformat{XXXV\delimR XXXVII}}}%
+\glossentry{apis}{\glossaryentrynumbers{\relax 
+		\setentrycounter[]{page}\glsnumberformat{XXVI}}}%
 \glossentry{b_language}{\glossaryentrynumbers{\relax 
 		\setentrycounter[]{page}\glsnumberformat{V}}}%
 \glossentry{bcpl}{\glossaryentrynumbers{\relax 
 		\setentrycounter[]{page}\glsnumberformat{V}}}%
+\glossentry{blas}{\glossaryentrynumbers{\relax 
+		\setentrycounter[]{page}\glsnumberformat{XXVII}}}%
 \glossentry{bell_labs}{\glossaryentrynumbers{\relax 
 		\setentrycounter[]{page}\glsnumberformat{IV}}}%
+\glossentry{bsd}{\glossaryentrynumbers{\relax 
+		\setentrycounter[]{page}\glsnumberformat{XXXI}}}%
 \glossentry{stroustrup}{\glossaryentrynumbers{\relax 
 		\setentrycounter[]{page}\glsnumberformat{X}}}%
 \glossentry{brian_kernighan}{\glossaryentrynumbers{\relax 
 		\setentrycounter[]{page}\glsnumberformat{VI}}}%
+\glossentry{bullet}{\glossaryentrynumbers{\relax 
+		\setentrycounter[]{page}\glsnumberformat{XXVII}}}%
 \glossentry{cpp}{\glossaryentrynumbers{\relax 
-		\setentrycounter[]{page}\glsnumberformat{X}}}%
+		\setentrycounter[]{page}\glsnumberformat{X}\delimN 
+		\setentrycounter[]{page}\glsnumberformat{XXX}}}%
 \glossentry{c11}{\glossaryentrynumbers{\relax 
 		\setentrycounter[]{page}\glsnumberformat{IX}\delimN 
 		\setentrycounter[]{page}\glsnumberformat{XII}}}%
@@ -29,18 +48,48 @@
 \glossentry{c99}{\glossaryentrynumbers{\relax 
 		\setentrycounter[]{page}\glsnumberformat{IX}\delimN 
 		\setentrycounter[]{page}\glsnumberformat{XII}}}%
+\glossentry{cobol}{\glossaryentrynumbers{\relax 
+		\setentrycounter[]{page}\glsnumberformat{XXX}}}%
 \glossentry{csharp}{\glossaryentrynumbers{\relax 
 		\setentrycounter[]{page}\glsnumberformat{X}}}%
+\glossentry{clang}{\glossaryentrynumbers{\relax 
+		\setentrycounter[]{page}\glsnumberformat{XXXVII}}}%
+\glossentry{cfi}{\glossaryentrynumbers{\relax 
+		\setentrycounter[]{page}\glsnumberformat{XXXVI}}}%
 \glossentry{c_language}{\glossaryentrynumbers{\relax 
-		\setentrycounter[]{page}\glsnumberformat{V}}}%
+		\setentrycounter[]{page}\glsnumberformat{V}\delimN 
+		\setentrycounter[]{page}\glsnumberformat{XXX}}}%
+\glossentry{dep}{\glossaryentrynumbers{\relax 
+		\setentrycounter[]{page}\glsnumberformat{XXXVI\delimN XXXVII}}}%
 \glossentry{dennis_ritchie}{\glossaryentrynumbers{\relax 
 		\setentrycounter[]{page}\glsnumberformat{V}}}%
+\glossentry{directx}{\glossaryentrynumbers{\relax 
+		\setentrycounter[]{page}\glsnumberformat{XXVI}}}%
+\glossentry{esp32}{\glossaryentrynumbers{\relax 
+		\setentrycounter[]{page}\glsnumberformat{XXII}}}%
+\glossentry{fftw}{\glossaryentrynumbers{\relax 
+		\setentrycounter[]{page}\glsnumberformat{XXVII}}}%
+\glossentry{fortran}{\glossaryentrynumbers{\relax 
+		\setentrycounter[]{page}\glsnumberformat{XXX}}}%
+\glossentry{freertos}{\glossaryentrynumbers{\relax 
+		\setentrycounter[]{page}\glsnumberformat{XXIII}}}%
+\glossentry{gcc}{\glossaryentrynumbers{\relax 
+		\setentrycounter[]{page}\glsnumberformat{XXVIII}}}%
+\glossentry{gdb}{\glossaryentrynumbers{\relax 
+		\setentrycounter[]{page}\glsnumberformat{XXXII}}}%
+\glossentry{gnu}{\glossaryentrynumbers{\relax 
+		\setentrycounter[]{page}\glsnumberformat{XXX}}}%
 \glossentry{golang}{\glossaryentrynumbers{\relax 
-		\setentrycounter[]{page}\glsnumberformat{XI}}}%
+		\setentrycounter[]{page}\glsnumberformat{X}\delimN 
+		\setentrycounter[]{page}\glsnumberformat{XXX}}}%
+\glossentry{havok}{\glossaryentrynumbers{\relax 
+		\setentrycounter[]{page}\glsnumberformat{XXVII}}}%
 \glossentry{iso}{\glossaryentrynumbers{\relax 
 		\setentrycounter[]{page}\glsnumberformat{IX}}}%
 \glossentry{iot}{\glossaryentrynumbers{\relax 
-		\setentrycounter[]{page}\glsnumberformat{XXI}}}%
+		\setentrycounter[]{page}\glsnumberformat{XXII}}}%
+\glossentry{interrupt_driven}{\glossaryentrynumbers{\relax 
+		\setentrycounter[]{page}\glsnumberformat{XXIII}}}%
 \glossentry{jvm}{\glossaryentrynumbers{\relax 
 		\setentrycounter[]{page}\glsnumberformat{X}}}%
 \glossentry{java}{\glossaryentrynumbers{\relax 
@@ -49,10 +98,18 @@
 		\setentrycounter[]{page}\glsnumberformat{VIII}}}%
 \glossentry{ken_thompson}{\glossaryentrynumbers{\relax 
 		\setentrycounter[]{page}\glsnumberformat{V}}}%
+\glossentry{lapack}{\glossaryentrynumbers{\relax 
+		\setentrycounter[]{page}\glsnumberformat{XXVII}}}%
 \glossentry{llvm}{\glossaryentrynumbers{\relax 
-		\setentrycounter[]{page}\glsnumberformat{XXIV}}}%
+		\setentrycounter[]{page}\glsnumberformat{XXV}\delimN 
+		\setentrycounter[]{page}\glsnumberformat{XXXVII}}}%
+\glossentry{lto}{\glossaryentrynumbers{\relax 
+		\setentrycounter[]{page}\glsnumberformat{XXXIX}}}%
 \glossentry{linux}{\glossaryentrynumbers{\relax 
-		\setentrycounter[]{page}\glsnumberformat{XI}}}%
+		\setentrycounter[]{page}\glsnumberformat{XI}\delimN 
+		\setentrycounter[]{page}\glsnumberformat{XXXI}}}%
+\glossentry{mips}{\glossaryentrynumbers{\relax 
+		\setentrycounter[]{page}\glsnumberformat{XXXI}}}%
 \glossentry{mariadb}{\glossaryentrynumbers{\relax 
 		\setentrycounter[]{page}\glsnumberformat{XI}}}%
 \glossentry{martin_richards}{\glossaryentrynumbers{\relax 
@@ -63,19 +120,49 @@
 		\setentrycounter[]{page}\glsnumberformat{XI}}}%
 \glossentry{mysql}{\glossaryentrynumbers{\relax 
 		\setentrycounter[]{page}\glsnumberformat{XI}}}%
+\glossentry{opengl}{\glossaryentrynumbers{\relax 
+		\setentrycounter[]{page}\glsnumberformat{XXVI}}}%
+\glossentry{physx}{\glossaryentrynumbers{\relax 
+		\setentrycounter[]{page}\glsnumberformat{XXVII}}}%
 \glossentry{posix}{\glossaryentrynumbers{\relax 
-		\setentrycounter[]{page}\glsnumberformat{XXIII}}}%
+		\setentrycounter[]{page}\glsnumberformat{XXV}}}%
+\glossentry{pie}{\glossaryentrynumbers{\relax 
+		\setentrycounter[]{page}\glsnumberformat{XXXV}\delimN 
+		\setentrycounter[]{page}\glsnumberformat{XXXVII}}}%
 \glossentry{postgresql}{\glossaryentrynumbers{\relax 
 		\setentrycounter[]{page}\glsnumberformat{XI}}}%
+\glossentry{powerpc}{\glossaryentrynumbers{\relax 
+		\setentrycounter[]{page}\glsnumberformat{XXXI}}}%
+\glossentry{riscv}{\glossaryentrynumbers{\relax 
+		\setentrycounter[]{page}\glsnumberformat{XXXI}}}%
+\glossentry{rtems}{\glossaryentrynumbers{\relax 
+		\setentrycounter[]{page}\glsnumberformat{XXIII}}}%
+\glossentry{rtos}{\glossaryentrynumbers{\relax 
+		\setentrycounter[]{page}\glsnumberformat{XXIII}}}%
+\glossentry{rop}{\glossaryentrynumbers{\relax 
+		\setentrycounter[]{page}\glsnumberformat{XXXVII}}}%
 \glossentry{rust}{\glossaryentrynumbers{\relax 
-		\setentrycounter[]{page}\glsnumberformat{X\delimN XI}}}%
+		\setentrycounter[]{page}\glsnumberformat{X}}}%
 \glossentry{sqlite}{\glossaryentrynumbers{\relax 
 		\setentrycounter[]{page}\glsnumberformat{XI}}}%
+\glossentry{ssp}{\glossaryentrynumbers{\relax 
+		\setentrycounter[]{page}\glsnumberformat{XXXVI\delimN XXXVII}}}%
 \glossentry{c_book_first}{\glossaryentrynumbers{\relax 
 		\setentrycounter[]{page}\glsnumberformat{VI}}}%
 \glossentry{unix}{\glossaryentrynumbers{\relax 
 		\setentrycounter[]{page}\glsnumberformat{V}\delimN 
 		\setentrycounter[]{page}\glsnumberformat{XI}}}%
+\glossentry{ubsan}{\glossaryentrynumbers{\relax 
+		\setentrycounter[]{page}\glsnumberformat{XXXIII}}}%
+\glossentry{valgrind}{\glossaryentrynumbers{\relax 
+		\setentrycounter[]{page}\glsnumberformat{XXXII}}}%
+\glossentry{vulkan}{\glossaryentrynumbers{\relax 
+		\setentrycounter[]{page}\glsnumberformat{XXVI}}}%
+\glossentry{vxworks}{\glossaryentrynumbers{\relax 
+		\setentrycounter[]{page}\glsnumberformat{XXIII}}}%
 \glossentry{macos}{\glossaryentrynumbers{\relax 
-		\setentrycounter[]{page}\glsnumberformat{XI}}}%
+		\setentrycounter[]{page}\glsnumberformat{XI}\delimN 
+		\setentrycounter[]{page}\glsnumberformat{XXXI}}}%
+\glossentry{x86}{\glossaryentrynumbers{\relax 
+		\setentrycounter[]{page}\glsnumberformat{XXXI}}}%
 \end{theglossary}\glossarypostamble

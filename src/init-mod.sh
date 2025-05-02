@@ -59,7 +59,7 @@ nx_content_list()
 nx_content_modules()
 {
 	for f in "$(nx_content_path "$G_NEX_MOD_SRC")/"*"-mod.sh"; do
-		[ -f "$f" -a -r "$f" -a "$(nx_content_leaf "$f")" != 'content-mod.sh' ] && . "$f"
+		[ -f "$f" -a -r "$f" -a "$(nx_content_leaf "$f")" != 'init-mod.sh' ] && . "$f"
 	done
 	unset f
 }
@@ -110,12 +110,12 @@ export AWK="$(nx_cmd_awk)"
 export PKGMGR="$(nx_cmd_pkgmgr)"
 export TEXCPL="$(nx_cmd_tex_compiler)"
 export VPDF="$(nx_cmd_pdf_viewer)"
+export CC="$(nx_cmd_cc)"
 
-#nx_tex_var 'TEXMFCNF' "${G_NEX_MOD_CNF}//" ':' 1
+nx_tex_var 'TEXMFCNF' "${G_NEX_MOD_CNF}//" ':' 1
 export TEXMFHOME="${G_NEX_MOD_LIB}/lua/lualatex"
-#export TEXMF_OUTPUT_DIRECTORY="$G_NEX_MOD_DOC"
 
-alias nex='. "$G_NEX_MOD_SRC/content-mod.sh"'
+alias nex='. "$G_NEX_MOD_SRC/init-mod.sh"'
 alias nx=nex
 alias vi='$EDITOR'
 alias pgr='$PAGER'

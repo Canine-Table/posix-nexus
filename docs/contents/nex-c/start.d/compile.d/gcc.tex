@@ -1,0 +1,274 @@
+\begin{NxSSSBox}[breakable][GCC (GNU Compiler Collection)]
+	\begin{NxIDBox}
+		\nxGID{gcc} is one of the most widely used C compilers, providing robust optimization features, cross-platform support, and compatibility with multiple programming languages.
+	\end{NxIDBox}
+	\begin{NxIDBoxL}
+		\nxTopicD{Overview and History} How GCC evolved and its role in C development.
+		\nxTopicD{Compilation and Optimization} Why GCC is preferred for efficient code generation.
+		\nxTopicD{Platform Compatibility and Extensions} How GCC supports multiple architectures and compiler-specific extensions.
+		\nxTopicD{Linking Behavior} Linking defines how object files and libraries are combined into an executable, determining dependency management and runtime behavior.
+		\nxTopicD{Architecture Specific Settings} GCC provides architecture-specific flags that optimize code generation for different CPUs, ensuring maximum efficiency and compatibility.
+	\end{NxIDBoxL}
+\end{NxSSSBox}
+
+\begin{NxSSSBox}[breakable]
+	\begin{NxIDBoxL}
+		\nxTopicD{Compilation Flags} How GCC enables precise control over compilation warnings, errors, and code standards.
+		\nxTopicD{Optimization Levels} Why different levels of GCC optimization impact execution speed, memory usage, and runtime behavior.
+		\nxTopicD{Debugging Options} How GCC provides debugging mechanisms to improve runtime analysis and error detection.
+		\nxTopicD{Warning Flags} Why GCC’s warning system helps developers catch potential errors and enforce strict coding practices.
+		\nxTopicD{Position Independent Executables} How PIE improves security by enabling address space randomization.
+		\nxTopicD{Address Space Layout Randomization} Why ASLR mitigates memory exploitation by randomizing address locations.
+		\nxTopicD{Stack Smashing Protection} How SSP prevents buffer overflows through stack canaries.
+		\nxTopicD{Control Flow Integrity} Why CFI detects abnormal program behavior and mitigates control hijacking attacks.
+		\nxTopicD{Data Execution Prevention} How DEP marks memory regions as non-executable to prevent arbitrary code execution.
+		\nxTopicD{Non Executable Stacks} Why disabling executable stack regions protects against stack-based attacks.
+	\end{NxIDBoxL}
+\end{NxSSSBox}
+
+\begin{NxSSSSBox}[breakable][Overview and History]
+	\begin{NxIDBox}
+		GCC was originally developed as part of the \nxGID{gnu} Project in 1987, designed to provide a free and open-source compiler for Unix-based systems.
+	\end{NxIDBox}
+	\begin{NxIDBox}
+	Over the decades, GCC has evolved to support multiple programming languages, including \nxGID{c_language}, \nxGID{cpp}, \nxGID{fortran}, \nxGID{ada}, \nxGID{cobol}, and \nxGID{golang}, making it one of the most versatile compiler toolchains.
+	\end{NxIDBox}
+	\begin{NxIDBox}
+		GCC’s architecture prioritizes extensibility, allowing developers to contribute optimizations, target different processor architectures, and integrate new language frontends.
+	\end{NxIDBox}
+	\begin{NxIDBox}
+		Today, GCC is widely adopted across operating systems like \nxGID{linux}, \nxGID{bsd}, \nxGID{macos}, and \textbf{embedded platforms}, playing a fundamental role in system programming and software development.
+	\end{NxIDBox}
+\end{NxSSSSBox}
+
+\begin{NxSSSSBox}[breakable][Compilation and Optimization]
+	\begin{NxIDBox}
+		GCC transforms human-readable C code into highly optimized machine instructions, ensuring efficient execution across different architectures.
+	\end{NxIDBox}
+	\begin{NxIDBox}
+		The compilation process follows multiple stages: \textbf{preprocessing, compilation, assembly, and linking}, allowing fine-grained control over each step.
+	\end{NxIDBox}
+	\begin{NxIDBox}
+		GCC provides optimization levels such as \textbf{-O1, -O2, -O3, and -Os}, enabling developers to balance speed, size, and runtime efficiency.
+	\end{NxIDBox}
+	\begin{NxIDBox}
+		Advanced optimization techniques include \textbf{loop unrolling, function inlining, dead-code elimination, and interprocedural analysis}, helping programs run faster with minimal overhead.
+	\end{NxIDBox}
+\end{NxSSSSBox}
+
+\begin{NxSSSSBox}[breakable][Platform Compatibility and Extensions]
+	\begin{NxIDBox}
+	GCC supports a wide range of processor architectures, including \nxGID{x86}, \nxGID{arm}, \nxGID{powerpc}, \nxGID{mips}, and \nxGID{riscv}, ensuring cross-platform compatibility.
+	\end{NxIDBox}
+	\begin{NxIDBox}
+		Compiler-specific extensions, such as \textbf{GCC attributes, built-in functions, and inline assembly}, allow developers to fine-tune performance and interact with low-level hardware.
+	\end{NxIDBox}
+	\begin{NxIDBox}
+		GCC’s \textbf{Cross-Compilation} capability enables developers to build executables for different architectures without needing native hardware.
+	\end{NxIDBox}
+	\begin{NxIDBox}
+		Integration with debugging and profiling tools like \nxGID{gdb} and \nxGID{valgrind} enhances code reliability and performance analysis.
+	\end{NxIDBox}
+\end{NxSSSSBox}
+
+\begin{NxSSSSBox}[breakable][GCC Compilation Flags]
+	\begin{NxIDBox}
+		GCC provides a variety of compilation flags that control the behavior of the compiler, enabling developers to fine-tune compilation, warnings, optimizations, and binary generation.
+	\end{NxIDBox}
+	\begin{NxIDBox}
+		The `-Wall` flag enables a comprehensive set of warnings, helping developers identify potential issues in their code early.
+	\end{NxIDBox}
+	\begin{NxIDBox}
+		The `-Wextra` flag provides additional warnings beyond `-Wall`, flagging possible inconsistencies and risky code structures.
+	\end{NxIDBox}
+	\begin{NxIDBox}
+		The `-pedantic` flag enforces strict compliance with the standard, ensuring portability and adherence to ISO C specifications.
+	\end{NxIDBox}
+\end{NxSSSSBox}
+
+\begin{NxSSSSBox}[breakable][Optimization Levels]
+	\begin{NxIDBox}
+		GCC supports multiple optimization levels that modify code generation for execution speed, binary size, and resource efficiency.
+	\end{NxIDBox}
+	\begin{NxIDBox}
+		The `-O0` flag disables optimizations, generating unoptimized code for easier debugging and analysis.
+	\end{NxIDBox}
+	\begin{NxIDBox}
+		The `-O1` flag applies basic optimizations to improve performance without increasing compile time significantly.
+	\end{NxIDBox}
+	\begin{NxIDBox}
+		The `-O2` flag applies aggressive optimization techniques, including loop unrolling and dead-code elimination.
+	\end{NxIDBox}
+	\begin{NxIDBox}
+		The `-O3` flag enables high-level optimizations, including function inlining and instruction reordering for maximum speed.
+	\end{NxIDBox}
+	\begin{NxIDBox}
+		The `-Os` flag optimizes for binary size, useful for embedded systems and resource-constrained environments.
+	\end{NxIDBox}
+\end{NxSSSSBox}
+
+\begin{NxSSSSBox}[breakable][Debugging Options]
+	\begin{NxIDBox}
+		GCC provides debugging flags that insert additional metadata into compiled binaries, making runtime analysis and debugging easier.
+	\end{NxIDBox}
+	\begin{NxIDBox}
+		The `-g` flag generates debug symbols, enabling source-level debugging using tools like `gdb`.
+	\end{NxIDBox}
+	\begin{NxIDBox}
+		The `-ggdb` flag enhances debugging information, ensuring compatibility with the GNU Debugger (`gdb`).
+	\end{NxIDBox}
+	\begin{NxIDBox}
+		The `-fsanitize=address` flag enables AddressSanitizer, detecting memory access violations at runtime.
+	\end{NxIDBox}
+	\begin{NxIDBox}
+		The `-fsanitize=undefined` flag enables \nxGID{ubsan}, detecting undefined behavior in the program.
+	\end{NxIDBox}
+\end{NxSSSSBox}
+
+\begin{NxSSSSBox}[breakable][Linking Behavior]
+	\begin{NxIDBox}
+		GCC supports various linking options that define how object files and libraries are combined into an executable.
+	\end{NxIDBox}
+	\begin{NxIDBox}
+		The `-static` flag forces static linking, embedding all dependencies into the final binary for standalone execution.
+	\end{NxIDBox}
+	\begin{NxIDBox}
+		The `-shared` flag enables shared library generation, allowing dynamic linking at runtime.
+	\end{NxIDBox}
+	\begin{NxIDBox}
+		The `-L<dir>` flag specifies directories for library searching, ensuring correct dependency resolution.
+	\end{NxIDBox}
+	\begin{NxIDBox}
+		The `-l<name>` flag links against a specific library, providing access to external functions and modules.
+	\end{NxIDBox}
+\end{NxSSSSBox}
+
+\begin{NxSSSSBox}[breakable][Architecture Specific Settings]
+	\begin{NxIDBox}
+		GCC includes architecture-specific flags that allow developers to optimize code generation for specific processors.
+	\end{NxIDBox}
+	\begin{NxIDBox}
+		The `-march=<arch>` flag generates machine code tailored for a specific CPU architecture, ensuring optimal instruction selection.
+	\end{NxIDBox}
+	\begin{NxIDBox}
+		The `-mtune=<arch>` flag fine-tunes optimization settings to match a specific CPU while maintaining compatibility.
+	\end{NxIDBox}
+	\begin{NxIDBox}
+		The `-m64` and `-m32` flags control whether GCC produces 64-bit or 32-bit binaries, ensuring compatibility with different system architectures.
+	\end{NxIDBox}
+\end{NxSSSSBox}
+
+\begin{NxSSSSBox}[breakable][Compilation Flags]
+	\begin{NxIDBox}
+		Compilation flags allow developers to control the behavior of GCC, ensuring compliance with standards, optimizing binary output, and improving compatibility.
+	\end{NxIDBox}
+	\begin{NxIDBox}
+		The `-std=<version>` flag specifies the C standard version, such as `-std=c99`, `-std=c11`, or `-std=c17`, ensuring consistent syntax and feature support.
+	\end{NxIDBox}
+	\begin{NxIDBox}
+		The `-fvisibility=hidden` flag ensures that internal symbols are not exposed unnecessarily, improving modularity and security.
+	\end{NxIDBox}
+	\begin{NxIDBox}
+		The `-fstrict-aliasing` flag enables strict aliasing optimizations, improving performance but requiring careful adherence to pointer aliasing rules.
+	\end{NxIDBox}
+	\begin{NxIDBox}
+		The `-fno-common` flag prevents duplicate definitions of global variables, enforcing better linkage behavior and compatibility with modern standards.
+	\end{NxIDBox}
+	\begin{NxIDBox}
+		The `-fstack-clash-protection` flag enhances security by detecting large stack allocations that could trigger unintended memory corruption.
+	\end{NxIDBox}
+	\begin{NxIDBox}
+		The `-fstack-check` flag ensures stack safety by detecting overruns and ensuring consistent memory layout.
+	\end{NxIDBox}
+	\begin{NxIDBox}
+		The `-fno-delete-null-pointer-checks` flag disables optimizations that assume dereferencing `NULL` will always trigger a fault, preserving predictable behavior in specific cases.
+	\end{NxIDBox}
+\end{NxSSSSBox}
+
+\begin{NxSSSSBox}[breakable][Warning Flags]
+	\begin{NxIDBox}
+	GCC provides various warning flags that help developers detect potential errors early, enforce strict coding standards, and improve code quality.
+	\end{NxIDBox}
+	\begin{NxIDBox}
+	The `-Wall` flag enables a broad range of warnings, flagging common issues that might lead to unexpected behavior.
+	\end{NxIDBox}
+	\begin{NxIDBox}
+	The `-Wextra` flag extends `-Wall` by adding additional warnings for potentially risky or undefined behavior.
+	\end{NxIDBox}
+	\begin{NxIDBox}
+	The `-pedantic` flag ensures strict adherence to the C standard, preventing compiler-specific extensions that may reduce portability.
+	\end{NxIDBox}
+\end{NxSSSSBox}
+
+\begin{NxSSSSBox}[breakable][Position Independent Executables]
+	\begin{NxIDBox}
+		\nxGID{pie} ensures that executables are compiled to support \nxGID{aslr}, reducing predictability in memory locations.
+	\end{NxIDBox}
+	\begin{NxIDBox}
+		The `-fPIE` flag compiles code as position-independent, while `-pie` links the binary accordingly.
+	\end{NxIDBox}
+	\begin{NxIDBox}
+		PIE is essential for security-focused applications, ensuring return addresses are dynamically randomized at runtime.
+	\end{NxIDBox}
+\end{NxSSSSBox}
+
+\begin{NxSSSSBox}[breakable][Address Space Layout Randomization]
+	\begin{NxIDBox}
+		\nxGID{aslr} randomizes the memory layout of executable binaries, making it harder for attackers to predict address locations for exploits.
+	\end{NxIDBox}
+	\begin{NxIDBox}
+		While ASLR is managed by the operating system, GCC flags like `-fPIE` and `-pie` ensure compatibility.
+	\end{NxIDBox}
+	\begin{NxIDBox}
+		When combined with \nxGID{dep} and stack protection, ASLR significantly strengthens binary resilience against memory attacks.
+	\end{NxIDBox}
+\end{NxSSSSBox}
+
+\begin{NxSSSSBox}[breakable][Stack Smashing Protection]
+	\begin{NxIDBox}
+	\nxGID{ssp} enables stack protection by inserting \textbf{stack canaries}, which help detect buffer overflow attempts.
+	\end{NxIDBox}
+	\begin{NxIDBox}
+		The `-fstack-protector` flag enables stack canaries, while `-fstack-protector-strong` enhances protection against more attack vectors.
+	\end{NxIDBox}
+	\begin{NxIDBox}
+		This mechanism is widely used in secure applications to prevent unauthorized modifications to the stack.
+	\end{NxIDBox}
+\end{NxSSSSBox}
+
+\begin{NxSSSSBox}[breakable][Control Flow Integrity]
+	\begin{NxIDBox}
+		\nxGID{cfi} helps detect malicious control flow modifications, preventing attackers from hijacking function calls or return addresses.
+	\end{NxIDBox}
+	\begin{NxIDBox}
+		The `-fsanitize=cfi` flag enables compile-time instrumentation that protects function pointers and prevents unintended jumps.
+	\end{NxIDBox}
+	\begin{NxIDBox}
+		This security feature is particularly useful for preventing \nxGID{rop} attacks.
+	\end{NxIDBox}
+\end{NxSSSSBox}
+
+\begin{NxSSSSBox}[breakable][Data Execution Prevention]
+	\begin{NxIDBox}
+		\nxGID{dep} ensures that memory pages containing data \textbf{cannot be executed}, preventing attackers from injecting and running malicious payloads.
+	\end{NxIDBox}
+	\begin{NxIDBox}
+		While DEP is typically enforced at the OS level, GCC supports executable permission restrictions through stack protection mechanisms.
+	\end{NxIDBox}
+	\begin{NxIDBox}
+		When combined with \nxGID{aslr}, \nxGID{pie}, and \nxGID{ssp}, \nxGID{dep} significantly reduces the risk of arbitrary code execution.
+	\end{NxIDBox}
+\end{NxSSSSBox}
+
+\begin{NxSSSSBox}[breakable][Non Executable Stacks]
+	\begin{NxIDBox}
+		Marking stacks as \textbf{non-executable} helps prevent attackers from injecting shellcode into stack memory regions.
+	\end{NxIDBox}
+	\begin{NxIDBox}
+		The `-Wl,-z,noexecstack` flag disables executable permissions on stack memory, enhancing security.
+	\end{NxIDBox}
+	\begin{NxIDBox}
+		This protection is particularly useful in combination with \textbf{stack-smashing defenses and ASLR} to mitigate memory-based attacks.
+	\end{NxIDBox}
+\end{NxSSSSBox}
+

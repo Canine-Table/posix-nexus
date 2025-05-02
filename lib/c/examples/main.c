@@ -4,11 +4,11 @@
 //#include "headers/def.h"
 //#include "headers/data.h"
 //#include "headers/misc.h"
-#include "examples/intro.h"
+#include "headers/intro.h"
 
 int main (int argc, const char *argv[])
 {
-	nx_asm_msg("hello world\n");
+	nx_wasteful_alloc(4);
 	return(0);
 }
 

@@ -426,7 +426,7 @@
 
 \NewDocumentEnvironment{NxSSBox}{O{}O{}}
 {
-	\nxEmpty{#2}{\def\nxTa{\nxUpRef{ssec:\nxSS}{\nxRoman{\the\nxSSN}}{\nxSS}}}{%
+	\nxEmpty{#2}{\def\nxTa{\nxUpRef{ssec:\nxSS}{\nxRoman{\the\nxSN}.\nxRoman{\the\nxSSN}}{\nxSS}}}{%
 		\global\def\nxSS{#2}
 		\nxAdd{nxSSN}{1}
 		\global\def\nxSSS{}
@@ -444,7 +444,7 @@
 
 \NewDocumentEnvironment{NxSSSBox}{O{}O{}}
 {
-	\nxEmpty{#2}{\def\nxTa{\nxUpRef{sssec:\nxSSS}{\nxRoman{\the\nxSSSN}}{\nxSSS}}}{%
+	\nxEmpty{#2}{\def\nxTa{\nxUpRef{sssec:\nxSSS}{\nxRoman{\the\nxSN}.\nxRoman{\the\nxSSN}.\nxRoman{\the\nxSSSN}}{\nxSSS}}}{%
 		\global\def\nxSSS{#2}
 		\nxAdd{nxSSSN}{1}
 		\global\def\nxSSSS{}
@@ -460,7 +460,7 @@
 
 \NewDocumentEnvironment{NxSSSSBox}{O{}O{}}
 {
-	\nxEmpty{#2}{\def\nxTa{\nxUpRef{ssssec:\nxSSSS}{\nxRoman{\the\nxSSSSN}}{\nxSSSS}}}{%
+	\nxEmpty{#2}{\def\nxTa{\nxUpRef{ssssec:\nxSSSS}{\nxRoman{\the\nxSN}.\nxRoman{\the\nxSSN}.\nxRoman{\the\nxSSSN}.\nxRoman{\the\nxSSSSN}}{\nxSSSS}}}{%
 		\global\def\nxSSSS{#2}
 		\nxAdd{nxSSSSN}{1}
 		\phantomsection{}
@@ -541,7 +541,6 @@
 	\end{NxIDBox}
 }
 
-
 \NewDocumentEnvironment{NxILBoxL}{O{}}
 {
 	\begin{NxILBox}[#1]
@@ -577,4 +576,5 @@
 
 \long\def\nxIDTopic#1{\nxTopic{warning.back}{#1}}
 \long\def\nxILTopic#1{\nxTopic{primary.back}{#1}}
-
+\long\def\nxIDSTopic#1{\nxItemDark{\nxTopic{success.frame}{#1}}}
+\long\def\nxILSTopic#1{\nxItemLight{\nxTopic{success.back}{#1}}}
