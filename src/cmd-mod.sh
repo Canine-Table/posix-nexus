@@ -42,16 +42,6 @@ nx_cmd_cc()
 	g_nx_cmd clang gcc cc
 }
 
-nx_cmd_tex_compiler()
-{
-	g_nx_cmd lualatex luatex latexmk pdflatex xelatex
-}
-
-nx_cmd_pdf_viewer()
-{
-	g_nx_cmd zathura mupdf evince skim
-}
-
 nx_cmd_pkgmgr()
 {
 	g_nx_cmd pacman apk port apt zypper dnf yum pkg brew emerge

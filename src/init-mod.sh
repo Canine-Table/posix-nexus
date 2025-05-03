@@ -99,6 +99,7 @@ export TMPDIR="$G_NEX_MOD_ENV"
 
 nx_content_root
 nx_content_modules
+nx_tex_export
 
 export LESS='-R'
 export COLORFGBG=';0'
@@ -108,12 +109,7 @@ export EDITOR="$(nx_cmd_editor)"
 export SHELL="$(nx_cmd_shell)"
 export AWK="$(nx_cmd_awk)"
 export PKGMGR="$(nx_cmd_pkgmgr)"
-export TEXCPL="$(nx_cmd_tex_compiler)"
-export VPDF="$(nx_cmd_pdf_viewer)"
 export CC="$(nx_cmd_cc)"
-
-nx_tex_var 'TEXMFCNF' "${G_NEX_MOD_CNF}//" ':' 1
-export TEXMFHOME="${G_NEX_MOD_LIB}/lua/lualatex"
 
 alias nex='. "$G_NEX_MOD_SRC/init-mod.sh"'
 alias nx=nex

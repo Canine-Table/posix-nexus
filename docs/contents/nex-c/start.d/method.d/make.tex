@@ -1,6 +1,6 @@
 \begin{NxSSSBox}[breakable][Make]
 	\begin{NxIDBox}
-		\nxGID{make} is a widely used build automation tool that simplifies compilation, dependency tracking, and project management across various platforms. It processes \textbg{Makefiles} to determine how programs should be compiled, linked, and maintained efficiently.
+		\nxGID{make} is a widely used build automation tool that simplifies compilation, dependency tracking, and project management across various platforms. It processes \textbf{Makefiles} to determine how programs should be compiled, linked, and maintained efficiently.
 	\end{NxIDBox}
 	\begin{NxIDBoxL}
 		\nxTopicD{Overview and History} How Make became a fundamental tool for managing large-scale software builds.
@@ -202,22 +202,22 @@
 			\nxIDSTopic{\$(filter MATCHES, LIST)} Keeps only matching elements from LIST
 			\nxIDSTopic{\$(shell COMMAND)} Runs a shell command and captures its output.
 			\nxIDSTopic{\$(foreach VAR, LIST, ACTION)} Iterates over LIST, applying ACTION to each item.
-			\nxIDSTopic{\$(if CONDITION, TRUE_VALUE, FALSE_VALUE)} Conditional evaluation.
+			\nxIDSTopic{\$(if CONDITION, TRUE\_VALUE, FALSE\_VALUE)} Conditional evaluation.
 		\end{NxListDark}
 	\end{NxIDBox}
 	\begin{NxIDBox}
 		Make file macros:
 		\begin{NxListDark}
 			\nxIDSTopic{\nxAt} Only prevents Make from printing the command itself.
-			\nxIDSTopic{\nxDash} Ignores errors for a command.
-			\nxIDSTopic{\nxAdd} Forces execution in parallel mode
+			\nxIDSTopic{\nxMinus} Ignores errors for a command.
+			\nxIDSTopic{\nxPlus} Forces execution in parallel mode
 		\end{NxListDark}
 	\end{NxIDBox}
 	\begin{NxIDBox}
 		Command modifiers:
 		\begin{NxListDark}
 			\nxIDSTopic{=} The value is evaluated each time it's used.
-			\nxIDSTopic{:=} The value is evaluated once at definition, preventing repeated
+			\nxIDSTopic{:=} The value is evaluated once at definition, preventing repeated evaluation.
 			\nxIDSTopic{?=} Assigns a value only if the variable was not already set.
 		\end{NxListDark}
 	\end{NxIDBox}

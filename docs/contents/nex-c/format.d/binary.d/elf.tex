@@ -1,0 +1,91 @@
+\begin{NxSSBox}[breakable][ELF (Executable and Linkable Format)]
+	\begin{NxIDBox}
+		\nxGID{elf} is the standard binary format used in Unix-based operating systems such as Linux, BSD, and Solaris. It defines the structure of executable files, shared libraries, and object files, ensuring efficient linking and execution.
+	\end{NxIDBox}
+	\begin{comment}
+	\begin{NxIDBoxL}
+		\nxTopicD{ELF Headers and Structure} Breakdown of ELF headers, sections, and program headers.
+		\nxTopicD{ELF Sections} Overview of `.text`, `.data`, `.bss`, `.rodata`, and other essential ELF segments.
+		\nxTopicD{ELF Relocations and Linking} How ELF handles dynamic and static linking using relocation entries.
+		\nxTopicD{ELF Symbol Tables} How ELF uses `.symtab` and `.dynsym` for symbol resolution.
+		\nxTopicD{Executable vs. Shared Objects} Differences between ELF executables and dynamically linked libraries (`.so`).
+		\nxTopicD{ELF Debugging and Analysis Tools} Inspecting ELF files using `readelf`, `objdump`, and `nm`.
+		\nxTopicD{ELF in Different Architectures} Variations of ELF (`ELF32`, `ELF64`) across different CPU architectures.
+		\nxTopicD{Security in ELF Binaries} Features like Address Space Layout Randomization (ASLR), Position Independent Executables (PIE), and Stack Smashing Protection (SSP).
+		\nxTopicD{ELF Loader and Execution Flow} How the system loads and executes ELF binaries.
+	\end{NxIDBoxL}
+	\end{comment}
+\end{NxSSBox}
+
+\begin{NxIDBoxT}{l|l|l|p{7cm}}[title={ELF Identification (e\_ident)}]
+	Offset	& 	Size & Field & Description \\\hline
+	0x00		& 4 & e\_ident[0-3]		& Magic number (x7FELF) used to recognize ELF files. \\\hline
+	0x04		& 1 & e\_ident[EI\_CLASS]	& Defines ELF Class (32-bit = 0x01, 64-bit = 0x02). \\\hline
+	0x05		& 1 & e\_ident[EI\_DATA]	& Endianness (0x01 = Little Endian, 0x02 = Big Endian). \\\hline
+	0x06		& 1 & e\_ident[EI\_VERSION]	& ELF version (0x01 = Current). \\\hline
+	0x07		& 1 & e\_ident[EI\_OSABI]	& Defines OS ABI (0x00 = System V, 0x03 = Linux). \\\hline
+	0x08		& 1 & e\_ident[EI\_ABIVERSION]	& ABI Version—determines execution compatibility. \\\hline
+	0x09-0x0F	& 7 & e\_ident[EI\_PAD]		& Unused padding bytes. \\
+\end{NxIDBoxT}
+
+\begin{NxIDBoxT}{l|l|l|p{7cm}}[title={ELF Header Fields}]
+    Offset  &   Size (ELF32/ELF64) & Field & Description \\\hline
+    0x10        & 2 / 2 & e\_type        & Identifies file type (Executable, Shared Object, Relocatable). \\\hline
+    0x12        & 2 / 2 & e\_machine     & Specifies processor architecture (x86 = 0x03, ARM = 0x28). \\\hline
+    0x14        & 4 / 4 & e\_version     & ELF format version (0x01 = Current). \\\hline
+    0x18        & 4 / 8 & e\_entry       & Entry Point Address—where execution starts. \\\hline
+    0x1C        & 4 / 8 & e\_phoff       & Offset of Program Headers in the ELF file. \\\hline
+    0x20        & 4 / 8 & e\_shoff       & Offset of Section Headers for .text, .data, .bss. \\\hline
+    0x24        & 4 / 4 & e\_flags       & Architecture-specific execution flags. \\\hline
+    0x28        & 2 / 2 & e\_ehsize      & Size of ELF Header (ELF32: 52 bytes, ELF64: 64 bytes). \\\hline
+    0x2A        & 2 / 2 & e\_phentsize   & Size of a single Program Header entry. \\\hline
+    0x2C        & 2 / 2 & e\_phnum       & Number of entries in the Program Header Table. \\\hline
+    0x2E        & 2 / 2 & e\_shentsize   & Size of a single Section Header entry. \\\hline
+    0x30        & 2 / 2 & e\_shnum       & Number of entries in the Section Header Table. \\\hline
+    0x32        & 2 / 2 & e\_shstrndx    & Index of the section header string table (names of .text, .data, etc.). \\
+\end{NxIDBoxT}
+
+\begin{NxIDBoxT}{l|p{5cm}|l|l}[title={ELF Program Header Types (Elf32\_Phdr / Elf64\_Phdr)}]
+    Type (p\_type) & Purpose & Example Segment & Flags (p\_flags) \\\hline
+    PT\_NULL & Unused entry & — & — \\\hline
+    PT\_LOAD & Loadable segment into memory & .text, .data, .bss & R, W, X \\\hline
+    PT\_DYNAMIC & Holds dynamic linking information & .dynamic & R \\\hline
+    PT\_INTERP & Specifies the dynamic linker used & .interp & R \\\hline
+    PT\_NOTE & Stores extra metadata & .note.ABI-tag & R \\\hline
+    PT\_SHLIB & Reserved & — & — \\\hline
+    PT\_PHDR & Self-reference to the program header table & .phdr & R \\
+\end{NxIDBoxT}
+
+\begin{NxIDBoxT}{l|p{5cm}|l}[title={ELF Relocation Entries (Elf32\_Rel / Elf64\_Rela)}]
+    Relocation Type (r\_type) & Purpose & Used For \\\hline
+    R\_386\_32 (x86) & Absolute address replacement & Static linking \\\hline
+    R\_X86\_64\_PC32 (x86-64) & Relative addressing (PC-relative) & Position Independent Code \\\hline
+    R\_ARM\_ABS32 (ARM) & Absolute memory address replacement & Global variables \\\hline
+    R\_ARM\_CALL (ARM) & Function call relocation & Function pointers \\
+\end{NxIDBoxT}
+
+\begin{NxIDBoxT}{l|l|l}[title={ELF Debugging Symbols}]
+    Symbol Type (st\_info) & Purpose & Example \\\hline
+    STT\_FUNC & Function name \& address & main() \\\hline
+    STT\_OBJECT & Global variable name \& address & int global\_var; \\\hline
+    STT\_SECTION & Section symbol reference & .text, .data \\\hline
+    STT\_FILE & File-level metadata & hello.c \\
+\end{NxIDBoxT}
+
+\begin{NxIDBoxT}{l|l|p{4.2cm}}[title={ELF Memory Layout of an Executable}]
+    Memory Region & Purpose & Example Location \\\hline
+    Text Segment & Contains executable code & 0x08048000 \\\hline
+    Data Segment & Stores initialized global variables & 0x08049000 \\\hline
+    BSS Segment & Holds uninitialized global variables & 0x0804A000 \\\hline
+    Heap & Dynamically allocated memory (malloc()) & 0x08050000 \\\hline
+    Stack & Stores local variables and function calls & 0xBFFF0000 (grows downward) \\
+\end{NxIDBoxT}
+
+\begin{NxIDBoxT}{l|l|p{1cm}}[title={ELF Symbol Types (STT\_*)}]
+    Type (STT\_*) & Purpose & Example \\\hline
+    STT\_FUNC & Represents a function in code & main() \\\hline
+    STT\_OBJECT & Represents a global variable & int global\_var; \\\hline
+    STT\_SECTION & Represents a section reference & .text \\\hline
+    STT\_FILE & Represents a file symbol for debugging & "hello.c" \\
+\end{NxIDBoxT}
+

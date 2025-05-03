@@ -1,0 +1,133 @@
+\begin{NxSSSBox}[breakable][Function Calling Conventions]
+	\begin{NxIDBox}
+		Function calling conventions define how arguments are passed between registers and stack, how return values are handled, and which registers are preserved across function calls. A standardized convention ensures binaries remain ABI-compatible across different architectures.
+	\end{NxIDBox}
+	\begin{NxIDBox}
+		In the System V AMD64 ABI (used in Linux ELF binaries), the first six function arguments are passed using registers: `RDI`, `RSI`, `RDX`, `RCX`, `R8`, and `R9`. Any additional arguments are pushed onto the stack.
+	\end{NxIDBox}
+	\begin{NxIDBox}
+		When a function is called, the \textbf{caller must ensure volatile registers (`RAX`, `RDI`, `RSI`, etc.)} are preserved if needed**. The **callee is responsible for saving non-volatile registers (`RBX`, `RBP`, `R12-R15`) if modified**.
+	\end{NxIDBox}
+\end{NxSSSBox}
+
+\begin{NxIDBoxT}{l|l}[title={System V AMD64 ABI Calling Convention (x86-64)}]
+    Register & Purpose in Function Calls \\\hline
+    RDI & First function argument \\\hline
+    RSI & Second function argument \\\hline
+    RDX & Third function argument \\\hline
+    RCX & Fourth function argument \\\hline
+    R8	& Fifth function argument \\\hline
+    R9	& Sixth function argument \\\hline
+    RAX & Holds function return value \\\hline
+    RSP & Stack pointer (points to function arguments beyond the sixth) \\\hline
+    RBP & Base pointer (used for stack frames) \\
+\end{NxIDBoxT}
+
+\begin{NxCodeBox}{c}{dark, sdwA, frmE, title={When calling a function like}}
+	int add(int a, int b) {
+		return a + b;
+	}
+\end{NxCodeBox}
+
+\bigskip
+
+\begin{NxCodeBox}{asm}{dark, sdwA, frmE, title={The assembly-level execution for add(2, 3) would look like:}}
+	mov rdi, 2    ; First argument (a)
+	mov rsi, 3    ; Second argument (b)
+	call add      ; Function call
+	mov rax, rdi  ; Store return value in RAX
+\end{NxCodeBox}
+
+\bigskip
+
+\begin{NxCodeBox}{c}{dark, sdwA, frmE, title={When a function has more than six arguments, excess arguments are pushed onto the stack instead of registers. Example}}
+	int complex_function(int a, int b, int c, int d, int e, int f, int g);
+\end{NxCodeBox}
+
+\begin{NxIDBoxT}{l|l}[title={System V AMD64 ABI Argument Passing}]
+    Argument & Passed via \\\hline
+    a & RDI (register) \\\hline
+    b & RSI (register) \\\hline
+    c & RDX (register) \\\hline
+    d & RCX (register) \\\hline
+    e & R8 (register) \\\hline
+    f & R9 (register) \\\hline
+    g & Stack (RSP) \\
+\end{NxIDBoxT}
+
+\begin{NxIDBoxT}{l|l|l}[title={Register Preservation Rules}]
+    Register & Preserved? & Usage \\\hline
+    RBX & Yes & Used as a preserved general-purpose register \\\hline
+    RSP & Yes & Stack pointer (must remain unchanged) \\\hline
+    RBP & Yes & Used for stack frame management \\\hline
+    R12-R15 & Yes & General-purpose registers \\\hline
+    RAX & No & Used for return values, can be overwritten \\\hline
+    RDI-R9 & No & Used for argument passing, not preserved \\
+\end{NxIDBoxT}
+
+\begin{NxSSSSBox}[breakable][Stack Frame Layout]
+    \begin{NxIDBox}
+	    Every function call creates a \textbf{stack frame}, allocating space for local variables, register preservation, and return addresses. The frame follows a predictable structure that assists debugging and ensures smooth execution.
+    \end{NxIDBox}
+    \begin{NxIDBox}
+	    In \textbf{System V AMD64 ABI}, the stack grows \textbf{downward}, meaning newer frames are allocated at lower addresses. The base pointer (`RBP`) helps track stack position.
+    \end{NxIDBox}
+\end{NxSSSSBox}
+
+\begin{NxIDBoxT}{l|l|l}[title={Stack Frame Breakdown}]
+    Stack Content & Purpose & Stored In \\\hline
+    Return Address & Address to jump back after function exits & [RSP] \\\hline
+    Saved Registers & Preserved values from caller function & [RBP-8], [RBP-16] \\\hline
+    Local Variables & Temporary function storage & [RBP-24], [RBP-32] \\\hline
+    Function Arguments & Passed values beyond 6th argument & [RBP+8], [RBP+16] \\
+\end{NxIDBoxT}
+
+\begin{NxSSSSBox}[breakable]
+	\begin{NxIDBox}
+		Stack grows downward, ensuring each call doesn’t overwrite another’s memory. Caller saves vital registers before calling the callee function. Return address ensures proper function return flow.
+	\end{NxIDBox}
+\end{NxSSSSBox}
+
+\begin{NxSSSSBox}[breakable][Syscall Execution]
+    \begin{NxIDBox}
+	System calls allow ELF binaries to interact with the **Linux kernel** for process management, file handling, memory allocation, and device communication.
+    \end{NxIDBox}
+    \begin{NxIDBox}
+	Each syscall follows a strict register convention, where the **syscall number is placed in `RAX`, arguments are passed in `RDI`, `RSI`, `RDX`, etc.**, and the kernel returns a result in `RAX`.
+    \end{NxIDBox}
+\end{NxSSSSBox}
+
+\begin{NxIDBoxT}{l|l|l}[title={Syscall Execution Flow}]
+    Step & Operation & Register Used \\\hline
+    1 & Load syscall number (SYS\_write = 1) & RAX \\\hline
+    2 & Set file descriptor (stdout = 1) & RDI \\\hline
+    3 & Set buffer address & RSI \\\hline
+    4 & Set byte count & RDX \\\hline
+    5 & Call syscall instruction & syscall \\\hline
+    6 & Kernel executes operation & — \\\hline
+    7 & Return result to RAX & RAX (bytes written) \\
+\end{NxIDBoxT}
+
+\begin{NxSSSSBox}[breakable]
+	\begin{NxIDBox}
+		Syscall interface is register-based, avoiding function overhead. Direct interaction with kernel ensures efficient execution. Results are returned via RAX, reducing complexity.
+	\end{NxIDBox}
+\end{NxSSSSBox}
+
+\begin{NxSSSSBox}[breakable][Windows vs. System V ABI]
+    \begin{NxIDBox}
+	Calling conventions differ between Windows and Linux. **Windows x64 ABI passes only four arguments via registers (`RCX`, `RDX`, `R8`, `R9`)**, whereas **System V uses six registers (`RDI`, `RSI`, `RDX`, `RCX`, `R8`, `R9`)**.
+	\end{NxIDBox}
+	\begin{NxIDBox}
+	    Additionally, Windows \textbf{requires stack space reservation for all arguments}, while System V only uses stack if arguments exceed six.
+    \end{NxIDBox}
+\end{NxSSSSBox}
+
+\begin{NxIDBoxT}{l|l|l}[title={ABI Feature Comparison: System V vs. Windows x64}]
+    ABI Feature & System V (Linux) & Windows x64 \\\hline
+    Register Arguments & RDI, RSI, RDX, RCX, R8, R9 & RCX, RDX, R8, R9 \\\hline
+    Stack Usage & Only after six arguments & Always reserved \\\hline
+    Caller-Saved Registers & RAX, RDI, RSI, RDX, RCX, R8, R9 & RAX, RCX, RDX, R8, R9 \\\hline
+    Function Return Register & RAX & RAX \\
+\end{NxIDBoxT}
+

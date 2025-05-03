@@ -16,11 +16,11 @@ function! s:Main()
 	set history=10000
 	set nowrap
 	set belloff=all
-	call s:CallFile(
+	call CallFile(
 		\ 'misc.vim',
 		\ 'types.vim',
 		\ 'str.vim',
-		\ 'LaTeX.vim',
+		\ 'TeX.vim',
 		\ 'xml.vim',
 		\ 'mappings.vim',
 		\ 'plugins.vim',
@@ -31,7 +31,7 @@ function! s:Main()
 	call s:ColorTheme()
 endfunction
 
-function! s:CallFile(...)
+function! CallFile(...)
 	if ! exists('g:nex_mod_viml') && ! empty(getenv('G_NEX_MOD_LIB'))
 		let l:tmpa = expand(getenv('G_NEX_MOD_LIB'))
 		if isdirectory(l:tmpa)
@@ -61,8 +61,8 @@ function! s:CallFile(...)
 endfunction
 
 function! s:LoadInit()
-	if has('nvim')
-		call s:CallFile('nex-nvim-init.lua')
+	if has('nvim') && BaseName(getenv('EDITOR')) == 'nvim'
+		call CallFile('nex-nvim-init.lua')
 	endif
 endfunction
 
@@ -73,7 +73,7 @@ function! s:SetupPlugins()
 		if ! isdirectory(l:plug_directory)
 			mkdir(l:plug_directory, 'p')
 		endif
-		call s:CallFile('plugins.vim')
+		call CallFile('plugins.vim')
 	else
 		if has('curl')
 			let l:download_cmd = 'curl -fLo '
@@ -86,7 +86,7 @@ function! s:SetupPlugins()
 			return
 		endif
 		execute l:download_cmd . l:plug_path . ' ' . l:options . ' https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
-		call s:CallFile('plugins.vim')
+		call CallFile('plugins.vim')
 		call PlugUpdateUpgrade()
 	endif
 endfunction

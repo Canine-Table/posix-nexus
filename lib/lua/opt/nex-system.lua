@@ -1,13 +1,13 @@
 local M = {}
 
-M.system = function()
+M.os = function()
 	return package.config:sub(1,1) == '/'
 end
 
 M.path = function(b)
 	local p = debug.getinfo(1, 'S').source:sub(2)
 	local s = '/'
-	if not M.system() then
+	if not M.os() then
 		s = '\\'
 	end
 	if b == nil then
@@ -19,39 +19,30 @@ M.path = function(b)
 	end
 end
 
-M.ls = function(c, e)
-	c = c or M.path(true)
-	e = e or 'lua'
-	return M.system() and 'ls ' .. c .. '*.' .. e or 'dir /b ' .. c .. ' | findstr \\.' .. e
+M.cat = function(f)
+	return M.os() and 'cat "' .. f .. '"' or 'pwsh -c \'Get-Content -Path "' .. f .. '"\''
 end
 
-M.leafs = function(c, l, e)
-	e = e or 'lua'
-	c = c or M.path(true)
-	l = l or M.path(false)
-	local r = M.path()
-	local p = c .. l
-	local fh = assert(io.popen(M.ls(c, e)), 'error listing files')
-	return coroutine.wrap(function()
-		for ln in fh:lines() do
-			if not (ln == p or ln == r) then
-				coroutine.yield(ln)
-			end
-		end
-		fh:close()
-		return true
-	end)
+M.pwd = function()
+	return M.os() and 'pwd' or 'pwsh -c "(Get-Location).Path"'
 end
 
-M.fh = function(p, m, b)
+M.ls = function(p)
+	return M.os() and 'ls "' .. p .. '"' or 'pwsh -c \'(Get-ChildItem -Path "'.. p ..'").VersionInfo.FileName\''
+end
+
+M.pfh = function(c)
+	local p = io.popen(c)
+	if p then
+		return p
+	end
+	return false, 'Error: Could not run command ' .. c
+end
+
+M.fh = function(p)
 	local f = io.open(p, m or 'r')
 	if f then
-		if not b then
-			return f
-		else
-			f:close()
-			return true
-		end
+		return f
 	end
 	return false, 'Error: Could not open file ' .. p .. ' in ' .. (m or 'r') .. ' mode!'
 end
@@ -83,5 +74,21 @@ M.fread = function(p, m)
 	end)
 end
 
-return M
+M.leafs = function(c, l)
+	c = c or M.path(true)
+	l = l or M.path(false)
+	local r = M.path()
+	local p = c .. l
+	local fh = assert(M.pfh(M.ls(c)), 'error listing files')
+	return coroutine.wrap(function()
+		for ln in fh:lines() do
+			if not (ln == p or ln == r) then
+				coroutine.yield(ln)
+			end
+		end
+		fh:close()
+		return false
+	end)
+end
 
+return M

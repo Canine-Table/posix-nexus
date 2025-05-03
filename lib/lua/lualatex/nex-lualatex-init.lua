@@ -6,7 +6,7 @@ local nx_root = os.getenv('G_NEX_MOD_LIB') .. '/lua/opt/nex-'
 local nex = {}
 
 nex.module = dofile(nx_root .. 'module.lua')
-nex.os = dofile(nx_root .. 'os.lua')
+nex.system = dofile(nx_root .. 'system.lua')
 nex.int = dofile(nx_root .. 'int.lua')
 nex.data = dofile(nx_root .. 'data.lua')
 

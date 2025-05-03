@@ -1,15 +1,11 @@
-d_nx_tex_int()
+nx_tex_export()
 {
-	[ -n "$G_NEX_MOD_DOC" ] && (
-		for i in "${G_NEX_MOD_DOC}/"*; do
-			[ -d "$i" ] || {
-				case "$i" in
-					*.pdf|*.tex);;
-					*) rm "$i";;
-				esac
-			}
-		done
-	)
+	export G_NEX_TEX_VIEWER="$(g_nx_cmd zathura mupdf evince skim)"
+	export G_NEX_TEX_COMPILER="$(g_nx_cmd lualatex luatex latexmk pdflatex xelatex)"
+	export G_NEX_TEX_BACKEND="$(g_nx_cmd latexmk latexrun tectonic arara)"
+	export G_NEX_BIB_BACKEND="$(g_nx_cmd biber bibtex bibparse bibtexparser)"
+	export TEXMFHOME="${G_NEX_MOD_LIB}/lua/lualatex"
+	#nx_tex_var 'TEXMFCNF' "${G_NEX_MOD_CNF}//" ':' 1
 }
 
 nx_tex_var()

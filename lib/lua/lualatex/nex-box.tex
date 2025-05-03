@@ -308,6 +308,30 @@
 		toptitle=1mm,
 		bottomtitle=1mm
 	},
+	tltwo/.style={
+		tabulars={@{\extracolsep{\fill}\hspace{5mm}}ll@{\hspace{5mm}}}
+	},
+	tlthree/.style={
+		tabulars={@{\extracolsep{\fill}\hspace{5mm}}lll@{\hspace{5mm}}}
+	},
+	tlfour/.style={
+		tabulars={@{\extracolsep{\fill}\hspace{5mm}}llll@{\hspace{5mm}}}
+	},
+	tlfive/.style={
+		tabulars={@{\extracolsep{\fill}\hspace{5mm}}lllll@{\hspace{5mm}}}
+	},
+	trtwo/.style={
+		tabulars={@{\extracolsep{\fill}\hspace{5mm}}rr@{\hspace{5mm}}}
+	},
+	trthree/.style={
+		tabulars={@{\extracolsep{\fill}\hspace{5mm}}rrr@{\hspace{5mm}}}
+	},
+	trfour/.style={
+		tabulars={@{\extracolsep{\fill}\hspace{5mm}}rrrr@{\hspace{5mm}}}
+	},
+	trfive/.style={
+		tabulars={@{\extracolsep{\fill}\hspace{5mm}}rrrrr@{\hspace{5mm}}}
+	},
 	nexcols/.style={
 		nobeforeafter,
 		leftright skip=0mm,
@@ -530,6 +554,24 @@
 	borderline west={8mm}{0pt}{nex.light.frame},
 	colframe={nex.light.frame},
 	coltext=nex.light.text,
+}
+
+\NewDocumentEnvironment{NxILBoxT}{mO{}}
+{
+	\begin{NxILBox}[breakable, halign=center, #2]
+		\begin{tabular}{#1}
+}{
+		\end{tabular}
+	\end{NxILBox}
+}
+
+\NewDocumentEnvironment{NxIDBoxT}{mO{}}
+{
+	\begin{NxIDBox}[breakable, halign=center, #2]
+		\begin{tabular}{#1}
+}{
+		\end{tabular}
+	\end{NxIDBox}
 }
 
 \NewDocumentEnvironment{NxIDBoxL}{O{}}
