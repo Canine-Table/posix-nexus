@@ -1,1 +1,0 @@
-opt/dialog2-mod.sh

@@ -1,0 +1,7 @@
+ORG 0000H      ; ROM starts at address 0000H
+
+START:
+    JMP START  ; Infinite loop
+
+END
+

@@ -1,5 +1,33 @@
 #!/bin/sh
 
+g_nx_pkgmgr()
+{
+	[ -n "$@" ] && (
+		packs="$(
+			mgr="$(nx_content_leaf "${PKGMGR:-$(nx_cmd_pkgmgr)}")"
+			[ "$mgr" = 'pacman' -a "$(whoami)" != 'root' ] && {
+				mgr="$(nx_content_leaf "$(nx_cmd_aurmgr)")"
+			}
+			${AWK:-$(nx_cmd_awk)} \
+				-v pkg="$*" \
+				-v mgr="$mgr" "
+				$(cat \
+					"$G_NEX_MOD_LIB/awk/nex-misc.awk" \
+					"$G_NEX_MOD_LIB/awk/nex-struct.awk" \
+					"$G_NEX_MOD_LIB/awk/nex-str.awk" \
+					"$G_NEX_MOD_LIB/awk/nex-math.awk" \
+					"$G_NEX_MOD_LIB/awk/nex-pkgmgr.awk"
+				)
+			"'
+				BEGIN {
+					print nx_get_package_list(mgr, pkg)
+				}
+			'
+		)"
+		[ -n "$packs" ] && nx_pkgmgr -i "$packs"
+	)
+}
+
 nx_pkgmgr()
 {
 	[ -n "$PKGMGR" ] && (
@@ -9,8 +37,11 @@ nx_pkgmgr()
 		#	-i: Install a package
 		#	-r: Remove a package
 		#	-c: Clean the cache
-		TTY_DIV=$(add_str_div)
+		TTY_DIV=$(nx_str_div)
 		PKGMGR=$(nx_content_leaf $PKGMGR)
+		[ "$PKGMGR" = 'pacman' -a "$(whoami)" != 'root' ] && {
+			PKGMGR="$(nx_content_leaf "$(nx_cmd_aurmgr)")"
+		}
 		while getopts :s:i:r:q:uc OPT; do
 			case $OPT in
 				s|i|r|q|u|c) eval "$OPT"="'${OPTARG:-true}'";;
@@ -18,11 +49,11 @@ nx_pkgmgr()
 		done
 		shift $((OPTIND - 1))
 		echo $TTY_DIV
-		__set_pkgmgr ${s:+s} ${q:+q} ${i:+i} ${r:+r} ${u:+u} ${c:+c}
+		__nx_set_pkgmgr ${s:+s} ${q:+q} ${i:+i} ${r:+r} ${u:+u} ${c:+c}
 	)
 }
 
-__set_pkgmgr()
+__nx_set_pkgmgr()
 {
 	[ ${#@} -gt 0 ] && {
 		V="$(nx_struct_ref $1)"
@@ -35,7 +66,7 @@ __set_pkgmgr()
 		$PKGMGR $K $V
 		echo $TTY_DIV
 		shift
-		__set_pkgmgr $@
+		__nx_set_pkgmgr $@
 	}
 }
 
@@ -86,7 +117,6 @@ __nx_pkgmgr_zypper()
 		c) K='clean -a';;
 	esac
 }
-
 
 __nx_pkgmgr_yum()
 {
@@ -148,7 +178,33 @@ __nx_pkgmgr_port()
 	esac
 }
 
-alias nx_pkgmgr_yay=nx_pkgmgr_pacman
-alias nx_pkgmgr_dnf=nx_pkgmgr_yum
+_nx_pkgmgr_dnf()
+{
+	__nx_pkgmgr_yum "$@"
+}
+
+__nx_pkgmgr_yay()
+{
+	__nx_pkgmgr_pacman "$@"
+}
+__nx_pkgmgr_paru()
+{
+	__nx_pkgmgr_pacman "$@"
+}
+
+__nx_pkgmgr_aurutils()
+{
+	__nx_pkgmgr_pacman "$@"
+}
+
+__nx_pkgmgr_trizen()
+{
+	__nx_pkgmgr_pacman "$@"
+}
+
+__nx_pkgmgr_pikaur()
+{
+	__nx_pkgmgr_pacman "$@"
+}
 
 

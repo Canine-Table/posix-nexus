@@ -3,8 +3,8 @@
 nx_content_root()
 {
 	(
-		for f in env cnf; do
-			[ "$(nx_content_leaf "$G_NEX_ROOT/$f")" = "$f" ] || mkdir "$G_NEX_ROOT/$f"
+		for f in 'cnf' 'env/rom/al8800bt'; do
+			[ "$(nx_content_leaf "$G_NEX_ROOT/$f")" = "$f" ] || mkdir -p "$G_NEX_ROOT/$f"
 		done
 	)
 }

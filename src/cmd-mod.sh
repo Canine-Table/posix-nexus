@@ -47,3 +47,8 @@ nx_cmd_pkgmgr()
 	g_nx_cmd pacman apk port apt zypper dnf yum pkg brew emerge
 }
 
+nx_cmd_aurmgr()
+{
+	g_nx_cmd yay pacaur aurutils trizen pikaur paru
+}
+

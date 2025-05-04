@@ -269,13 +269,13 @@ function nx_uniq_vector(D1, V1, S, B1, V2, D2, B2, B3,	v, i)
 	return i
 }
 
-function nx_tostring_vector(V, S, B,	i, s)
+function nx_tostring_vector(V, S, B1, B2,	i, s)
 {
 	if (length(V) && 0 in V && V[0] > 0) {
 		S = __nx_else(S, ",")
 		for (i = 1; i <= V[0]; i++)
-			s = nx_join_str(s, V[i], S, 0)
-		if (B)
+			s = nx_join_str(s, V[i], S, B2)
+		if (B1)
 			delete V
 		return s
 	}
