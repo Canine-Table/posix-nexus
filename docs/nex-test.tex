@@ -1,8 +1,16 @@
 \documentclass[a4paper,12pt]{article}
 \input{../lib/lua/lualatex/nex-preamble.tex}
 
+\def\nxDimond#1{\tikz\draw (-#1,0) -- (0,-#1) -- (#1,0) -- (0,#1) -- (-#1,0);}
+\def\nxDimondX#1{\tikz\draw (-#1,0) -- (0,-#1) -- (#1,0) -- (0,#1) -- (-#1,0) -- (#1,0) -- (0,#1) -- (0,-#1);}
+\def\nxDimondS#1{\tikz\draw (-#1,0) -- (0,-#1) -- (#1,0) -- (0,#1) -- (-#1,0) -- (#1,0) -- (0,#1) -- (0,-#1);}
+\def\nxGrid#1#2{\tikz\draw[step=#2] (-#1,-#1) grid (#1,#1);}
+
 \begin{document}
-	hi\par
+	\nxGrid{8.5}{.5cm}
+\end{document}
+
+\begin{comment}
 	\begin{tikzpicture}[node distance=0mm and 0mm]
 		\node[nxCol=warning, szB](stack)[label=left:High Memory\nxTab]{Stack};
 		\node[nxCol=danger, szB](heap)[below=of stack]{Heap};
@@ -11,9 +19,7 @@
 		\node[nxCol=success, szB](text)[below=of data]{Text (Code)};
 		\node[nxCol=info, szB](reserved)[below=of text, label=left:Low Memory\nxTab]{Reserved};
 	\end{tikzpicture}
-\end{document}
 
-\begin{comment}
 	\begin{tikzpicture}
 		\draw 
 			(0,0) rectangle (10,1)
@@ -25,3 +31,4 @@
 	\end{tikzpicture}
 
 \end{comment}
+

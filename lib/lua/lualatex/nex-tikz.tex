@@ -1,6 +1,10 @@
 \def\nxVLine#1#2#3{\tikz\draw(#1,#2) -- (#1,#3);}
 \def\nxHLine#1#2#3{\tikz\draw(#2,#1) -- (#3,#1);}
 \def\nxSquare#1#2{\tikz\draw(#1,#1) rectangle (#2,#2);}
+\def\nxDimond#1{\tikz\draw (-#1,0) -- (0,-#1) -- (#1,0) -- (0,#1) -- (-#1,0);}
+\def\nxDimondX#1{\tikz\draw (-#1,0) -- (0,-#1) -- (#1,0) -- (0,#1) -- (-#1,0) -- (#1,0) -- (0,#1) -- (0,-#1);}
+\def\nxDimondS#1{\tikz\draw (-#1,0) -- (0,-#1) -- (#1,0) -- (0,#1) -- (-#1,0) -- (#1,0) -- (0,#1) -- (0,-#1);}
+\def\nxGrid#1#2{\tikz\draw[step=#2] (-#1,-#1) grid (#1,#1);}
 
 \tikzset{%
 	nxCol/.style={
@@ -10,10 +14,6 @@
 		ultra thin
 	},
 	nxCol/.default=light,
-	nxSize/.style 2 args={
-		minimum width=#1,
-		minimum height=#2
-	},
 	szA/.style={
 		minimum width=\linewidth,
 		minimum height=#1
