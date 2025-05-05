@@ -1,0 +1,17 @@
+\def\nxReadFile#1{%
+	\newread\stream%
+	\openin\stream={#1}%
+	\loop\unless\ifeof\stream%
+		\read\stream to\InLine%
+		\InLine\par%
+	\repeat%
+	\closein\stream%
+}
+
+\long\def\nxWriteFile#1#2{%
+	\newwrite\stream%
+	\openout\stream={#1}%
+	\immediate\write\stream{#2}%
+	\closeout\stream%
+}
+

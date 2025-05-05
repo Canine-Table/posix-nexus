@@ -3,7 +3,8 @@
 		RISC architectures emphasize \textbf{simplified instructions}, enabling faster execution with \textbf{high instruction throughput}. They prioritize \textbf{register-heavy designs} and pipeline optimization.
 	\end{NxIDBox}
 	\begin{NxIDBoxL}
-		\nxTopicD{ARM} One of the most widespread \textbf{RISC architectures}, found in mobile devices and embedded systems.
+		\nxTopicD{ARMv7 (32-bit)} A CPU architecture using 32-bit registers (R0-R15) with support for Thumb (16-bit) instructions and limited to 4GB memory addressing.
+		\nxTopicD{ARMv8-A (64-bit)} A modernized 64-bit architecture that replaces 32-bit registers with X0-X30, removes Thumb instructions, and supports terabytes of memory addressing.
 		%\nxTopicD{RISC-V} An \textbf{open-source RISC architecture}, enabling fully customizable implementations.
 		%\nxTopicD{PowerPC} A \textbf{legacy RISC architecture}, formerly used in Apple Macs and IBM servers.
 		%\nxTopicD{MIPS} A \textbf{classic RISC architecture}, commonly found in embedded and networking systems.
@@ -11,8 +12,9 @@
 	\end{NxIDBoxL}
 \end{NxSSBox}
 
-%\input{./contents/nex-c/format.d/instruction.d/risc.d/arm.tex}
-%\input{./contents/nex-c/format.d/instruction.d/risc.d/riscv.tex}
-%\input{./contents/nex-c/format.d/instruction.d/risc.d/powerpc.tex}
-%\input{./contents/nex-c/format.d/instruction.d/risc.d/sparc.tex}
+\input{./contents/nex-c/instruction.d/risc.d/armv7.tex}
+\input{./contents/nex-c/instruction.d/risc.d/armv8a.tex}
+%\input{./contents/nex-c/instruction.d/risc.d/riscv.tex}
+%\input{./contents/nex-c/instruction.d/risc.d/powerpc.tex}
+%\input{./contents/nex-c/instruction.d/risc.d/sparc.tex}
 

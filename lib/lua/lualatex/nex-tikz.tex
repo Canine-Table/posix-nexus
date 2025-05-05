@@ -1,0 +1,33 @@
+\def\nxVLine#1#2#3{\tikz\draw(#1,#2) -- (#1,#3);}
+\def\nxHLine#1#2#3{\tikz\draw(#2,#1) -- (#3,#1);}
+\def\nxSquare#1#2{\tikz\draw(#1,#1) rectangle (#2,#2);}
+
+\tikzset{%
+	nxCol/.style={
+		fill=nex.#1.back,
+		draw=nex.#1.frame,
+		text=nex.#1.text,
+		ultra thin
+	},
+	nxCol/.default=light,
+	nxSize/.style 2 args={
+		minimum width=#1,
+		minimum height=#2
+	},
+	szA/.style={
+		minimum width=\linewidth,
+		minimum height=#1
+	},
+	szA/.default={2cm},
+	szB/.style={
+		minimum width=0.5\linewidth,
+		minimum height=#1
+	},
+	szB/.default={2cm},
+	szC/.style={
+		minimum width=0.333\linewidth,
+		minimum height=#1
+	},
+	szC/.default={2cm},
+}
+

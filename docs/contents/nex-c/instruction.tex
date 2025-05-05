@@ -4,10 +4,19 @@
 	\end{NxIDBox}
 	\begin{NxIDBoxL}
 		\nxTopicD{CISC (Complex Instruction Set Computing)} CPUs with \textbf{rich instruction sets} that handle complex operations within single instructions.
-		%\nxTopicD{RISC (Reduced Instruction Set Computing)} CPUs optimized for \textbf{simple, efficient instructions}, often requiring multiple steps to achieve complex operations.
+		\nxTopicD{RISC (Reduced Instruction Set Computing)} CPUs optimized for \textbf{simple, efficient instructions}, often requiring multiple steps to achieve complex operations.
 	\end{NxIDBoxL}
 \end{NxSBox}
 
+\begin{tikzpicture}[node distance=0mm and 0mm]
+	\node[nxCol=warning, szB](stack)[label=left:High Memory\nxTab]{Stack};
+	\node[nxCol=danger, szB](heap)[below=of stack]{Heap};
+	\node[nxCol=primary, szB](bss)[below=of heap]{BSS - uninitialized data};
+	\node[nxCol=secondary, szB](data)[below=of bss]{Data};
+	\node[nxCol=success, szB](text)[below=of data]{Text (Code)};
+	\node[nxCol=info, szB](reserved)[below=of text, label=left:Low Memory\nxTab]{Reserved};
+\end{tikzpicture}
+
 \input{./contents/nex-c/instruction.d/cisc.tex}
-%\input{./contents/nex-c/instruction.d/risc.tex}
+\input{./contents/nex-c/instruction.d/risc.tex}
 

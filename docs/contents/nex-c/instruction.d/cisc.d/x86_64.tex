@@ -230,6 +230,55 @@
 		syscall
 \end{NxCodeBox}
 
+\begin{NxSSSSBox}[breakable][Conditional Jump Instructions]
+	\begin{NxIDBox}
+		Conditional jump instructions control branching logic based on CPU flags.
+		\begin{NxListDark}
+			\nxIDSTopic{JE} (Jump if Equal - Executes jump if comparison indicates equality)
+			\nxIDSTopic{JNE} (Jump if Not Equal - Jumps if values differ)
+			\nxIDSTopic{JG/JGE} (Jump if Greater/Greater or Equal - Used for signed comparisons)
+			\nxIDSTopic{JA/JAE} (Jump if Above/Above or Equal - Used for unsigned comparisons)
+			\nxIDSTopic{JL/JLE} (Jump if Less/Less or Equal - For signed values)
+			\nxIDSTopic{JB/JBE} (Jump if Below/Below or Equal - For unsigned values)
+		\end{NxListDark}
+	\end{NxIDBox}
+\end{NxSSSSBox}
+
+\begin{NxSSSSBox}[breakable][Move String Instructions]
+	\begin{NxIDBox}
+		Move string instructions handle efficient memory copying operations at various sizes.
+		\begin{NxListDark}
+			\nxIDSTopic{MOVSB} (Moves 1 byte - Byte-wise memory copy)
+			\nxIDSTopic{MOVSW} (Moves 2 bytes (word) - Used for short memory blocks)
+			\nxIDSTopic{MOVSD} (Moves 4 bytes (doubleword) - Handles larger memory transfers)
+			\nxIDSTopic{MOVSQ} (Moves 8 bytes (quadword) - Optimized for 64-bit memory copying)
+		\end{NxListDark}
+	\end{NxIDBox}
+\end{NxSSSSBox}
+
+\begin{NxSSSSBox}[breakable][Set Instructions]
+	\begin{NxIDBox}
+		Set instructions directly modify registers based on specific CPU flags.
+		\begin{NxListDark}
+			\nxIDSTopic{SETZ/SETE} (Sets register if Zero Flag (ZF) is set)
+			\nxIDSTopic{SETNZ/SETNE} (Sets register if ZF is not set)
+			\nxIDSTopic{SETA/SETNBE} (Sets register if above (unsigned comparison))
+			\nxIDSTopic{SETG/SETNLE} (Sets register if greater (signed comparison))
+		\end{NxListDark}
+	\end{NxIDBox}
+\end{NxSSSSBox}
+
+\begin{NxSSSSBox}[breakable][Direction Flag (DF)]
+	\begin{NxIDBox}
+		The Direction Flag (DF) determines the traversal direction of memory operations.
+		\begin{NxListDark}
+			\nxIDSTopic{CLD} (Clear Direction Flag - Moves forward, incrementing addresses)
+			\nxIDSTopic{STD} (Set Direction Flag - Moves backward, decrementing addresses)
+			\nxIDSTopic{REP Operations} (CLD is used before executing REP string operations for correct memory traversal)
+		\end{NxListDark}
+	\end{NxIDBox}
+\end{NxSSSSBox}
+
 \begin{comment}
 Memory Unit Example Size Typical Speed
 Registers 16, 64-bit registers ~1 nanoseconds13

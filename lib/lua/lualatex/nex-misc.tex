@@ -120,4 +120,13 @@
 	\fi%
 }
 
+\def\nxPkgLoaded#1#2{%
+	\IfPackageLoaded{#1}{%
+		\expandafter\nxFirstOfOne%
+	}{%
+		\typeout{The #2 package is not loaded.}
+		\expandafter\nxNoneOfOne%
+	}%
+}
+
 
