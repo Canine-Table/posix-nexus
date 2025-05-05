@@ -88,7 +88,7 @@ nx_content_append()
 
 ##############################################################################################
 
-export G_NEX_ROOT="/usr/local/bin/nex"
+export G_NEX_ROOT="/root/.local/posix-nexus"
 export G_NEX_MOD_SRC="$G_NEX_ROOT/src"
 export G_NEX_MOD_LIB="$G_NEX_ROOT/lib"
 export G_NEX_MOD_CNF="$G_NEX_ROOT/cnf"
@@ -110,6 +110,7 @@ export SHELL="$(nx_cmd_shell)"
 export AWK="$(nx_cmd_awk)"
 export PKGMGR="$(nx_cmd_pkgmgr)"
 export CC="$(nx_cmd_cc)"
+export APKROOT=/mnt
 
 alias nex='. "$G_NEX_MOD_SRC/init-mod.sh"'
 alias nx=nex

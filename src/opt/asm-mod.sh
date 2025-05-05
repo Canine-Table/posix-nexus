@@ -21,10 +21,24 @@ nx_8bit_al8800bt_rom()
 
 nx_elf64_asm()
 {
-	[ -n "$1" ] && h_nx_cmd nasm && {
-		nasm -f elf64 "${1}.asm" -o "${1}.o"
-		ld "${1}.o" -o "$1"
-		./"${1}"
-	}
+	if [ "$1" = '-c' ]; then
+		(
+			for f in "$(pwd)/"*; do
+				case "$f" in
+					*.s|*.asm|*.c|*.h|*.cpp|*.hpp);;
+					*) rm "$f";;
+				esac
+			done
+		)
+	elif [ -n "$1" ]; then
+		h_nx_cmd nasm && nasm -f elf64 "${1}.asm" -o "${1}.o"
+		h_nx_cmd arm-openwrt-linux-muslgnueabi-gcc && as -o "${1}.o" "${1}.s"
+		[ -e "${1}.o" ] && {
+			ld "${1}.o" -o "$1"
+			./"${1}"
+			return
+		}
+		return 1
+	fi
 }
 
