@@ -86,7 +86,7 @@ nx_math_sqrt()
 	'
 }
 
-nx_math_rmainder()
+nx_math_remainder()
 {
 	${AWK:-$(nx_cmd_awk)} \
 		-v n1="$1" \

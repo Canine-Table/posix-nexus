@@ -23,7 +23,7 @@ nx_elf64_asm()
 {
 	if [ "$1" = '-c' ]; then
 		(
-			for f in "$(pwd)/"*; do
+			for f in "$(pwd)/."* "$(pwd)/"*; do
 				case "$f" in
 					*.s|*.asm|*.c|*.h|*.cpp|*.hpp);;
 					*) rm "$f";;
@@ -31,10 +31,16 @@ nx_elf64_asm()
 			done
 		)
 	elif [ -n "$1" ]; then
-		h_nx_cmd nasm && nasm -f elf64 "${1}.asm" -o "${1}.o"
-		h_nx_cmd arm-openwrt-linux-muslgnueabi-gcc && as -o "${1}.o" "${1}.s"
-		[ -e "${1}.o" ] && {
-			ld "${1}.o" -o "$1"
+		h_nx_cmd nasm && {
+			nx_bundle_include -s '@' -i "${1}.asm" -o ".${1}.S" -f -d 'nx_include'
+			nasm -f elf64 -o ".${1}.o" ".${1}.S"
+		}
+		h_nx_cmd arm-openwrt-linux-muslgnueabi-gcc && {
+			nx_bundle_include -s '@' -i "${1}.s" -o ".${1}.S" -f -d 'nx_include'
+			as -o ".${1}.o" ".${1}.S"
+		}
+		[ -e ".${1}.o" ] && {
+			ld ".${1}.o" -o "$1"
 			./"${1}"
 			return
 		}
