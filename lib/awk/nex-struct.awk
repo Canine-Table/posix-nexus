@@ -96,7 +96,7 @@ function nx_tokenize(D1, V1, S1, S2, V2, D2, B1, B2,	v1, v2, c, s, i, l, t, k)
 						if (c == S2) {
 							V1[++V1[0]] = s
 							if (s == D1)
-								nx_bool(V1, V1[V1[0]])
+								nx_boolean(V1, V1[V1[0]])
 						} else if (k) {
 							V1[k] = s
 						} else {
@@ -115,8 +115,8 @@ function nx_tokenize(D1, V1, S1, S2, V2, D2, B1, B2,	v1, v2, c, s, i, l, t, k)
 							k = nx_join_str(k, s, ".")
 						} else {
 							V1[++V1[0]] = s
-							if (t == S1 || (s == D1 && c = S1)) {
-								nx_bool(V1, V1[V1[0]])
+							if (t == S1 || (s == D1 && c == S1)) {
+								nx_boolean(V1, V1[V1[0]])
 							}
 						}
 					}

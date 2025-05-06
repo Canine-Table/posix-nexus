@@ -57,7 +57,7 @@ function nx_transform_backslashes(D, S,		l, p, o)
 function nx_escape_str(D1, N, B, D2, D3,	e)
 {
 	N = __nx_else(nx_natural(N), 1)
-	D2 = __nx_else(D2, "[\[\]\{\}\(\)\.\+\-\*\?\^\$\|\&]|\\")
+	D2 = __nx_else(D2, "[\\[\\]\\{\\}\\(\\)\\.\\+\\-\\*\\?\\^\\$\\|\\&]|\\")
 	D3 = __nx_else(D3, "\\")
 	do {
 		if (B)
