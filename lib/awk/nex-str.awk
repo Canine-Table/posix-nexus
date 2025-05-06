@@ -212,3 +212,53 @@ function nx_random_str(N, D, S, B,	i, v1, v2, v3, s, r, f)
 	return substr(s, 1, N)
 }
 
+function nx_word(D1, D2)
+{
+	if (D1 != "" && D2 != "") {
+		if (D1 ~ "(^|[ \v\t\n\f]+)" D2 "($|[ \v\t\n\f]+)")
+			return D2
+		return D1
+	}
+}
+
+function nx_bundle(D1, D2, D3, V1, V2,	v1, b, m, a, n, l, s)
+{
+	if (s = nx_word(D1, D2)) {
+		if  (s == D2) {
+			if (! length(V2)) {
+				__nx_quote_map(V2)
+				__nx_escape_map(V2)
+			}
+			match(D1, D2 "([ \v\t\n\f]+)?")
+			b = substr(D1, 1, RSTART - 1)
+			m = substr(D1, RSTART + RLENGTH)
+			nx_next_pair(m, V2, v1)
+			t = substr(m, v1[1] + v1[1 "_" v1[1]], v1[2])
+			a = substr(m, length(t) + v1[2 "_" v1[2]] + 2)
+			if (D3) {
+				V1[D3] = 1
+				match(D3, /.*\//)
+				if (! ((m = substr(D3, 1, RLENGTH) t) in V1)) {
+					V1[m] = 1
+					n = 1
+				}
+			} else if (! ((m = "./" t) in V1)) {
+				V1[m] = 1
+				n = 1
+			}
+			delete v1
+			if (n) {
+				D3 = ""
+				while ((getline l < m) > 0) {
+					D3 = nx_join_str(D3, nx_bundle(l, D2, m, V1, V2), "\x0a")
+				}
+			} else {
+				return b a
+			}
+			return b D3 a
+		} else {
+			return s
+		}
+	}
+}
+
