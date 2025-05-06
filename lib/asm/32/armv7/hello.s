@@ -1,13 +1,12 @@
 .section .data
-	msg: .asciz "hello world!\n"  @ or msg:    .ascii "hello world!" 
-	.equ l_msg, . - msg   @ or: l_msg = . - msg (Less Portable (GNU as specific):
+@nx_include "_asciz.S"
 
 .section .text
 	.global _start
 
 _start:
 	BL nx_write
-	B nx_exit
+	B nx_svc_end
 
 nx_write:
 	MOV R7, #4
@@ -16,6 +15,4 @@ nx_write:
 	LDR R2, =l_msg
 	SVC #0
 	BX LR
-
-@nx_include "_exit.s"
-
+@nx_include "_exit.S"

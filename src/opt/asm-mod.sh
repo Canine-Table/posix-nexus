@@ -19,14 +19,14 @@ nx_8bit_al8800bt_rom()
 	}
 }
 
-nx_elf64_asm()
+nx_elf_asm()
 {
 	if [ "$1" = '-c' ]; then
 		(
 			for f in "$(pwd)/."* "$(pwd)/"*; do
-				case "$f" in
-					*.s|*.asm|*.c|*.h|*.cpp|*.hpp);;
-					*) rm "$f";;
+				case "$(nx_str_case -l "$f")" in
+					*.s|*.asm|*.c|*.h|*.cpp|*.hpp|*.rs|Makefile);;
+					*) rm "$f" 2>/dev/null;;
 				esac
 			done
 		)
@@ -39,11 +39,18 @@ nx_elf64_asm()
 			nx_bundle_include -s '@' -i "${1}.s" -o ".${1}.S" -f -d 'nx_include'
 			as -o ".${1}.o" ".${1}.S"
 		}
-		[ -e ".${1}.o" ] && {
+		[ -e ".${1}.o" ] && (
 			ld ".${1}.o" -o "$1"
+			h_nx_cmd tty stty && d="$(nx_str_div)"
+			echo -n $d
+			h_nx_cmd objdump && {
+				objdump -d "$1" 
+				echo -n $d
+			}
 			./"${1}"
+			echo -n $d
 			return
-		}
+		)
 		return 1
 	fi
 }

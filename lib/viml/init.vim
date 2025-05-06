@@ -19,16 +19,70 @@ function! s:Main()
 	call CallFile(
 		\ 'misc.vim',
 		\ 'types.vim',
-		\ 'str.vim',
 		\ 'TeX.vim',
+		\ 'str.vim',
 		\ 'xml.vim',
 		\ 'mappings.vim',
-		\ 'plugins.vim',
-		\ 'snippets.vim',
 	\)
-	call s:SetupPlugins()
-	call s:LoadInit()
+	let l:nx_packages = {
+		\ 'autoload/plug.vim': 'https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim',
+		\ 'colors/dracula.vim': 'https://raw.githubusercontent.com/dracula/vim/master/colors/dracula.vim',
+	\}
+	call NxPath(l:nx_packages)
 	call s:ColorTheme()
+endfunction
+
+function NxPath(args)
+	if has('curl') || BaseName(getenv('G_NEX_WEB_FETCH')) == 'curl'
+		let l:download_cmd = 'silent !curl -fLo '
+		let l:options = ' --create-dirs '
+	elseif has('wget') || BaseName(getenv('G_NEX_WEB_FETCH')) == 'wget'
+		let l:download_cmd = 'silent !wget -O '
+		let l:options = ' '
+	else
+		echoerr 'Error: No curl or wget found.'
+		return
+	endif
+	if empty(getenv('G_NEX_EDITOR_STDPATH'))
+		if has('nvim') && BaseName(getenv('EDITOR')) == 'nvim'
+			if empty(getenv('LOCALAPPDATA'))
+				let g:nx_data_path = glob('~/local/.share/nvim/')
+				let g:nx_config_path = glob('~/.config/nvim/')
+				let g:nx_cache_path = glob('~/.cache/nvim/')
+			else
+				let g:nx_data_path = glob('~/AppData/Local/nvim/')
+				let g:nx_config_path = glob('~/AppData/Local/nvim-data/')
+				let g:nx_cache_path = glob('~/AppData/Local/nvim-cache/')
+			endif
+		else
+			if empty(getenv('LOCALAPPDATA'))
+				let g:nx_data_path = glob('~/.vim/')
+				let g:nx_config_path = glob('~/.vim/')
+				let g:nx_cache_path = glob('~/.vim/')
+			else
+				let g:nx_data_path = glob('~/vimfiles/')
+				let g:nx_config_path = glob('~/vimfiles/')
+				let g:nx_cache_path = glob('~/vimfiles/')
+			endif
+		endif
+	else
+		let g:nx_data_path = stdpath('data') . '/'
+		let g:nx_config_path = stdpath('config') . '/'
+		let g:nx_cache_path = stdpath('cache') . '/'
+	endif
+	let l:plug_directory = g:nx_config_path . 'plugged/'
+	if ! isdirectory(l:plug_directory)
+		mkdir(l:plug_directory, 'p')
+		call CallFile('plugins.vim')
+		call PlugUpdateUpgrade()
+	endif
+	for [key, val] in items(a:args)
+		if ! filereadable(g:nx_config_path . key)
+			execute l:download_cmd . g:nx_config_path . key . l:options . val
+		endif
+	endfor
+	call CallFile('plugins.vim', 'snippets.vim')
+	call s:LoadInit()
 endfunction
 
 function! CallFile(...)
@@ -63,31 +117,6 @@ endfunction
 function! s:LoadInit()
 	if has('nvim') && BaseName(getenv('EDITOR')) == 'nvim'
 		call CallFile('nex-nvim-init.lua')
-	endif
-endfunction
-
-function! s:SetupPlugins()
-	let l:plug_path = glob(stdpath('data') . '/site/autoload/plug.vim')
-	if filereadable(l:plug_path)
-		let l:plug_directory = glob(stdpath('config') . '/plugged')
-		if ! isdirectory(l:plug_directory)
-			mkdir(l:plug_directory, 'p')
-		endif
-		call CallFile('plugins.vim')
-	else
-		if has('curl')
-			let l:download_cmd = 'curl -fLo '
-			let l:options = '--create-dirs'
-		elseif has('wget')
-			let l:download_cmd = 'wget -O '
-			let l:options = ''
-		else
-			echoerr 'Error: No curl or wget found.'
-			return
-		endif
-		execute l:download_cmd . l:plug_path . ' ' . l:options . ' https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
-		call CallFile('plugins.vim')
-		call PlugUpdateUpgrade()
 	endif
 endfunction
 

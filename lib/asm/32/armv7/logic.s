@@ -9,5 +9,5 @@ _start:
 	AND R0, R0, #0x000000FF
 	B nx_svc_end
 
-@nx_include "_exit.s"
+@nx_include "_exit.S"
 

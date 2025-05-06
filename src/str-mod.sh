@@ -2,27 +2,25 @@
 
 nx_str_rand()
 {
-	(
-		${AWK:-$(nx_cmd_awk)} \
-			-v num="${1:-8}" \
-			-v chars="${2:-alnum}" \
-		"
-			$(cat \
-				"$G_NEX_MOD_LIB/awk/nex-misc.awk" \
-				"$G_NEX_MOD_LIB/awk/nex-struct.awk" \
-				"$G_NEX_MOD_LIB/awk/nex-str.awk" \
-				"$G_NEX_MOD_LIB/awk/nex-math.awk"
-			)
-		"'
-			BEGIN {
-				num __nx_if(__nx_is_integral(num), num, 8)
-				if (val = nx_random_str(num, chars))
-					print val
-				else
-					exit 1
-			}
-		'
-	)
+	${AWK:-$(nx_cmd_awk)} \
+		-v num="${1:-8}" \
+		-v chars="${2:-alnum}" \
+	"
+		$(cat \
+			"$G_NEX_MOD_LIB/awk/nex-misc.awk" \
+			"$G_NEX_MOD_LIB/awk/nex-struct.awk" \
+			"$G_NEX_MOD_LIB/awk/nex-str.awk" \
+			"$G_NEX_MOD_LIB/awk/nex-math.awk"
+		)
+	"'
+		BEGIN {
+			num __nx_if(__nx_is_integral(num), num, 8)
+			if (val = nx_random_str(num, chars))
+				print val
+			else
+				exit 1
+		}
+	'
 }
 
 nx_str_chain()

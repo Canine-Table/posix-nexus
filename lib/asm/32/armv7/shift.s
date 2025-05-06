@@ -7,9 +7,5 @@ _start:
 	ROR R0, R0 @ rotate 
 	B nx_svc_end
 
-nx_svc_end:
-	ADD R3, R3, #61
-	MOV R7, #1   	@ syscall: exit
-	MOV R0, #0    	@ exit code (0 = success)
-	SVC 0         	@ invoke syscall
+@nx_include "_exit.S"
 
