@@ -122,9 +122,9 @@ endfunction
 
 function! s:ColorTheme()
 	try
-		colorscheme nord
-	catch /^Vim\%((\a\+)\)\=:E185/
 		colorscheme dracula
+	catch /^Vim\%((\a\+)\)\=:E185/
+		colorscheme nord
 	catch /^Vim\%((\a\+)\)\=:E185/
 		colorscheme dracula-soft
 	catch /^Vim\%((\a\+)\)\=:E185/

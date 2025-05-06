@@ -48,7 +48,7 @@ nx_elf_asm()
 				echo -n $d
 			}
 			./"${1}"
-			echo -n $d
+			echo -e "\n$d"
 			return
 		)
 		return 1

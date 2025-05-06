@@ -1,6 +1,12 @@
 .section .data
-	@nx_include "_ascii.S"
-@nx_include "_start.S"
+		nl:
+		.ascii "\n"		@ store the string as raw bytes
+	msg:
+		.ascii "hello world!"	@ store the string as raw bytes
+	nx_msg_end:
+.section .text
+.global _start
+_start:
 	LDR R4, =msg		@ R4 will point to the current character in the string
 	LDR R5, =nx_msg_end	@ label marking the end of the string
 	MOV R6, #1		@ R6 holds the file descriptor for stdout
@@ -19,6 +25,10 @@ nx_loop:
 	MOV R1, R3
 	SVC #0
 	B nx_loop		@ repeat the loop
-
-@nx_include "_exit.S"
-
+nx_svc_end:
+	MOV R7, #1		@ syscall: exit
+	MOV R0, #0		@  exit code (0 = success)
+	SVC 0			@ invoke syscall
+nx_swi_end:
+	MOV R7, #1		@ syscall: exit
+	SWI 0			@ Call software interrupt
