@@ -19,4 +19,13 @@
 **/*.c linguist-language=C
 **/*.h linguist-language=C
 
+*.asm linguist-language=Assembly
+**/*.s linguist-language=Assembly
+**/*.S linguist-language=Assembly
+
+**/*.lua linguist-language=Lua
+
+**/*.py linguist-language=Python
+
 src/test-mod.sh linguist-vendored
+
