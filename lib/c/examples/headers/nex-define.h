@@ -12,25 +12,55 @@
 #endif
 
 /* Endian Macros */
-#if defined(__BYTE_ORDER__) && (__BYTE_ORDER__ == __ORDER_BIG_ENDIAN__)
-	#define NX_BIG_ENDIAN 1
-	#define NX_LITTLE_ENDIAN 0
-#elif defined(__BYTE_ORDER__) && (__BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__)
-	#define NX_BIG_ENDIAN 0
-	#define NX_LITTLE_ENDIAN 1
-#elif defined(__BIG_ENDIAN__) || defined(_BIG_ENDIAN) || defined(__ARMEB__) || defined(__MIPSEB__) || defined(__POWERPC__) || defined(__sparc__)
-	#define NX_BIG_ENDIAN 1
-	#define NX_LITTLE_ENDIAN 0
+#if (defined(__BYTE_ORDER__) && (__BYTE_ORDER__ == __ORDER_BIG_ENDIAN__ || __BYTE_ORDER__ != __ORDER_LITTLE_ENDIAN__)) \
+	||defined(__BIG_ENDIAN__) || defined(_BIG_ENDIAN) || defined(__ARMEB__) \
+	|| defined(__MIPSEB__) || defined(__POWERPC__) || defined(__sparc__) \
+	|| defined(__s390__) || defined(__HPPA__) || defined(__M68K__)
+	#define NX_ENDIAN 1
 #else
-	#define NX_BIG_ENDIAN 0
-	#define NX_LITTLE_ENDIAN 1
+	#define NX_ENDIAN 0
 #endif
 
 /* Architecture Detection */
-#if defined(__x86_64__) || defined(_M_X64) || defined(__aarch64__) || defined(__PPC64__) || defined(__mips64)
-	#define NX_IS_64BIT 1
+#if defined(__x86_64__) || defined(_M_X64) || defined(__aarch64__) \
+	|| defined(__PPC64__) || defined(__mips64__)
+	#define NX_IS_BIT 64
+#elif defined(__i386__) || (defined(__arm__) && !(defined(__thumb__) || defined(__ARM_ARCH_8__))) \
+	|| defined(__PPC__) || defined(__mips__) || defined(__sparc__) || defined(_M_IX86)
+	#define NX_IS_BIT 32
+#elif defined(__x86__) || defined(__ARM_ARCH_4T__) || defined(__ARM_ARCH_5T__) \
+	|| defined(__ARM_ARCH_5TE__) || defined(__m68k__) || defined(__TMS320__) \
+	|| defined(__HCS12__) || defined(__HC12__) || defined(__68HC12__) \
+	|| defined(__HCS12X__) || defined(__XMEGA__) || defined(__AVR_HAVE_16BIT__) \
+	|| defined(__DSP56K__) || defined(__Blackfin__) || defined(__thumb__)
+	#define NX_IS_BIT 16
+#elif defined(__Z80__) || defined(__8080__) || defined(__AVR__) \
+	|| defined(__PIC__) || defined(__HC08__) || defined(__6502__)
+	#define NX_IS_BIT 8
 #else
-	#define NX_IS_64BIT 0
+	#define NX_IS_BIT 0  /* Undefined architecture */
+#endif
+
+#define NX_SWAP64(v) ((((v) >> 56) & 0x00000000000000FF) | \
+	(((v) >> 40) & 0x000000000000FF00) | \
+	(((v) >> 24) & 0x0000000000FF0000) | \
+	(((v) >> 8) & 0x000000000FF00000) | \
+	(((v) << 8) & 0x0000000FF0000000) | \
+	(((v) << 24) & 0x0000FF0000000000) | \
+	(((v) << 40) & 0x00FF000000000000) | \
+	(((v) << 56) & 0xFF00000000000000))
+#define NX_SWAP32(v) ((((v) >> 24) & 0x000000FF) | \
+	(((v) >> 8)  & 0x0000FF00) | \
+	(((v) << 8)  & 0x00FF0000) | \
+	(((v) << 24) & 0xFF000000))
+#define NX_SWAP16(v) (((v) >> 8) | ((v) << 8))
+
+#if NX_IS_BIT == 64
+	#define NX_SWAP(v) (NX_SWAP64(v))
+#elif NX_IS_BIT == 32
+	#define NX_SWAP(v) (NX_SWAP32(v))
+#elif NX_IS_BIT == 16
+	#define NX_SWAP(v) (NX_SWAP16(v))
 #endif
 
 #if defined(__SIZEOF_LONG_DOUBLE__) && __SIZEOF_LONG_DOUBLE__ == 16

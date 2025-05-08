@@ -27,6 +27,12 @@ nx_asm_export()
 				export G_NX_ASM_ENDIAN='0'
 				export G_NX_ASM_BIT='64'
 			};;
+		'armv8l')
+			{
+				export G_NX_ASM_ARCH='arm84'
+				export G_NX_ASM_ENDIAN='0'
+				export G_NX_ASM_BIT='64'
+			};;
 		'mips')
 			{
 				export G_NX_ASM_ARCH='mips'

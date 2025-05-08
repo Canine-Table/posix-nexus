@@ -1,19 +1,25 @@
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
 #include "headers/nex-define.h"
-#include "headers/nex-str.h"
-#include "headers/nex-math.h"
+#include "headers/nex-lexer.h"
 #include "headers/nex-bit.h"
-#include "headers/nex-data.h"
+#include <stdio.h>
 
 nx_sint_t main (nx_sint_t argc, nx_Char_t *argv[])
 {
+		nx_Char_t *c = "if (x > 10) for i = 0 while do 'H\'ello' `hello";
+		nx_tok(c);
+		return(0);
+}
+
+/*
+#include <string.h>
+#include <stdlib.h>
+
+#include "headers/nex-str.h"
+#include "headers/nex-math.h"
 	nx_char_stack_s *stack = nx_char_cstack(10); // Create stack with initial capacity of 10
 	nx_char_push(stack, "Hello");
 	printf("Top of stack: %s\n", nx_char_peek(stack)); // Should print "World"
 	nx_char_fstack(stack);
-	/*
 	nx_ptrdiff_t *st = nx_atol(argc, argv);
 	for (nx_uint_t i = 1; i < argc; i++) {
 
@@ -28,6 +34,4 @@ nx_sint_t main (nx_sint_t argc, nx_Char_t *argv[])
 	}
 	free(st);  \ * Prevent memory leak * /
 	*/
-	return(0);
-}
 

@@ -1,4 +1,4 @@
-nx_convert_base()
+nx_math_convert_base()
 {
 	${AWK:-$(nx_cmd_awk)} \
 		-v n1="$1" \
@@ -22,7 +22,7 @@ nx_convert_base()
 	'
 }
 
-nx_compliment_base()
+nx_math_compliment_base()
 {
 	${AWK:-$(nx_cmd_awk)} \
 		-v n="$1" \
@@ -44,7 +44,7 @@ nx_compliment_base()
 	'
 }
 
-nx_power()
+nx_math_power()
 {
 	${AWK:-$(nx_cmd_awk)} \
 		-v n1="$1" \
@@ -229,6 +229,26 @@ nx_math_lcd()
 		BEGIN {
 			if ((n = nx_lcd(n1, n2)) != "")
 				print n
+			else
+				exit 1
+		}
+	'
+}
+nx_math_modulo()
+{
+	${AWK:-$(nx_cmd_awk)} \
+		-v num="$1" \
+		-v mod="$2" "
+		$(cat \
+			"$G_NEX_MOD_LIB/awk/nex-misc.awk" \
+			"$G_NEX_MOD_LIB/awk/nex-str.awk" \
+			"$G_NEX_MOD_LIB/awk/nex-math.awk" \
+			"$G_NEX_MOD_LIB/awk/nex-struct.awk"
+		)
+	"'
+		BEGIN {
+		if ((num = nx_modulo(num, mod)) != "")
+				print num
 			else
 				exit 1
 		}
