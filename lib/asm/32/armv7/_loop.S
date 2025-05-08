@@ -1,8 +1,8 @@
 nx_write_loop:
-	MOV R10, R3		@ the terminator
-	MOV R9, R2		@ the message
-	MOV R8, R1		@ set the skip count
-	MOV R6, R0		@ set file descriptor
+	MOV R10, R3		@ R10 is the terminator address.
+	MOV R9, R2		@ R9 is set to point to the beginning of the message.
+	MOV R8, R1		@ R8 is the skip count (number of bytes to write).
+	MOV R6, R0		@ R6 receives the file descriptor.
 nx_write_loop_repeat:
 	CMP R9, R10		@ compare current pointer with end pointer
 	BEQ nx_write_loop_end	@ if R9 == R10, we're done printing

@@ -16,6 +16,7 @@ CFLAGS += -Wall -O2
 SRC = main.c $(wildcard headers/*.c)
 OBJ = $(patsubst %.c, %.o, $(SRC))
 
+.PHONY: all
 all: nx
 
 nx: $(OBJ)

@@ -147,6 +147,7 @@ nx_content_root
 nx_content_modules
 nx_tex_export
 nx_editor_export
+nx_asm_export
 
 export G_NEX_WEB_FETCH="$(g_nx_cmd curl wget)"
 export LESS='-R'
