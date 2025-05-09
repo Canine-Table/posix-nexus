@@ -1,7 +1,9 @@
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 #include "nex-define.h"
 #include "nex-bit.h"
+#include "nex-io.h"
 #include "nex-lexer.h"
 
 static nx_Char_t *nx_keywords[] = {"if", "for", "while", "do", "else"};
@@ -52,8 +54,29 @@ nx_sint_t nx_is_quote(nx_char_t s)
 
 void nx_tok(nx_Char_t *s)
 {
-	nx_Char_t *p = s;
-	while (*p) {
+	nx_fe_s *f = nx_fopen(s, "R");
+	if (f == NULL)
+		return;
+	nx_char_t p;
+	int cnt = 140;
+	while(cnt--) {
+		if ((p = fgetc(f->fh)) == EOF)
+			break;
+		printf("%c", p);
+	}
+	fclose(f->fh);
+	free(f->mode);
+	free(f);
+}
+
+/*
+void nx_tok(nx_Char_t *s)
+{
+	nx_fe_s *f = nx_fopen(s, "R");
+	if (f == NULL)
+		return;
+	nx_char_t p;
+	while ((p = fgetc(f->fh)) != EOF) {
 		if (nx_is_space(*p)) {
 			p++;
 			continue;
@@ -110,5 +133,7 @@ void nx_tok(nx_Char_t *s)
 		}
 		printf("Token: Type=%d, Value=%s\n", t.type, t.value);
 	}
+	fclose(f->fh);
+	free(f);
 }
-
+*/

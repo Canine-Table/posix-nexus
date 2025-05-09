@@ -47,6 +47,7 @@ function nx_get_aur_list(V,		v)
 
 function nx_get_pacman_list(V,		v)
 {
+	v["nfs"] = "nfs-utils gvfs-nfs nfsidmap libnfs mkinitcpio-nfs-utils"
 	return nx_get_list(V, v)
 }
 

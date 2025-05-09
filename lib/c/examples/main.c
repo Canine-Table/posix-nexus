@@ -5,8 +5,8 @@
 
 nx_sint_t main (nx_sint_t argc, nx_Char_t *argv[])
 {
-		nx_Char_t *c = "if (x > 10) for i = 0 while do 'H\'ello' `hello";
-		nx_tok(c);
+		//nx_Char_t *c = "if (x > 10) for i = 0 while do 'H\'ello' `hello";
+		nx_tok("file.nx");
 		return(0);
 }
 

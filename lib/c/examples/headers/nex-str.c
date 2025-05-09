@@ -1,16 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "nex-define.h"
+#include "nex-misc.h"
 #include "nex-str.h"
-
-nx_ptrdiff_t nx_mem_chk(void *p)
-{
-	if (p == NULL) {
-		fprintf(stderr, "Memory allocation failed!\n");
-		return(-1);  /* Return an error indicator */
-	}
-	return(0);  /* Memory allocation was successful */
-}
 
 nx_ptrdiff_t *nx_atol(nx_sint_t l, nx_Char_t **c)
 {
