@@ -4,6 +4,7 @@
 #include "nex-define.h"
 #include "nex-misc.h"
 #include "nex-io.h"
+#include "nex-lexer.h"
 
 nx_fe_s *nx_fopen(nx_Char_t *f, nx_Char_t *c)
 {

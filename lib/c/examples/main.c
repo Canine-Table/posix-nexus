@@ -1,4 +1,5 @@
 #include "headers/nex-define.h"
+#include "headers/nex-io.h"
 #include "headers/nex-lexer.h"
 #include "headers/nex-bit.h"
 #include <stdio.h>

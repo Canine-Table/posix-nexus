@@ -168,6 +168,21 @@ function nx_cut_str(D1, D2, B)
 	}
 }
 
+function nx_pair_str(D, V, S)
+{
+	if (D != "") {
+		if (match(D, __nx_else(S, "="))) {
+			V[++V[0]] = substr(D, 1, RSTART - 1)
+			V[V[V[0]]] = substr(D, RSTART + RLENGTH)
+		} else {
+			V[++V[0]] = D
+			nx_boolean(V, D)
+		}
+	} else {
+		V[++V[0]] = "<nx:false/>"
+	}
+}
+
 function nx_totitle(D, B1, V2,		j, i, s, v1, v2)
 {
 	__nx_escape_map(v1)

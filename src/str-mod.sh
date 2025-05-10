@@ -37,26 +37,23 @@ nx_str_chain()
 
 nx_str_optarg()
 {
-	(
-		${AWK:-$(nx_cmd_awk)} \
-			-v str="$(nx_str_chain "$@")" "
-			$(cat \
-				"$G_NEX_MOD_LIB/awk/nex-misc.awk" \
-				"$G_NEX_MOD_LIB/awk/nex-struct.awk" \
-				"$G_NEX_MOD_LIB/awk/nex-shell.awk" \
-				"$G_NEX_MOD_LIB/awk/nex-str.awk" \
-				"$G_NEX_MOD_LIB/awk/nex-math.awk"
-			)
-		"'
-			BEGIN {
-				print substr(str, nx_escape_index(str, "*"))
-				#print substr(str, nx_escape_index(str, "[{"))
-				#print substr(str, nx_escape_index(str, "->"))
-				#print substr(str, nx_escape_index(str, "=>>"))
-				#print substr(str, nx_escape_index(str, "=>"))
-			}
-		'
-	)
+	${AWK:-$(nx_cmd_awk)} \
+		-v str="$(nx_str_chain "$@")" "
+		$(cat \
+			"$G_NEX_MOD_LIB/awk/nex-misc.awk" \
+			"$G_NEX_MOD_LIB/awk/nex-shell.awk" \
+			"$G_NEX_MOD_LIB/awk/nex-struct.awk" \
+			"$G_NEX_MOD_LIB/awk/nex-str.awk" \
+			"$G_NEX_MOD_LIB/awk/nex-math.awk"
+		)
+	"'
+		BEGIN {
+			if (s = nx_str_opts(str))
+				print s
+			else
+				exit 1
+		}
+	'
 }
 
 nx_str_case()

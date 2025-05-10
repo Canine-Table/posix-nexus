@@ -103,6 +103,9 @@
 	} nx_sint64_t;
 #endif
 
+#define NX_TOK_LENGTH 64
+#define NX_BUF_SIZE 4096
+
 /* Pointer types */
 typedef void* nx_ptr_t;			/* Generic pointer */
 typedef void* const nx_Ptr_t;		/* Constant generic pointer */

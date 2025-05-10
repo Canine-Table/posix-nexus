@@ -1,6 +1,6 @@
+#include <stdio.h>
 #ifndef NX_IO_H
 #define NX_IO_H
-#define NX_BUF_SIZE 4096
 
 typedef struct {
 	FILE *fh;

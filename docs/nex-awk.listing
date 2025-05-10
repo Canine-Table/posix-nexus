@@ -1,0 +1,2 @@
+	print nx_cut_str("abcdefghi", "xyz", 0)
+	# Result: (no output)
