@@ -38,6 +38,26 @@ nx_tty_all()
 	}
 }
 
+nx_tty_print()
+{
+	${AWK:-$(nx_cmd_awk)} \
+		-v fmt="$1" \
+		-v msg="$2" \
+		-v sep="$3" "
+		$(cat \
+			"$G_NEX_MOD_LIB/awk/nex-misc.awk" \
+			"$G_NEX_MOD_LIB/awk/nex-struct.awk" \
+			"$G_NEX_MOD_LIB/awk/nex-str.awk" \
+			"$G_NEX_MOD_LIB/awk/nex-math.awk" \
+			"$G_NEX_MOD_LIB/awk/nex-log.awk"
+		)
+	"'
+		BEGIN {
+			print nx_printf(fmt, msg, sep)
+		}
+	'
+}
+
 nx_tty_prop_list()
 {
 	[ -n "$(tty)" ] && stty -a | ${AWK:-$(nx_cmd_awk)} '

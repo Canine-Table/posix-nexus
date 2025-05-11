@@ -25,11 +25,13 @@ function __nx_quote_map(V)
 	V["`"] = "`"
 }
 
-function __nx_bracket_map(V)
+function __nx_bracket_map(V, B)
 {
-	V["\x5b"] = "\x5d"
-	V["\x7b"] = "\x7d"
-	V["\x28"] = "\x29"
+	nx_bijective(V, "\x5b", "\x5d")
+	nx_bijective(V, "\x7b", "\x7d")
+	nx_bijective(V, "\x28", "\x29")
+	if (B)
+		nx_bijective(V, "\x3c", "\x3e")
 }
 
 function __nx_str_map(V)

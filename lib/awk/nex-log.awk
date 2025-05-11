@@ -1,91 +1,177 @@
-function load_symbols(V, N)
+function __nx_color_map(D1, D2,		c)
 {
-	V[sym0] = "-"
-	V[col0] = "31"
-	V[sym1] = "X"
-	V[sym2] = "!"
-	V[sym3] = "*"
-	V[sym4] = "+"
-	V["c7"] = 37
-	
-	V[s6] = "i"
-	V["c7"] = 35
-
-	V[sym6] = "V"
-	V[sym7] = "?"
-	V["c7"] = 35
-
-	if (D == "black" || D == "dark")
-		D = 30
-	else if (D == "red" || D == "error")
-		D = 31
-	else if (D == "green" || D == "success")
-		D = 32
-	else if (D == "yellow" || D == "warning")
-		D = 33
-	else if (D == "blue" || D == "info")
-		D = 34
-	else if (D == "magenta" || D == "debug")
-		D = 35
-	else if (D == "teal" || D == "alert")
-		D = 36
-	else if (D == "white" || D == "light")
-		D = 37
+	if (D2 == "<")
+		c = 10
 	else
-	
-}
-
-function text_style_map(D)
-{
-	if (D == "bold")
-		D = 1
-	else if (D == "italics")
-		D = 3
-	else if (D == "underlined")
-		D = 4
-	else if (D == "blinking")
-		D = 5
-	else if (D == "highlighted")
-		D = 7
-	else
-		D = 0
-	return D
-}
-
-function color_map(D)
-{
-	if (D == "black" || D == "dark")
-		D = 30
-	else if (D == "red" || D == "error")
-		D = 31
-	else if (D == "green" || D == "success")
-		D = 32
-	else if (D == "yellow" || D == "warning")
-		D = 33
-	else if (D == "blue" || D == "info")
-		D = 34
-	else if (D == "magenta" || D == "debug")
-		D = 35
-	else if (D == "teal" || D == "alert")
-		D = 36
-	else if (D == "white" || D == "light")
-		D = 37
-	else
-		D = 0
-	return D
-}
-
-function __nx_error(V, D, N, B1, B2)
-{
-	if (length(V)) {
-		if (! (-0 in V))
-			V[-0] = 0
-		if (__nx_defined(D, 1)) {
-			N = __nx_if(__nx_is_integral(N) && __nx_equality(N, "<=0", 7), N, 7)
-			
-			print N
-		}
-		#-int(++V[-0])
-	}
+		c = 0
+	if ((D2 = tolower(D1)) == "c")
+		return c + 39
+	if (D1 != D2)
+		c += 60
+	if (D2 == "b")
+		return c + 30
+	if (D2 == "e")
+		return c + 31
+	if (D2 == "s")
+		return c + 32
+	if (D2 == "w")
+		return c + 33
+	if (D2 == "i")
+		return c + 34
+	if (D2 == "d")
+		return c + 35
+	if (D2 == "a")
+		return c + 36
+	if (D2 == "l")
+		return c + 37
 	return 0
 }
+
+function __nx_style_map(D,	c)
+{
+	if (D == "o") # overline
+		return 53
+	if (D == "O") # not overline
+		return 55
+	if (D != (c = tolower(D))) {
+		D = c
+		c = 20
+	} else {
+		c = 0
+	}
+	if (D == "n") # normal
+		return "0"
+	if (D == "b") # bold
+		return c + 1
+	if (D == "d") # dim
+		return c + 2
+	if (D == "i") # italic
+		return c + 3
+	if (D == "u") # underline
+		return c + 4
+	if (D == "f") # flash
+		return c + 5
+	if (D == "r") # reverse video
+		return c + 7
+	if (D == "h") # hide
+		return c + 8
+	if (D == "s") # strike
+		return c + 9
+}
+
+function __nx_symbol_map(D,	c)
+{
+	if (D == "b") # emphasis
+		return "#"
+	if (D == "B") # pipeline
+		return "|"
+	if (D == "e") # minor error
+		return "x"
+	if (D == "E") # critical error needs attention like yesterday
+		return "X"
+	if (D == "s") # success
+		return "v"
+	if (D == "S") # great success
+		return "V"
+	if (D == "w") # warning
+		return "!"
+	if (D == "W") # warning but not sure
+		return "?"
+	if (D == "d") # debug
+		return "*"
+	if (D == "D") # trace
+		return ">"
+	if (D == "i") # info
+		return "i"
+	if (D == "I") # verbose
+		return "."
+	if (D == "l") # log
+		return "%"
+	if (D == "L") # detailed log
+		return "$"
+	if (D == "a") # alert
+		return "@"
+	if (D == "A") # more info alert
+		return "&"
+}
+
+function nx_printf(D1, D2, S,	fv, i, l, stkv)
+{
+	if (D1 != "" && D2 != "") {
+		l = split(D1, fv, "")
+		stkv["s"] = ">"
+		stkv["i"] = ""
+		stkv["fmt"] = ""
+		stkv["plhdr"] = ""
+		for (i = 1; i <= l; i++) {
+			if (fv[i] ~ /[<>_\\^]/) {
+				stkv["s"] = fv[i]
+			} else if (fv[i] == "%") {
+				stkv["fmt"] = stkv["fmt"] __nx_if(stkv["plhdr"], "\x1b[" stkv["plhdr"] "m<nx:placeholder/>", "<nx:placeholder/>")
+				stkv["plhdr"] = ""
+			} else if (stkv["s"] ~ /[<>]/) {
+				stkv["plhdr"] = nx_join_str(stkv["plhdr"], __nx_color_map(fv[i], stkv["s"]), ";")
+			} else if (stkv["s"] == "^" && (stkv["i"] = __nx_symbol_map(fv[i]))) {
+				stkv["i"] = "\x0a[" stkv["i"] "]: "
+				stkv["fmt"] = stkv["fmt"] __nx_if(stkv["plhdr"], "\x1b[" stkv["plhdr"] "m" stkv["i"], stkv["i"])
+				stkv["plhdr"] = ""
+			} else if (stkv["s"] == "_") {
+				stkv["plhdr"] = nx_join_str(stkv["plhdr"], __nx_style_map(fv[i]), ";")
+			}
+		}
+		stkv["fmt"] = stkv["fmt"] __nx_if(stkv["plhdr"], "\x1b[" stkv["plhdr"] "m", "")
+		delete fv
+		nx_vector(D2, stkv, S, "", 1)
+		for (i = 1; i <= stkv[0]; i++) {
+			if (! sub("<nx:placeholder/>", stkv[i], stkv["fmt"]))
+				break
+		}
+		gsub("<nx:placeholder/>", "", stkv["fmt"])
+		l = stkv["fmt"] "\x1b[0m"
+		delete stkv
+		return l
+	}
+}
+
+function nx_log_success(D, B)
+{
+	if (B)
+		return nx_printf("S_bi^s_Iu%", " ` " D " ` ")
+	return nx_printf("b<S_bi^s_Iu%", " ` " D " ` ")
+}
+
+function nx_log_warn(D, B)
+{
+	if (B)
+		return nx_printf("W_bi^w_Iu%", " ` " D " ` ")
+	return nx_printf("b<W_bi^w_Iu%", " ` " D " ` ")
+}
+
+function nx_log_error(D, B)
+{
+	if (B)
+		return nx_printf("E_bi^e_Iu%", " ` " D " ` ")
+	return nx_printf("b<E_bi^e_Iu%", " ` " D " ` ")
+}
+
+function nx_log_debug(D, B)
+{
+	if (B)
+		return nx_printf("D_bi^d_Iu%", " ` " D " ` ")
+	return nx_printf("b<D_bi^d_Iu%", " ` " D " ` ")
+}
+
+function nx_log_info(D, B)
+{
+	if (B)
+		return nx_printf("I_bi^i_Iu%", " ` " D " ` ")
+	return nx_printf("b<I_bi^i_Iu%", " ` " D " ` ")
+}
+
+function nx_log_alert(D, B)
+{
+	if (B)
+		return nx_printf("A_bi^a_Iu%", " ` " D " ` ")
+	return nx_printf("b<A_bi^a_Iu%", " ` " D " ` ")
+}
+
