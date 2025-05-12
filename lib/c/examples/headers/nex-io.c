@@ -54,7 +54,7 @@ nx_fe_s *nx_fopen(nx_Char_t *f, nx_Char_t *c)
 		default:
 			fprintf(stderr, "Invalid file mode");
 			free(fe);
-			return NULL;
+			return(NULL);
 	}
 	fe->mode = malloc(strlen(m) + 1);
 	if (nx_mem_chk(fe->mode) >= 0) {
@@ -66,16 +66,29 @@ nx_fe_s *nx_fopen(nx_Char_t *f, nx_Char_t *c)
 	return(NULL);
 }
 
-void nx_fread(nx_fe_s *f)
+void nx_fpushc(nx_fe_s *f, nx_char_t c)
+{
+	ungetc(c, f->fh);  /* Put the character back into the input stream for normal processing x_x */
+}
+
+nx_char_t nx_fpeekc(nx_fe_s *f)
+{
+	nx_char_t c;
+	if ((c = nx_fgetc(f)) != EOF) {
+		nx_fpushc(f, c);
+		return(c);
+	}
+	return(EOF);
+}
+
+nx_char_t nx_fgetc(nx_fe_s *f)
 {
 	nx_char_t s;
-	while (1) {
-		if ((s = fgetc(f->fh)) == EOF)
-			break;
-		printf("%c", s);
-	}
+	if ((s = fgetc(f->fh)) != EOF)
+		return(s);
 	fclose(f->fh);
 	free(f);
+	return(EOF);
 }
 
 void nx_fwrite(nx_fe_s *f, nx_Char_t *s)

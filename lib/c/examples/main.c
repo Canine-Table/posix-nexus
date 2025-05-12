@@ -7,7 +7,12 @@
 nx_sint_t main (nx_sint_t argc, nx_Char_t *argv[])
 {
 		//nx_Char_t *c = "if (x > 10) for i = 0 while do 'H\'ello' `hello";
-		nx_tok("file.nx");
+		//printf("%s",
+		//unsigned char vl = 'a';
+		//
+		//nx_tok("file.nx");
+		//
+		nx_lex_tok("file.nx");
 		return(0);
 }
 

@@ -8,6 +8,43 @@
 
 static nx_Char_t *nx_keywords[] = {"if", "for", "while", "do", "else"};
 
+void nx_lex_tok_debug(nx_tok_s *tok)
+{
+	tok->value[tok->size] = '\0';
+	printf("( line %d,\tcharacter %d )\t", tok->y, tok->x);
+	switch (tok->state) {
+			case NX_DEFAULT:
+				printf("Default");
+				break;
+			case NX_UNKNOWN:
+				printf("Unknown");
+				break;
+			case NX_OPERATOR:
+				printf("Operator");
+				break;
+			case NX_KEYWORD:
+				printf("Keyword");
+				break;
+			case NX_IDENTIFIER:
+				printf("Identifier");
+				break;
+			case NX_NUMBER:
+				printf("Number");
+				break;
+			case NX_COMPLEX:
+				printf("Complex");
+				break;
+			case NX_FLOAT:
+				printf("Float");
+				break;
+			case NX_STRING:
+				printf("String");
+				break;
+	}
+	printf(": %s\n", tok->value);
+	tok->state = NX_DEFAULT;
+}
+
 nx_sint_t nx_is_keyword(nx_Char_t *s)
 {
 	for (nx_uint_t i = 0; i < sizeof(nx_keywords) / sizeof(nx_keywords[0]); i++) {
@@ -19,7 +56,7 @@ nx_sint_t nx_is_keyword(nx_Char_t *s)
 
 nx_sint_t nx_is_space(nx_char_t s)
 {
-	return s == ' ' || s == '\t' || s == '\v' || s == '\n' || s == '\f' || s == '\r';
+	return s == ' ' || s == '\t' || s == '\v' || s == '\f';
 }
 
 nx_sint_t nx_is_digit(nx_char_t s)
@@ -52,137 +89,118 @@ nx_sint_t nx_is_quote(nx_char_t s)
 	return s == '"' || s == '\'' || s == '`';
 }
 
-nx_char_t nx_peek_next(FILE *f)
+nx_sint_t nx_is_newline(nx_tok_s *tok, nx_fe_s *fe, nx_char_t cur)
 {
-	nx_char_t n = fgetc(f);
-	ungetc(n, f);  /* Put the character back into the input stream for normal processing x_x */
-	return n;
+	if (cur == '\r') {
+		if (nx_fpeekc(fe) == '\n')
+			nx_fgetc(fe);
+		cur = '\n';
+	}
+	if (cur == '\n') {
+		tok->y++;
+		tok->x = 0;
+		return 1;
+	}
+	return 0;
 }
 
-void nx_handle_keyword(nx_Char_t p, nx_tok_s *t, nx_tok_st_e *s, nx_uint_t *l)
+void nx_lex_tok_string(nx_tok_s *tok, nx_char_t cur)
 {
-	if (nx_is_alnum(p)) {
-		t->value[(*l)++] = p;
+	if (cur != tok->quote || nx_mod_pot(tok->escape, 2) == 1) {
+		if (cur != '\\' || nx_mod_pot(++tok->escape, 2) == 0) {
+			tok->escape = 0;
+			tok->value[tok->size++] = cur;
+		}
 	} else {
-		t->value[*l] = '\0';
-		printf("Keyword: %s\n", t->value);
-		*s = NX_DEFAULT;
-		*l = 0;
+		tok->quote = '\0';
+		nx_lex_tok_debug(tok);
 	}
 }
 
-void nx_handle_number(nx_Char_t p, nx_tok_s *t, nx_tok_st_e *s, nx_uint_t *l)
+void nx_lex_tok_word(nx_tok_s *tok, nx_fe_s *fe, nx_char_t cur)
 {
-	if (nx_is_digit(p)) {
-		t->value[(*l)++] = p;
-	} else if (p == '.') {
-		*s = NX_IN_FLOAT;
-		t->value[(*l)++] = p;
+	if (nx_is_alpha(cur) || cur == '_') {
+		tok->value[tok->size++] = cur;
 	} else {
-		t->value[*l] = '\0';
-		printf("Number: %s\n", t->value);
-		*s = NX_DEFAULT;
-		*l = 0;
+		nx_fpushc(fe, cur);
+		tok->state = nx_is_keyword(tok->value) ? NX_KEYWORD : NX_IDENTIFIER;
+		nx_lex_tok_debug(tok);
 	}
 }
 
-void nx_handle_string(nx_Char_t p, nx_tok_s *t, nx_tok_st_e *s, nx_uint_t *l, nx_char_t *q, nx_uint_t *e)
+void nx_lex_tok_number(nx_tok_s *tok, nx_fe_s *fe, nx_char_t cur)
 {
-	if (p == '\\') {
-		*e = 1;
-		*s = NX_ESCAPE_SEQUENCE;
-	} else if (p == *q) {
-		*s = NX_DEFAULT;
-		t->value[*l] = '\0';
-		printf("String: %s\n", t->value);
-		*l = 0;
+	if (nx_is_digit(cur)) {
+		tok->value[tok->size++] = cur;
+	} else if (cur == '.' && tok->state != NX_FLOAT) {
+		tok->value[tok->size++] = cur;
+		tok->state = NX_FLOAT;
 	} else {
-		t->value[(*l)++] = p;
+		nx_fpushc(fe, cur);
+		nx_lex_tok_debug(tok);
 	}
 }
 
-void nx_handle_operator(nx_char_t p, FILE *f, nx_tok_s *t, nx_tok_st_e *s, nx_uint_t *l)
+void nx_lex_tok_default(nx_tok_s *tok, nx_fe_s *fe, nx_char_t cur)
 {
-	t->value[(*l)++] = p;
-	nx_char_t n = nx_peek_next(f);
-	if (n == '=' || n == p)// Handle assignment or double operators
-		t->value[(*l)++] = fgetc(f);
-	t->value[*l] = '\0';
-	printf("Operator: %s\n", t->value);
-	*s = NX_DEFAULT;
-	*l = 0;
-}
-
-void nx_tok(nx_Char_t *nm)
-{
-	nx_fe_s *f = nx_fopen(nm, "R");
-	if (f == NULL)
+	nx_uint_t reset = 1, append = 1;
+	if (nx_is_newline(tok, fe, cur) || nx_is_space(cur) || (cur == '\\' && nx_mod_pot(++tok->escape, 2) == 1)) {
 		return;
-	nx_tok_st_e s = NX_DEFAULT; /* Start in default state */
-	nx_tok_s t; /* Current token being constructed */
-	nx_uint_t l = 0, e = 0;
-	nx_char_t p, q = '\0';
-	while((p = fgetc(f->fh)) != EOF) {
-		switch (s) {
+	} else if (nx_is_alpha(cur)) {
+		tok->state = NX_KEYWORD;
+	} else if (nx_is_digit(cur)) {
+		tok->state = NX_NUMBER;
+	} else if (nx_is_quote(cur)) {
+		tok->state = NX_STRING;
+		tok->quote = cur;
+		append = 0;
+	} else {
+		tok->state = NX_OPERATOR;
+		printf("Operator: %c\n", cur);
+	}
+	if (reset) {
+		tok->size = 0;
+		tok->escape = 0;
+	}
+	if (append)
+		tok->value[tok->size++] = cur;
+}
+
+void nx_lex_tok(nx_Char_t *nm)
+{
+	nx_fe_s *fe = nx_fopen(nm, "R");
+	if (fe == NULL)
+		return;
+	nx_char_t cur;
+	nx_tok_s tok = {
+		.state = NX_DEFAULT,
+		.x = 0,
+		.y = 1,
+		.escape = 0,
+		.quote = '\0',
+		.size = 0
+	};
+	while((cur = nx_fgetc(fe)) != EOF) {
+		tok.x++;
+		switch (tok.state) {
 			case NX_DEFAULT:
-				if (nx_is_space(p))
-					continue;
-				if (nx_is_alpha(p)) {
-					s = NX_IN_KEYWORD;
-					t.value[l++] = p;
-				} else if (nx_is_digit(p)) {
-					s = NX_IN_NUMBER;
-					t.value[l++] = p;
-				} else if (nx_is_quote(p)) {
-					q = p;
-					s = NX_IN_STRING;
-				} else if (p == '(' || p == ')') {
-					t.type = NX_DELIMITER;
-					t.value[0] = p;
-					t.value[1] = '\0';
-					printf("Delimiter: %s\n", t.value);
-				} else if (p == '{' || p == '}') {
-					t.type = NX_SCOPE;
-					t.value[0] = p;
-					t.value[1] = '\0';
-					printf("Scope: %s\n", t.value);
-				} else {
-					s = NX_IN_OPERATOR;
-					t.value[l++] = p;
-				}
+			case NX_UNKNOWN:
+			case NX_OPERATOR:
+				nx_lex_tok_default(&tok, fe, cur);
 				break;
-			case NX_IN_OPERATOR:
-				nx_handle_operator(p, f->fh, &t, &s, &l);
+			case NX_KEYWORD:
+			case NX_IDENTIFIER:
+				nx_lex_tok_word(&tok, fe, cur);
 				break;
-			case NX_IN_KEYWORD:
-				nx_handle_keyword(p, &t, &s, &l);
+			case NX_NUMBER:
+			case NX_COMPLEX:
+			case NX_FLOAT:
+				nx_lex_tok_number(&tok, fe, cur);
 				break;
-			case NX_IN_NUMBER:
-				nx_handle_number(p, &t, &s, &l);
-				break;
-			case NX_IN_STRING:
-				nx_handle_string(p, &t, &s, &l, &q, &e);
-				break;
-			case NX_ESCAPE_SEQUENCE:
-				if (p != '\\' || nx_mod_pot(++e, 2) == 0) {
-					e = 0;
-					t.value[l++] = p; // Store the escaped character
-					s = NX_IN_STRING; // Return to normal string processing
-				}
-				break;
-			case NX_IN_FLOAT:
-				if (nx_is_digit(p)) {
-					t.value[l++] = p;
-				} else {
-					t.value[l] = '\0';
-					printf("Float: %s\n", t.value);
-					s = NX_DEFAULT;
-					l = 0;
-				}
+			case NX_STRING:
+				nx_lex_tok_string(&tok, cur);
 				break;
 		}
 	}
-	fclose(f->fh);
-	free(f);
 }
 

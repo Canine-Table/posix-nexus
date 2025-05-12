@@ -1,2 +1,5 @@
-if (x > 10) for i = 0.1 while do 'H\'ello' `hello`
+if (x > 10)
+	for i = 0.1
+		while i do
+			'H\'e\\llo' `hello`
 
