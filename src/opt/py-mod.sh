@@ -2,7 +2,7 @@
 
 nx_py_venv()
 {
-	[ ${#@} -gt 0 ] && {
+	while [ ${#@} -gt 0 ]; do
 		[ "$1" = '-a' ] && {
 			. "$G_NEX_MOD_LIB/py/$L_NEX_APP_ROOT/venv/bin/activate"
 		}
@@ -22,7 +22,6 @@ nx_py_venv()
 			}
 		}
 		shift
-		nx_py_venv $@
-	}
+	done
 }
 

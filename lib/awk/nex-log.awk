@@ -120,10 +120,9 @@ function nx_printf(D1, D2, S,	fv, i, l, stkv)
 			}
 		}
 		stkv["fmt"] = stkv["fmt"] __nx_if(stkv["plhdr"], "\x1b[" stkv["plhdr"] "m", "")
-		delete fv
-		nx_vector(D2, stkv, S, "", 1)
-		for (i = 1; i <= stkv[0]; i++) {
-			if (! sub("<nx:placeholder/>", stkv[i], stkv["fmt"]))
+		S = nx_trim_split(D2, fv, __nx_else(S, "<nx:null/>"))
+		for (i = 1; i <= S; i++) {
+			if (! sub("<nx:placeholder/>", fv[i], stkv["fmt"]))
 				break
 		}
 		gsub("<nx:placeholder/>", "", stkv["fmt"])
@@ -136,42 +135,42 @@ function nx_printf(D1, D2, S,	fv, i, l, stkv)
 function nx_log_success(D, B)
 {
 	if (B)
-		return nx_printf("S_bi^s_Iu%", " ` " D " ` ")
-	return nx_printf("b<S_bi^s_Iu%", " ` " D " ` ")
+		return nx_printf("S_bi^s_Iu%", D)
+	return nx_printf("b<S_bi^s_Iu%", D)
 }
 
 function nx_log_warn(D, B)
 {
 	if (B)
-		return nx_printf("W_bi^w_Iu%", " ` " D " ` ")
-	return nx_printf("b<W_bi^w_Iu%", " ` " D " ` ")
+		return nx_printf("W_bi^w_Iu%", D)
+	return nx_printf("b<W_bi^w_Iu%", D)
 }
 
 function nx_log_error(D, B)
 {
 	if (B)
-		return nx_printf("E_bi^e_Iu%", " ` " D " ` ")
-	return nx_printf("b<E_bi^e_Iu%", " ` " D " ` ")
+		return nx_printf("E_bi^e_Iu%", D)
+	return nx_printf("b<E_bi^e_Iu%", D)
 }
 
 function nx_log_debug(D, B)
 {
 	if (B)
-		return nx_printf("D_bi^d_Iu%", " ` " D " ` ")
-	return nx_printf("b<D_bi^d_Iu%", " ` " D " ` ")
+		return nx_printf("D_bi^d_Iu%", D)
+	return nx_printf("b<D_bi^d_Iu%", D)
 }
 
 function nx_log_info(D, B)
 {
 	if (B)
-		return nx_printf("I_bi^i_Iu%", " ` " D " ` ")
-	return nx_printf("b<I_bi^i_Iu%", " ` " D " ` ")
+		return nx_printf("I_bi^i_Iu%", D)
+	return nx_printf("b<I_bi^i_Iu%", D)
 }
 
 function nx_log_alert(D, B)
 {
 	if (B)
-		return nx_printf("A_bi^a_Iu%", " ` " D " ` ")
-	return nx_printf("b<A_bi^a_Iu%", " ` " D " ` ")
+		return nx_printf("A_bi^a_Iu%", D)
+	return nx_printf("b<A_bi^a_Iu%", D)
 }
 

@@ -134,7 +134,7 @@ nx_content_append()
 
 ##:(Nexus File Structure):####################################################################
 
-export G_NEX_ROOT="${G_NEX_ROOT:-/root/.local/posix-nexus}"
+export G_NEX_ROOT="${G_NEX_ROOT:-/usr/local/bin/posix-nexus}"
 export G_NEX_MOD_SRC="$G_NEX_ROOT/src"
 export G_NEX_MOD_LIB="$G_NEX_ROOT/lib"
 export G_NEX_MOD_CNF="$G_NEX_ROOT/cnf"
@@ -143,42 +143,10 @@ export G_NEX_MOD_DOC="$G_NEX_ROOT/docs"
 export G_NEX_MOD_LOG="$G_NEX_MOD_ENV"
 export TMPDIR="$G_NEX_MOD_ENV"
 
-##############################################################################################
+##:(Nexus Configurations):####################################################################
 
-##:(Nexus Modules):###########################################################################
-
-nx_content_root
-nx_content_modules
-nx_tex_export
-nx_editor_export
-nx_asm_export
-nx_tmux_export
-
-export G_NEX_WEB_FETCH="$(g_nx_cmd curl wget)"
-export LESS='-R'
-export COLORFGBG=';0'
-export DIALOGRC="$G_NEX_MOD_CNF/.dialogrc"
-export PAGER="$(nx_cmd_pager)"
-export SHELL="$(nx_cmd_shell)"
-export AWK="$(nx_cmd_awk)"
-export PKGMGR="$(nx_cmd_pkgmgr)"
-export CC="$(nx_cmd_cc)"
-
-##############################################################################################
-
-##:(Nexus Aliases):###########################################################################
-
-alias nex='. "$G_NEX_MOD_SRC/init-mod.sh"'
-
-[ "$(nx_content_leaf "$G_NEX_TMUX_MULTI")" = 'tmux' ] && {
-	alias tmux='tmux -f "$G_NEX_MOD_CNF/.tmux.conf"'
-}
-
-alias nex='. "$G_NEX_MOD_SRC/init-mod.sh"'
-alias nx=nex
-alias vi='$EDITOR'
-alias pgr='$PAGER'
-alias pkgmgr='nx_pkgmgr'
+. "$G_NEX_MOD_SRC/export-cnf.sh"
+. "$G_NEX_MOD_SRC/alias-cnf.sh"
 
 ##############################################################################################
 

@@ -18,19 +18,25 @@ function __nx_upper_map(V,	i)
 		nx_bijective(V, i, sprintf("%c", i + 29))
 }
 
-function __nx_quote_map(V)
+function __nx_quote_map(V, B1, B2, B3)
 {
-	V["\""] = "\""
-	V["'"] = "'"
-	V["`"] = "`"
+	if (B1)
+		V["\""] = "\""
+	if (B2)
+		V["'"] = "'"
+	if (B3)
+		V["`"] = "`"
 }
 
-function __nx_bracket_map(V, B)
+function __nx_bracket_map(V, B1, B2, B3, B4)
 {
-	nx_bijective(V, "\x5b", "\x5d")
-	nx_bijective(V, "\x7b", "\x7d")
-	nx_bijective(V, "\x28", "\x29")
-	if (B)
+	if (B1)
+		nx_bijective(V, "\x5b", "\x5d")
+	if (B2)
+		nx_bijective(V, "\x7b", "\x7d")
+	if (B3)
+		nx_bijective(V, "\x28", "\x29")
+	if (B4)
 		nx_bijective(V, "\x3c", "\x3e")
 }
 
