@@ -197,16 +197,7 @@
 	}
 \end{NxCodeBox}
 
-\begin{NxSSSSBox}[breakable]
-	\begin{NxIDBoxT}{l|l|l}[title={Memory Storage Classification}]
-		Variable Type & Example & Stored in \\\hline
-		Uninitialized Global & \texttt{int uninitialized\_global;} & BSS Segment \\\hline
-		Initialized Global & \texttt{int initialized\_global = 42;} & Data Segment \\\hline
-		Local Variable & \texttt{int local\_variable = 7;} & Stack \\\hline
-		Dynamically Allocated & \texttt{int *heap\_variable = (int*)malloc(sizeof(int));} & Heap \\\hline
-		Code Instructions & \texttt{main() \{ ... \}} & Text Segment \\
-	\end{NxIDBoxT}
-\end{NxSSSSBox}
+\bigskip
 
 \begin{NxCodeBox}{asm}{dark, sdwA, frmE, title={When calling malloc, we use syscall 9 (mmap) to allocate memory}}
 	section .text
@@ -229,6 +220,8 @@
 		xor rdi, rdi	   ; exit code 0
 		syscall
 \end{NxCodeBox}
+
+\bigskip
 
 \begin{NxSSSSBox}[breakable][Conditional Jump Instructions]
 	\begin{NxIDBox}
@@ -256,6 +249,8 @@
 	\end{NxIDBox}
 \end{NxSSSSBox}
 
+\bigskip
+
 \begin{NxSSSSBox}[breakable][Set Instructions]
 	\begin{NxIDBox}
 		Set instructions directly modify registers based on specific CPU flags.
@@ -267,6 +262,8 @@
 		\end{NxListDark}
 	\end{NxIDBox}
 \end{NxSSSSBox}
+
+\bigskip
 
 \begin{NxSSSSBox}[breakable][Direction Flag (DF)]
 	\begin{NxIDBox}

@@ -68,38 +68,40 @@
 \glossaryentry{"\bfseries "\textcolor {nex.primary.link}{Reduced Instruction Set Computer (RISC)}?\glossentry{risc}|setentrycounter[]{page}"\glsnumberformat}{XXX}
 \glossaryentry{"\bfseries "\textcolor {nex.primary.link}{Arithmetic Logic Unit (ALU)}?\glossentry{alu}|setentrycounter[]{page}"\glsnumberformat}{XXXI}
 \glossaryentry{"\bfseries "\textcolor {nex.primary.link}{Control Unit (CU)}?\glossentry{cu}|setentrycounter[]{page}"\glsnumberformat}{XXXI}
-\glossaryentry{"\bfseries "\textcolor {nex.primary.link}{GNU Compiler Collection (GCC)}?\glossentry{gcc}|setentrycounter[]{page}"\glsnumberformat}{LVI}
-\glossaryentry{"\bfseries "\textcolor {nex.primary.link}{GNU}?\glossentry{gnu}|setentrycounter[]{page}"\glsnumberformat}{LVII}
-\glossaryentry{"\bfseries "\textcolor {nex.primary.link}{C}?\glossentry{c_language}|setentrycounter[]{page}"\glsnumberformat}{LVII}
-\glossaryentry{"\bfseries "\textcolor {nex.primary.link}{C++}?\glossentry{cpp}|setentrycounter[]{page}"\glsnumberformat}{LVII}
-\glossaryentry{"\bfseries "\textcolor {nex.primary.link}{Fortran}?\glossentry{fortran}|setentrycounter[]{page}"\glsnumberformat}{LVII}
-\glossaryentry{"\bfseries "\textcolor {nex.primary.link}{Ada}?\glossentry{ada}|setentrycounter[]{page}"\glsnumberformat}{LVII}
-\glossaryentry{"\bfseries "\textcolor {nex.primary.link}{COBOL}?\glossentry{cobol}|setentrycounter[]{page}"\glsnumberformat}{LVII}
-\glossaryentry{"\bfseries "\textcolor {nex.primary.link}{Go (Golang)}?\glossentry{golang}|setentrycounter[]{page}"\glsnumberformat}{LVII}
-\glossaryentry{"\bfseries "\textcolor {nex.primary.link}{Linux}?\glossentry{linux}|setentrycounter[]{page}"\glsnumberformat}{LVIII}
-\glossaryentry{"\bfseries "\textcolor {nex.primary.link}{Berkeley Software Distribution (BSD)}?\glossentry{bsd}|setentrycounter[]{page}"\glsnumberformat}{LVIII}
-\glossaryentry{"\bfseries "\textcolor {nex.primary.link}{macOS}?\glossentry{macos}|setentrycounter[]{page}"\glsnumberformat}{LVIII}
-\glossaryentry{"\bfseries "\textcolor {nex.primary.link}{x86 Architecture}?\glossentry{x86}|setentrycounter[]{page}"\glsnumberformat}{LVIII}
-\glossaryentry{"\bfseries "\textcolor {nex.primary.link}{ARM Architecture}?\glossentry{arm}|setentrycounter[]{page}"\glsnumberformat}{LVIII}
-\glossaryentry{"\bfseries "\textcolor {nex.primary.link}{PowerPC}?\glossentry{powerpc}|setentrycounter[]{page}"\glsnumberformat}{LVIII}
-\glossaryentry{"\bfseries "\textcolor {nex.primary.link}{MIPS Architecture}?\glossentry{mips}|setentrycounter[]{page}"\glsnumberformat}{LVIII}
-\glossaryentry{"\bfseries "\textcolor {nex.primary.link}{RISC-V}?\glossentry{riscv}|setentrycounter[]{page}"\glsnumberformat}{LVIII}
-\glossaryentry{"\bfseries "\textcolor {nex.primary.link}{GNU Debugger (GDB)}?\glossentry{gdb}|setentrycounter[]{page}"\glsnumberformat}{LIX}
-\glossaryentry{"\bfseries "\textcolor {nex.primary.link}{Valgrind}?\glossentry{valgrind}|setentrycounter[]{page}"\glsnumberformat}{LIX}
-\glossaryentry{"\bfseries "\textcolor {nex.primary.link}{Undefined Behavior Sanitizer (UBSan)}?\glossentry{ubsan}|setentrycounter[]{page}"\glsnumberformat}{LX}
-\glossaryentry{"\bfseries "\textcolor {nex.primary.link}{Position Independent Executable (PIE)}?\glossentry{pie}|setentrycounter[]{page}"\glsnumberformat}{LXII}
-\glossaryentry{"\bfseries "\textcolor {nex.primary.link}{Address Space Layout Randomization (ASLR)}?\glossentry{aslr}|setentrycounter[]{page}"\glsnumberformat}{LXII}
-\glossaryentry{"\bfseries "\textcolor {nex.primary.link}{Address Space Layout Randomization (ASLR)}?\glossentry{aslr}|setentrycounter[]{page}"\glsnumberformat}{LXIII}
-\glossaryentry{"\bfseries "\textcolor {nex.primary.link}{Data Execution Prevention (DEP)}?\glossentry{dep}|setentrycounter[]{page}"\glsnumberformat}{LXIII}
-\glossaryentry{"\bfseries "\textcolor {nex.primary.link}{Stack Smashing Protector (SSP)}?\glossentry{ssp}|setentrycounter[]{page}"\glsnumberformat}{LXIII}
-\glossaryentry{"\bfseries "\textcolor {nex.primary.link}{Control Flow Integrity (CFI)}?\glossentry{cfi}|setentrycounter[]{page}"\glsnumberformat}{LXIII}
-\glossaryentry{"\bfseries "\textcolor {nex.primary.link}{Return-Oriented Programming (ROP)}?\glossentry{rop}|setentrycounter[]{page}"\glsnumberformat}{LXIV}
-\glossaryentry{"\bfseries "\textcolor {nex.primary.link}{Data Execution Prevention (DEP)}?\glossentry{dep}|setentrycounter[]{page}"\glsnumberformat}{LXIV}
-\glossaryentry{"\bfseries "\textcolor {nex.primary.link}{Address Space Layout Randomization (ASLR)}?\glossentry{aslr}|setentrycounter[]{page}"\glsnumberformat}{LXIV}
-\glossaryentry{"\bfseries "\textcolor {nex.primary.link}{Position Independent Executable (PIE)}?\glossentry{pie}|setentrycounter[]{page}"\glsnumberformat}{LXIV}
-\glossaryentry{"\bfseries "\textcolor {nex.primary.link}{Stack Smashing Protector (SSP)}?\glossentry{ssp}|setentrycounter[]{page}"\glsnumberformat}{LXIV}
-\glossaryentry{"\bfseries "\textcolor {nex.primary.link}{Data Execution Prevention (DEP)}?\glossentry{dep}|setentrycounter[]{page}"\glsnumberformat}{LXIV}
-\glossaryentry{"\bfseries "\textcolor {nex.primary.link}{Clang}?\glossentry{clang}|setentrycounter[]{page}"\glsnumberformat}{LXIV}
-\glossaryentry{"\bfseries "\textcolor {nex.primary.link}{LLVM}?\glossentry{llvm}|setentrycounter[]{page}"\glsnumberformat}{LXIV}
-\glossaryentry{"\bfseries "\textcolor {nex.primary.link}{Link Time Optimization (LTO)}?\glossentry{lto}|setentrycounter[]{page}"\glsnumberformat}{LXVI}
-\glossaryentry{"\bfseries "\textcolor {nex.primary.link}{Make}?\glossentry{make}|setentrycounter[]{page}"\glsnumberformat}{LXVII}
+\glossaryentry{"\bfseries "\textcolor {nex.primary.link}{Deterministic Finite Automaton (DFA)}?\glossentry{dfa}|setentrycounter[]{page}"\glsnumberformat}{XLVII}
+\glossaryentry{"\bfseries "\textcolor {nex.primary.link}{Non-deterministic Finite Automaton (NFA)}?\glossentry{nfa}|setentrycounter[]{page}"\glsnumberformat}{XLVII}
+\glossaryentry{"\bfseries "\textcolor {nex.primary.link}{GNU Compiler Collection (GCC)}?\glossentry{gcc}|setentrycounter[]{page}"\glsnumberformat}{LXI}
+\glossaryentry{"\bfseries "\textcolor {nex.primary.link}{GNU}?\glossentry{gnu}|setentrycounter[]{page}"\glsnumberformat}{LXII}
+\glossaryentry{"\bfseries "\textcolor {nex.primary.link}{C}?\glossentry{c_language}|setentrycounter[]{page}"\glsnumberformat}{LXII}
+\glossaryentry{"\bfseries "\textcolor {nex.primary.link}{C++}?\glossentry{cpp}|setentrycounter[]{page}"\glsnumberformat}{LXII}
+\glossaryentry{"\bfseries "\textcolor {nex.primary.link}{Fortran}?\glossentry{fortran}|setentrycounter[]{page}"\glsnumberformat}{LXII}
+\glossaryentry{"\bfseries "\textcolor {nex.primary.link}{Ada}?\glossentry{ada}|setentrycounter[]{page}"\glsnumberformat}{LXII}
+\glossaryentry{"\bfseries "\textcolor {nex.primary.link}{COBOL}?\glossentry{cobol}|setentrycounter[]{page}"\glsnumberformat}{LXII}
+\glossaryentry{"\bfseries "\textcolor {nex.primary.link}{Go (Golang)}?\glossentry{golang}|setentrycounter[]{page}"\glsnumberformat}{LXII}
+\glossaryentry{"\bfseries "\textcolor {nex.primary.link}{Linux}?\glossentry{linux}|setentrycounter[]{page}"\glsnumberformat}{LXIII}
+\glossaryentry{"\bfseries "\textcolor {nex.primary.link}{Berkeley Software Distribution (BSD)}?\glossentry{bsd}|setentrycounter[]{page}"\glsnumberformat}{LXIII}
+\glossaryentry{"\bfseries "\textcolor {nex.primary.link}{macOS}?\glossentry{macos}|setentrycounter[]{page}"\glsnumberformat}{LXIII}
+\glossaryentry{"\bfseries "\textcolor {nex.primary.link}{x86 Architecture}?\glossentry{x86}|setentrycounter[]{page}"\glsnumberformat}{LXIII}
+\glossaryentry{"\bfseries "\textcolor {nex.primary.link}{ARM Architecture}?\glossentry{arm}|setentrycounter[]{page}"\glsnumberformat}{LXIII}
+\glossaryentry{"\bfseries "\textcolor {nex.primary.link}{PowerPC}?\glossentry{powerpc}|setentrycounter[]{page}"\glsnumberformat}{LXIII}
+\glossaryentry{"\bfseries "\textcolor {nex.primary.link}{MIPS Architecture}?\glossentry{mips}|setentrycounter[]{page}"\glsnumberformat}{LXIII}
+\glossaryentry{"\bfseries "\textcolor {nex.primary.link}{RISC-V}?\glossentry{riscv}|setentrycounter[]{page}"\glsnumberformat}{LXIII}
+\glossaryentry{"\bfseries "\textcolor {nex.primary.link}{GNU Debugger (GDB)}?\glossentry{gdb}|setentrycounter[]{page}"\glsnumberformat}{LXIV}
+\glossaryentry{"\bfseries "\textcolor {nex.primary.link}{Valgrind}?\glossentry{valgrind}|setentrycounter[]{page}"\glsnumberformat}{LXIV}
+\glossaryentry{"\bfseries "\textcolor {nex.primary.link}{Undefined Behavior Sanitizer (UBSan)}?\glossentry{ubsan}|setentrycounter[]{page}"\glsnumberformat}{LXV}
+\glossaryentry{"\bfseries "\textcolor {nex.primary.link}{Position Independent Executable (PIE)}?\glossentry{pie}|setentrycounter[]{page}"\glsnumberformat}{LXVII}
+\glossaryentry{"\bfseries "\textcolor {nex.primary.link}{Address Space Layout Randomization (ASLR)}?\glossentry{aslr}|setentrycounter[]{page}"\glsnumberformat}{LXVII}
+\glossaryentry{"\bfseries "\textcolor {nex.primary.link}{Address Space Layout Randomization (ASLR)}?\glossentry{aslr}|setentrycounter[]{page}"\glsnumberformat}{LXVIII}
+\glossaryentry{"\bfseries "\textcolor {nex.primary.link}{Data Execution Prevention (DEP)}?\glossentry{dep}|setentrycounter[]{page}"\glsnumberformat}{LXVIII}
+\glossaryentry{"\bfseries "\textcolor {nex.primary.link}{Stack Smashing Protector (SSP)}?\glossentry{ssp}|setentrycounter[]{page}"\glsnumberformat}{LXVIII}
+\glossaryentry{"\bfseries "\textcolor {nex.primary.link}{Control Flow Integrity (CFI)}?\glossentry{cfi}|setentrycounter[]{page}"\glsnumberformat}{LXVIII}
+\glossaryentry{"\bfseries "\textcolor {nex.primary.link}{Return-Oriented Programming (ROP)}?\glossentry{rop}|setentrycounter[]{page}"\glsnumberformat}{LXIX}
+\glossaryentry{"\bfseries "\textcolor {nex.primary.link}{Data Execution Prevention (DEP)}?\glossentry{dep}|setentrycounter[]{page}"\glsnumberformat}{LXIX}
+\glossaryentry{"\bfseries "\textcolor {nex.primary.link}{Address Space Layout Randomization (ASLR)}?\glossentry{aslr}|setentrycounter[]{page}"\glsnumberformat}{LXIX}
+\glossaryentry{"\bfseries "\textcolor {nex.primary.link}{Position Independent Executable (PIE)}?\glossentry{pie}|setentrycounter[]{page}"\glsnumberformat}{LXIX}
+\glossaryentry{"\bfseries "\textcolor {nex.primary.link}{Stack Smashing Protector (SSP)}?\glossentry{ssp}|setentrycounter[]{page}"\glsnumberformat}{LXIX}
+\glossaryentry{"\bfseries "\textcolor {nex.primary.link}{Data Execution Prevention (DEP)}?\glossentry{dep}|setentrycounter[]{page}"\glsnumberformat}{LXIX}
+\glossaryentry{"\bfseries "\textcolor {nex.primary.link}{Clang}?\glossentry{clang}|setentrycounter[]{page}"\glsnumberformat}{LXIX}
+\glossaryentry{"\bfseries "\textcolor {nex.primary.link}{LLVM}?\glossentry{llvm}|setentrycounter[]{page}"\glsnumberformat}{LXIX}
+\glossaryentry{"\bfseries "\textcolor {nex.primary.link}{Link Time Optimization (LTO)}?\glossentry{lto}|setentrycounter[]{page}"\glsnumberformat}{LXXI}
+\glossaryentry{"\bfseries "\textcolor {nex.primary.link}{Make}?\glossentry{make}|setentrycounter[]{page}"\glsnumberformat}{LXXII}

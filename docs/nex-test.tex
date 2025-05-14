@@ -1,34 +1,17 @@
 \documentclass[a4paper,12pt]{article}
 \input{../lib/lua/lualatex/nex-preamble.tex}
 
-\def\nxDimond#1{\tikz\draw (-#1,0) -- (0,-#1) -- (#1,0) -- (0,#1) -- (-#1,0);}
-\def\nxDimondX#1{\tikz\draw (-#1,0) -- (0,-#1) -- (#1,0) -- (0,#1) -- (-#1,0) -- (#1,0) -- (0,#1) -- (0,-#1);}
-\def\nxDimondS#1{\tikz\draw (-#1,0) -- (0,-#1) -- (#1,0) -- (0,#1) -- (-#1,0) -- (#1,0) -- (0,#1) -- (0,-#1);}
-\def\nxGrid#1#2{\tikz\draw[step=#2] (-#1,-#1) grid (#1,#1);}
-
 \begin{document}
-	\nxGrid{8.5}{.5cm}
+	\begin{center}
+		\begin{tikzpicture}[node distance=2mm and 2mm]
+			\node[nxCol=primary, draw, circle, minimum size=16cm] (undecidable)  at (0, 0) {};
+			\node[nxCol=secondary, draw, circle, minimum size=12cm] (turing)  at (0, 0) {};
+			\node[nxCol=warning, draw, circle, minimum size=8cm] (cfl)  at (0, 0) {};
+			\node[nxCol=success, draw, circle, minimum size=4cm] (fsm)  at (0, 0) {Finite State Machine};
+			\node[nxTxt=warning, above=of fsm] {Context Free Language};
+			\node[nxTxt=secondary, above=of cfl] {Turing Machine};
+			\node[nxTxt=primary, above=of turing] {Undecidable};
+		\end{tikzpicture}
+	\end{center}
 \end{document}
-
-\begin{comment}
-	\begin{tikzpicture}[node distance=0mm and 0mm]
-		\node[nxCol=warning, szB](stack)[label=left:High Memory\nxTab]{Stack};
-		\node[nxCol=danger, szB](heap)[below=of stack]{Heap};
-		\node[nxCol=primary, szB](bss)[below=of heap]{BSS - uninitialized data};
-		\node[nxCol=secondary, szB](data)[below=of bss]{Data};
-		\node[nxCol=success, szB](text)[below=of data]{Text (Code)};
-		\node[nxCol=info, szB](reserved)[below=of text, label=left:Low Memory\nxTab]{Reserved};
-	\end{tikzpicture}
-
-	\begin{tikzpicture}
-		\draw 
-			(0,0) rectangle (10,1)
-			(0,1) rectangle (10,2)
-			(0,2) rectangle (10,3)
-			(0,3) rectangle (10,4)
-			(0,4) rectangle (10,5)
-			(0,5) rectangle (10,6);
-	\end{tikzpicture}
-
-\end{comment}
 

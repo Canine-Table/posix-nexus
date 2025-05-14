@@ -143,7 +143,7 @@ function nx_trim_str(D, S)
 
 function nx_append_str(D1, N, D2, B,	s)
 {
-	if (nx_natural(N) && __nx_defined(D1, 1)) {
+	if (nx_natural(N) && D1 != "") {
 		if (D2 != "")
 			s = D2
 		do {
