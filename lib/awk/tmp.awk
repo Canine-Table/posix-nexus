@@ -208,7 +208,6 @@ function nx_tui_fold(V1, V2, V3)
 function nx_tui(D1, D2, V,	tok, scrt)
 {
 	D1 = split(D1, tok, "")
-	__nx_box_map(tok, __nx_if(tolower(D2) ~ /[sd]/, D2, "s"))
 	tok["row"] = ENVIRON["G_NEX_TTY_ROWS"]; tok["col"] = ENVIRON["G_NEX_TTY_COLUMNS"]
 	tok["tsz"] = __nx_else(int(ENVIRON["G_NEX_TTY_TABS"]), 8)
 	tok["len"] = D1; tok["ste"] = "NX_DEFAULT"
@@ -403,4 +402,49 @@ function nx_tui_fold(V1, V2, V3)
 	V3[V3[0] "_pg"] = "~"
 }
 
+
+function nx_tui_prop(V1, V2, D)
+{
+	V1["pdr"] = 0
+	V1["pdl"] = 0
+	V1["mgr"] = 0
+	V1["mgl"] = 0
+	V1["row"] = ENVIRON["G_NEX_TTY_ROWS"]
+	V1["col"] = ENVIRON["G_NEX_TTY_COLUMNS"]
+	V1["tsz"] = __nx_else(int(ENVIRON["G_NEX_TTY_TABS"]), 8)  # Tab size defaults to 8.
+	if (int(ENVIRON["G_NEX_TTY_PADDING"]) != 0) {
+		V1["pdl"] = ENVIRON["G_NEX_TTY_PADDING"]
+		V1["pdr"] = ENVIRON["G_NEX_TTY_PADDING"]
+	} else {
+		if (int(ENVIRON["G_NEX_TTY_PAD_LEFT"]) != 0)
+			V1["pdl"] = ENVIRON["G_NEX_TTY_PAD_LEFT"]
+		if (int(ENVIRON["G_NEX_TTY_PAD_RIGHT"]) != 0)
+			V1["pdr"] = ENVIRON["G_NEX_TTY_PAD_RIGHT"]
+	}
+	if (int(ENVIRON["G_NEX_TTY_MARGINS"]) != 0) {
+		V1["mgr"] =  ENVIRON["G_NEX_TTY_MARGINS"]
+		V1["mgl"] = ENVIRON["G_NEX_TTY_MARGINS"]
+	} else {
+		if (int(ENVIRON["G_NEX_TTY_MARGIN_LEFT"]) != 0)
+			V1["mgl"] =  ENVIRON["G_NEX_TTY_LEFT"]
+		if (int(ENVIRON["G_NEX_TTY_MARGIN_RIGHT"]) != 0)
+			V1["mgr"] =  ENVIRON["G_NEX_TTY_RIGHT"]
+	}
+	V1["col"] = V1["col"] - (V1["pdr"] + V1["pdl"] + V1["mgr"] + V1["mgl"])
+	if (tolower(D) ~ /[sd]/) {
+		__nx_box_map(V1, D)
+		V1["col"] = V1["col"] - 2
+		V2["hl"] = nx_append_str(V1["hl"], V1["col"] + V1["pdr"] + V1["pdl"])
+		V1["pdr"] = nx_append_str(" ", V1["pdr"])
+		V1["pdl"] = nx_append_str(" ", V1["pdl"])
+		V1["mgr"] = nx_append_str(" ", V1["mgr"])
+		V1["mgl"] = nx_append_str(" ", V1["mgl"])
+		V2["lvl"] = "\x1b[0m" V1["pdl"] V1["vl"] V1["mgl"]
+		V2["lvr"] = "\x1b[0m" V1["mgr"] V1["vl"] V1["pdr"]
+		V2["tbdr"] = "\x1b[0m" V1["pdl"] V1["ulc"] V2["hl"] V1["urc"] V1["pdr"]
+		V2["mbdr"] = "\x1b[0m" V1["pdl"] V1["vrl"] V2["hl"] V1["vll"] V1["pdr"]
+		V2["dbdr"] = "\x1b[0m" V1["pdl"] V1["vl"] V2["hl"] V1["vl"] V1["pdr"]
+		V2["bbdr"] = "\x1b[0m" V1["pdl"] V1["llc"] V2["hl"] V1["lrc"] V1["pdr"]
+	}
+}
 

@@ -5,7 +5,7 @@ nx_struct_ref()
 	[ -n "$1" ] && eval "echo \$$1"
 }
 
-nx_struct_append_ref()
+nx_struct_ref_append()
 {
 	(
 		v=$(nx_struct_ref "$1")

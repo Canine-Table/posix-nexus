@@ -1,25 +1,9 @@
 \documentclass[a4paper,12pt]{article}
-\input{./contents/nex-linux/preamble.tex}
+\input{../lib/lua/lualatex/nex-preamble.tex}
 
+\nxLnk[Linux]
 \begin{document}
-\title{
-		\hspace{48px}\textbf{Posix-Nexus Linux Notes}\includesvg[width=48px]{../lib/svg/linux.svg}\\[10mm]
-		\begin{NexMainBox}[dark, shpA,fit, width=\linewidth/2]
-			\includegraphics[width=\textwidth]{img/posix-nexus.png}
-		\end{NexMainBox}
-	}
-	\author{Canine-Table}
-	\date{\today}
-	\maketitle
-	\newpage
-	%\phantomsection{}
-	%\label{top}
-	\begin{NexMainBox}[light, title=Contents, hdrB, breakable]
-		\thispagestyle{plain}
-		\tableofcontents
-	\end{NexMainBox}
-	\newpage
-	\catcode`_=8
-	\input{./contents/nex-linux/configurations.tex}
+\nxTitle[Linux][linux.svg][POSIX-Nexus (Linux)]
+	\input{./contents/nex-linux/terminals.tex}
 \end{document}
 

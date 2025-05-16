@@ -1,0 +1,84 @@
+%\begin{NxSBox}[breakable][Terminals]
+%	\begin{NxIDBox}
+%		Terminals provide a text-based interface for interacting with an operating system through commands rather than graphical elements. They are widely used for system administration, programming, and direct control over computer operations.
+%	\end{NxIDBox}
+	%\begin{NxIDBoxL}
+		%\nxTopicD{Introduction to Terminals} Overview of terminal functionality, historical evolution, and significance in modern computing.
+		%\nxTopicD{Types of Terminals} Differentiation between physical terminals (hardware-based) and virtual terminals (software-based command-line environments).
+		%\nxTopicD{Terminal Commands and Utilities} Fundamental operations such as file management, process control, networking, and system automation.
+		%\nxTopicD{Shells and Terminal Environments} Explanation of various shells including Bash, Zsh, PowerShell, and their interaction with the terminal.
+		%\nxTopicD{Terminal Scripting and Automation} Using scripts to automate repetitive tasks, execute command sequences, and optimize workflow efficiency.
+	%\end{NxIDBoxL}
+%\end{NxSBox}
+
+\begin{NxSBox}[breakable][Terminal Capabilities]
+	\begin{NxIDBox}
+		Various terminal attributes and functionalities.
+		\begin{NxListDark}
+			\nxIDSTopic{hs} (Has Status Line - Terminal has a status line that can be updated separately)
+			\nxIDSTopic{eslok} (Escape Sequences Lock - Supports switching between normal and application mode)
+			\nxIDSTopic{xhp} (Hardcopy Mode - Terminal has a hardware print mechanism)
+			\nxIDSTopic{bw} (Backspace Wraparound - Cursor wraps from leftmost to rightmost position of the previous line)
+			\nxIDSTopic{hz} (Hazeltine Bug Fix - Prevents incorrect display of ~ characters)
+			\nxIDSTopic{xon} (Uses XON/XOFF Flow Control - Supports XON/XOFF for output handling)
+			\nxIDSTopic{eo} (Erase Overstrike - Allows overstriking characters to be erased properly)
+			\nxIDSTopic{km} (Has Meta Key - Indicates presence of an Alt/meta key)
+			\nxIDSTopic{am} (Auto-Margin - Cursor automatically moves to the next line at the right margin)
+			\nxIDSTopic{bce} (Back Color Erase - Erases screen content while retaining background color)
+			\nxIDSTopic{ccc} (Can Change Colors - Allows modifying color definitions dynamically)
+			\nxIDSTopic{mc5i} (Printer Control - Controls a printer connected to the terminal)
+			\nxIDSTopic{mir} (Insert-Replace Mode - Allows character insertion without overwriting)
+			\nxIDSTopic{msgr} (Safe Move in Standout Mode - Ensures safe cursor movement in highlight mode)
+			\nxIDSTopic{npc} (No Pad Characters - Terminal does not require padding for operations)
+			\nxIDSTopic{xenl} (Fast Wraparound - Cursor wraps to the next line without performance delay)
+		\end{NxListDark}
+	\end{NxIDBox}
+\end{NxSBox}
+
+\begin{NxSSBox}[breakable][Color and Screen Properties]
+	\begin{NxIDBox}
+		Terminal properties related to colors, screen size, and character encoding.
+		\begin{NxListDark}
+			\nxIDSTopic{colors\#256} (Defines the number of colors supported—256 in this case)
+			\nxIDSTopic{cols\#80} (Terminal screen width is 80 columns)
+			\nxIDSTopic{it\#8} (Default tab stop is set at 8 spaces)
+			\nxIDSTopic{lines\#24} (Terminal screen height is 24 rows)
+			\nxIDSTopic{pairs\#65536} (Defines the number of color pairs available for foreground/background combinations)
+		\end{NxListDark}
+	\end{NxIDBox}
+\end{NxSSBox}
+
+\begin{NxSSBox}[breakable][Character Encoding and Alternate Character Set]
+	\begin{NxIDBox}
+		Defines graphical symbol mappings within the terminal.
+		\begin{NxListDark}
+			\nxIDSTopic{acsc} (Maps specific graphical symbols like box drawing characters to ASCII characters)
+		\end{NxListDark}
+	\end{NxIDBox}
+\end{NxSSBox}
+
+\begin{NxSSBox}[breakable][Cursor Movement and Positioning]
+	\begin{NxIDBox}
+		Controls how the cursor behaves in the terminal.
+		\begin{NxListDark}
+			\nxIDSTopic{bel} (Rings the terminal bell - audible alert: \textasciicircum G)
+			\nxIDSTopic{blink} (\textbackslash E[5m] - Enables blinking text)
+			\nxIDSTopic{bold} (\textbackslash E[1m] - Enables bold text)
+			\nxIDSTopic{civis} (\textbackslash E[?25l] - Hides the cursor)
+			\nxIDSTopic{cnorm} (\textbackslash E[?12l]\textbackslash E[?25h] - Restores normal cursor visibility)
+			\nxIDSTopic{cr} (\textbackslash r - Moves the cursor to the beginning of the current line)
+			\nxIDSTopic{csr} (\textbackslash E[\%i\%p1\%d;\%p2\%dr] - Sets the scrolling region in the terminal)
+			\nxIDSTopic{cub} (\textbackslash E[\%p1\%dD] - Moves the cursor backward by a specified number of characters)
+			\nxIDSTopic{cub1} (\textasciicircum H - Moves the cursor back by one character (same as backspace))
+			\nxIDSTopic{cud} (\textbackslash E[\%p1\%dB] - Moves the cursor down by a specified number of rows)
+			\nxIDSTopic{cud1} (\textbackslash n - Moves the cursor down by one row)
+			\nxIDSTopic{cuf} (\textbackslash E[\%p1\%dC] - Moves the cursor forward by a specified number of characters)
+			\nxIDSTopic{cuf1} (\textbackslash E[C] - Moves the cursor forward by one character)
+			\nxIDSTopic{cup} (\textbackslash E[\%i\%p1\%d;\%p2\%dH] - Moves the cursor to a specific row and column)
+			\nxIDSTopic{cuu} (\textbackslash E[\%p1\%dA] - Moves the cursor up by a specified number of rows)
+			\nxIDSTopic{cuu1} (\textbackslash E[A] - Moves the cursor up by one row)
+			\nxIDSTopic{cvvis} (\textbackslash E[?12;25h] - Makes the cursor visible again)
+		\end{NxListDark}
+	\end{NxIDBox}
+\end{NxSSBox}
+

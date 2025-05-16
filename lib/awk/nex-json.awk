@@ -41,30 +41,6 @@ function nx_json_alert(V1, V2, D, B)
 	print nx_log_alert(nx_json_log(V1, V2, D), B)
 }
 
-function nx_is_space(D)
-{
-	return D ~ /[ \t\n\f\r\v]/
-}
-function nx_is_upper(D)
-{
-	return D ~ /[A-Z]/
-}
-
-function nx_is_lower(D)
-{
-	return D ~ /[a-z]/
-}
-
-function nx_is_alpha(D)
-{
-	return nx_is_lower(D) || nx_is_upper(D)
-}
-
-function nx_is_digit(D)
-{
-	return D ~ /[0-9]/
-}
-
 function nx_json_next(D1, D2)
 {
 	if (D1 == "[" || D2 == ":")

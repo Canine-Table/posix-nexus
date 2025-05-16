@@ -6,6 +6,8 @@ function __nx_color_map(D1, D2,		c)
 		c = 0
 	if ((D2 = tolower(D1)) == "c")
 		return c + 39
+	if (D2 == "r")
+		return c + 38
 	if (D1 != D2)
 		c += 60
 	if (D2 == "b")
@@ -120,7 +122,7 @@ function nx_printf(D1, D2, S,	fv, i, l, stkv)
 			}
 		}
 		stkv["fmt"] = stkv["fmt"] __nx_if(stkv["plhdr"], "\x1b[" stkv["plhdr"] "m", "")
-		S = nx_trim_split(D2, fv, __nx_else(S, "<nx:null/>"))
+		S = split(D2, fv, __nx_else(S, "<nx:null/>"))
 		for (i = 1; i <= S; i++) {
 			if (! sub("<nx:placeholder/>", fv[i], stkv["fmt"]))
 				break
@@ -130,6 +132,20 @@ function nx_printf(D1, D2, S,	fv, i, l, stkv)
 		delete stkv
 		return l
 	}
+}
+
+function nx_log_black(D, B)
+{
+	if (B)
+		return nx_printf("B_bi^b_Iu%", D)
+	return nx_printf("l<B_bi^b_Iu%", D)
+}
+
+function nx_log_light(D, B)
+{
+	if (B)
+		return nx_printf("L_bi^l_Iu%", D)
+	return nx_printf("b<L_bi^l_Iu%", D)
 }
 
 function nx_log_success(D, B)

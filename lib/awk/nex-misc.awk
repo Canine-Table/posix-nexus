@@ -1,3 +1,28 @@
+function nx_is_space(D)
+{
+	return D ~ /[ \t\n\f\r\v\b]/
+}
+
+function nx_is_upper(D)
+{
+	return D ~ /[A-Z]/
+}
+
+function nx_is_lower(D)
+{
+	return D ~ /[a-z]/
+}
+
+function nx_is_alpha(D)
+{
+	return nx_is_lower(D) || nx_is_upper(D)
+}
+
+function nx_is_digit(D)
+{
+	return D ~ /[0-9]/
+}
+
 function __nx_num_map(V,  i)
 {
 	for (i = 0; i < 10; i++)

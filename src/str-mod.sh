@@ -25,14 +25,14 @@ nx_str_rand()
 
 nx_str_chain()
 {
-	[ "${#@}" -gt 0 ] && {
+	while [ "${#@}" -gt 0 ]; do
 		echo -n "$1"
 		[ "${#@}" -gt 1 ] && {
 			echo -n "<nx:null/>"
 		}
 		shift
-		nx_str_chain "$@"
-	}
+	done
+
 }
 
 nx_str_optarg()

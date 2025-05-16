@@ -1,4 +1,3 @@
-
 nx_io_fifo_mgr()
 {
 	h_nx_cmd mkfifo && {
@@ -35,6 +34,67 @@ nx_io_leaf()
 		nx_content_leaf "$1" 1>/dev/null 2>&1 || return 1
 		shift
 	done
+}
+
+nx_io_printf()
+{
+	(
+		while getopts :f:F:lLbBsSwWeEdDaAiI OPT; do
+			case $OPT in
+				l|L|b|B|s|S|w|W|e|E|d|D|a|A|i|I) v="$v$OPT";;
+				f|F) f="$OPTARG";;
+			esac
+		done
+		shift $((OPTIND - 1))
+		${AWK:-$(nx_cmd_awk)} \
+			-v fmt="$f" \
+			-v vrnt="$v" \
+			-v str="$(nx_str_chain "$@")" "
+			$(cat \
+				"$G_NEX_MOD_LIB/awk/nex-misc.awk" \
+				"$G_NEX_MOD_LIB/awk/nex-struct.awk" \
+				"$G_NEX_MOD_LIB/awk/nex-str.awk" \
+				"$G_NEX_MOD_LIB/awk/nex-log.awk" \
+				"$G_NEX_MOD_LIB/awk/nex-math.awk"
+			)
+		"'
+			BEGIN {
+				if (vrnt) {
+					if ((l1 = split(vrnt, arrv, "")) && (l2 = split(str, arra, "<nx:null/>"))) {
+						if (l1 > l2)
+							l1 = l2
+						for (l2 = 1; l2 <= l1; l2++) {
+							v = tolower(arrv[l2])
+							arrv[l2] = (arrv[l2] == v)
+							if (v == "s")
+								printf("%s", nx_log_success(arra[l2], arrv[l2]))
+							else if (v == "w")
+								printf("%s", nx_log_warn(arra[l2], arrv[l2]))
+							else if (v == "e")
+								printf("%s", nx_log_error(arra[l2], arrv[l2]))
+							else if (v == "d")
+								printf("%s", nx_log_debug(arra[l2], arrv[l2]))
+							else if (v == "a")
+								printf("%s", nx_log_alert(arra[l2], arrv[l2]))
+							else if (v == "i")
+								printf("%s", nx_log_info(arra[l2], arrv[l2]))
+							else if (v == "l")
+								printf("%s", nx_log_light(arra[l2], arrv[l2]))
+							else if (v == "b")
+								printf("%s", nx_log_black(arra[l2], arrv[l2]))
+						}
+					}
+					delete arrv
+					delete arra
+					printf("\n")
+				} else if (fmt) {
+					printf("%s", nx_printf(fmt, str))
+				} else {
+					exit 1
+				}
+			}
+		'
+	)
 }
 
 nx_io_mv()
