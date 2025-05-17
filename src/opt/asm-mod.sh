@@ -66,7 +66,7 @@ nx_asm_export()
 		*)
 			{
 				echo "Unknown architecture: $(uname -m)"
-				exit 1
+				return 1
 			};;
 	esac
 }

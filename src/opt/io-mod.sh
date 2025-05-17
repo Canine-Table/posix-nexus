@@ -109,3 +109,34 @@ nx_io_mv()
 	)
 }
 
+nx_io_dd()
+{
+	(
+		while getopts :c:b:B:s:i:o:vV OPT; do
+			case $OPT in
+				v) v='noxfer';;
+				V) v='progress';;
+				i|o|b|B|s|c) eval "$OPT"="'${OPTARG:-true}'";;
+			esac
+		done
+		shift $((OPTIND - 1))
+		[ -z "$i" -a -n "$1" ] && {
+			i="$1"
+			shift
+		}
+		[ -z "$o" -a -n "$1" ] && {
+			o="$1"
+			shift
+		}
+		dd \
+			if="$i" \
+			of="$o" \
+			status=${v:-none} \
+			ibs=${s:-${b:-4096}} \
+			obs=${s:-${B:-4096}} \
+			${c:+count=$c} \
+			conv=fsync \
+			oflag=direct
+	)
+}
+

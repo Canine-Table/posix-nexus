@@ -45,15 +45,3 @@ nx_lexer_json()
 		'
 }
 
-nx_cat_json()
-{
-	cat -n \
-		"$G_NEX_MOD_LIB/awk/nex-misc.awk" \
-		"$G_NEX_MOD_LIB/awk/nex-shell.awk" \
-		"$G_NEX_MOD_LIB/awk/nex-struct.awk" \
-		"$G_NEX_MOD_LIB/awk/nex-log.awk" \
-		"$G_NEX_MOD_LIB/awk/nex-str.awk" \
-		"$G_NEX_MOD_LIB/awk/nex-math.awk" \
-		"$G_NEX_MOD_LIB/awk/nex-json.awk" | $PAGER
-}
-
