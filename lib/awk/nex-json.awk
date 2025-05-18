@@ -3,59 +3,33 @@ function nx_json_log(V, D)
 	return "(\n\tFile: '" V["fl"] "'\n\tLine: '" V["ln"] "'\n\tCharacter: '" V["cr"] "'\n\tToken: '" V["rec"] "'\n\tDepth: '" V["stk"] "'\n\tCategory: '" V["cat"] "'\n\tWithin: '" V["ste"] "'\n\tIndex: '" V["idx"] "'\n): '" D "'"
 }
 
-function nx_json_error(V, D, B)
+function nx_json_log_delim(V, D)
 {
-	printf("%s", nx_log_error(nx_json_log(V, D), B))
-}
-
-function nx_json_success(V, D, B)
-{
-	printf("%s", nx_log_success(nx_json_log(V, D), B))
-}
-
-function nx_json_warn(V, D, B)
-{
-	printf("%s", nx_log_warn(nx_json_log(V, D), B))
-}
-
-function nx_json_info(V, D, B)
-{
-	printf("%s", nx_log_info(nx_json_log(V, D), B))
-}
-
-function nx_json_debug(V, D, B)
-{
-	printf("%s", nx_log_debug(nx_json_log(V, D), B))
-}
-
-function nx_json_alert(V, D, B)
-{
-	printf("%s", nx_log_alert(nx_json_log(V, D), B))
-}
-
-function nx_json_black(V, D, B)
-{
-	printf("%s", nx_log_black(nx_json_log(V, D), B))
-}
-
-function nx_json_light(V, D, B)
-{
-	printf("%s", nx_log_light(nx_json_log(V, D), B))
+	return "(\n\tFile: '" V["fl"] "'\n\tLine: '" V["ln"] "'\n\tCharacter: '" V["cr"] "'\n\tDepth: '" V["stk"] "'\n\tCategory: '" V["cat"] "'\n\tWithin: '" V["ste"] "'\n): '" D "'"
 }
 
 function nx_json_apply(V1, V2, V3)
 {
-	if (V3[V2["stk"]] == "\x5b") { # List
-	} else { # Object
-		#if (V2["idx"] == "NX_VALUE") {
-		#	V1[0] = V2["rec"]
-		#} else {
-		#	V1[V1[0]] = V2["rec"]
-		#	print V1[0] " = " V2["rec"]
-		#}
+	# TODO work in progress
+	if (V2["dth"] < V2["stk"]) {
+		V1["rt"] = V1["rt"] "." V1[0]
+	} else if (V2["dth"] > V2["stk"]) {
+		sub(/[^.]+$/, "", V1["rt"])
+		sub(/[.]$/, "", V1["rt"])
 	}
-	print V2["rec"] " == " V2["idx"]
-
+	V2["dth"] = V2["stk"]
+	if (V3[V2["stk"]] == "\x5b") { # List
+		V1[V1["rt"] "[" ++V1[V1["rt"]]"]"] " = " V2["rec"]
+	} else { # Object
+		if (V2["idx"] == "NX_KEY") {
+			V1[0] = V2["rec"]
+		} else {
+			if (V2["rec"]) {
+				V1[V1["rt"] "[" ++V1[V1["rt"]]"]"] " = " V1[0]
+				V1[V1["rt"] "." V1[0]] = V2["rec"]
+			}
+		}
+	}
 	V2["rec"] = ""
 }
 
@@ -68,7 +42,7 @@ function nx_json_float(V1, V2, V3, V4, B)
 			V2["rec"] = V2["rec"] 0 # Append a zero for valid float representation
 		V2["cat"] = "NX_DIGIT"
 		if (B > 6) # Debugging
-			nx_json_debug(V2, V2["rec"])
+			print nx_log_debug(nx_json_log(V2, V2["rec"]))
 		nx_json_apply(V1, V2, V4) # Apply the parsed value
 		V2["ste"] = "NX_DELIMITER" # Move to delimiter state
 		if (! nx_is_space(V3[V2["cr"]])) # If next character is not a space
@@ -102,14 +76,14 @@ function nx_json_string(V1, V2, V3, V4, V5, B)
 			V2["ste"] = V5[V2["qte"]V2["qte"]]
 		} else {
 			V2["cat"] =  "NX_ERR_MISSING_QUOTE"
-			nx_json_error(V2, "A string quote (" V2["qte"] ") was opened but never closed.")
+			print nx_log_error(nx_json_log(V2, "A string quote (" V2["qte"] ") was opened but never closed."))
 			return 31
 		}
 		V2["qte"] = ""
 		V2["esc"] = 0
 		V2["cat"] = "NX_STRING"
 		if (B > 6)
-			nx_json_debug(V2, V2["rec"])
+			print nx_log_debug(nx_json_log(V2, V2["rec"]))
 		nx_json_apply(V1, V2, V4)
 		V2["ste"] = "NX_DELIMITER"
 	}
@@ -128,11 +102,11 @@ function nx_json_identifier(V1, V2, V3, V4, B,		t)
 		} else {
 			V2["cat"] = "NX_ERR_INVALID_IDENTIFIER"
 			if (B)
-				nx_json_error(V2, "Found an invalid identifier " V2["rec"] ".")
+				print nx_log_error(nx_json_log(V2, "Found an invalid identifier " V2["rec"] "."))
 			return 41
 		}
 		if (B > 6)
-			nx_json_debug(V2, V2["rec"])
+			print nx_log_debug(nx_json_log(V2, V2["rec"]))
 		nx_json_apply(V1, V2, V4)
 		V2["ste"] = "NX_DELIMITER"
 		if (! nx_is_space(V3[V2["cr"]]))
@@ -144,14 +118,14 @@ function nx_json_delimiter(V1, V2, V3, V4, V5, B)
 {
 	if (nx_is_space(V3[V2["cr"]]))
 		return 0
-	if (V3[V2["cr"]] ~ /[\[\{]/ || (V3[V2["cr"]] == "}" && V2["idx"] == "NX_VALUE") || (V3[V2["cr"]] == "]" && V2["idx"] == "NX_ITEM")) {
+	if (V3[V2["cr"]] in V5) {
 		V2["err"] = nx_json_depth(V1, V2, V3, V4, V5, B)
 		return V2["err"]
 	} else if (V3[V2["cr"]] != V2["dlm"]) {
 		print V3[V2["cr"]]
 		V2["cat"] = "NX_ERR_UNEXPECTED_DELIM"
 		if (B)
-			nx_json_error(V2, "Unexpected delimiter found " V3[V2["cr"]] ".")
+			print nx_log_error(nx_json_log(V2, "Unexpected delimiter found " V3[V2["cr"]] "."))
 		return 51
 	} else if (V4[V2["stk"]] == "[" || V2["dlm"] == ":") {
 		V2["dlm"] = ","
@@ -167,8 +141,8 @@ function nx_json_delimiter(V1, V2, V3, V4, V5, B)
 		V2["idx"] = "NX_KEY"
 		V2["cat"] = "NX_OBJECT"
 	}
-	if (B > 6)
-		nx_json_debug(V2, V3[V2["cr"]])
+	if (B > 5)
+		print nx_log_alert(nx_json_log_delim(V2, V3[V2["cr"]]))
 	V2["ste"] = "NX_DEFAULT" # Set state back to default
 }
 
@@ -178,7 +152,7 @@ function nx_json_depth(V1, V2, V3, V4, V5, B)
 		if (V2["idx"] == "NX_KEY") {
 			V2["cat"] = "NX_ERR_UNEXPECTED_KEY"
 			if (B)
-				nx_json_error(V2, "Encountered an unexpected character (" V3[V2["cr"]] ") that does not belong in a key.")
+				print nx_log_error(nx_json_log(V2, "Encountered an unexpected character (" V3[V2["cr"]] ") that does not belong in a key."))
 			return 13
 		}
 		nx_json_apply(V1, V2, V4)
@@ -201,11 +175,17 @@ function nx_json_depth(V1, V2, V3, V4, V5, B)
 		V2["err"] = __nx_if(V2["ste"] == "NX_NONE", 22, 12)
 		V2["cat"] = "NX_ERR_BRACKET_MISMATCH"
 		if (B)
-			nx_json_error(V2, "Expected (" V5[V4[V2["stk"]]] ") but received (" V3[V2["cr"]] ").")
+			print nx_log_error(nx_json_log(V2, "Expected (" V5[V4[V2["stk"]]] ") but received (" V3[V2["cr"]] ")."))
 		return V2["err"]
 	}
-	if (B > 6)
-		nx_json_debug(V2, V3[V2["cr"]])
+	if (V4[V2["stk"]] == "\x7b")
+		V2["idx"] = "NX_KEY"
+	else if (V2["stk"])
+		V2["idx"] = "NX_ITEM"
+	else
+		V2["idx"] = ""
+	if (B > 5)
+		print nx_log_alert(nx_json_log_delim(V2, V3[V2["cr"]]))
 }
 
 function nx_json_default(V1, V2, V3, V4, V5, V6, B)
@@ -227,7 +207,7 @@ function nx_json_default(V1, V2, V3, V4, V5, V6, B)
 	} else {
 		V2["cat"] = "NX_ERR_UNEXPECTED_CHAR"
 		if (B)
-			nx_json_error(V2, "Encountered an unexpected character (" V3[V2["cr"]] ") that does not belong in JSON syntax.")
+			print nx_log_error(nx_json_log(V2, "Encountered an unexpected character (" V3[V2["cr"]] ") that does not belong in JSON syntax."))
 		return 61
 	}
 }
@@ -266,6 +246,7 @@ function nx_json_machine(V1, V2, V3, V4, V5, V6, B)
 				V2["dlm"] = ","
 			}
 			V2["ste"] = "NX_DEFAULT"
+			V2["dth"] = 1
 		}
 	}
 	return V2["err"]
@@ -295,18 +276,18 @@ function nx_json(D, V, B,	tok, stk, rec, bm, qm)
 	}
 	if (tok["qte"] && ! tok["err"]) {
 		tok["cat"] = "NX_ERR_MISSING_QUOTE"
-		nx_json_error(tok, "A string quote (" tok["qte"] ") was opened but never closed.")
+		print nx_log_error(nx_json_log(tok, "A string quote (" tok["qte"] ") was opened but never closed."))
 		tok["err"] = 2
 	}
 	if (stk[0] && ! tok["err"]) {
 		tok["cat"] = "NX_ERR_BRACKET_MISMATCH"
-		nx_json_error(tok, "Bracket mismatch detected. Expected closing '" stk[stk[0]] "' but found unexpected character.")
+		print nx_log_error(nx_json_log(tok, "Bracket mismatch detected. Expected closing '" stk[stk[0]] "' but found unexpected character."))
 		tok["err"] = 3
 	}
 	D = tok["err"]
 	delete qm; delete bm; delete dm
 	delete tok; delete stk; delete rec
+	for (i in V)
+		print i "  =  " V[i]
 	return D
 }
-
-
