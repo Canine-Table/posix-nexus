@@ -66,7 +66,7 @@ function __nx_quote_map(V, B1, B2, B3)
 	}
 	if (B3) {
 		if (B3 > 1)
-			V["\x60\x60"] == "NX_TICK_STRING"
+			V["\x60\x60"] = "NX_TICK_STRING"
 		V["\x60"] = "\x60"
 	}
 }

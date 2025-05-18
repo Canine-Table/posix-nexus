@@ -1,4 +1,4 @@
-function! CallFunction(fn, ...)
+function! NxCallFunction(fn, ...)
 	if exists('*' . a:fn)
 		if a:000 == []
 			execute 'call ' . a:fn . '()'

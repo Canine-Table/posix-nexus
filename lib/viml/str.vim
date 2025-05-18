@@ -1,7 +1,8 @@
-function! JoinArgs(...)
-        return join(a:000, ' ')
+function! NxJoinArgs(...)
+	return join(a:000, ' ')
 endfunction
 
-function! BaseName(arg)
+function! NxBaseName(arg)
 	return substitute(a:arg, '.*/', '', 'g')
 endfunction
+

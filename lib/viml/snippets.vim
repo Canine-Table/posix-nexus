@@ -1,5 +1,5 @@
-function! NxSnippetSettings()
-	if has("python3")
+function! s:NxSnippetSettings()
+	if exists(':python3')
 		" use Tab to expand snippets
 		let g:UltiSnipsExpandTrigger = '<Tab>'
 		" use Tab to move forward through tabstops
@@ -12,11 +12,8 @@ function! NxSnippetSettings()
 			call NxContainer(g:nex_mod_viml . '/snippets')
 			call add(g:UltiSnipsSnippetDirectories, g:nex_mod_viml . '/snippets')
 		endif
-	else
-		echoerr 'required: python3, pynvim or pyvim'
-		return
 	endif
 endfunction
 
-"call NxSnippeptSettings()
+call s:NxSnippetSettings()
 

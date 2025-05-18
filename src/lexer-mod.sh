@@ -38,10 +38,20 @@ nx_lexer_json()
 		"'
 			BEGIN {
 				if (fn)
-					nx_json(fn, arr, 1)
+					nx_json(fn, arr, 7)
 				else
 					exit 1
 			}
 		'
 }
 
+nx_json_cat()
+{
+	cat -n	"$G_NEX_MOD_LIB/awk/nex-misc.awk" \
+				"$G_NEX_MOD_LIB/awk/nex-shell.awk" \
+				"$G_NEX_MOD_LIB/awk/nex-struct.awk" \
+				"$G_NEX_MOD_LIB/awk/nex-log.awk" \
+				"$G_NEX_MOD_LIB/awk/nex-str.awk" \
+				"$G_NEX_MOD_LIB/awk/nex-math.awk" \
+				"$G_NEX_MOD_LIB/awk/nex-json.awk" | $PAGER
+}

@@ -1,12 +1,12 @@
-function! NexMap()
+function! s:NxNexMap()
 	if exists('g:nex_map')
-		call UnMapNex()
+		call s:NxUnMapNex()
 	else
-		call MapNex()
+		call s:NxMapNex()
 	endif
 endfunction
 
-function! MapNex()
+function! s:NxMapNex()
 	let g:nex_map = v:true
 	let g:mapleader = ","
 	nnoremap x d$
@@ -49,7 +49,7 @@ function! MapNex()
 	echo "Nexus Mapping: enabled"
 endfunction
 
-function! UnMapNex()
+function! s:NxUnMapNex()
 	unlet! g:nex_map
 	nunmap x
 	nunmap X
@@ -63,5 +63,5 @@ function! UnMapNex()
 	echo "Nexus Mapping: disabled"
 endfunction
 
-call NexMap()
+call s:NxNexMap()
 
