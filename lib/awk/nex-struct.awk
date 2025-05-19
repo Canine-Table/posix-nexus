@@ -291,3 +291,48 @@ function nx_map(V1, V2, B)
 	}
 }
 
+function nx_grid_stack(V, D, N)
+{
+	if (D != "") {
+		if (! (0 in V))
+			V[0] = 1
+		N = __nx_else(nx_natural(nx_digit(N, 1)), V[0])
+		while (V[0] < N)
+			V[++V[0]] = 0
+		V[N "_" ++V[N "_0"]] = D
+	} else if (0 in V && V[0]) {
+		if (! V[V[0] "_0"])
+			delete V[V[0]-- "_" V[V[0] "_0"]]
+		D = V[V[0] "_" V[V[0] "_0"]]
+		if (! N)
+			delete V[V[0] "_" V[V[0] "_0"]--]
+		return D
+	}
+}
+
+function nx_grid_queue(V, D, N)
+{
+	if (D != "") {
+		if (! (0 in V && "|" in V && "-" in V)) {
+			V[0] = 1
+			V["|"] = 1
+			V["-"] = 1
+		}
+		N = __nx_else(nx_natural(nx_digit(N, 1)), V[0])
+		while (V[0] < N)
+			V[++V[0]] = 0
+		V[N "_" ++V[N "_0"]] = D
+	} else if (0 in V) {
+		if (V["|"] > V[V[0] "_0"] && V["-"] < V[0]) {
+			V["|"] = 1
+			delete V[V["-"]++ "_" V[V[0] "_0"]]
+		} else if (V["-"] > V[0]) {
+			return 0
+		}
+		D = V[V["-"] "_" V["|"]]
+		if (! N)
+			delete V[V["-"] "_" V["|"]++]
+		return D
+	}
+}
+

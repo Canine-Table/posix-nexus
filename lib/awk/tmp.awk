@@ -1,3 +1,167 @@
+
+function nx_json_stack()
+{
+}
+
+function nx_json_apply(V1, V2, V3)
+{
+	if (! ((V2["rec"] == "" || V2["dth"] == V2["stk"]) && "rt" in V2)) {
+		if (V2["dth"] > V2["stk"]) {
+			if (V2["cat"] == "NX_RBRACKET" && V3[V2["stk"]] == "\x5b") {
+				sub(/[^\x5b]+$/, "", V2["rt"])
+				sub(/\x5b$/, "", V2["rt"])
+			} else {
+				sub(/[^.]+$/, "", V2["rt"])
+				sub(/[.]$/, "", V2["rt"])
+			}
+		} else {
+			if (V3[V2["dth"]] == "\x5b") {
+				V3[--V2["-stk"]] = V2["stk"]
+				V3[V2["-stk"] "_rti"] = __nx_else(V2["rt"], ".")
+				V1[V3[V2["-stk"] "_rti"] "\x5b0\x5d"] = 0
+				V2["rt"] = ""
+			} else if (V3[V2["dth"]] == "\x7b" && V2["nxt"] != "") {
+				if (-(V2["stk"] - 1) in V3) {
+					V2["rt"] = V2["nxt"] 
+				V3[-(V2["stk"] - 1) "_rti"]
+				}
+				V2["rti"] "\x5b" ++V1[V2["rti"] "\x5b0\x5d"] "\x5d." V2["nxt"]
+				} else {
+					V2["rt"] = V2["rt"] "." V2["nxt"]
+				}
+			} else {
+				if (V2["stk"] == "\x5b") {
+					V3[--V2["-stk"]] = V2["stk"]
+					V3[V2["-stk"] "_rti"] = ".nx"
+					V2["rt"] = ""
+				} else {
+					V2["rt"] = ".nx"
+				}
+			}
+		}
+		V2["dth"] = V2["stk"]
+	}
+	if (V2["rec"] != "") {
+		if (V3[V2["stk"]] == "\x5b") { # List
+			# TODO List
+		} else {
+			if (V2["idx"] == "NX_KEY") {
+				V2["nxt"] = V2["rec"]
+			} else {
+				# TODO value
+			}
+		}
+		V2["rec"] = ""
+	}
+}
+
+
+function nx_json_track_depth(V2, V3, V1) {
+    if (V3[V2["dth"]] == "\x5b") {  
+        V3[--V2["-stk"]] = V2["stk"]   # Track current depth level
+        V3[V2["-stk"] "_rti"] = __nx_else(V2["rt"], ".") # Maintain reference tracking
+        V1[V3[V2["-stk"] "_rti"] "\x5b0\x5d"] = 0  # Establish a base index for tracking elements
+        V2["rt"] = ""  # Reset path tracker
+    } else if (V3[V2["dth"]] == "\x7b" && V2["nxt"] != "") {
+        if (-(V2["stk"] - 1) in V3) {
+            V2["rt"] = V2["nxt"]  
+            V3[-(V2["stk"] - 1) "_rti"]  # Reference previous stack index
+        }
+        V2["rti"] = V2["rti"] "\x5b" ++V1[V2["rti"] "\x5b0\x5d"] "\x5d." V2["nxt"]
+    }
+}
+
+
+#function nx_json_apply(V1, V2, V3)
+#{
+#	# TODO work in progress
+#	if (V3[V2["stk"]] == "\x5b") { # List
+#		V1[__nx_else(V2["rt"], ".") "\x5b" ++V1[__nx_else(V2["rt"], ".") "\x5b0\x5d"] "\x5d"] = V2["rec"]
+#	} else { # Object
+#		if (V2["idx"] == "NX_KEY") {
+#			V2["nxt"] = V2["rec"]
+#			if (V3[V2["stk"] - 1] == "\x5b")
+#				V2["rt"] = V2["rt"] "\x5b" V1[__nx_else(V2["prnt"], ".") "\x5b0\x5d"] "\x5d"
+#		} else {
+#			if (V2["rec"]) {
+#				if (V2["nxt"])
+#					V1[V2["rt"] "." V2["nxt"]] = V2["rec"]
+#				else
+#					V2["nxt"] = V2["rec"]
+#			}
+#		}
+#	}
+#	if (V2["dth"] != V2["stk"]) {
+#		if (V2["dth"] < V2["stk"]) {
+#			if (V2["nxt"] ~ /obj(a|b)/) {
+#				print V2["rt"]
+#				print V1[__nx_else(V2["prnt"], ".") "\x5b0\x5d"]
+#				print V2["prnt"]
+#				print V1[__nx_else(V2["rt"], ".") "\x5b0\x5d"]
+#			}
+#			V2["prnt"] = V2["rt"]
+#			V2["rt"] = V2["rt"] "." V2["nxt"]
+#			if (V2["nxt"] ~ /obj(a|b)/) {
+#				print V2["rt"]
+#				print V3[V2["dth"]]
+#				print V3[V2["stk"]]
+#			}
+#		} else {
+#			sub(/[^.]+$/, "", V2["rt"])
+#			sub(/[.]$/, "", V2["rt"])
+#		}
+#		V2["dth"] = V2["stk"]
+#	}
+
+
+
+
+
+function nx_json_apply(V1, V2, V3)
+{
+	if (! (V2["rec"] == "" || V2["dth"] == V2["stk"])) {
+		if (V2["dth"] > V2["stk"]) {
+			if (V2["cat"] == "NX_RBRACKET" && V3[V2["stk"]] == "\x5b") {
+				sub(/[^\x5b]+$/, "", V2["rt"])
+				sub(/\x5b$/, "", V2["rt"])
+			} else {
+				sub(/[^.]+$/, "", V2["rt"])
+				sub(/[.]$/, "", V2["rt"])
+			}
+		} else {
+			if (V3[V2["dth"]] == "\x5b") {
+				V2["rti"] = __nx_else(V2["rt"], ".")
+				V2["rt"] = ""
+				V2["rtl"] = nx_join_str(V2["rtl"], V2["stk"], ":")
+			} else if (V2["nxt"]) {
+				V2["rt"] = V2["rt"] "." V2["nxt"]
+			}
+		}
+		V2["dth"] = V2["stk"]
+	}
+	if (V2["rec"] != "") {
+		if (V3[V2["stk"]] == "\x5b") { # List
+			if (V2["rtl"] ~ ":" V2["stk"] ":") {
+				V1[V2["rti"] "\x5b" V1[V2["rti"] "\x5b0\x5d"] "\x5d" __nx_else(V2["rt"], ".") "\x5b" ++V1[V2["rt"] "\x5b0\x5d"] "\x5d"] = V2["rec"]
+			} else {
+				V1[__nx_else(V2["rt"], ".") "\x5b" ++V1[V2["rt"] "\x5b0\x5d"] "\x5d"] = V2["rec"]
+			}
+		} else {
+			if (V2["idx"] == "NX_KEY") {
+				V2["nxt"] = V2["rec"]
+			} else {
+				if (V2["rtl"] ~ ":" V2["stk"] - 1 ":") {
+					V1[V2["rti"] "\x5b" ++V1[V2["rti"] "\x5b0\x5d"] "\x5d" V2["rt"] "." V2["nxt"]] = V2["rec"]
+				} else {
+					V1[V2["rt"] "." V2["nxt"]] = V2["rec"]
+				}
+			}
+		}
+		V2["rec"] = ""
+	}
+}
+
+
 function nx_json_log(V, D)
 {
 	return "(\n\tFile: '" V["fl"] "'\n\tLine: '" V["ln"] "'\n\tCharacter: '" V["cr"] "'\n\tToken: '" V["rec"] "'\n\tDepth: '" V["stk"] "'\n\tCategory: '" V["cat"] "'\n\tWithin: '" V["ste"] "'\n\tIndex: '" V["idx"] "'\n): '" D "'"

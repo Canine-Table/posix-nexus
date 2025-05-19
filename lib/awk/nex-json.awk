@@ -8,29 +8,57 @@ function nx_json_log_delim(V, D)
 	return "(\n\tFile: '" V["fl"] "'\n\tLine: '" V["ln"] "'\n\tCharacter: '" V["cr"] "'\n\tDepth: '" V["stk"] "'\n\tCategory: '" V["cat"] "'\n\tWithin: '" V["ste"] "'\n): '" D "'"
 }
 
+function nx_json_stack_push(V1, V2, V3)
+{
+	print -(V2["stk"])
+
+	if (-(V2["stk"]) in V3) {
+		V2["rdi"] = V3[-(V2["stk"] - 1)] "\x5b" ++V1[V3[-(V2["stk"] - 1)] "\x5b0\x5d"] "\x5d"
+		V1[V2["rdi"]] = V2["nxt"]
+	}
+	print V1[V2["rdi"]] V2["rt"] "   [g]"
+}
+
+function nx_json_stack_pop(V1, V2, V3)
+{
+	print V2["rec"] "   [l]"
+}
+
+function nx_json_stack(V1, V2, V3)
+{
+	if (! (V2["rec"] == "" || V2["dth"] == V2["stk"])) {
+		print "hi"
+		if (V2["dth"] > V2["stk"]) {
+			nx_json_stack_pop(V1, V2, V3)
+		} else {
+			nx_json_stack_push(V1, V2, V3)
+		}
+		V2["dth"] = V2["stk"]
+	} else if (! ("rt" in V2)) {
+		V3[-V2["stk"]] = ".nx"
+		V2["rti"] = ""
+		V2["rtl"] = V2["stk"]
+		V2["rt"] = V3[-V2["stk"]]
+	}
+}
+
 function nx_json_apply(V1, V2, V3)
 {
-	# TODO work in progress
-	if (V2["dth"] < V2["stk"]) {
-		V1["rt"] = V1["rt"] "." V1[0]
-	} else if (V2["dth"] > V2["stk"]) {
-		sub(/[^.]+$/, "", V1["rt"])
-		sub(/[.]$/, "", V1["rt"])
-	}
-	V2["dth"] = V2["stk"]
-	if (V3[V2["stk"]] == "\x5b") { # List
-		V1[V1["rt"] "[" ++V1[V1["rt"]]"]"] " = " V2["rec"]
-	} else { # Object
-		if (V2["idx"] == "NX_KEY") {
-			V1[0] = V2["rec"]
-		} else {
-			if (V2["rec"]) {
-				V1[V1["rt"] "[" ++V1[V1["rt"]]"]"] " = " V1[0]
-				V1[V1["rt"] "." V1[0]] = V2["rec"]
+	nx_json_stack(V1, V2, V3)
+	if (V2["rec"] != "") {
+		if (V3[V2["stk"]] == "\x5b") { # List
+			print V2["rec"] "   [k]"
+		} else if (V2["rec"] != "") {
+			if (V2["idx"] == "NX_KEY") {
+				V2["nxt"] = V2["rec"]
+
+			} else {
+				V2["rt"] = V2["rt"] "." V2["nxt"]
+				print V2["rt"] "   [v]"
 			}
 		}
+		V2["rec"] = ""
 	}
-	V2["rec"] = ""
 }
 
 function nx_json_float(V1, V2, V3, V4, B)
@@ -155,7 +183,6 @@ function nx_json_depth(V1, V2, V3, V4, V5, B)
 				print nx_log_error(nx_json_log(V2, "Encountered an unexpected character (" V3[V2["cr"]] ") that does not belong in a key."))
 			return 13
 		}
-		nx_json_apply(V1, V2, V4)
 		V4[++V2["stk"]] = V3[V2["cr"]]
 		V2["cat"] = V5[V5[V4[V2["stk"]]]V4[V2["stk"]]]
 		V2["dlm"] = __nx_if(V3[V2["cr"]] == "\x7b", ":", ",")
@@ -184,6 +211,7 @@ function nx_json_depth(V1, V2, V3, V4, V5, B)
 		V2["idx"] = "NX_ITEM"
 	else
 		V2["idx"] = ""
+	nx_json_apply(V1, V2, V4)
 	if (B > 5)
 		print nx_log_alert(nx_json_log_delim(V2, V3[V2["cr"]]))
 }
@@ -246,7 +274,6 @@ function nx_json_machine(V1, V2, V3, V4, V5, V6, B)
 				V2["dlm"] = ","
 			}
 			V2["ste"] = "NX_DEFAULT"
-			V2["dth"] = 1
 		}
 	}
 	return V2["err"]
