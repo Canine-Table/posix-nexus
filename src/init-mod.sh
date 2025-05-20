@@ -49,7 +49,7 @@ nx_bundle_include()
 nx_content_root()
 {
 	(
-		for f in 'cnf' 'env/rom/al8800bt'; do
+		for f in 'cnf' 'env/rom/al8800bt' 'env/tmp'; do
 			[ "$(nx_content_leaf "$G_NEX_ROOT/$f")" = "$f" ] || mkdir -p "$G_NEX_ROOT/$f"
 		done
 	)
@@ -141,7 +141,7 @@ export G_NEX_MOD_CNF="$G_NEX_ROOT/cnf"
 export G_NEX_MOD_ENV="$G_NEX_ROOT/env"
 export G_NEX_MOD_DOC="$G_NEX_ROOT/docs"
 export G_NEX_MOD_LOG="$G_NEX_MOD_ENV"
-export TMPDIR="$G_NEX_MOD_ENV"
+export TMPDIR="$G_NEX_MOD_ENV/tmp"
 
 ##:(Nexus Configurations):####################################################################
 

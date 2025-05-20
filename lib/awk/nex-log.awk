@@ -97,7 +97,7 @@ function __nx_symbol_map(D,	c)
 		return "&"
 }
 
-function nx_printf(D1, D2, S,	fv, i, l, stkv)
+function nx_printf(D1, D2,	fv, i, l, stkv)
 {
 	if (D1 != "" && D2 != "") {
 		l = split(D1, fv, "")
@@ -122,15 +122,29 @@ function nx_printf(D1, D2, S,	fv, i, l, stkv)
 			}
 		}
 		stkv["fmt"] = stkv["fmt"] __nx_if(stkv["plhdr"], "\x1b[" stkv["plhdr"] "m", "")
-		S = split(D2, fv, __nx_else(S, "<nx:null/>"))
-		for (i = 1; i <= S; i++) {
-			if (! sub("<nx:placeholder/>", fv[i], stkv["fmt"]))
-				break
-		}
-		gsub("<nx:placeholder/>", "", stkv["fmt"])
-		l = stkv["fmt"] "\x1b[0m"
+		l = nx_log_db(stkv["fmt"], D2) "\x1b[0m"
 		delete stkv
 		return l
+	}
+}
+
+function nx_log_db(N, D, B, V,		msg)
+{
+	if (length(V))
+		N = V[N "_" nx_modulus_range(__nx_entropy(V[N "_0"]), V[N "_0"]) + 1]
+	else
+		B = 0
+	if (N != "") {
+		if (B)
+			delete V
+		B = split(D, msg, "<nx:null/>")
+		for (D = 1; D <= B; D++) {
+			if (! gsub("<nx:placeholder +index=" D " */>", msg[D], N))
+				sub("<nx:placeholder/>", msg[D], N)
+		}
+		gsub("<nx:placeholder.*/>", "", N)
+		delete msg
+		return N
 	}
 }
 

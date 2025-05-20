@@ -36,6 +36,15 @@ nx_io_leaf()
 	done
 }
 
+nx_io_swap()
+{
+	[ -e "$1" -a -e "$2" ] && {
+		mv "$1" "${1}.swap"
+		mv "$2" "$1"
+		mv "${1}.swap" "$2"
+	}
+}
+
 nx_io_printf()
 {
 	(
