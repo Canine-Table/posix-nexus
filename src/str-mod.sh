@@ -35,6 +35,21 @@ nx_str_chain()
 
 }
 
+nx_str_hex()
+{
+	h_nx_cmd hexdump && {
+		nx_str_case -u "$(echo -en "$*" | hexdump)" | ${AWK:-$(nx_cmd_awk)} \
+		'
+			{
+				for (i = 2; i <= NF; i++)
+					h = h "\\x" substr($i, 3) "\\x" substr($i, 1, 2)
+			} END {
+				print h
+			}
+		'
+	}
+}
+
 nx_str_optarg()
 {
 	${AWK:-$(nx_cmd_awk)} \

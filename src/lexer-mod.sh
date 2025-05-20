@@ -14,13 +14,9 @@ nx_lexer_file()
 			)
 		"'
 			BEGIN {
-				nx_json_log_db(arr)
-				nx_json_log_db(arr, 1, "hi")
-
-				#if (fn)
-				#	nx_lexer(fn)
-				#else
-				#	exit 1
+				__nx_emoji_map(arr)
+				for (i in arr)
+					print i "  =  " arr[i]
 			}
 		'
 }
@@ -40,7 +36,13 @@ nx_lexer_json()
 			)
 		"'
 			BEGIN {
-				print nx_json(fn, arr, 7)
+				if (! (i = nx_json(fn, arr, 4))) {
+					for (i in arr)
+						print "arr[" i "] = " arr[i]
+					i = 0
+				}
+				delete arr
+				exit i
 			}
 		'
 }
