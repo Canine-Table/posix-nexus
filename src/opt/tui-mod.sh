@@ -29,7 +29,7 @@ nx_tui_box()
 	)
 }
 
-nx_tui_prompt()
+nx_tui_shell()
 {
 	(
 		trap 'nx_io_fifo_mgr -r "$nx_fifo"; echo -e "\x1b[?1049l\x1b[?1003l\x1b[?1015l\x1b[?1000l\x1b[H\x1b[2J\x1b[u"' EXIT SIGINT
@@ -41,6 +41,7 @@ nx_tui_prompt()
 				"$G_NEX_MOD_LIB/awk/nex-struct.awk" \
 				"$G_NEX_MOD_LIB/awk/nex-str.awk" \
 				"$G_NEX_MOD_LIB/awk/nex-tui.awk" \
+				"$G_NEX_MOD_LIB/awk/nex-json.awk" \
 				"$G_NEX_MOD_LIB/awk/nex-math.awk"
 			)
 		"'
@@ -58,10 +59,7 @@ nx_tui_prompt()
 			"}\n│\n└" \
 			"\$ "
 		)"
-
-		#echo -e "\x1bc"
 		echo -e "\x1b[s\x1b[H\x1b[2J\x1b[?1000h\x1b[?1015h\x1b[?1003h\x1b[?1049h"
-
 		while :; do
 			read -p "$P"
 			[ "$REPLY" = 'exit' ] && exit
