@@ -1,10 +1,13 @@
 
+
+
 nx_tui_box()
 {
 	(
 		eval "export $(nx_tty_all)"
 		export G_NEX_TTY_PADDING=1
 		export G_NEX_TTY_MARGINS=1
+		export G_NEX_TTY_BOX="s"
 		${AWK:-$(get_cmd_awk)} \
 			-v bdr="$1" \
 			-v mesg="${2:-$( cat "$G_NEX_MOD_ENV/file.tui")}" "
@@ -12,12 +15,13 @@ nx_tui_box()
 				"$G_NEX_MOD_LIB/awk/nex-misc.awk" \
 				"$G_NEX_MOD_LIB/awk/nex-struct.awk" \
 				"$G_NEX_MOD_LIB/awk/nex-str.awk" \
-				"$G_NEX_MOD_LIB/awk/nex-tui.awk" \
-				"$G_NEX_MOD_LIB/awk/nex-math.awk"
+				"$G_NEX_MOD_LIB/awk/nex-log.awk" \
+				"$G_NEX_MOD_LIB/awk/nex-math.awk" \
+				"$G_NEX_MOD_LIB/awk/nex-tui.awk"
 			)
 		"'
 			BEGIN {
-				nx_tui(mesg, __nx_else(bdr, "s"), arr)
+				nx_tui(mesg, arr)
 				if ("tbdr" in arr)
 					print arr["tbdr"]
 				for (i = 1; i <= arr[0]; i++)
@@ -27,6 +31,17 @@ nx_tui_box()
 			}
 		'
 	)
+}
+
+nx_box_cat()
+{
+	cat -n \
+		"$G_NEX_MOD_LIB/awk/nex-misc.awk" \
+		"$G_NEX_MOD_LIB/awk/nex-struct.awk" \
+		"$G_NEX_MOD_LIB/awk/nex-str.awk" \
+		"$G_NEX_MOD_LIB/awk/nex-log.awk" \
+		"$G_NEX_MOD_LIB/awk/nex-math.awk" \
+		"$G_NEX_MOD_LIB/awk/nex-tui.awk" | $PAGER
 }
 
 nx_tui_shell()
