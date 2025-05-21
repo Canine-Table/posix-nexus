@@ -417,8 +417,8 @@ function nx_log_debug(D, B)
 function nx_log_info(D, B)
 {
 	if (B)
-		return nx_printf("I_bi^i_Iu%", D)
-	return nx_printf("b<I_bi^i_Iu%", D)
+		return nx_printf("l<I_bi^i_Iu%", D)
+	return nx_printf("L<i_bi^i_Iu%", D)
 }
 
 function nx_log_alert(D, B)

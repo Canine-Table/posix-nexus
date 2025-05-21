@@ -21,13 +21,14 @@ nx_tui_box()
 			)
 		"'
 			BEGIN {
-				nx_tui(mesg, arr)
-				if ("tbdr" in arr)
-					print arr["tbdr"]
+				nx_tui(mesg, arr, 5)
+				#if ("tbdr" in arr)
+				#	print arr["tbdr"]
 				for (i = 1; i <= arr[0]; i++)
-					print arr["lvl"] arr[i] arr["lvr"]
-				if ("bbdr" in arr)
-					print arr["bbdr"]
+					print arr[i]
+					#print arr["lvl"] arr[i] arr["lvr"]
+				#if ("bbdr" in arr)
+				#	print arr["bbdr"]
 			}
 		'
 	)
