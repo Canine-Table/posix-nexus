@@ -233,21 +233,20 @@ function nx_filter(D1, D2, V1, V2, B,	i, v1, v2)
 	}
 }
 
-function nx_option(D, V1, V2, B1, B2, B3,	i, v1)
+function nx_option(D, V1, V2, B1, B2,	i, v1)
 {
 	if (length(V1) && 0 in V1 && D != "") {
 		if (nx_boundary(D, V1, v1, B1) > 1) {
 			if (nx_filter(nx_append_str("0", nx_length(v1, B2)), "=_", v1, V2, 1) == 1) {
 				i = V2[1]
 				delete V2
+				return i
 			}
 		} else {
 			i = v1[1]
 			delete v1
+			return i
 		}
-		if (B3)
-			delete V1
-		return i
 	}
 }
 
@@ -308,6 +307,44 @@ function nx_grid_stack(V, D, N)
 		if (! N)
 			delete V[V[0] "_" V[V[0] "_0"]--]
 		return D
+	}
+}
+
+function nx_grid(V, D, N)
+{
+	# TODO
+	if (! D) {
+		if (! (0 in V && "|" in V && "-" in V)) {
+			V[0] = 1
+			V["|"] = 1
+			V["-"] = 1
+		}
+		if ((N = __nx_else(nx_natural(nx_digit(N, 1)), V[0])) < V["-"])
+			N = V["-"]
+		while (V[0] < N)
+			V[++V[0]] = 0
+		V[N "," ++V[V[N]]] = D
+	} else if (V["-"] <= V[0]) {
+		if (! (V[0] "," V[V[0]] in V))
+			delete V[V[0]--]
+		if ((N = tolower(N)) == "d") {
+			N = V[V[0] "," V[V[0]]]
+			if (D != "")
+				delete V[V[0] "," V[V[0]]--]
+		} else {
+			if (! (V["-"] "," V["|"] in V) {
+				delete V[V["-"]]++
+				V["|"] = 1
+			}
+			if (V["-"] <= V[0]) {
+				N = V[V["-"] "," V["|"]]
+				if (D != "")
+					delete V[V["-"] "," V["|"]++]
+			} else {
+				return 0
+			}
+		}
+		return N
 	}
 }
 

@@ -86,13 +86,13 @@ function nx_tui_return(V1, V2, V3, V4, B, V5)
 				V2["rec"] = V2["rec"] V4[V2["rcnt"]]
 			V2["rrec"] = ""
 		}
-
 		if (V3[V2["cr"]] == "\x0a") {
 			V1[++V1[0]] = nx_append_str(" ", V2["col"] - V2["rcnt"], V2["rec"], 0)
 			V2["ll"] = V1[0]
 			V1[V1[0] "_line"] = V2["ln"]++
 			V1[V1[0] "_page"] = V2["pg"]
-			V2["rfcnt"] = 0
+			V2["rec"] = ""
+			V2["rcnt"] = 0
 		}
 		delete V4
 		V2["ll"] = V1[0]
@@ -118,71 +118,36 @@ function nx_tui_return(V1, V2, V3, V4, B, V5)
 
 function nx_tui_fold(V1, V2, V3, B, V4)
 {
-	# **Step 1: Check if the current field fits within the column width**
-	# If the number of characters in the field (`fcnt`) is less than the column width (`col`),
-	# we determine how much of the remaining record can be added before wrapping.
 	if (V2["fcnt"] < V2["col"]) {
 		if (B > 2)
 			print nx_log_alert(nx_tui_log(V2, "Folding " V2["rec"]))
-		# **Step 2: Determine how much of the current record has already been processed**
-		# `ta` calculates the remaining characters that are part of the ongoing record.
 		V2["ta"] = V2["rcnt"] - V2["fcnt"]
-
-		# **Step 3: Compute necessary padding for alignment**
-		# Ensures proper word wrapping without abrupt shifts in visual formatting.
 		V2["pd"] = V2["col"] - V2["ta"] + 1
-
-		# **Step 4: Store the portion that fits within the current column width**
-		# A new entry in the stack (`V3`) is created, ensuring proper spacing.
 		V1[++V1[0]] = nx_append_str(" ", V2["pd"], substr(V2["rec"], 1, V2["ta"] - 1), 0)
-
-		# **Step 5: Update the record by removing processed text**
-		# `rec` now contains only the remaining unprocessed portion.
 		V2["rec"] = substr(V2["rec"], V2["ta"] + 1)
-
-		# **Step 6: Reset counters to reflect changes**
-		# The record count (`rcnt`) aligns with the number of characters currently in the field (`fcnt`).
 		V2["rcnt"] = V2["fcnt"]
 	} else {
-		# **Step 7: Handle cases where padding needs adjustment**
-		# If `pd` is set, it indicates extra space was reserved earlier.
 		if (V2["pd"]) {
-			# **Step 8: Append leftover field content to the previous entry**
-			# This ensures continuity and prevents artificial splitting.
 			V1[V1[0]] = substr(V1[V1[0]], 1, V2["col"] - V2["pd"] + 1) substr(V2["rec"], 1, V2["pd"] - 1)
-
-			# **Step 9: Remove processed content and reset record**
 			V2["rec"] = substr(V2["rec"], V2["pd"])
 			V2["rcnt"] = length(V2["rec"])
 			if (B > 2)
 				print nx_log_alert(nx_tui_log(V2, "Wrapping " V2["rec"]))
-			# **Step 10: Reset padding tracker**
 			V2["pd"] = 0
 		} else {
-			# **Step 11: If no padding adjustments are needed, store the full field**
-			# Ensures fields remain contiguous without unnecessary fragmentation.
 			V1[++V1[0]] = V2["rec"]
 			V2["rec"] = ""
 			V2["rcnt"] = 0
 		}
-
-		# **Step 12: Align field tracking with record count**
-		# Ensures proper character alignment for subsequent iterations.
 		V2["fcnt"] = V2["rcnt"]
 	}
-
-	# **Step 13: Assign tracking metadata for page and line markers**
-	# These markers assist in structuring output when further processing occurs.
 	V1[V1[0] "_ln"] = "~"
 	V1[V1[0] "_pg"] = "~"
 }
 
 function nx_tui_escape(V1, V2, V3, B, V4)
 {
-	# **Handling Tab (\x09)**
-	# Tabs require dynamic spacing based on the current record position.
 	if (V3[V2["cr"]] == "\x09") { # Tab
-		# Instead of inserting a fixed amount of spaces, this ensures alignment to the next tab stop.
 		V2["ta"] = __nx_else(V2["rcnt"] % V2["tsz"], V2["tsz"])  # Calculate remaining spaces to the next tab stop.
 		if ((V2["tb"] = V2["ta"] + V2["rcnt"]) >= V2["col"]) {	# If tab extends beyond the column width...
 			if (V2["tc"] = V2["tb"] % V2["col"]) {	# Check how much of the tab fits.
@@ -192,20 +157,15 @@ function nx_tui_escape(V1, V2, V3, B, V4)
 				V1[++V1[0]] = nx_append_str(" ", V2["ta"], V2["rec"], 0)  # If it fits perfectly, append full tab spacing.
 				V2["rec"] = ""
 			}
-			# Add tracking markers for new line/page entries.
 			V1[V1[0] "_ln" ] = "~"
 			V1[V1[0] "_pg"] = "~"
 		} else {
-			# If the tab fits within the column width, append it directly.
 			V2["rcnt"] = V2["rcnt"] + V2["ta"]
 			V2["rec"] = nx_append_str(" ", V2["ta"], V2["rec"], 0)
 		}
 		if (B > 3)
 			print nx_log_debug(nx_tui_log(V2, V2["tsz"] " Space Tab (\\x09)"))
 		V2["rcnt"] = length(V2["rec"])	# Update record count.
-	# **Handling Vertical Tab (\x0b)**
-	# Moves the cursor down a line but maintains horizontal alignment.
-	# This ensures vertical spacing without affecting text formatting.
 	} else if (V3[V2["cr"]] == "\x0b") {
 		V1[++V1[0]] = nx_append_str(" ", V2["col"] - V2["rcnt"], V2["rec"], 0)	# Fill remaining spaces for alignment.
 		V2["rec"] = nx_append_str(" ", --V2["rcnt"])  # Adjust record to prepare for the next line.
@@ -213,8 +173,6 @@ function nx_tui_escape(V1, V2, V3, B, V4)
 		V1[V1[0] "_pg"] = "~"
 		if (B > 3)
 			print nx_log_debug(nx_tui_log(V2, "Vertical Tab (\\x0b)"))
-	# **Handling Carriage Return (\x0d)**
-	# Moves to the beginning of the line. If not followed by a newline, triggers a special return state.
 	} else if (V3[V2["cr"]] == "\x0d") {
 		if (V2["len"] > V2["cr"] && V3[V2["cr"] + 1] != "\n") {
 			V2["ste"] = "NX_RETURN"  # Switch state for return processing.
@@ -229,8 +187,6 @@ function nx_tui_escape(V1, V2, V3, B, V4)
 			if (B > 3)
 				print nx_log_debug(nx_tui_log(V2, "Carrage Return (\\x0d)"))
 		}
-	# **Handling Backspace (\x08)**
-	# Removes the last character from the record, or backtracks if necessary.
 	} else if (V3[V2["cr"]] == "\x08") {
 		if (V2["rcnt"]) {
 			V2["rec"] = substr(V2["rec"], 1, --V2["rcnt"])	# Remove last character.
@@ -243,8 +199,6 @@ function nx_tui_escape(V1, V2, V3, B, V4)
 		}
 		if (B > 3)
 			print nx_log_debug(nx_tui_log(V2, "Backspace (\\x08)"))
-	# **Handling Newline (\x0a) or Formfeed (\x0c)**
-	# Ensures proper text flow, advancing to a new line or page when necessary.
 	} else if (V3[V2["cr"]] ~ /[\x0a|\x0c]/) {
 		V1[++V1[0]] = nx_append_str(" ", V2["col"] - V2["rcnt"], V2["rec"], 0)	# Fill remaining spaces.
 		if (V3[V2["cr"]] == "\x0a") {  # Newline: Move to next line.
@@ -262,15 +216,11 @@ function nx_tui_escape(V1, V2, V3, B, V4)
 		}
 		V2["rec"] = ""	# Reset record for new line/page.
 		V2["rcnt"] = 0	# Reset character count.
-	# **Handling Escape (\x1b)**
-	# Switches to ANSI escape processing mode.
 	} else if (V3[V2["cr"]] == "\x1b") {
 		if (B > 3)
 			print nx_log_debug(nx_tui_log(V2, "Escape (\\x1b)"))
 		V2["ste"] = "NX_CODE"
 	}
-	# **Final Cleanup**
-	# Ensure pending adjustments don’t interfere with further processing.
 	V2["pd"] = 0
 	if (V2["ste"] != "NX_CODE")
 		V2["fcnt"] = 0	# Reset field count if not processing an escape sequence.

@@ -1,4 +1,6 @@
 
+
+
 function nx_json_stack()
 {
 }
@@ -367,7 +369,7 @@ function nx_json_default(V1, V2, V3, V4, V5, V6, B)
 
 function nx_json_machine(V1, V2, V3, V4, V5, V6, B)
 {
-	for (V2["cr"] = 1; V2["cr"] <= V2["len"]; V2["cr"]++) {
+	for (V2["cr"] = 1
 		if (V2["ste"] == "NX_DEFAULT") {
 			if (V2["err"] = nx_json_default(V1, V2, V3, V4, V5, V6, V7))
 				break
@@ -429,8 +431,8 @@ function nx_json(D, V, B, tok, stk, rec, bm, qm)
 		tok["err"] = 3
 	}
 	D = tok["err"]
-	delete qm; delete bm, delete dm
-	delete tok; delete stk, delete rec
+	delete qm
+	delete tok
 	return D
 }
 
@@ -652,7 +654,7 @@ function nx_json(D, V, B,	chars, tok, depth, b_map, d_map, q_map)
 	__nx_quote_map(q_map, 1, 1)
 	while ((getline tok["length"] < tok["file"]) > 0) {
 		tok["length"] = split(tok["length"], chars, "")
-		for (tok["char"] = 1; tok["char"] <= tok["length"]; tok["char"]++) {
+		for (tok["char"] = 1
 			if (tok["state"] == "NX_DEFAULT") {
 				if (nx_is_space(chars[tok["char"]]))
 					continue
@@ -732,7 +734,7 @@ function nx_json(D, V, B,	chars, tok, depth, b_map, d_map, q_map)
 	delete depth
 	delete chars
 	if (! (D = tok["error"]) && B) {
-		for (tok["char"] = 1; tok["char"] <= V[0]; tok["char"]++)
+		for (tok["char"] = 1
 			print V[tok["char"]] " = " V[tok["char"] "_" V[tok["char"]]]
 	}
 	delete tok
@@ -980,12 +982,12 @@ function nx_tui_fold(V1, V2, V3)
 function nx_tui(D1, D2, V,	tok, scrt)
 {
 	D1 = split(D1, tok, "")
-	tok["row"] = ENVIRON["G_NEX_TTY_ROWS"]; tok["col"] = ENVIRON["G_NEX_TTY_COLUMNS"]
+	tok["row"] = ENVIRON["G_NEX_TTY_ROWS"]
 	tok["tsz"] = __nx_else(int(ENVIRON["G_NEX_TTY_TABS"]), 8)
-	tok["len"] = D1; tok["ste"] = "NX_DEFAULT"
-	tok["ln"] = 1; tok["ll"] = 1
-	tok["pg"] = 1; tok["lf"] = 1
-	for (tok["cr"] = 1; tok["cr"] <= tok["len"]; tok["cr"]++) {
+	tok["len"] = D1
+	tok["ln"] = 1
+	tok["pg"] = 1
+	for (tok["cr"] = 1
 		if (tok["ste"] == "NX_DEFAULT") {
 			if (tok[tok["cr"]] ~ /[\x09\x0b\x0d\x08\x0a\x0c\x1b]/) {
 				nx_tui_escape(tok, scrt, V)
