@@ -138,6 +138,7 @@ function nx_json_split(D1, V1, V2, D2)
 		return 0
 	}
 	if (".nx" D1 "[0]" in V1) {
+		V2[0] = 0
 		for (D2 = 1; D2 <= V1[".nx" D1 "[0]"]; D2++) {
 			V2[++V2[0]] = V1[".nx" D1 "[" D2 "]"]
 		}
@@ -179,6 +180,21 @@ function nx_json_length(D1, V1, B, V2, D2,	i, j, k)
 	return int(k)
 }
 
+function nx_json_reverse(D1, V1, V2, D2,	i, j)
+{
+	if ((D2 = nx_json_keep(D1, V1, V2, D2)) < 2) {
+		if (".nx" D1 "[0]" in V1) {
+			i = V1[".nx" D1 "[0]"]
+			do {
+				V1[".nx" D1 "[" ++j "]"] = V2[i]
+				V1[".nx" D1 "[" i "]"] = V2[j]
+			} while (--i > j)
+		}
+	}
+	if (D2)
+		delete V2
+}
+
 function nx_json_filter(D1, D2, D3, V1, V2, D4,		i)
 {
 	if ((D4 = nx_json_keep(D1, V1, V2, D4)) < 2) {
@@ -210,12 +226,17 @@ function nx_json_match(D1, D2, V1, V2, D3, B1, B2,	v)
 	if ((D3 = nx_json_keep(D1, V1, V2, D3)) < 2) {
 		if ((B1 = split(nx_json_anchor(D1, D2, V1, B1, V2, D3), v, "<nx:null/>")) > 1) {
 			v[0] = B1
-			if (split(nx_json_filter(D1, nx_append_str("0", nx_json_length(D1, V1, B2, v, D3)), "=_", V1, v, D3), v, "<nx:null/>") > 1)
+			if ((B2 = split(nx_json_filter(D1, nx_append_str("0", nx_json_length(D1, V1, B2, v, D3)), "=_", V1, v, D3), v, "<nx:null/>")) > 1) {
+				do {
+					V1[".nx" D1 "(match)"] = nx_join_str(V1[".nx" D1 "(match)"], v[B2], "<nx:null/>")
+				} while (--B2 > 0)
 				delete v
+			}
 		}
 	}
 	if (length(v)) {
 		B1 = v[1]
+		V1[".nx" D1 "(match)"] = B1
 		delete v
 	} else {
 		B1 = ""
@@ -225,40 +246,41 @@ function nx_json_match(D1, D2, V1, V2, D3, B1, B2,	v)
 	return B1
 }
 
-function nx_json_stack_push(V1, V2, V3)
+function nx_json_stack(D1, V, D2)
 {
-	if (V3[V2["dth"]] == "\x5b") {
-		V2["rt"] = V2["rt"] "\x5b" ++V1[V2["rt"] "\x5b0\x5d"] "\x5d"
-	} else {
-		V2["rt"] = V2["rt"] "." V2["nxt"]
+	if (length(V) && ".nx" D1 "[0]" in V) {
+		if (D2) {
+			V[".nx" D1 "[" ++V[".nx" D1 "[0]"] "]"] = D2
+		} else if (V[".nx" D1 "[" V[".nx" D1 "[0]"] "]"]) {
+			if (D2 == "") {
+				D2 = V[".nx" D1 "[" V[".nx" D1 "[0]"] "]"]
+				delete V[".nx" D1 "[" V[".nx" D1 "[0]"]-- "]"]
+				return D2
+			}
+			return V[".nx" D1 "[" V[".nx" D1 "[0]"] "]"]
+		}
 	}
 }
 
-function nx_json_stack_pop(V1, V2, V3)
-{
-	if (V3[V2["stk"]] == "\x5b") {
-		sub(/[^\x5b]+$/, "", V2["rt"])
-		sub(/\x5b$/, "", V2["rt"])
-	} else {
-		sub(/[^.]+$/, "", V2["rt"])
-		sub(/[.]$/, "", V2["rt"])
-	}
-}
-
-function nx_json_stack(V1, V2, V3)
+function nx_json_root(V1, V2, V3)
 {
 	if (! ("rt" in V2)) {
-		if (V3[V2["stk"]] == "\x5b") { # List
-			V1[".nx\x5b0\x5d"] = 0
-		} else {
-			V1[".nx"] = ""
-		}
 		V2["rt"] = ".nx"
 	} else if (V2["dth"] != V2["stk"]) {
 		if (V2["dth"] > V2["stk"]) {
-			nx_json_stack_pop(V1, V2, V3)
+			if (V3[V2["stk"]] == "\x5b") {
+				sub(/[^\x5b]+$/, "", V2["rt"])
+				sub(/\x5b$/, "", V2["rt"])
+			} else {
+				sub(/[^.]+$/, "", V2["rt"])
+				sub(/[.]$/, "", V2["rt"])
+			}
 		} else {
-			nx_json_stack_push(V1, V2, V3)
+			if (V3[V2["dth"]] == "\x5b") {
+				V2["rt"] = V2["rt"] "\x5b" ++V1[V2["rt"] "\x5b0\x5d"] "\x5d"
+			} else {
+				V2["rt"] = V2["rt"] "." V2["nxt"]
+			}
 		}
 	}
 	V2["dth"] = V2["stk"]
@@ -266,7 +288,7 @@ function nx_json_stack(V1, V2, V3)
 
 function nx_json_apply(V1, V2, V3, B, V4)
 {
-	nx_json_stack(V1, V2, V3)
+	nx_json_root(V1, V2, V3)
 	if (V2["rec"] != "") {
 		if (V3[V2["stk"]] == "\x5b") { # List
 			V1[V2["rt"] "\x5b" ++V1[V2["rt"] "\x5b0\x5d"] "\x5d"] = V2["rec"]

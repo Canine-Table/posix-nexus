@@ -353,23 +353,4 @@ function nx_grid(V, D, N)
 	}
 }
 
-function nx_json_match(D1, D2, V1, V2, D3, B1, B2,	v)
-{
-	if ((D3 = nx_json_keep(D1, V1, V2, D3)) < 2) {
-		if ((B1 = split(nx_json_anchor(D1, D2, V1, B1, V2, D3), v, "<nx:null/>")) > 1) {
-			v[0] = B1
-			if (split(nx_json_filter(D1, nx_append_str("0", nx_json_length(D1, V1, B2, v, D3)), "=_", V1, v, D3), v, "<nx:null/>") > 1)
-				delete v
-		}
-	}
-	if (length(v)) {
-		B1 = v[1]
-		delete v
-	} else {
-		B1 = ""
-	}
-	if (D3)
-		delete V2
-	return B1
-}
 
