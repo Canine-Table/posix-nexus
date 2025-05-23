@@ -17,14 +17,9 @@ nx_tex_var()
 			eval "$1=$(${AWK:-$(nx_cmd_awk)} \
 				-v val="$v" \
 				-v side="$4" \
-				-v sep="${3:-:}" "
-				$(cat \
-					"$G_NEX_MOD_LIB/awk/nex-misc.awk" \
-					"$G_NEX_MOD_LIB/awk/nex-struct.awk" \
-					"$G_NEX_MOD_LIB/awk/nex-str.awk" \
-					"$G_NEX_MOD_LIB/awk/nex-math.awk" \
-					"$G_NEX_MOD_LIB/awk/nex-algor.awk"
-				)
+				-v sep="${3:-:}" \
+			"
+				$(nx_init_include -i "$G_NEX_MOD_LIB/awk/nex-str.awk")
 			"'
 				BEGIN {
 					if (val ~ "^\{.*\}$")

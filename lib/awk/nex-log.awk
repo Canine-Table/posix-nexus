@@ -1,3 +1,6 @@
+#nx_include "nex-misc.awk"
+#nx_include "nex-str.awk"
+
 function __nx_color_map(D1, D2,		c)
 {
 	if (D2 == "<")
@@ -404,7 +407,7 @@ function nx_log_error(D, B)
 {
 	if (B)
 		return nx_printf("E_bi^e_Iu%", D)
-	return nx_printf("b<E_bi^e_Iu%", D)
+	return nx_printf("l<E_bi^e_Iu%", D)
 }
 
 function nx_log_debug(D, B)

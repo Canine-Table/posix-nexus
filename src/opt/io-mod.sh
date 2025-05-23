@@ -58,14 +58,9 @@ nx_io_printf()
 		${AWK:-$(nx_cmd_awk)} \
 			-v fmt="$f" \
 			-v vrnt="$v" \
-			-v str="$(nx_str_chain "$@")" "
-			$(cat \
-				"$G_NEX_MOD_LIB/awk/nex-misc.awk" \
-				"$G_NEX_MOD_LIB/awk/nex-struct.awk" \
-				"$G_NEX_MOD_LIB/awk/nex-str.awk" \
-				"$G_NEX_MOD_LIB/awk/nex-log.awk" \
-				"$G_NEX_MOD_LIB/awk/nex-math.awk"
-			)
+			-v str="$(nx_str_chain "$@")" \
+		"
+			$(nx_init_include -i "$G_NEX_MOD_LIB/awk/nex-log.awk")
 		"'
 			BEGIN {
 				if (vrnt) {

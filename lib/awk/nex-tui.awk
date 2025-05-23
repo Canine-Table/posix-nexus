@@ -1,3 +1,10 @@
+#nx_include "nex-misc.awk"
+#nx_include "nex-struct.awk"
+#nx_include "nex-str.awk"
+#nx_include "nex-log.awk"
+#nx_include "nex-math.awk"
+#nx_include "nex-json.awk"
+
 function nx_tui_log(V, D)
 {
 	return "(\n\tFile: " V["fl"] "\n\tLine: " V["ln"] "\n\tPage: " V["pg"] "\n\tRecord: " V["rcnt"] "\n\tField: " V["rec"] "\n\tState: " V["ste"] "\n): " D

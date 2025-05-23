@@ -6,13 +6,9 @@ nx_tty_all()
 {
 	h_nx_cmd tty stty && [ -n "$(tty)" ] && {
 		${AWK:-$(nx_cmd_awk)} \
-			-v tt="$(stty --all)" "
-			$(cat \
-				"$G_NEX_MOD_LIB/awk/nex-misc.awk" \
-				"$G_NEX_MOD_LIB/awk/nex-struct.awk" \
-				"$G_NEX_MOD_LIB/awk/nex-str.awk" \
-				"$G_NEX_MOD_LIB/awk/nex-math.awk"
-			)
+			-v tt="$(stty --all)" \
+		"
+			$(nx_init_include -i "$G_NEX_MOD_LIB/awk/nex-str.awk")
 		"'
 			BEGIN {
 				gsub(/ = |[\t\n\v\f\r]/, " ", tt)

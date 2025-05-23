@@ -1,3 +1,9 @@
+#nx_include "nex-misc.awk"
+#nx_include "nex-struct.awk"
+#nx_include "nex-str.awk"
+#nx_include "nex-log.awk"
+#nx_include "nex-math.awk"
+
 function nx_json_log(V, D)
 {
 	return "(\n\tFile: '" V["fl"] "'\n\tLine: '" V["ln"] "'\n\tCharacter: '" V["cr"] "'\n\tToken: '" V["rec"] "'\n\tDepth: '" V["stk"] "'\n\tCategory: '" V["cat"] "'\n\tWithin: '" V["ste"] "'\n\tIndex: '" V["idx"] "'\n): '" D "'"
@@ -123,6 +129,100 @@ function nx_json_log_db(V, N, D, B)
 		nx_grid_stack(V, "Syntax error! A rogue comma has appeared before '<nx:placeholder/>'—JSON demands immediate correction!", 11)
 		nx_grid_stack(V, "Parsing instability detected! Unexpected comma before '<nx:placeholder/>'—syntax framework destabilizing!", 11)
 	}
+}
+
+function nx_json_split(D1, V1, V2, D2)
+{
+	if (! length(V1) && nx_json(D2, V1, 2)) {
+		delete V1
+		return 0
+	}
+	if (".nx" D1 "[0]" in V1) {
+		for (D2 = 1; D2 <= V1[".nx" D1 "[0]"]; D2++) {
+			V2[++V2[0]] = V1[".nx" D1 "[" D2 "]"]
+		}
+		D2 = 1
+	} else if (".nx" D1 in V1) {
+		D2 = split(V1[".nx" D1], V2, "<nx:null/>")
+		V2[0] = D2
+		D2 = 2
+	} else {
+		return 0
+	}
+	return D2
+}
+
+function nx_json_keep(D1, V1, V2, D2)
+{
+	if (0 in V2) {
+		return 0
+	} else if (nx_json_split(D1, V1, V2, D2)) {
+		delete V2
+		return 2
+	} else {
+		return 1
+	}
+}
+
+function nx_json_length(D1, V1, B, V2, D2,	i, j, k)
+{
+	if ((D2 = nx_json_keep(D1, V1, V2, D2)) < 2) {
+		for (i = 1; i <= V2[0]; i++) {
+			j = length(V2[i])
+			if (! k || __nx_if(B, k < j, k > j))
+				k = j
+		}
+		V1[".nx" D1 "(" __nx_if(B, "longest", "shortest") ")"] = int(k)
+	}
+	if (D2)
+		delete V2
+	return int(k)
+}
+
+function nx_json_filter(D1, D2, D3, V1, V2, D4,		i)
+{
+	if ((D4 = nx_json_keep(D1, V1, V2, D4)) < 2) {
+		for (i = 1; i <= V2[0]; i++) {
+			if (__nx_equality(D2, D3, V2[i]))
+				V1[".nx" D1 "(filter)"] = nx_join_str(V1[".nx" D1 "(filter)"], V2[i], "<nx:null/>")
+		}
+	}
+	if (D4)
+		delete V2
+	return V1[".nx" D1 "(filter)"]
+}
+
+function nx_json_anchor(D1, D2, V1, B, V2, D3,	i)
+{
+	if ((D3 = nx_json_keep(D1, V1, V2, D3)) < 2) {
+		for (i = 1; i <= V2[0]; i++) {
+			if (__nx_if(B, V2[i] ~ D2 "$", V2[i] ~ "^" D2))
+				V1[".nx" D1 "(anchor)"] = nx_join_str(V1[".nx" D1 "(anchor)"], V2[i], "<nx:null/>")
+		}
+	}
+	if (D3)
+		delete V2
+	return V1[".nx" D1 "(anchor)"]
+}
+
+function nx_json_match(D1, D2, V1, V2, D3, B1, B2,	v)
+{
+	if ((D3 = nx_json_keep(D1, V1, V2, D3)) < 2) {
+		if ((B1 = split(nx_json_anchor(D1, D2, V1, B1, V2, D3), v, "<nx:null/>")) > 1) {
+			v[0] = B1
+			if (split(nx_json_filter(D1, nx_append_str("0", nx_json_length(D1, V1, B2, v, D3)), "=_", V1, v, D3), v, "<nx:null/>") > 1)
+				delete v
+		}
+	}
+	if (length(v)) {
+		B1 = v[1]
+		delete v
+	} else {
+		B1 = ""
+	}
+	if (D3)
+		delete V2
+	return B1
 }
 
 function nx_json_stack_push(V1, V2, V3)

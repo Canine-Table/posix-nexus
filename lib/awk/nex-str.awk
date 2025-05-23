@@ -1,3 +1,7 @@
+#nx_include "nex-misc.awk"
+#nx_include "nex-struct.awk"
+#nx_include "nex-math.awk"
+
 function nx_reverse_str(D,	i, v)
 {
 	if ((i = split(D, v, "")) > 1) {
@@ -13,45 +17,6 @@ function nx_reverse_str(D,	i, v)
 function nx_count_str(D, S)
 {
 	return gsub(__nx_else(S, "."), "&", D)
-}
-
-function nx_count_backslashes(D, S,	a, i, c, p)
-{
-	if (split(D, a, "")) {
-		S = __nx_else(S, "\\")
-		for (p = p - 1; p > 0; p--) {
-			if (a[i] == S)
-				c++
-			else
-				break
-		}
-	}
-	delete a
-	return c
-}
-
-function nx_apply_nested_escapes(D, S, N,	i, c, t)
-{
-	if (D != "") {
-		S = __nx_else(S, "\\")
-		for (i = 1; i <= N; i++) {
-			c = D
-			gsub(S S, S, c)
-			D = c
-		}
-		return D
-	}
-}
-
-function nx_transform_backslashes(D, S,		l, p, o)
-{
-	if (l = length(D)) {
-		p = nx_floor(l / 2)
-		l = l % 2
-		if (l && D ~ __nx_else(S, "\\") "$")
-			return p
-		return p + l
-	}
 }
 
 function nx_escape_str(D1, N, B, D2, D3,	e)
@@ -230,49 +195,63 @@ function nx_random_str(N, D, S, B,	i, v1, v2, v3, s, r, f)
 function nx_word(D1, D2)
 {
 	if (D1 != "" && D2 != "") {
-		if (D1 ~ "(^|[ \v\t\n\f]+)" D2 "($|[ \v\t\n\f]+)")
-			return D2
+		if (match(D1, "(^|[ \r\b\v\t\n\f]+)" D2 "($|[ \v\t\n\f]+)"))
+			return substr(D1, RSTART + RLENGTH)
 		return D1
 	}
 }
 
-function nx_bundle(D1, D2, D3, V1, V2,	v1, b, m, a, n, l, s)
+function nx_include(D1, D2, D3, V,	tok, s)
 {
 	if (s = nx_word(D1, D2)) {
-		if  (s == D2) {
-			if (! length(V2)) {
-				__nx_quote_map(V2)
-				__nx_escape_map(V2)
-			}
-			match(D1, D2 "([ \v\t\n\f]+)?")
-			b = substr(D1, 1, RSTART - 1)
-			m = substr(D1, RSTART + RLENGTH)
-			nx_next_pair(m, V2, v1)
-			t = substr(m, v1[1] + v1[1 "_" v1[1]], v1[2])
-			a = substr(m, length(t) + v1[2 "_" v1[2]] + 2)
-			if (D3) {
-				V1[D3] = 1
-				match(D3, /.*\//)
-				if (! ((m = substr(D3, 1, RLENGTH) t) in V1)) {
-					V1[m] = 1
-					n = 1
-				}
-			} else if (! ((m = "./" t) in V1)) {
-				V1[m] = 1
-				n = 1
-			}
-			delete v1
-			if (n) {
-				D3 = ""
-				while ((getline l < m) > 0) {
-					D3 = nx_join_str(D3, nx_bundle(l, D2, m, V1, V2), "\x0a")
-				}
-			} else {
-				return b a
-			}
-			return b D3 a
-		} else {
+		if  (s == D1) {
 			return s
+		} else {
+			if (s ~ /^[\x27\x22\x60]/) {
+				s = split(s, tok, "")
+				tok["qte"] = tok[1]
+				for (tok["cr"] = 2; tok["cr"] <= s; tok["cr"]++) {
+					if (tok[tok["cr"]] != tok["qte"] || int(tok["esc"]) % 2 == 1) {
+						if (tok["qte"] == "\x27" || tok[tok["cr"]] != "\x5c" || ++tok["esc"] % 2 == 0) {
+							tok["rec"] = tok["rec"] tok[tok["cr"]]
+							tok["esc"] = 0
+						}
+					} else {
+						break
+					}
+				}
+				if (s > tok["cr"])
+					tok["ed"] = substr(D1, RSTART + RLENGTH + tok["cr"])
+				if (RSTART > 1)
+					tok["st"] = substr(D1, 1, RSTART)
+				s = ""
+				tok["rec"] = nx_trim_str(tok["rec"])
+				sub(/^[.]\//, "", tok["rec"])
+				if (D3 != "") {
+					V[D3] = 1
+					match(D3, /.*\//)
+					if (! ((tok["rec"] = substr(D3, 1, RLENGTH) tok["rec"]) in V)) {
+						V[tok["rec"]] = 1
+						tok["nw"] = 1
+					}
+				} else {
+					if (tok["rec"] !~ /\//)
+						tok["rec"] = "./" tok["rec"]
+					if (! (tok["rec"] in V)) {
+						V[tok["rec"]] = 1
+						tok["nw"] = 1
+					}
+				}
+				if ("nw" in tok && nx_is_file(tok["rec"])) {
+					while ((getline tok["cr"] < tok["rec"]) > 0) {
+						s = nx_join_str(s, nx_include(tok["cr"], D2, D3, V), "\x0a")
+					}
+				}
+				if (s == "")
+					s = tok["st"] tok["ed"]
+				delete tok
+				return s
+			}
 		}
 	}
 }

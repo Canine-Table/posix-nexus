@@ -1,3 +1,8 @@
+#nx_include "nex-misc.awk"
+#nx_include "nex-str.awk"
+#nx_include "nex-math.awk"
+#nx_include "nex-json.awk"
+
 ###########################################
 # O(1)			Contant Time
 # O(log(n))		Logarithmic Time
@@ -332,8 +337,8 @@ function nx_grid(V, D, N)
 			if (D != "")
 				delete V[V[0] "," V[V[0]]--]
 		} else {
-			if (! (V["-"] "," V["|"] in V) {
-				delete V[V["-"]]++
+			if (! (V["-"] "," V["|"] in V)) {
+				delete V[V["-"]++]
 				V["|"] = 1
 			}
 			if (V["-"] <= V[0]) {
@@ -348,29 +353,23 @@ function nx_grid(V, D, N)
 	}
 }
 
-function nx_grid_queue(V, D, N)
+function nx_json_match(D1, D2, V1, V2, D3, B1, B2,	v)
 {
-	if (D != "") {
-		if (! (0 in V && "|" in V && "-" in V)) {
-			V[0] = 1
-			V["|"] = 1
-			V["-"] = 1
+	if ((D3 = nx_json_keep(D1, V1, V2, D3)) < 2) {
+		if ((B1 = split(nx_json_anchor(D1, D2, V1, B1, V2, D3), v, "<nx:null/>")) > 1) {
+			v[0] = B1
+			if (split(nx_json_filter(D1, nx_append_str("0", nx_json_length(D1, V1, B2, v, D3)), "=_", V1, v, D3), v, "<nx:null/>") > 1)
+				delete v
 		}
-		N = __nx_else(nx_natural(nx_digit(N, 1)), V[0])
-		while (V[0] < N)
-			V[++V[0]] = 0
-		V[N "_" ++V[N "_0"]] = D
-	} else if (0 in V) {
-		if (V["|"] > V[V[0] "_0"] && V["-"] < V[0]) {
-			V["|"] = 1
-			delete V[V["-"]++ "_" V[V[0] "_0"]]
-		} else if (V["-"] > V[0]) {
-			return 0
-		}
-		D = V[V["-"] "_" V["|"]]
-		if (! N)
-			delete V[V["-"] "_" V["|"]++]
-		return D
 	}
+	if (length(v)) {
+		B1 = v[1]
+		delete v
+	} else {
+		B1 = ""
+	}
+	if (D3)
+		delete V2
+	return B1
 }
 

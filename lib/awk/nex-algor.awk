@@ -1,3 +1,6 @@
+#nx_include "nex-misc.awk"
+#nx_include "nex-math.awk"
+
 function __nx_hoares_partition(V, N1, N2, D,	md)
 {
 	md = nx_modulus_range(__nx_entropy(N2), N1, N2)

@@ -1,16 +1,11 @@
 #!/bin/sh
 
-nx_bundle_include()
+nx_init_include()
 {
 	(
-		# best if sigil is the comment of the language
-		# the directive can be whatever
-		# output defaults to stdout (fd 1)
-		# input through -i or first remaining parameter
-		# f if you want to force clobber
 		while getopts :d:f:s:o:i: OPT; do
 			case $OPT in
-				s|d|f|o|i) eval "$OPT"="'$OPTARG'";;
+				s|d|f|o|i) eval "$OPT"="'${OPTARG:-true}'";;
 			esac
 		done
 		shift $((OPTIND - 1))
@@ -26,23 +21,22 @@ nx_bundle_include()
 				$(cat \
 					"$G_NEX_MOD_LIB/awk/nex-misc.awk" \
 					"$G_NEX_MOD_LIB/awk/nex-struct.awk" \
+					"$G_NEX_MOD_LIB/awk/nex-log.awk" \
+					"$G_NEX_MOD_LIB/awk/nex-json.awk" \
 					"$G_NEX_MOD_LIB/awk/nex-str.awk" \
 					"$G_NEX_MOD_LIB/awk/nex-math.awk"
 				)
 			"'
 				BEGIN {
 					d = sig dir
-				}
-				{
-					if (s = nx_bundle($0, d, inpt, ara, arb))
+				} {
+					if (s = nx_include($0, d, inpt, arr))
 						print s
-				}
-				END {
-					delete ara
-					delete arb
+				} END {
+					delete arr
 				}
 			' > "$o"
-		} || exit 1
+		}
 	)
 }
 

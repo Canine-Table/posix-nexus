@@ -1,3 +1,6 @@
+#nx_include "nex-struct.awk"
+#nx_include "nex-str.awk"
+
 function nx_get_package_list(D1, D2,	v, l)
 {
 	if (D1 != "" && D2 != "") {

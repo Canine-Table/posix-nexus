@@ -16,15 +16,7 @@ nx_dialog_factory()
 				'flags': [$f]
 			}
 		" "
-			$(cat \
-				"$G_NEX_MOD_LIB/awk/nex-misc.awk" \
-				"$G_NEX_MOD_LIB/awk/nex-struct.awk" \
-				"$G_NEX_MOD_LIB/awk/nex-log.awk" \
-				"$G_NEX_MOD_LIB/awk/nex-str.awk" \
-				"$G_NEX_MOD_LIB/awk/nex-math.awk" \
-				"$G_NEX_MOD_LIB/awk/nex-tui.awk" \
-				"$G_NEX_MOD_LIB/awk/nex-json.awk"
-			)
+			$(nx_init_include -i "$G_NEX_MOD_LIB/awk/nex-tui.awk")
 		"'
 			BEGIN {
 				if (l = nx_json(json, arr, 2))

@@ -1,3 +1,6 @@
+#nx_include "nex-misc.awk"
+#nx_include "nex-str.awk"
+
 # Difference = Minuend - Subtrahend
 #
 # Sum = Addend + Addend

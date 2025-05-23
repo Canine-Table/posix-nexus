@@ -1,3 +1,6 @@
+#nx_include "nex-misc.awk"
+#nx_include "nex-str.awk"
+
 function nx_str_opts(D, S1, S2, S3, B,		i, j, k, l, v, flg, kw, param)
 {
 	# Check if the input string D is not empty
@@ -9,7 +12,7 @@ function nx_str_opts(D, S1, S2, S3, B,		i, j, k, l, v, flg, kw, param)
 		# Split D into parameter array using the S2 delimiter
 		if ((l = split(D, param, S2)) > 1) { # Parsing option arguments
 			# Process the first parameter to categorize flags and keys
-			j = split(param[1], opts, "") 
+			j = split(param[1], opts, "")
 			for (i = 1; i <= j; i++) {
 				if (opts[i + 1] != S1) {
 					if (opts[i] != S1)

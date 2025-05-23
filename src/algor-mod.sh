@@ -14,14 +14,9 @@ nx_algor_qsort() {
 			-v lst="${l:-"$*"}" \
 			-v sep="$s" \
 			-v cs="$c" \
-			-v osep="$o" "
-			$(cat \
-				"$G_NEX_MOD_LIB/awk/nex-misc.awk" \
-				"$G_NEX_MOD_LIB/awk/nex-struct.awk" \
-				"$G_NEX_MOD_LIB/awk/nex-str.awk" \
-				"$G_NEX_MOD_LIB/awk/nex-math.awk" \
-				"$G_NEX_MOD_LIB/awk/nex-algor.awk"
-			)
+			-v osep="$o" \
+		"
+			$(nx_init_include -i "$G_NEX_MOD_LIB/awk/nex-algor.awk")
 		"'
 			BEGIN {
 				sep = __nx_else(sep, ",")
@@ -62,13 +57,9 @@ nx_algor_compare()
 			-v tm="$t" \
 			-v cs="$c" \
 			-v sep="$s" \
-			-v osep="$o" "
-			$(cat \
-				"$G_NEX_MOD_LIB/awk/nex-misc.awk" \
-				"$G_NEX_MOD_LIB/awk/nex-struct.awk" \
-				"$G_NEX_MOD_LIB/awk/nex-str.awk" \
-				"$G_NEX_MOD_LIB/awk/nex-math.awk"
-			)
+			-v osep="$o" \
+		"
+			$(nx_init_include -i "$G_NEX_MOD_LIB/awk/nex-struct.awk")
 		"'
 			BEGIN {
 				if (! (inptlst && reflst))
@@ -112,14 +103,9 @@ nx_algor_opt() {
 			-v ed="$e" \
 			-v tm="$t" \
 			-v vrb="$v" \
-			-v osep="$o" "
-			$(cat \
-				"$G_NEX_MOD_LIB/awk/nex-misc.awk" \
-				"$G_NEX_MOD_LIB/awk/nex-struct.awk" \
-				"$G_NEX_MOD_LIB/awk/nex-str.awk" \
-				"$G_NEX_MOD_LIB/awk/nex-math.awk" \
-				"$G_NEX_MOD_LIB/awk/nex-algor.awk"
-			)
+			-v osep="$o" \
+		"
+			$(nx_init_include -i "$G_NEX_MOD_LIB/awk/nex-struct.awk")
 		"'
 			BEGIN {
 				sep = __nx_else(sep, ",")
@@ -167,14 +153,9 @@ nx_algor_list() {
 			-v ed="$e" \
 			-v tm="$t" \
 			-v vrb="$v" \
-			-v osep="$o" "
-			$(cat \
-				"$G_NEX_MOD_LIB/awk/nex-misc.awk" \
-				"$G_NEX_MOD_LIB/awk/nex-struct.awk" \
-				"$G_NEX_MOD_LIB/awk/nex-str.awk" \
-				"$G_NEX_MOD_LIB/awk/nex-math.awk" \
-				"$G_NEX_MOD_LIB/awk/nex-algor.awk"
-			)
+			-v osep="$o" \
+		"
+			$(nx_init_include -i "$G_NEX_MOD_LIB/awk/nex-struct.awk")
 		"'
 			BEGIN {
 				sep = __nx_else(sep, ",")

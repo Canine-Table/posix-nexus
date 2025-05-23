@@ -6,12 +6,7 @@ nx_str_rand()
 		-v num="${1:-8}" \
 		-v chars="${2:-alnum}" \
 	"
-		$(cat \
-			"$G_NEX_MOD_LIB/awk/nex-misc.awk" \
-			"$G_NEX_MOD_LIB/awk/nex-struct.awk" \
-			"$G_NEX_MOD_LIB/awk/nex-str.awk" \
-			"$G_NEX_MOD_LIB/awk/nex-math.awk"
-		)
+		$(nx_init_include -i "$G_NEX_MOD_LIB/awk/nex-str.awk")
 	"'
 		BEGIN {
 			num __nx_if(__nx_is_integral(num), num, 8)
@@ -53,14 +48,9 @@ nx_str_hex()
 nx_str_optarg()
 {
 	${AWK:-$(nx_cmd_awk)} \
-		-v str="$(nx_str_chain "$@")" "
-		$(cat \
-			"$G_NEX_MOD_LIB/awk/nex-misc.awk" \
-			"$G_NEX_MOD_LIB/awk/nex-shell.awk" \
-			"$G_NEX_MOD_LIB/awk/nex-struct.awk" \
-			"$G_NEX_MOD_LIB/awk/nex-str.awk" \
-			"$G_NEX_MOD_LIB/awk/nex-math.awk"
-		)
+		-v str="$(nx_str_chain "$@")" \
+	"
+		$(nx_init_include -i "$G_NEX_MOD_LIB/awk/nex-shell.awk")
 	"'
 		BEGIN {
 			if (s = nx_str_opts(str))
@@ -82,13 +72,9 @@ nx_str_case()
 		shift $((OPTIND - 1))
 		${AWK:-$(nx_cmd_awk)} \
 			-v inpt="$@" \
-			-v strcase="$c" "
-			$(cat \
-				"$G_NEX_MOD_LIB/awk/nex-misc.awk" \
-				"$G_NEX_MOD_LIB/awk/nex-struct.awk" \
-				"$G_NEX_MOD_LIB/awk/nex-str.awk" \
-				"$G_NEX_MOD_LIB/awk/nex-math.awk"
-			)
+			-v strcase="$c" \
+		"
+			$(nx_init_include -i "$G_NEX_MOD_LIB/awk/nex-str.awk")
 		"'
 			BEGIN {
 				if (strcase == "t")
@@ -107,13 +93,9 @@ nx_str_case()
 nx_str_reverse()
 {
 	${AWK:-$(nx_cmd_awk)} \
-		-v str="$*" "
-		$(cat \
-			"$G_NEX_MOD_LIB/awk/nex-misc.awk" \
-			"$G_NEX_MOD_LIB/awk/nex-struct.awk" \
-			"$G_NEX_MOD_LIB/awk/nex-str.awk" \
-			"$G_NEX_MOD_LIB/awk/nex-math.awk"
-		)
+		-v str="$*" \
+	"
+		$(nx_init_include -i "$G_NEX_MOD_LIB/awk/nex-str.awk")
 	"'
 		BEGIN {
 			print nx_reverse_str(str)
@@ -133,13 +115,9 @@ nx_str_append()
 		${AWK:-$(nx_cmd_awk)} \
 			-v str="$s" \
 			-v num="${n:-"$1"}" \
-			-v char="${c:-"$2"}" "
-			$(cat \
-				"$G_NEX_MOD_LIB/awk/nex-misc.awk" \
-				"$G_NEX_MOD_LIB/awk/nex-struct.awk" \
-				"$G_NEX_MOD_LIB/awk/nex-str.awk" \
-				"$G_NEX_MOD_LIB/awk/nex-math.awk"
-			)
+			-v char="${c:-"$2"}" \
+		"
+			$(nx_init_include -i "$G_NEX_MOD_LIB/awk/nex-str.awk")
 		"'
 			BEGIN {
 				print nx_append_str(char, num, str)
@@ -150,9 +128,11 @@ nx_str_append()
 
 nx_str_div()
 {
-	n="$(nx_tty_prop -k "columns")"
-	[ -n "$(tty)" ] && {
-		nx_str_append -n "$n" -c "─"
+	h_nx_cmd tty stty && [ -n "$(tty)" ] && {
+		nx_str_append -n "$(
+			eval "export $(nx_tty_all)"
+			echo "$G_NEX_TTY_COLUMNS"
+		)" -c "─"
 	}
 }
 

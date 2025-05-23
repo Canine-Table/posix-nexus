@@ -1,3 +1,7 @@
+#nx_include "nex-struct.awk"
+#nx_include "nex-str.awk"
+#nx_include "nex-math.awk"
+
 function nx_is_file(D)
 {
 	if ((getline < D) > 0)

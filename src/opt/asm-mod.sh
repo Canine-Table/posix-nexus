@@ -3,7 +3,7 @@
 nx_asm_export()
 {
 	case "$(nx_str_case -l "$(uname -m)")" in
-		'x86_64')
+		*'x86_64'*)
 			{
 				export G_NX_ASM_ARCH='amd64'
 				export G_NX_ASM_ENDIAN='0'
@@ -65,7 +65,7 @@ nx_asm_export()
 			};;
 		*)
 			{
-				echo "Unknown architecture: $(uname -m)"
+				nx_io_printf -e "Unknown architecture: $(uname -m)"
 				return 1
 			};;
 	esac
@@ -103,11 +103,11 @@ nx_elf_asm()
 		)
 	elif [ -n "$1" ]; then
 		h_nx_cmd nasm && {
-			nx_bundle_include -s '@' -i "${1}.asm" -o ".${1}.S" -f -d 'nx_include'
+			nx_init_include -s '@' -i "${1}.asm" -o ".${1}.S" -f -d 'nx_include'
 			nasm -f elf64 -o ".${1}.o" ".${1}.S"
 		}
 		h_nx_cmd arm-openwrt-linux-muslgnueabi-gcc && {
-			nx_bundle_include -s '@' -i "${1}.s" -o ".${1}.S" -f -d 'nx_include'
+			nx_init_include -s '@' -i "${1}.s" -o ".${1}.S" -f -d 'nx_include'
 			as -o ".${1}.o" ".${1}.S"
 		}
 		[ -e ".${1}.o" ] && (
@@ -115,7 +115,7 @@ nx_elf_asm()
 			h_nx_cmd tty stty && d="$(nx_str_div)"
 			echo -n $d
 			h_nx_cmd objdump && {
-				objdump -d "$1" 
+				objdump -d "$1"
 				echo -n $d
 			}
 			./"${1}"

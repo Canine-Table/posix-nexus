@@ -1,6 +1,3 @@
-
-
-
 nx_tui_box()
 {
 	(
@@ -10,15 +7,9 @@ nx_tui_box()
 		export G_NEX_TTY_BOX="s"
 		${AWK:-$(get_cmd_awk)} \
 			-v bdr="$1" \
-			-v mesg="${2:-$( cat "$G_NEX_MOD_ENV/file.tui")}" "
-			$(cat \
-				"$G_NEX_MOD_LIB/awk/nex-misc.awk" \
-				"$G_NEX_MOD_LIB/awk/nex-struct.awk" \
-				"$G_NEX_MOD_LIB/awk/nex-str.awk" \
-				"$G_NEX_MOD_LIB/awk/nex-log.awk" \
-				"$G_NEX_MOD_LIB/awk/nex-math.awk" \
-				"$G_NEX_MOD_LIB/awk/nex-tui.awk"
-			)
+			-v mesg="${2:-$(cat "$G_NEX_MOD_ENV/file.tui")}" \
+			"
+				$(nx_init_include -i "$G_NEX_MOD_LIB/awk/nex-tui.awk")
 		"'
 			BEGIN {
 				nx_tui(mesg, arr, 5)
@@ -34,32 +25,15 @@ nx_tui_box()
 	)
 }
 
-nx_box_cat()
-{
-	cat -n \
-		"$G_NEX_MOD_LIB/awk/nex-misc.awk" \
-		"$G_NEX_MOD_LIB/awk/nex-struct.awk" \
-		"$G_NEX_MOD_LIB/awk/nex-str.awk" \
-		"$G_NEX_MOD_LIB/awk/nex-log.awk" \
-		"$G_NEX_MOD_LIB/awk/nex-math.awk" \
-		"$G_NEX_MOD_LIB/awk/nex-tui.awk" | $PAGER
-}
-
 nx_tui_shell()
 {
 	(
 		trap 'nx_io_fifo_mgr -r "$nx_fifo"; echo -e "\x1b[?1049l\x1b[?1003l\x1b[?1015l\x1b[?1000l\x1b[H\x1b[2J\x1b[u"' EXIT SIGINT
 		nx_fifo="$(nx_io_fifo_mgr -c)"
 		${AWK:-$(get_cmd_awk)} \
-			-v nx_fifo="$(echo "$nx_fifo")" "
-			$(cat \
-				"$G_NEX_MOD_LIB/awk/nex-misc.awk" \
-				"$G_NEX_MOD_LIB/awk/nex-struct.awk" \
-				"$G_NEX_MOD_LIB/awk/nex-str.awk" \
-				"$G_NEX_MOD_LIB/awk/nex-tui.awk" \
-				"$G_NEX_MOD_LIB/awk/nex-json.awk" \
-				"$G_NEX_MOD_LIB/awk/nex-math.awk"
-			)
+			-v nx_fifo="$(echo "$nx_fifo")"
+		"
+			$(nx_init_include -i "$G_NEX_MOD_LIB/awk/nex-tui.awk")
 		"'
 			BEGIN {
 				while (1) {
