@@ -20,114 +20,114 @@ function nx_json_log_db(V, N, D, B)
 		return nx_log_db(N, D, B, V)
 	} else {
 		# Empty input (1)
-		nx_grid_stack(V, "Attempted to parse the void. Unfortunately, JSON is not a philosopher—it requires actual data.", 1)
-		nx_grid_stack(V, "No JSON data received. Either the universe deleted your input or someone forgot to provide a valid string.", 1)
-		nx_grid_stack(V, "JSON parser detected an empty input. Likelihood of spontaneous data existence: <1%.", 1)
-		nx_grid_stack(V, "JSON expected data but received… nothing. Silence isn't golden when parsing—please provide input!", 1)
-		nx_grid_stack(V, "Parsing failure: JSON expected data but received… absolutely nothing. Bold move!", 1)
-		nx_grid_stack(V, "Critical error—attempted to process an empty input. JSON refuses to work with the void.", 1)
-		nx_grid_stack(V, "System integrity compromised! JSON encountered a complete absence of data—possible breach in reality detected.", 1)
-		nx_grid_stack(V, "Warning: No JSON data received. Either the input got lost in another dimension, or someone forgot to send anything at all.", 1)
+		nx_grid(V, "Attempted to parse the void. Unfortunately, JSON is not a philosopher—it requires actual data.", 1)
+		nx_grid(V, "No JSON data received. Either the universe deleted your input or someone forgot to provide a valid string.", 1)
+		nx_grid(V, "JSON parser detected an empty input. Likelihood of spontaneous data existence: <1%.", 1)
+		nx_grid(V, "JSON expected data but received… nothing. Silence isn't golden when parsing—please provide input!", 1)
+		nx_grid(V, "Parsing failure: JSON expected data but received… absolutely nothing. Bold move!", 1)
+		nx_grid(V, "Critical error—attempted to process an empty input. JSON refuses to work with the void.", 1)
+		nx_grid(V, "System integrity compromised! JSON encountered a complete absence of data—possible breach in reality detected.", 1)
+		nx_grid(V, "Warning: No JSON data received. Either the input got lost in another dimension, or someone forgot to send anything at all.", 1)
 
 		# Quote error (2)
-		nx_grid_stack(V, "A string quote (<nx:placeholder/>) was opened but never closed. It seems to have escaped—should we report it missing?", 2)
-		nx_grid_stack(V, "You opened a quote (<nx:placeholder/>), but forgot to close it. If this was intentional, congratulations—you've invented quantum uncertainty in JSON.", 2)
-		nx_grid_stack(V, "A quote (<nx:placeholder/>) has entered the parsing realm but failed to find an exit. It may be trapped forever—unless you rescue it.", 2)
-		nx_grid_stack(V, "Unterminated string detected. The quote (<nx:placeholder/>) began its journey, but closure eludes it. Such is the fate of forgotten syntax.", 2)
-		nx_grid_stack(V, "A quote (<nx:placeholder/>) was opened but never closed. JSON requires balance—please provide the missing pair.", 2)
-		nx_grid_stack(V, "Expected a closing quote to match (<nx:placeholder/>), but found nothing. JSON objects prefer symmetry!", 2)
-		nx_grid_stack(V, "A quote '<nx:placeholder/>' was started but never finished. JSON is waiting… patiently… for closure.", 2)
-		nx_grid_stack(V, "Syntax failure! A missing closing quote '<nx:placeholder/>' has left JSON stranded in uncertainty. Please restore balance!", 2)
+		nx_grid(V, "A string quote (<nx:placeholder/>) was opened but never closed. It seems to have escaped—should we report it missing?", 2)
+		nx_grid(V, "You opened a quote (<nx:placeholder/>), but forgot to close it. If this was intentional, congratulations—you've invented quantum uncertainty in JSON.", 2)
+		nx_grid(V, "A quote (<nx:placeholder/>) has entered the parsing realm but failed to find an exit. It may be trapped forever—unless you rescue it.", 2)
+		nx_grid(V, "Unterminated string detected. The quote (<nx:placeholder/>) began its journey, but closure eludes it. Such is the fate of forgotten syntax.", 2)
+		nx_grid(V, "A quote (<nx:placeholder/>) was opened but never closed. JSON requires balance—please provide the missing pair.", 2)
+		nx_grid(V, "Expected a closing quote to match (<nx:placeholder/>), but found nothing. JSON objects prefer symmetry!", 2)
+		nx_grid(V, "A quote '<nx:placeholder/>' was started but never finished. JSON is waiting… patiently… for closure.", 2)
+		nx_grid(V, "Syntax failure! A missing closing quote '<nx:placeholder/>' has left JSON stranded in uncertainty. Please restore balance!", 2)
 
 		# Bracket Missmatch error (3)
-		nx_grid_stack(V, "Bracket mismatch detected! Expected '<nx:placeholder/>', but instead got '<nx:placeholder/>'... whatever this is. Who invited chaos?", 3)
-		nx_grid_stack(V, "Bracket mismatch! The sacred balance of JSON has been disturbed—expected '<nx:placeholder/>', but an intruder '<nx:placeholder/>' appeared instead!", 3)
-		nx_grid_stack(V, "Bracket misalignment detected '<nx:placeholder/>'. Expected '<nx:placeholder/>', but timeline divergence has occurred. Syntax stability is at risk!", 3)
-		nx_grid_stack(V, "Bracket mismatch! Expected closing '<nx:placeholder/>', but instead found '<nx:placeholder/>' that doesn’t belong. I don’t get paid enough for this.", 3)
-		nx_grid_stack(V, "Bracket mismatch detected! Expected '<nx:placeholder/>' but got '<nx:placeholder/>'. I think JSON is officially questioning your choices.", 3)
-		nx_grid_stack(V, "The sacred balance of brackets has been shattered! Expected '<nx:placeholder/>' but received '<nx:placeholder/>'. JSON is now mourning its structural integrity.", 3)
-		nx_grid_stack(V, "Structural anomaly detected! Expected bracket '<nx:placeholder/>' but instead encountered '<nx:placeholder/>'. Possible timeline corruption detected—syntax integrity at risk!", 3)
-		nx_grid_stack(V, "Expected '<nx:placeholder/>' but received '<nx:placeholder/>'. I don’t know what reality you’re operating in, but JSON isn’t buying it.", 3)
+		nx_grid(V, "Bracket mismatch detected! Expected '<nx:placeholder/>', but instead got '<nx:placeholder/>'... whatever this is. Who invited chaos?", 3)
+		nx_grid(V, "Bracket mismatch! The sacred balance of JSON has been disturbed—expected '<nx:placeholder/>', but an intruder '<nx:placeholder/>' appeared instead!", 3)
+		nx_grid(V, "Bracket misalignment detected '<nx:placeholder/>'. Expected '<nx:placeholder/>', but timeline divergence has occurred. Syntax stability is at risk!", 3)
+		nx_grid(V, "Bracket mismatch! Expected closing '<nx:placeholder/>', but instead found '<nx:placeholder/>' that doesn’t belong. I don’t get paid enough for this.", 3)
+		nx_grid(V, "Bracket mismatch detected! Expected '<nx:placeholder/>' but got '<nx:placeholder/>'. I think JSON is officially questioning your choices.", 3)
+		nx_grid(V, "The sacred balance of brackets has been shattered! Expected '<nx:placeholder/>' but received '<nx:placeholder/>'. JSON is now mourning its structural integrity.", 3)
+		nx_grid(V, "Structural anomaly detected! Expected bracket '<nx:placeholder/>' but instead encountered '<nx:placeholder/>'. Possible timeline corruption detected—syntax integrity at risk!", 3)
+		nx_grid(V, "Expected '<nx:placeholder/>' but received '<nx:placeholder/>'. I don’t know what reality you’re operating in, but JSON isn’t buying it.", 3)
 
 		# Delimiter Missmatch error (4)
-		nx_grid_stack(V, "Unexpected delimiter found '<nx:placeholder/>', but I was expecting '<nx:placeholder/>'. I suppose surprises keep things interesting?", 4)
-		nx_grid_stack(V, "Parsing anomaly detected! Found '<nx:placeholder/>' when '<nx:placeholder/>' was expected. The syntax gods are displeased!", 4)
-		nx_grid_stack(V, "Delimiter mismatch! Encountered '<nx:placeholder/>' but expected '<nx:placeholder/>'. Possible corruption in JSON’s structural matrix!", 4)
-		nx_grid_stack(V, "Found '<nx:placeholder/>' instead of '<nx:placeholder/>'. This is not what JSON signed up for today.", 4)
-		nx_grid_stack(V, "Delimiter crisis detected! Found '<nx:placeholder/>' when '<nx:placeholder/>' was expected. This is why JSON has trust issues.", 4)
-		nx_grid_stack(V, "Syntax integrity failure! Expected delimiter '<nx:placeholder/>' but encountered '<nx:placeholder/>'. JSON's structural balance is at stake!", 4)
-		nx_grid_stack(V, "Parsing anomaly detected—delimiter misalignment! Expected '<nx:placeholder/>' but intercepted '<nx:placeholder/>'. Syntax grid destabilizing!", 4)
-		nx_grid_stack(V, "Delimiter mismatch! JSON was ready for '<nx:placeholder/>' but got '<nx:placeholder/>' instead. Let’s try that again, shall we?", 4)
+		nx_grid(V, "Unexpected delimiter found '<nx:placeholder/>', but I was expecting '<nx:placeholder/>'. I suppose surprises keep things interesting?", 4)
+		nx_grid(V, "Parsing anomaly detected! Found '<nx:placeholder/>' when '<nx:placeholder/>' was expected. The syntax gods are displeased!", 4)
+		nx_grid(V, "Delimiter mismatch! Encountered '<nx:placeholder/>' but expected '<nx:placeholder/>'. Possible corruption in JSON’s structural matrix!", 4)
+		nx_grid(V, "Found '<nx:placeholder/>' instead of '<nx:placeholder/>'. This is not what JSON signed up for today.", 4)
+		nx_grid(V, "Delimiter crisis detected! Found '<nx:placeholder/>' when '<nx:placeholder/>' was expected. This is why JSON has trust issues.", 4)
+		nx_grid(V, "Syntax integrity failure! Expected delimiter '<nx:placeholder/>' but encountered '<nx:placeholder/>'. JSON's structural balance is at stake!", 4)
+		nx_grid(V, "Parsing anomaly detected—delimiter misalignment! Expected '<nx:placeholder/>' but intercepted '<nx:placeholder/>'. Syntax grid destabilizing!", 4)
+		nx_grid(V, "Delimiter mismatch! JSON was ready for '<nx:placeholder/>' but got '<nx:placeholder/>' instead. Let’s try that again, shall we?", 4)
 
 		# Invalid Identifier error (5)
-		nx_grid_stack(V, "Invalid identifier detected: '<nx:placeholder/>'. JSON looked at it, scratched its head, and decided it wants no part of this mess.", 5)
-		nx_grid_stack(V, "Critical identifier failure! JSON was expecting a proper name but stumbled upon '<nx:placeholder/>'. This betrayal will not be forgotten.", 5)
-		nx_grid_stack(V, "Unknown identifier '<nx:placeholder/>' encountered. Syntax matrix destabilizing—JSON requests immediate structural recalibration!", 5)
-		nx_grid_stack(V, "Found an invalid identifier: '<nx:placeholder/>'. JSON is trying to act professional, but deep down, it's judging you.", 5)
-		nx_grid_stack(V, "Identifier '<nx:placeholder/>' detected, but JSON refuses to acknowledge its existence. Try again with something valid.", 5)
-		nx_grid_stack(V, "Identifier '<nx:placeholder/>' attempted to join JSON, but it didn't meet the membership requirements. Try again with something valid!", 5)
-		nx_grid_stack(V, "Critical syntax breach! JSON detected an unauthorized identifier '<nx:placeholder/>'. Structural integrity at risk!", 5)
-		nx_grid_stack(V, "Unknown identifier '<nx:placeholder/>' encountered. Syntax security protocols activated—JSON is rejecting this anomaly!", 5)
+		nx_grid(V, "Invalid identifier detected: '<nx:placeholder/>'. JSON looked at it, scratched its head, and decided it wants no part of this mess.", 5)
+		nx_grid(V, "Critical identifier failure! JSON was expecting a proper name but stumbled upon '<nx:placeholder/>'. This betrayal will not be forgotten.", 5)
+		nx_grid(V, "Unknown identifier '<nx:placeholder/>' encountered. Syntax matrix destabilizing—JSON requests immediate structural recalibration!", 5)
+		nx_grid(V, "Found an invalid identifier: '<nx:placeholder/>'. JSON is trying to act professional, but deep down, it's judging you.", 5)
+		nx_grid(V, "Identifier '<nx:placeholder/>' detected, but JSON refuses to acknowledge its existence. Try again with something valid.", 5)
+		nx_grid(V, "Identifier '<nx:placeholder/>' attempted to join JSON, but it didn't meet the membership requirements. Try again with something valid!", 5)
+		nx_grid(V, "Critical syntax breach! JSON detected an unauthorized identifier '<nx:placeholder/>'. Structural integrity at risk!", 5)
+		nx_grid(V, "Unknown identifier '<nx:placeholder/>' encountered. Syntax security protocols activated—JSON is rejecting this anomaly!", 5)
 
 		# Never Push to Stack (6)
-		nx_grid_stack(V, "Stack operation failed: '<nx:placeholder/>' was never pushed. Either it ghosted us, or JSON is playing hard to get.", 6)
-		nx_grid_stack(V, "Expected '<nx:placeholder/>' in the stack, but it was never added. Somewhere, an error is silently laughing at us.", 6)
-		nx_grid_stack(V, "Critical failure: '<nx:placeholder/>' was never pushed to the stack. Perhaps it was afraid of commitment?", 6)
-		nx_grid_stack(V, "Stack operation failed—'<nx:placeholder/>' decided to stay independent. No stack life for this one!", 6)
-		nx_grid_stack(V, "Stack operation failed: '<nx:placeholder/>' never made it in. Either it ran away, or JSON decided it wasn’t worthy.", 6)
-		nx_grid_stack(V, "Critical stack failure! '<nx:placeholder/>' was supposed to be pushed but never arrived. Chaos in the parsing pipeline!", 6)
-		nx_grid_stack(V, "Stack anomaly detected—expected '<nx:placeholder/>' but it was never pushed. Possible quantum fluctuation in JSON space-time!", 6)
-		nx_grid_stack(V, "Expected '<nx:placeholder/>' in the stack, but it was never added. If this was a test, JSON is officially disappointed.", 6)
+		nx_grid(V, "Stack operation failed: '<nx:placeholder/>' was never pushed. Either it ghosted us, or JSON is playing hard to get.", 6)
+		nx_grid(V, "Expected '<nx:placeholder/>' in the stack, but it was never added. Somewhere, an error is silently laughing at us.", 6)
+		nx_grid(V, "Critical failure: '<nx:placeholder/>' was never pushed to the stack. Perhaps it was afraid of commitment?", 6)
+		nx_grid(V, "Stack operation failed—'<nx:placeholder/>' decided to stay independent. No stack life for this one!", 6)
+		nx_grid(V, "Stack operation failed: '<nx:placeholder/>' never made it in. Either it ran away, or JSON decided it wasn’t worthy.", 6)
+		nx_grid(V, "Critical stack failure! '<nx:placeholder/>' was supposed to be pushed but never arrived. Chaos in the parsing pipeline!", 6)
+		nx_grid(V, "Stack anomaly detected—expected '<nx:placeholder/>' but it was never pushed. Possible quantum fluctuation in JSON space-time!", 6)
+		nx_grid(V, "Expected '<nx:placeholder/>' in the stack, but it was never added. If this was a test, JSON is officially disappointed.", 6)
 
 		# Empty Stack (7)
-		nx_grid_stack(V, "Attempted to access an empty stack. It's like reaching into a cookie jar only to find it’s empty—deeply disappointing.", 7)
-		nx_grid_stack(V, "Stack retrieval failed! JSON checked, double-checked, and confirmed: there's absolutely nothing here.", 7)
-		nx_grid_stack(V, "Stack access attempt failed! JSON reached in, found nothing, and is now questioning reality.", 7)
-		nx_grid_stack(V, "Stack underflow detected! JSON expected data, but all it found was an empty void. Perhaps existence itself is broken?", 7)
-		nx_grid_stack(V, "Critical stack failure! JSON attempted retrieval but found only emptiness. Possible wormhole anomaly detected.", 7)
-		nx_grid_stack(V, "Stack retrieval unsuccessful. JSON checked once, twice, thrice—still nothing. Do you actually want this to work?", 7)
-		nx_grid_stack(V, "Stack access denied. If there’s truly nothing here, did JSON ever really exist in the first place?", 7)
-		nx_grid_stack(V, "Stack is empty. JSON suggests adding data before trying again.", 7)
+		nx_grid(V, "Attempted to access an empty stack. It's like reaching into a cookie jar only to find it’s empty—deeply disappointing.", 7)
+		nx_grid(V, "Stack retrieval failed! JSON checked, double-checked, and confirmed: there's absolutely nothing here.", 7)
+		nx_grid(V, "Stack access attempt failed! JSON reached in, found nothing, and is now questioning reality.", 7)
+		nx_grid(V, "Stack underflow detected! JSON expected data, but all it found was an empty void. Perhaps existence itself is broken?", 7)
+		nx_grid(V, "Critical stack failure! JSON attempted retrieval but found only emptiness. Possible wormhole anomaly detected.", 7)
+		nx_grid(V, "Stack retrieval unsuccessful. JSON checked once, twice, thrice—still nothing. Do you actually want this to work?", 7)
+		nx_grid(V, "Stack access denied. If there’s truly nothing here, did JSON ever really exist in the first place?", 7)
+		nx_grid(V, "Stack is empty. JSON suggests adding data before trying again.", 7)
 
 		# Invalid Key (8)
-		nx_grid_stack(V, "Unexpected character detected in key: '<nx:placeholder/>'. JSON raised an eyebrow and decided this one does not belong.", 8)
-		nx_grid_stack(V, "Syntax integrity compromised! Encountered '<nx:placeholder/>' in a key name—this violates the sacred laws of structured data.", 8)
-		nx_grid_stack(V, "Key integrity breach detected! Unexpected character '<nx:placeholder/>' found where it does not belong—syntax firewall engaged.", 8)
-		nx_grid_stack(V, "Found '<nx:placeholder/>' in a key name. JSON is questioning your life choices, but mostly just wants this fixed.", 8)
-		nx_grid_stack(V, "Unexpected character '<nx:placeholder/>' found in key definition. Was this intentional, or did someone spill coffee on their keyboard?", 8)
-		nx_grid_stack(V, "Unexpected character '<nx:placeholder/>' found in key name. Unless this is a secret code, JSON isn’t decoding it." , 8)
-		nx_grid_stack(V, "Unexpected character '<nx:placeholder/>' found in a key name. JSON is just standing here, shaking its head in disappointment.", 8)
-		nx_grid_stack(V, "Syntax violation! '<nx:placeholder/>' appeared where a valid key name should be—this is an unforgivable error in the world of structured data!", 8)
+		nx_grid(V, "Unexpected character detected in key: '<nx:placeholder/>'. JSON raised an eyebrow and decided this one does not belong.", 8)
+		nx_grid(V, "Syntax integrity compromised! Encountered '<nx:placeholder/>' in a key name—this violates the sacred laws of structured data.", 8)
+		nx_grid(V, "Key integrity breach detected! Unexpected character '<nx:placeholder/>' found where it does not belong—syntax firewall engaged.", 8)
+		nx_grid(V, "Found '<nx:placeholder/>' in a key name. JSON is questioning your life choices, but mostly just wants this fixed.", 8)
+		nx_grid(V, "Unexpected character '<nx:placeholder/>' found in key definition. Was this intentional, or did someone spill coffee on their keyboard?", 8)
+		nx_grid(V, "Unexpected character '<nx:placeholder/>' found in key name. Unless this is a secret code, JSON isn’t decoding it." , 8)
+		nx_grid(V, "Unexpected character '<nx:placeholder/>' found in a key name. JSON is just standing here, shaking its head in disappointment.", 8)
+		nx_grid(V, "Syntax violation! '<nx:placeholder/>' appeared where a valid key name should be—this is an unforgivable error in the world of structured data!", 8)
 
 		# Invalid Character (9)
-		nx_grid_stack(V, "Unexpected character '<nx:placeholder/>' detected in JSON syntax. It has no business being here—kindly escort it out.", 9)
-		nx_grid_stack(V, "Syntax violation! '<nx:placeholder/>' was found lurking where it does not belong. JSON demands order—this must be corrected!", 9)
-		nx_grid_stack(V, "Critical parsing failure—unexpected character '<nx:placeholder/>' detected! Syntax firewall engaged to restore JSON stability.", 9)
-		nx_grid_stack(V, "JSON syntax rejection: '<nx:placeholder/>' does not belong here. Either it wandered in by accident, or someone is testing JSON’s patience.", 9)
-		nx_grid_stack(V, "Unexpected character '<nx:placeholder/>' detected. JSON is deeply confused and wondering how this happened.", 9)
-		nx_grid_stack(V, "Syntax breach detected! '<nx:placeholder/>' appeared where it absolutely should not be. JSON is calling for an immediate correction!", 9)
-		nx_grid_stack(V, "Parsing failure—unexpected entity '<nx:placeholder/>' intercepted. JSON's structural integrity is under threat!", 9)
-		nx_grid_stack(V, "Invalid character '<nx:placeholder/>' detected. Remove it, and let's get this syntax back on track.", 9)
+		nx_grid(V, "Unexpected character '<nx:placeholder/>' detected in JSON syntax. It has no business being here—kindly escort it out.", 9)
+		nx_grid(V, "Syntax violation! '<nx:placeholder/>' was found lurking where it does not belong. JSON demands order—this must be corrected!", 9)
+		nx_grid(V, "Critical parsing failure—unexpected character '<nx:placeholder/>' detected! Syntax firewall engaged to restore JSON stability.", 9)
+		nx_grid(V, "JSON syntax rejection: '<nx:placeholder/>' does not belong here. Either it wandered in by accident, or someone is testing JSON’s patience.", 9)
+		nx_grid(V, "Unexpected character '<nx:placeholder/>' detected. JSON is deeply confused and wondering how this happened.", 9)
+		nx_grid(V, "Syntax breach detected! '<nx:placeholder/>' appeared where it absolutely should not be. JSON is calling for an immediate correction!", 9)
+		nx_grid(V, "Parsing failure—unexpected entity '<nx:placeholder/>' intercepted. JSON's structural integrity is under threat!", 9)
+		nx_grid(V, "Invalid character '<nx:placeholder/>' detected. Remove it, and let's get this syntax back on track.", 9)
 
 		# Duplicate key (10)
-		nx_grid_stack(V, "Duplicate key detected: '<nx:placeholder/>'. Either time is looping, or someone got a little too happy with copy-paste.", 10)
-		nx_grid_stack(V, "A paradox has emerged—'<nx:placeholder/>' appeared more than once! JSON is now questioning the fabric of reality.", 10)
-		nx_grid_stack(V, "System anomaly detected! Duplicate key '<nx:placeholder/>' found. Possible timeline distortion or unintended recursion.", 10)
-		nx_grid_stack(V, "Duplicate key '<nx:placeholder/>' detected. JSON would like to remind you that ‘Ctrl+C, Ctrl+V’ has consequences.", 10)
-		nx_grid_stack(V, "Duplicate key '<nx:placeholder/>' detected. JSON wonders if this is an intentional loop or just an overzealous paste.", 10)
-		nx_grid_stack(V, "Syntax paradox detected—'<nx:placeholder/>' appears more than once! JSON cannot allow such reality-breaking behavior.", 10)
-		nx_grid_stack(V, "Duplicate key '<nx:placeholder/>' identified. Possible data cloning or recursive corruption in JSON memory structures!", 10)
-		nx_grid_stack(V, "Warning: Duplicate key '<nx:placeholder/>' found. JSON suggests using unique identifiers before things get messy.", 10)
+		nx_grid(V, "Duplicate key detected: '<nx:placeholder/>'. Either time is looping, or someone got a little too happy with copy-paste.", 10)
+		nx_grid(V, "A paradox has emerged—'<nx:placeholder/>' appeared more than once! JSON is now questioning the fabric of reality.", 10)
+		nx_grid(V, "System anomaly detected! Duplicate key '<nx:placeholder/>' found. Possible timeline distortion or unintended recursion.", 10)
+		nx_grid(V, "Duplicate key '<nx:placeholder/>' detected. JSON would like to remind you that ‘Ctrl+C, Ctrl+V’ has consequences.", 10)
+		nx_grid(V, "Duplicate key '<nx:placeholder/>' detected. JSON wonders if this is an intentional loop or just an overzealous paste.", 10)
+		nx_grid(V, "Syntax paradox detected—'<nx:placeholder/>' appears more than once! JSON cannot allow such reality-breaking behavior.", 10)
+		nx_grid(V, "Duplicate key '<nx:placeholder/>' identified. Possible data cloning or recursive corruption in JSON memory structures!", 10)
+		nx_grid(V, "Warning: Duplicate key '<nx:placeholder/>' found. JSON suggests using unique identifiers before things get messy.", 10)
 
 		# Trail comma (11)
-		nx_grid_stack(V, "A trailing comma detected before '<nx:placeholder/>'. JSON doesn’t appreciate loose ends—please remove it before things get messy." , 11)
-		nx_grid_stack(V, "Syntax error! A rogue comma before '<nx:placeholder/>' is threatening JSON’s structural integrity. Immediate removal recommended!" , 11)
-		nx_grid_stack(V, "System anomaly detected: Unnecessary comma found before '<nx:placeholder/>'. Possible timeline corruption—JSON requests urgent repairs!" , 11)
-		nx_grid_stack(V, "Trailing comma detected before '<nx:placeholder/>'. JSON would like to remind you that commas need closure—remove it before things escalate." , 11)
-		nx_grid_stack(V, "Trailing comma detected before '<nx:placeholder/>'—JSON prefers tidy endings, not hanging syntax!" , 11)
-		nx_grid_stack(V, "Trailing comma detected before '<nx:placeholder/>'—this isn’t a dramatic pause, just a syntax problem. Remove it!", 11)
-		nx_grid_stack(V, "Syntax error! A rogue comma has appeared before '<nx:placeholder/>'—JSON demands immediate correction!", 11)
-		nx_grid_stack(V, "Parsing instability detected! Unexpected comma before '<nx:placeholder/>'—syntax framework destabilizing!", 11)
+		nx_grid(V, "A trailing comma detected before '<nx:placeholder/>'. JSON doesn’t appreciate loose ends—please remove it before things get messy." , 11)
+		nx_grid(V, "Syntax error! A rogue comma before '<nx:placeholder/>' is threatening JSON’s structural integrity. Immediate removal recommended!" , 11)
+		nx_grid(V, "System anomaly detected: Unnecessary comma found before '<nx:placeholder/>'. Possible timeline corruption—JSON requests urgent repairs!" , 11)
+		nx_grid(V, "Trailing comma detected before '<nx:placeholder/>'. JSON would like to remind you that commas need closure—remove it before things escalate." , 11)
+		nx_grid(V, "Trailing comma detected before '<nx:placeholder/>'—JSON prefers tidy endings, not hanging syntax!" , 11)
+		nx_grid(V, "Trailing comma detected before '<nx:placeholder/>'—this isn’t a dramatic pause, just a syntax problem. Remove it!", 11)
+		nx_grid(V, "Syntax error! A rogue comma has appeared before '<nx:placeholder/>'—JSON demands immediate correction!", 11)
+		nx_grid(V, "Parsing instability detected! Unexpected comma before '<nx:placeholder/>'—syntax framework destabilizing!", 11)
 	}
 }
 
@@ -140,12 +140,14 @@ function nx_json_split(D1, V1, V2, D2)
 	if (".nx" D1 "[0]" in V1) {
 		V2[0] = 0
 		for (D2 = 1; D2 <= V1[".nx" D1 "[0]"]; D2++) {
-			V2[++V2[0]] = V1[".nx" D1 "[" D2 "]"]
+			nx_bijective(V2, ++V2[0], V1[".nx" D1 "[" D2 "]"])
 		}
 		D2 = 1
-	} else if (".nx" D1 in V1) {
-		D2 = split(V1[".nx" D1], V2, "<nx:null/>")
+	} else if (".nx" D1 "{0}" in V1) {
+		D2 = split(V1[".nx" D1 "{0}"], V2, "<nx:null/>")
 		V2[0] = D2
+		for (D2 = 1; D2 <= V2[0]; D2++)
+			nx_bijective(V2, D2, "", V2[D2])
 		D2 = 2
 	} else {
 		return 0
@@ -153,21 +155,28 @@ function nx_json_split(D1, V1, V2, D2)
 	return D2
 }
 
-function nx_json_keep(D1, V1, V2, D2)
+function nx_json_type(D, V, B)
 {
-	if (0 in V2) {
-		return 0
-	} else if (nx_json_split(D1, V1, V2, D2)) {
-		delete V2
-		return 2
-	} else {
-		return 1
-	}
+	if (".nx" D "{0}" in V)
+		return __nx_if(B, "object", 1)
+	if (".nx" D "[0]" in V)
+		return __nx_if(B, "list", 2)
+	if (! (".nx" D in V))
+		return __nx_if(B, "undefined", 3)
+	if ((D = tolower(V[".nx" D])) ~ /^(|null)$/)
+		return __nx_if(B, "null", 4)
+	if (D ~ /^(true|false)$/)
+		return __nx_if(B, "boolean", __nx_if(D == "true", 5, 6))
+	if (__nx_is_integral(D, 1))
+		return __nx_if(B, "number", 7)
+	if (__nx_is_float(D, 1))
+		return __nx_if(B, "float", 8)
+	return __nx_if(B, "string", 9)
 }
 
 function nx_json_length(D1, V1, B, V2, D2,	i, j, k)
 {
-	if ((D2 = nx_json_keep(D1, V1, V2, D2)) < 2) {
+	if (D2 = nx_json_split(D1, V1, V2, D2)) {
 		for (i = 1; i <= V2[0]; i++) {
 			j = length(V2[i])
 			if (! k || __nx_if(B, k < j, k > j))
@@ -175,55 +184,53 @@ function nx_json_length(D1, V1, B, V2, D2,	i, j, k)
 		}
 		V1[".nx" D1 "(" __nx_if(B, "longest", "shortest") ")"] = int(k)
 	}
-	if (D2)
-		delete V2
 	return int(k)
 }
 
 function nx_json_reverse(D1, V1, V2, D2,	i, j)
 {
-	if ((D2 = nx_json_keep(D1, V1, V2, D2)) < 2) {
-		if (".nx" D1 "[0]" in V1) {
-			i = V1[".nx" D1 "[0]"]
+	if (D2 = nx_json_split(D1, V1, V2, D2)) {
+		i = V2[0]
+		if (D2 == 1) {
 			do {
 				V1[".nx" D1 "[" ++j "]"] = V2[i]
 				V1[".nx" D1 "[" i "]"] = V2[j]
 			} while (--i > j)
+		} else {
+			V1[".nx" D1 "{0}"] = ""
+			do {
+				V1[".nx" D1 "{0}"] = nx_join_str(V1[".nx" D1 "{0}"], V2[i], "<nx:null/>")
+			} while (--i)
 		}
 	}
-	if (D2)
-		delete V2
+	return V2[0]
 }
 
 function nx_json_filter(D1, D2, D3, V1, V2, D4,		i)
 {
-	if ((D4 = nx_json_keep(D1, V1, V2, D4)) < 2) {
+	if (nx_json_split(D1, V1, V2, D4)) {
 		for (i = 1; i <= V2[0]; i++) {
 			if (__nx_equality(D2, D3, V2[i]))
 				V1[".nx" D1 "(filter)"] = nx_join_str(V1[".nx" D1 "(filter)"], V2[i], "<nx:null/>")
 		}
+		return V1[".nx" D1 "(filter)"]
 	}
-	if (D4)
-		delete V2
-	return V1[".nx" D1 "(filter)"]
 }
 
 function nx_json_anchor(D1, D2, V1, B, V2, D3,	i)
 {
-	if ((D3 = nx_json_keep(D1, V1, V2, D3)) < 2) {
+	if (nx_json_split(D1, V1, V2, D3)) {
 		for (i = 1; i <= V2[0]; i++) {
 			if (__nx_if(B, V2[i] ~ D2 "$", V2[i] ~ "^" D2))
 				V1[".nx" D1 "(anchor)"] = nx_join_str(V1[".nx" D1 "(anchor)"], V2[i], "<nx:null/>")
 		}
+		return V1[".nx" D1 "(anchor)"]
 	}
-	if (D3)
-		delete V2
-	return V1[".nx" D1 "(anchor)"]
 }
 
 function nx_json_match(D1, D2, V1, V2, D3, B1, B2,	v)
 {
-	if ((D3 = nx_json_keep(D1, V1, V2, D3)) < 2) {
+	if (nx_json_split(D1, V1, V2, D3)) {
 		if ((B1 = split(nx_json_anchor(D1, D2, V1, B1, V2, D3), v, "<nx:null/>")) > 1) {
 			v[0] = B1
 			if ((B2 = split(nx_json_filter(D1, nx_append_str("0", nx_json_length(D1, V1, B2, v, D3)), "=_", V1, v, D3), v, "<nx:null/>")) > 1) {
@@ -233,22 +240,18 @@ function nx_json_match(D1, D2, V1, V2, D3, B1, B2,	v)
 				delete v
 			}
 		}
+		if (length(v)) {
+			B1 = v[1]
+			V1[".nx" D1 "(match)"] = B1
+			delete v
+			return B1
+		}
 	}
-	if (length(v)) {
-		B1 = v[1]
-		V1[".nx" D1 "(match)"] = B1
-		delete v
-	} else {
-		B1 = ""
-	}
-	if (D3)
-		delete V2
-	return B1
 }
 
 function nx_json_stack(D1, V, D2)
 {
-	if (length(V) && ".nx" D1 "[0]" in V) {
+	if (length(V) && nx_json_type(D1, V) == 1) {
 		if (D2) {
 			V[".nx" D1 "[" ++V[".nx" D1 "[0]"] "]"] = D2
 		} else if (V[".nx" D1 "[" V[".nx" D1 "[0]"] "]"]) {
@@ -260,6 +263,28 @@ function nx_json_stack(D1, V, D2)
 			return V[".nx" D1 "[" V[".nx" D1 "[0]"] "]"]
 		}
 	}
+}
+
+function nx_json_compare(D1, D2, D3, V1, V2, V3, D4,	_v1, _v2, i, d)
+{
+	if (nx_json_split(D1, V1, V2, D4) && nx_json_split(D2, V1, V3, D4)) {
+		D3 = __nx_else(nx_json_match("", D3, _v1, _v2, "[ 'left', 'intersect', 'difference' ]"), "left")
+		for (i = 1; i <= V2[0]; i++) {
+			if ((V2[i] in V3) == (D3 == "intersect"))
+				d = nx_join_str(d, V2[i], "<nx:null/>")
+		}
+		if (D3 == "difference") {
+			for (i = 1; i <= V3[0]; i++) {
+				if (! (V3[i] in V2))
+					d = nx_join_str(d, V3[i], "<nx:null/>")
+			}
+		}
+		V1[".nx" D1 "(" D3 ")" D2] = d
+		delete _v1
+	}
+	delete V2
+	delete V3
+	return V1[".nx" D1 "(" D3 ")" D2]
 }
 
 function nx_json_root(V1, V2, V3)
@@ -300,6 +325,7 @@ function nx_json_apply(V1, V2, V3, B, V4)
 						print nx_log_warn(nx_json_log(V2, nx_json_log_db(V4, 10, V2["rt"] "." V2["nxt"])))
 				} else {
 					V1[V2["rt"]] = nx_join_str(V1[V2["rt"]], V2["nxt"], "<nx:null/>")
+					V1[V2["rt"] "\x7b0\x7d"] = V1[V2["rt"]]
 				}
 			} else {
 				V1[V2["rt"] "." V2["nxt"]] = V2["rec"]

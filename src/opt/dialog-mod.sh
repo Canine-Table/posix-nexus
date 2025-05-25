@@ -6,7 +6,7 @@ nx_dialog_factory()
 		eval "export $(nx_tty_all)"
 		eval "$(nx_str_optarg ':i:v:m:l:f:p:' "$@")"
 		DIALOG_ESC=255 DIALOG_ITEM_HELP=4 DIALOG_EXTRA=3 DIALOG_HELP=2 DIALOG_CANCEL=1 DIALOG_OK=0
-		DIALOG_OPTIONS=$(eval " dialog $(${AWK:-$(get_cmd_awk)} \
+		DIALOG_OPTIONS="$(${AWK:-$(get_cmd_awk)} \
 			-v json="{
 				'variant': '$v',
 				'message': '${m:- }',
@@ -52,7 +52,7 @@ nx_dialog_factory()
 					delete vec
 				}
 				nx_vector("treeview,calendar,buildlist,checklist,dselect,fselect,editbox,form,tailbox,tailboxbg,textbox,timebox,infobox,inputbox,inputmenu,menu,mixedform,mixedgauge,gauge,msgbox,passwordform,passwordbox,pause,prgbox,programbox,progressbox,radiolist,rangebox,yesno", vec)
-				arr[".nx.variant"] = __nx_else(nx_option(tolower(arr[".nx.variant"]), vec), "infobox")
+				arr[".nx.variant"] = __nx_else(nx_option(tolower(arr[".nx.variant"]), vec), "msgbox")
 				delete vec
 				if (arr[".nx.variant"] ~ /^(password(box|form))$/)
 					str = str "--insecure "
@@ -102,10 +102,126 @@ nx_dialog_factory()
 				delete ste; print str
 				exit err
 			}
-		')" 3>&1 1>&2 2>&3)
+		')" || {
+			DIALOG_EXIT_STATUS=$?
+			echo -e "$DIALOG_OPTIONS"
+			exit $DIALOG_EXIT_STATUS
+		}
+		DIALOG_OPTIONS=$(eval "dialog $DIALOG_OPTIONS" 3>&1 1>&2 2>&3)
 		DIALOG_EXIT_STATUS=$?
 		echo "$DIALOG_OPTIONS"
 		return $DIALOG_EXIT_STATUS
+	)
+}
+
+
+
+nx_dialog_test()
+{
+	(
+		eval "export $(nx_tty_all)"
+		eval "$(nx_str_optarg ':i:v:m:l:f:p:' "$@")"
+		${AWK:-$(get_cmd_awk)} \
+			-v json="{
+				'labels': [
+					'message',
+					'ok-label',
+					'no-label',
+					'backtitle',
+					'cancel-label',
+					'yes-label',
+					'column-separator',
+					'help-label',
+					'default-item',
+					'exit-label',
+					'extra-label',
+					'default-button',
+					'title'
+				],
+				'variants': [
+					'treeview',	'calendar',
+					'buildlist',	'checklist',
+					'dselect',	'fselect',
+					'editbox',	'form',
+					'tailbox',	'tailboxbg',
+					'textbox',	'timebox',
+					'infobox',	'inputbox',
+					'inputmenu',	'menu',
+					'mixedform',	'mixedgauge',
+					'gauge',	'msgbox',
+					'pause',	'passwordbox',
+					'prgbox',	'passwordform',
+					'radiolist',	'rangebox',
+					'yesno',	'progressbox',
+					'programbox'
+				],
+				'flags': {
+					'ascii-lines': '<nx:false/>',
+					'beep': '<nx:false/>',
+					'beep-after': '<nx:false/>',
+					'clear': '<nx:false/>',
+					'colors': '<nx:false/>',
+					'cr-wrap': '<nx:false/>',
+					'cursor-off-label': '<nx:true/>',
+					'defaultno': '<nx:true/>',
+					'ignore': '<nx:false/>',
+					'keep-tite': '<nx:false/>',
+					'keep-window': '<nx:false/>',
+					'last-key': '<nx:false/>',
+					'no-cancel': '<nx:false/>',
+					'no-hot-list': '<nx:false/>',
+					'no-items': '<nx:false/>',
+					'no-kill': '<nx:false/>',
+					'no-lines': '<nx:false/>',
+					'no-mouse': '<nx:false/>',
+					'no-nl-expand': '<nx:false/>',
+					'no-ok': '<nx:false/>',
+					'no-shadow': '<nx:true/>',
+					'no-tags': '<nx:false/>',
+					'print-maxsize': '<nx:false/>',
+					'print-size': '<nx:false/>',
+					'print-version': '<nx:false/>',
+					'quoted': '<nx:false/>',
+					'reorder': '<nx:false/>',
+					'scrollbar': '<nx:true/>',
+					'single-quoted': '<nx:false/>',
+					'size-err': '<nx:true/>',
+					'stderr': '<nx:false/>',
+					'stdout': '<nx:false/>',
+					'tab-correct': '<nx:false/>',
+					'trim': '<nx:false/>',
+					'insecure': '<nx:true/>',
+					'visit-items': '<nx:false/>',
+					'no-collapse': '<nx:true/>',
+					'erase-on-exit': '<nx:true/>'
+				},
+				'input': {
+					'variant': '$v',
+					'message': '${m:- }',
+					'labels': {$l},
+					'properties': [$p],
+					'items': [$i],
+					'flags': [$f]
+				}
+			}
+		" "
+			$(nx_init_include -i "$G_NEX_MOD_LIB/awk/nex-tui.awk")
+		"'
+			BEGIN {
+				if (l = nx_json(json, arr, 2))
+					exit l
+				if (".nx.input.flags[0]" in arr) {
+					l = arr[".nx.input.flags[0]"]
+					nx_json_split(".flags", arr, flgs)
+					for (i = 1; i <= l; i++) {
+						if (k = nx_json_match(".flags", arr[".nx.input.flags[" i "]"], arr, flgs)) {
+							nx_boolean(arr, ".flags." k)
+						}
+					}
+
+				}
+			}
+		'
 	)
 }
 

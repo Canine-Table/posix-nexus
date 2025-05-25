@@ -296,29 +296,9 @@ function nx_map(V1, V2, B)
 	}
 }
 
-function nx_grid_stack(V, D, N)
-{
-	if (D != "") {
-		if (! (0 in V))
-			V[0] = 1
-		N = __nx_else(nx_natural(nx_digit(N, 1)), V[0])
-		while (V[0] < N)
-			V[++V[0]] = 0
-		V[N "_" ++V[N "_0"]] = D
-	} else if (0 in V && V[0]) {
-		if (! V[V[0] "_0"])
-			delete V[V[0]-- "_" V[V[0] "_0"]]
-		D = V[V[0] "_" V[V[0] "_0"]]
-		if (! N)
-			delete V[V[0] "_" V[V[0] "_0"]--]
-		return D
-	}
-}
-
 function nx_grid(V, D, N)
 {
-	# TODO
-	if (! D) {
+	if (D) {
 		if (! (0 in V && "|" in V && "-" in V)) {
 			V[0] = 1
 			V["|"] = 1
@@ -326,31 +306,80 @@ function nx_grid(V, D, N)
 		}
 		if ((N = __nx_else(nx_natural(nx_digit(N, 1)), V[0])) < V["-"])
 			N = V["-"]
-		while (V[0] < N)
-			V[++V[0]] = 0
-		V[N "," ++V[V[N]]] = D
-	} else if (V["-"] <= V[0]) {
-		if (! (V[0] "," V[V[0]] in V))
-			delete V[V[0]--]
-		if ((N = tolower(N)) == "d") {
-			N = V[V[0] "," V[V[0]]]
-			if (D != "")
-				delete V[V[0] "," V[V[0]]--]
-		} else {
-			if (! (V["-"] "," V["|"] in V)) {
-				delete V[V["-"]++]
-				V["|"] = 1
-			}
-			if (V["-"] <= V[0]) {
-				N = V[V["-"] "," V["|"]]
-				if (D != "")
-					delete V[V["-"] "," V["|"]++]
-			} else {
-				return 0
-			}
+		while (V[0] < N) {
+			if (! (++V[0] in V))
+				V[V[0]] = 0
 		}
-		return N
+		V[N "," ++V[N]] = D
+	} else if (N) {
+		while (! V[V[0]] && V["-"] <= V[0])
+			delete V[V[0]--]
+		if (V["-"] <= V[0]) {
+			N = V[V[0] "," V[V[0]]]
+			if (D == "")
+				delete V[V[0] "," V[V[0]]--]
+			return N
+		}
+	} else {
+		while (V[V["-"]] < V["|"] && V["-"] <= V[0]) {
+			delete V[V["-"]++]
+			V["|"] = 1
+		}
+		if (V["-"] <= V[0]) {
+			N = V[V["-"] "," V["|"]]
+			if (D == "")
+				delete V[V["-"] "," V["|"]++]
+			return N
+		}
 	}
 }
 
+function nx_json_tostring(D1, V1, V2, D2,	v, d, l, i)
+{
+	while (D2 = nx_json_split(D1, V1, V2, D2)) {
+		d = __nx_if(D2 == 1, "[", "{")
+		for (i = 1; i <= V2[0]; i++) {
+			if (D2 == 2) {
+				d = d "\x22" V2[i] "\x22:"
+				print "aaag: 	.nx" D1 "." V2[i] "[" i "]"
+				if (".nx" D1 "." V2[i] "." V1[".nx" D1 "." V2[i]] in V1) {
+					nx_grid(v, D1 "." V2[i])
+				} else if (".nx" D1 "." V2[i] "[" i "]" in V1) {
+					nx_grid(v, D1 "." V2[i] "[" i "]")
+				} else if (".nx" D1 "." V2[i] "[0]" in V1) {
+					nx_grid(v, D1 "." V2[i])
+				} else {
+					V2[i] = V1[".nx" D1 "." V2[i]]
+				}
+			} else {
+				if (".nx" D1 "[" i "][0]" in V1)
+					nx_grid(v, D1 "[" i "]")
+				else if (".nx" D1 "[" i "]." V2[i] in V1)
+					nx_grid(v, D1 "[" i "]." V2[i])
+			}
+			if (1 in v && v[1] > v["q"]) {
+				v["q"] = v[1]
+				d = d "<nx:placeholder for='" v[1] "'/>"
+			} else if (! (nx_digit(V2[i], 1) && V2[i] ~ /^(true|false|null)$/)) {
+				d = d "\x22" V2[i] "\x22"
+			} else {
+				d = d V2[i]
+			}
+			if (i < V2[0])
+				d = d ","
+		}
+		d = d __nx_if(D2 == 1, "]", "}")
+		if ("rec" in v)
+			sub("<nx:placeholder for='" v["|"] - 1 "'/>", d, v["rec"])
+		else
+			v["rec"] = d
+		if (D2 = nx_grid(v))
+			D1 = D2
+		else
+			break
+	}
+	print v["rec"]
+	delete V2
+	delete v
+}
 

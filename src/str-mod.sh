@@ -39,6 +39,7 @@ nx_str_hex()
 				for (i = 2; i <= NF; i++)
 					h = h "\\x" substr($i, 3) "\\x" substr($i, 1, 2)
 			} END {
+				sub("\\\\x00$", "", h)
 				print h
 			}
 		'

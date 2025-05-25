@@ -358,7 +358,7 @@ function nx_printf(D1, D2,	fv, i, l, stkv)
 function nx_log_db(N, D, B, V,		msg)
 {
 	if (length(V))
-		N = V[N "_" nx_modulus_range(__nx_entropy(V[N "_0"]), V[N "_0"]) + 1]
+		N = V[N "," nx_modulus_range(__nx_entropy(V[N]), V[N]) + 1]
 	else
 		B = 0
 	if (N != "") {

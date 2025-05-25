@@ -16,9 +16,9 @@ function nx_tui_log_db(V, N, D, B)
 		return nx_log_db(N, D, B, V)
 	} else {
 		# Empty input (1)
-		nx_grid_stack(db, "Dialog attempted without entries. JSON is deeply concerned—what exactly were you planning to display?", 1)
-		nx_grid_stack(db, "Critical error! '<nx:placeholder/>' is missing—this dialog is an empty void, a message without a voice!", 1)
-		nx_grid_stack(db, "Parsing failure detected! '<nx:placeholder/>' is undefined—dialog execution aborted due to structural instability!", 1)
+		nx_grid(db, "Dialog attempted without entries. JSON is deeply concerned—what exactly were you planning to display?", 1)
+		nx_grid(db, "Critical error! '<nx:placeholder/>' is missing—this dialog is an empty void, a message without a voice!", 1)
+		nx_grid(db, "Parsing failure detected! '<nx:placeholder/>' is undefined—dialog execution aborted due to structural instability!", 1)
 	}
 }
 
