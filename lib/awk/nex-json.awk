@@ -287,6 +287,51 @@ function nx_json_compare(D1, D2, D3, V1, V2, V3, D4,	_v1, _v2, i, d)
 	return V1[".nx" D1 "(" D3 ")" D2]
 }
 
+function nx_json_tostring(D1, V1, V2, D2,	v, d, l, i)
+{
+	while (D2 = nx_json_split(D1, V1, V2, D2)) {
+		d = __nx_if(D2 == 1, "[", "{")
+		for (i = 1; i <= V2[0]; i++) {
+			if (D2 == 2) {
+				d = d "\x22" V2[i] "\x22:"
+				if (".nx" D1 "." V2[i] "{0}" in V1) {
+					nx_grid(v, D1 "." V2[i])
+				} else if (".nx" D1 "." V2[i] "[0]" in V1) {
+					nx_grid(v, D1 "." V2[i])
+				} else {
+					V2[i] = V1[".nx" D1 "." V2[i]]
+				}
+			} else {
+				if (".nx" D1 "[" i "][0]" in V1)
+					nx_grid(v, D1 "[" i "]")
+				else if (".nx" D1 "[" i "]{0}" in V1)
+					nx_grid(v, D1 "[" i "]")
+			}
+			if (1 in v && v[1] > v["q"]) {
+				v["q"] = v[1]
+				d = d "<nx:placeholder for='" v[1] "'/>"
+			} else if (! (nx_digit(V2[i], 1) && V2[i] ~ /^(true|false|null)$/)) {
+				d = d "\x22" V2[i] "\x22"
+			} else {
+				d = d V2[i]
+			}
+			if (i < V2[0])
+				d = d ","
+		}
+		d = d __nx_if(D2 == 1, "]", "}")
+		if ("rec" in v)
+			sub("<nx:placeholder for='" v["|"] - 1 "'/>", d, v["rec"])
+		else
+			v["rec"] = d
+		if (! (D1 = nx_grid(v)))
+			break
+	}
+	d = v["rec"]
+	delete V2
+	delete v
+	return d
+}
+
 function nx_json_root(V1, V2, V3)
 {
 	if (! ("rt" in V2)) {
@@ -324,8 +369,7 @@ function nx_json_apply(V1, V2, V3, B, V4)
 					if (B > 1)
 						print nx_log_warn(nx_json_log(V2, nx_json_log_db(V4, 10, V2["rt"] "." V2["nxt"])))
 				} else {
-					V1[V2["rt"]] = nx_join_str(V1[V2["rt"]], V2["nxt"], "<nx:null/>")
-					V1[V2["rt"] "\x7b0\x7d"] = V1[V2["rt"]]
+					V1[V2["rt"] "\x7b0\x7d"] = nx_join_str(V1[V2["rt"] "\x7b0\x7d"], V2["nxt"], "<nx:null/>")
 				}
 			} else {
 				V1[V2["rt"] "." V2["nxt"]] = V2["rec"]

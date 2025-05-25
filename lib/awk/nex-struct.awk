@@ -341,11 +341,8 @@ function nx_json_tostring(D1, V1, V2, D2,	v, d, l, i)
 		for (i = 1; i <= V2[0]; i++) {
 			if (D2 == 2) {
 				d = d "\x22" V2[i] "\x22:"
-				print "aaag: 	.nx" D1 "." V2[i] "[" i "]"
-				if (".nx" D1 "." V2[i] "." V1[".nx" D1 "." V2[i]] in V1) {
+				if (".nx" D1 "." V2[i] "{0}" in V1) {
 					nx_grid(v, D1 "." V2[i])
-				} else if (".nx" D1 "." V2[i] "[" i "]" in V1) {
-					nx_grid(v, D1 "." V2[i] "[" i "]")
 				} else if (".nx" D1 "." V2[i] "[0]" in V1) {
 					nx_grid(v, D1 "." V2[i])
 				} else {
@@ -354,8 +351,8 @@ function nx_json_tostring(D1, V1, V2, D2,	v, d, l, i)
 			} else {
 				if (".nx" D1 "[" i "][0]" in V1)
 					nx_grid(v, D1 "[" i "]")
-				else if (".nx" D1 "[" i "]." V2[i] in V1)
-					nx_grid(v, D1 "[" i "]." V2[i])
+				else if (".nx" D1 "[" i "]{0}" in V1)
+					nx_grid(v, D1 "[" i "]")
 			}
 			if (1 in v && v[1] > v["q"]) {
 				v["q"] = v[1]
@@ -373,13 +370,12 @@ function nx_json_tostring(D1, V1, V2, D2,	v, d, l, i)
 			sub("<nx:placeholder for='" v["|"] - 1 "'/>", d, v["rec"])
 		else
 			v["rec"] = d
-		if (D2 = nx_grid(v))
-			D1 = D2
-		else
+		if (! (D1 = nx_grid(v)))
 			break
 	}
-	print v["rec"]
+	d = v["rec"]
 	delete V2
 	delete v
+	return d
 }
 

@@ -12,7 +12,7 @@ nx_test_box()
 		}' \
 		-v comp='{
 			"hi": "bye",
-			"yes": "no",
+			"yes": [[[[["no"]]]]],
 			"bro": [ "yes", { "yes": "no", "no": "yes" }]
 		}' \
 		-v lol='[
@@ -25,9 +25,7 @@ nx_test_box()
 		BEGIN {
 			nx_json(comp, js, 2)
 			#nx_json(lol, js, 2)
-			for (i in js)
-				print i " = " js[i]
-			nx_json_tostring("", js)
+			print nx_json_tostring("", js)
 		}
 	'
 }
