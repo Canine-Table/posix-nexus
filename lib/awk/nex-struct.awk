@@ -334,48 +334,4 @@ function nx_grid(V, D, N)
 	}
 }
 
-function nx_json_tostring(D1, V1, V2, D2,	v, d, l, i)
-{
-	while (D2 = nx_json_split(D1, V1, V2, D2)) {
-		d = __nx_if(D2 == 1, "[", "{")
-		for (i = 1; i <= V2[0]; i++) {
-			if (D2 == 2) {
-				d = d "\x22" V2[i] "\x22:"
-				if (".nx" D1 "." V2[i] "{0}" in V1) {
-					nx_grid(v, D1 "." V2[i])
-				} else if (".nx" D1 "." V2[i] "[0]" in V1) {
-					nx_grid(v, D1 "." V2[i])
-				} else {
-					V2[i] = V1[".nx" D1 "." V2[i]]
-				}
-			} else {
-				if (".nx" D1 "[" i "][0]" in V1)
-					nx_grid(v, D1 "[" i "]")
-				else if (".nx" D1 "[" i "]{0}" in V1)
-					nx_grid(v, D1 "[" i "]")
-			}
-			if (1 in v && v[1] > v["q"]) {
-				v["q"] = v[1]
-				d = d "<nx:placeholder for='" v[1] "'/>"
-			} else if (! (nx_digit(V2[i], 1) && V2[i] ~ /^(true|false|null)$/)) {
-				d = d "\x22" V2[i] "\x22"
-			} else {
-				d = d V2[i]
-			}
-			if (i < V2[0])
-				d = d ","
-		}
-		d = d __nx_if(D2 == 1, "]", "}")
-		if ("rec" in v)
-			sub("<nx:placeholder for='" v["|"] - 1 "'/>", d, v["rec"])
-		else
-			v["rec"] = d
-		if (! (D1 = nx_grid(v)))
-			break
-	}
-	d = v["rec"]
-	delete V2
-	delete v
-	return d
-}
 

@@ -182,7 +182,9 @@ function nx_json_length(D1, V1, B, V2, D2,	i, j, k)
 			if (! k || __nx_if(B, k < j, k > j))
 				k = j
 		}
-		V1[".nx" D1 "(" __nx_if(B, "longest", "shortest") ")"] = int(k)
+		i = "(" __nx_if(B, "longest", "shortest") ")"
+		nx_json_meta(D1, V1, i)
+		V1[".nx" D1 i] = int(k)
 	}
 	return int(k)
 }
@@ -209,6 +211,7 @@ function nx_json_reverse(D1, V1, V2, D2,	i, j)
 function nx_json_filter(D1, D2, D3, V1, V2, D4,		i)
 {
 	if (nx_json_split(D1, V1, V2, D4)) {
+		nx_json_meta(D1, V1, "(filter)")
 		for (i = 1; i <= V2[0]; i++) {
 			if (__nx_equality(D2, D3, V2[i]))
 				V1[".nx" D1 "(filter)"] = nx_join_str(V1[".nx" D1 "(filter)"], V2[i], "<nx:null/>")
@@ -220,6 +223,7 @@ function nx_json_filter(D1, D2, D3, V1, V2, D4,		i)
 function nx_json_anchor(D1, D2, V1, B, V2, D3,	i)
 {
 	if (nx_json_split(D1, V1, V2, D3)) {
+		nx_json_meta(D1, V1, "(anchor)")
 		for (i = 1; i <= V2[0]; i++) {
 			if (__nx_if(B, V2[i] ~ D2 "$", V2[i] ~ "^" D2))
 				V1[".nx" D1 "(anchor)"] = nx_join_str(V1[".nx" D1 "(anchor)"], V2[i], "<nx:null/>")
@@ -231,6 +235,7 @@ function nx_json_anchor(D1, D2, V1, B, V2, D3,	i)
 function nx_json_match(D1, D2, V1, V2, D3, B1, B2,	v)
 {
 	if (nx_json_split(D1, V1, V2, D3)) {
+		nx_json_meta(D1, V1, "(match)")
 		if ((B1 = split(nx_json_anchor(D1, D2, V1, B1, V2, D3), v, "<nx:null/>")) > 1) {
 			v[0] = B1
 			if ((B2 = split(nx_json_filter(D1, nx_append_str("0", nx_json_length(D1, V1, B2, v, D3)), "=_", V1, v, D3), v, "<nx:null/>")) > 1) {
@@ -279,6 +284,7 @@ function nx_json_compare(D1, D2, D3, V1, V2, V3, D4,	_v1, _v2, i, d)
 					d = nx_join_str(d, V3[i], "<nx:null/>")
 			}
 		}
+		nx_json_meta(D1, V1, "(" D3 ")" D2)
 		V1[".nx" D1 "(" D3 ")" D2] = d
 		delete _v1
 	}
@@ -287,13 +293,27 @@ function nx_json_compare(D1, D2, D3, V1, V2, V3, D4,	_v1, _v2, i, d)
 	return V1[".nx" D1 "(" D3 ")" D2]
 }
 
+function nx_json_meta(D1, V, D2)
+{
+	if (nx_json_type(D1, V) != 3) {
+		if (nx_json_type(D1 D2, V) == 3)
+			V[".nx" D1 "(0)"] = nx_join_str(V[".nx" D1 "(0)"], D2, "<nx:null/>")
+	}
+}
+
 function nx_json_tostring(D1, V1, V2, D2,	v, d, l, i)
 {
 	while (D2 = nx_json_split(D1, V1, V2, D2)) {
-		d = __nx_if(D2 == 1, "[", "{")
+		if (D2 == 1) {
+			v["cr"] = "["
+			v["cbk"] = "]"
+		} else {
+			v["cr"] = "{"
+			v["cbk"] = "}"
+		}
 		for (i = 1; i <= V2[0]; i++) {
 			if (D2 == 2) {
-				d = d "\x22" V2[i] "\x22:"
+				v["cr"] = v["cr"] "\x22" V2[i] "\x22:"
 				if (".nx" D1 "." V2[i] "{0}" in V1) {
 					nx_grid(v, D1 "." V2[i])
 				} else if (".nx" D1 "." V2[i] "[0]" in V1) {
@@ -307,35 +327,65 @@ function nx_json_tostring(D1, V1, V2, D2,	v, d, l, i)
 				else if (".nx" D1 "[" i "]{0}" in V1)
 					nx_grid(v, D1 "[" i "]")
 			}
-			if (1 in v && v[1] > v["q"]) {
-				v["q"] = v[1]
-				d = d "<nx:placeholder for='" v[1] "'/>"
+			if (1 in v && v[1] > v["dth"]) {
+				v["dth"] = v[1]
+				v["cr"] = v["cr"] "<nx:placeholder for='" v[1] "'/>"
 			} else if (! (nx_digit(V2[i], 1) && V2[i] ~ /^(true|false|null)$/)) {
-				d = d "\x22" V2[i] "\x22"
+				v["cr"] = v["cr"] "\x22" V2[i] "\x22"
 			} else {
-				d = d V2[i]
+				v["cr"] = v["cr"] V2[i]
 			}
 			if (i < V2[0])
-				d = d ","
+				v["cr"] =  v["cr"] ","
+			else
+				v["cr"] = v["cr"]
 		}
-		d = d __nx_if(D2 == 1, "]", "}")
+		v["cr"] = v["cr"] v["cbk"]
 		if ("rec" in v)
-			sub("<nx:placeholder for='" v["|"] - 1 "'/>", d, v["rec"])
+			sub("<nx:placeholder for='" v["|"] - 1 "'/>", v["cr"], v["rec"])
 		else
-			v["rec"] = d
+			v["rec"] = v["cr"]
 		if (! (D1 = nx_grid(v)))
 			break
 	}
-	d = v["rec"]
+	D1 = v["rec"]
 	delete V2
 	delete v
-	return d
+	return D1
+}
+
+function nx_json_delete(D1, V1, V2,	v, i, j)
+{
+	if (nx_json_type(D1, V1) != 3) {
+		v["srt"] = ".nx" D1
+		nx_json(nx_json_tostring(D1, V1), V2, 2, v)
+		for (i in V2) {
+			if (i "(0)" in V1) {
+				j = split(V1[i "(0)"], v, "<nx:null/>")
+				do {
+					delete V1[i j]
+				} while (--j > 0)
+				delete V1[i "(0)"]
+			}
+			if (i "{0}" in V1) {
+				delete V1[i "{0}"]
+			} else if (i "[0]" in V1) {
+				delete V1[i "[0]"]
+			}
+			delete V1[i]
+		}
+		delete v
+		delete V2
+	}
 }
 
 function nx_json_root(V1, V2, V3)
 {
 	if (! ("rt" in V2)) {
-		V2["rt"] = ".nx"
+		if ("srt" in V2)
+			V2["rt"] = V2["srt"]
+		else
+			V2["rt"] = ".nx"
 	} else if (V2["dth"] != V2["stk"]) {
 		if (V2["dth"] > V2["stk"]) {
 			if (V3[V2["stk"]] == "\x5b") {
