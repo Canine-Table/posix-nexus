@@ -98,7 +98,6 @@ nx_dialog_factory()
 					'name',
 					'depth',
 					'state',
-					'index',
 					'value'
 				],
 				'input': {
@@ -181,13 +180,13 @@ nx_dialog_factory()
 										v = __nx_if(nx_json_match(".toggle.off", v, arr, ste), "off", "on")
 									arr[".nx.input.items[" i "]." k] = v
 								}
-							} while (--flgs[0])
+							} while (--flgs[0] > 0)
 							arr[".nx.input.items[" i "].name"] = __nx_else(arr[".nx.input.items[" i "].name"], i)
 							if (arr[".nx.input.variant"] ~ /^((password|mixed)?form)$/) {
 								kl = length(arr[".nx.input.items[" i "].name"])
-								str = str " \x27" arr[".nx.input.items[" i "].name"] "\x27 " i " 2 \x27" arr[".nx.items[" i "].value"]  "\x27 " i " " kl + 4 " " ENVIRON["G_NEX_TTY_COLUMNS"] - kl - 10 " 0"
+								s = s " \x27" arr[".nx.input.items[" i "].name"] "\x27 " i " 2 \x27" arr[".nx.input.items[" i "].value"]  "\x27 " i " " kl + 4 " " ENVIRON["G_NEX_TTY_COLUMNS"] - kl - 10 " 0"
 							} else if (arr[".nx.input.variant"] ~ /^((radio|check|build)list|treeview|menu)$/) {
-								s = s " \x27" arr[".nx.input.items[" i "].name"] "\x27 \x27" arr[".nx.input.items[" i "].value"] "\x27 "
+								s = s " \x27" arr[".nx.input.items[" i "].name"] "\x27 \x27" arr[".nx.input.items[" i "].value"] "\x27"
 								if (arr[".nx.input.variant"] != "menu") {
 									if (arr[".nx.input.variant"] == "radiolist") {
 										if (arr[".nx.input.items[" i "].state"] == "on" && 0 in ste)

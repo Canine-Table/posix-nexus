@@ -137,22 +137,21 @@ function nx_json_split(D1, V1, V2, D2)
 		delete V1
 		return 0
 	}
-	if (".nx" D1 "[0]" in V1) {
-		V2[0] = 0
+	D2 = nx_json_type(D1, V1)
+	if (D2 == 2) {
+		split("", V2, "")
 		for (D2 = 1; D2 <= V1[".nx" D1 "[0]"]; D2++) {
 			nx_bijective(V2, ++V2[0], V1[".nx" D1 "[" D2 "]"])
 		}
-		D2 = 1
-	} else if (".nx" D1 "{0}" in V1) {
+		return 2
+	} else if (D2 == 1) {
 		D2 = split(V1[".nx" D1 "{0}"], V2, "<nx:null/>")
 		V2[0] = D2
 		for (D2 = 1; D2 <= V2[0]; D2++)
 			nx_bijective(V2, D2, "", V2[D2])
-		D2 = 2
-	} else {
-		return 0
+		return 1
 	}
-	return D2
+	return 0
 }
 
 function nx_json_type(D, V, B)
@@ -174,26 +173,25 @@ function nx_json_type(D, V, B)
 	return __nx_if(B, "string", 9)
 }
 
-function nx_json_length(D1, V1, B, V2, D2,	i, j, k)
+function nx_json_length(D1, V1, B, V2, D2,	i, j)
 {
-	if (D2 = nx_json_split(D1, V1, V2, D2)) {
+	if ((0 in V2 && V2[0]) || nx_json_split(D1, V1, V2, D2)) {
 		for (i = 1; i <= V2[0]; i++) {
-			j = length(V2[i])
-			if (! k || __nx_if(B, k < j, k > j))
-				k = j
+			D2 = length(V2[i])
+			if (! j || __nx_if(B, j < D2, j > D2))
+				j = D2
 		}
 		i = "(" __nx_if(B, "longest", "shortest") ")"
 		nx_json_meta(D1, V1, i)
-		V1[".nx" D1 i] = int(k)
+		return (V1[".nx" D1 i] = int(j))
 	}
-	return int(k)
 }
 
 function nx_json_reverse(D1, V1, V2, D2,	i, j)
 {
-	if (D2 = nx_json_split(D1, V1, V2, D2)) {
+	if (((0 in V2 && V2[0]) || nx_json_split(D1, V1, V2, D2)) && (D2 = nx_json_type(D1, V1)) < 3) {
 		i = V2[0]
-		if (D2 == 1) {
+		if (D2 == 2) {
 			do {
 				V1[".nx" D1 "[" ++j "]"] = V2[i]
 				V1[".nx" D1 "[" i "]"] = V2[j]
@@ -204,13 +202,13 @@ function nx_json_reverse(D1, V1, V2, D2,	i, j)
 				V1[".nx" D1 "{0}"] = nx_join_str(V1[".nx" D1 "{0}"], V2[i], "<nx:null/>")
 			} while (--i)
 		}
+		return V2[0]
 	}
-	return V2[0]
 }
 
 function nx_json_filter(D1, D2, D3, V1, V2, D4,		i)
 {
-	if (length(V2) || nx_json_split(D1, V1, V2, D4)) {
+	if ((0 in V2 && V2[0]) || nx_json_split(D1, V1, V2, D4)) {
 		nx_json_meta(D1, V1, "(filter)")
 		for (i = 1; i <= V2[0]; i++) {
 			if (__nx_equality(D2, D3, V2[i]))
@@ -222,7 +220,8 @@ function nx_json_filter(D1, D2, D3, V1, V2, D4,		i)
 
 function nx_json_anchor(D1, D2, V1, B, V2, D3,	i)
 {
-	if (length(V2) || nx_json_split(D1, V1, V2, D3)) {
+
+	if ((0 in V2 && V2[0]) || nx_json_split(D1, V1, V2, D3)) {
 		nx_json_meta(D1, V1, "(anchor)")
 		for (i = 1; i <= V2[0]; i++) {
 			if (__nx_if(B, V2[i] ~ D2 "$", V2[i] ~ "^" D2))
@@ -234,13 +233,15 @@ function nx_json_anchor(D1, D2, V1, B, V2, D3,	i)
 
 function nx_json_match(D1, D2, V1, V2, D3, B1, B2, B3,	v)
 {
-	 if (length(V2) || nx_json_split(D1, V1, V2, D3)) {
+	if ((0 in V2 && V2[0]) || nx_json_split(D1, V1, V2, D3)) {
 		nx_json_meta(D1, V1, "(match)")
 		if (! B3)
 			D2 = tolower(D2)
+		delete V1[".nx" D1 "(anchor)"]
 		if ((B1 = split(nx_json_anchor(D1, D2, V1, B1, V2, D3), v, "<nx:null/>")) > 1) {
 			v[0] = B1
 			if ((B2 = split(nx_json_filter(D1, nx_append_str("0", nx_json_length(D1, V1, B2, v, D3)), "=_", V1, v, D3), v, "<nx:null/>")) > 1) {
+				delete V1[".nx" D1 "(match)"]
 				do {
 					V1[".nx" D1 "(match)"] = nx_join_str(V1[".nx" D1 "(match)"], v[B2], "<nx:null/>")
 				} while (--B2 > 0)
@@ -258,7 +259,7 @@ function nx_json_match(D1, D2, V1, V2, D3, B1, B2, B3,	v)
 
 function nx_json_stack(D1, V, D2)
 {
-	if (length(V) && nx_json_type(D1, V) == 1) {
+	if (length(V) && nx_json_type(D1, V) == 2) {
 		if (D2) {
 			V[".nx" D1 "[" ++V[".nx" D1 "[0]"] "]"] = D2
 		} else if (V[".nx" D1 "[" V[".nx" D1 "[0]"] "]"]) {
@@ -298,7 +299,7 @@ function nx_json_compare(D1, D2, D3, V1, V2, V3, D4,	_v1, _v2, i, d)
 function nx_json_meta(D1, V, D2)
 {
 	if (nx_json_type(D1, V) != 3) {
-		if (nx_json_type(D1 D2, V) == 3)
+		if (nx_json_type(D1 D2, V) == 3 && "<nx:null/>" V[".nx" D1 "(0)"] "<nx:null/>" !~ "<nx:null/>" D2 "<nx:null/>")
 			V[".nx" D1 "(0)"] = nx_join_str(V[".nx" D1 "(0)"], D2, "<nx:null/>")
 	}
 }
