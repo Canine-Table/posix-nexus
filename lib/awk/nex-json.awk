@@ -210,7 +210,7 @@ function nx_json_reverse(D1, V1, V2, D2,	i, j)
 
 function nx_json_filter(D1, D2, D3, V1, V2, D4,		i)
 {
-	if (nx_json_split(D1, V1, V2, D4)) {
+	if (length(V2) || nx_json_split(D1, V1, V2, D4)) {
 		nx_json_meta(D1, V1, "(filter)")
 		for (i = 1; i <= V2[0]; i++) {
 			if (__nx_equality(D2, D3, V2[i]))
@@ -222,7 +222,7 @@ function nx_json_filter(D1, D2, D3, V1, V2, D4,		i)
 
 function nx_json_anchor(D1, D2, V1, B, V2, D3,	i)
 {
-	if (nx_json_split(D1, V1, V2, D3)) {
+	if (length(V2) || nx_json_split(D1, V1, V2, D3)) {
 		nx_json_meta(D1, V1, "(anchor)")
 		for (i = 1; i <= V2[0]; i++) {
 			if (__nx_if(B, V2[i] ~ D2 "$", V2[i] ~ "^" D2))
@@ -232,10 +232,12 @@ function nx_json_anchor(D1, D2, V1, B, V2, D3,	i)
 	}
 }
 
-function nx_json_match(D1, D2, V1, V2, D3, B1, B2,	v)
+function nx_json_match(D1, D2, V1, V2, D3, B1, B2, B3,	v)
 {
-	if (nx_json_split(D1, V1, V2, D3)) {
+	 if (length(V2) || nx_json_split(D1, V1, V2, D3)) {
 		nx_json_meta(D1, V1, "(match)")
+		if (! B3)
+			D2 = tolower(D2)
 		if ((B1 = split(nx_json_anchor(D1, D2, V1, B1, V2, D3), v, "<nx:null/>")) > 1) {
 			v[0] = B1
 			if ((B2 = split(nx_json_filter(D1, nx_append_str("0", nx_json_length(D1, V1, B2, v, D3)), "=_", V1, v, D3), v, "<nx:null/>")) > 1) {
@@ -272,7 +274,7 @@ function nx_json_stack(D1, V, D2)
 
 function nx_json_compare(D1, D2, D3, V1, V2, V3, D4,	_v1, _v2, i, d)
 {
-	if (nx_json_split(D1, V1, V2, D4) && nx_json_split(D2, V1, V3, D4)) {
+	if ((length(V1) || nx_json_split(D1, V1, V2, D4)) && (length(V3) || nx_json_split(D2, V1, V3, D4))) {
 		D3 = __nx_else(nx_json_match("", D3, _v1, _v2, "[ 'left', 'intersect', 'difference' ]"), "left")
 		for (i = 1; i <= V2[0]; i++) {
 			if ((V2[i] in V3) == (D3 == "intersect"))
