@@ -220,7 +220,6 @@ function nx_json_filter(D1, D2, D3, V1, V2, D4,		i)
 
 function nx_json_anchor(D1, D2, V1, B, V2, D3,	i)
 {
-
 	if ((0 in V2 && V2[0]) || nx_json_split(D1, V1, V2, D3)) {
 		nx_json_meta(D1, V1, "(anchor)")
 		for (i = 1; i <= V2[0]; i++) {

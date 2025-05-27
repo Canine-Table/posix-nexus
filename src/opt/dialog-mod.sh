@@ -161,7 +161,7 @@ nx_dialog_factory()
 				}
 				nx_json_delete(".labels", arr)
 				nx_json_delete(".input.labels", arr)
-				s = s " --trace \x27" __nx_else(ENVIRON["G_NEX_MOD_LOG"], "/var/log") "/nex-dialog.log\x27 --" arr[".nx.input.variant"] " \x27" __nx_else(arr[".nx.input.message"], " ") "\x27 " ENVIRON["G_NEX_TTY_ROWS"] " " ENVIRON["G_NEX_TTY_COLUMNS"]
+				s = s " --output-separator \x27<nx:null/>\x27 --trace \x27" __nx_else(ENVIRON["G_NEX_MOD_LOG"], "/var/log") "/nex-dialog.log\x27 --" arr[".nx.input.variant"] " \x27" __nx_else(arr[".nx.input.message"], " ") "\x27 " ENVIRON["G_NEX_TTY_ROWS"] " " ENVIRON["G_NEX_TTY_COLUMNS"]
 				if (arr[".nx.input.variant"] ~ /^((password|mixed)?form|(radio|check|build)list|(input)?menu|treeview)$/) {
 					nx_tui_log_db(db)
 					if (nx_json_type(".input.items", arr) != 2) {
@@ -184,7 +184,7 @@ nx_dialog_factory()
 							arr[".nx.input.items[" i "].name"] = __nx_else(arr[".nx.input.items[" i "].name"], i)
 							if (arr[".nx.input.variant"] ~ /^((password|mixed)?form)$/) {
 								kl = length(arr[".nx.input.items[" i "].name"])
-								s = s " \x27" arr[".nx.input.items[" i "].name"] "\x27 " i " 2 \x27" arr[".nx.input.items[" i "].value"]  "\x27 " i " " kl + 4 " " ENVIRON["G_NEX_TTY_COLUMNS"] - kl - 10 " 0"
+								s = s " \x27" arr[".nx.input.items[" i "].name"] ":\x27 " i " 2 \x27" arr[".nx.input.items[" i "].value"]  "\x27 " i " " kl + 4 " " ENVIRON["G_NEX_TTY_COLUMNS"] - kl - 10 " 0"
 							} else if (arr[".nx.input.variant"] ~ /^((radio|check|build)list|treeview|menu)$/) {
 								s = s " \x27" arr[".nx.input.items[" i "].name"] "\x27 \x27" arr[".nx.input.items[" i "].value"] "\x27"
 								if (arr[".nx.input.variant"] != "menu") {
@@ -195,6 +195,9 @@ nx_dialog_factory()
 											arr[".nx.input.items[" i "].state"] = "off"
 									}
 									s = s " " __nx_else(arr[".nx.input.items[" i "].state"], "off")
+
+									if (arr[".nx.input.variant"] == "treeview")
+										s = s " " __nx_else(arr[".nx.input.items[" i "].depth"], 0)
 								}
 							}
 							nx_json_delete(".input.items[" i "]", arr)
@@ -216,7 +219,52 @@ nx_dialog_factory()
 		}
 		DIALOG_OPTIONS=$(eval "dialog $DIALOG_OPTIONS" 3>&1 1>&2 2>&3)
 		DIALOG_EXIT_STATUS=$?
-		echo "$DIALOG_OPTIONS"
+		${AWK:-$(get_cmd_awk)} \
+			-v opt="$DIALOG_OPTIONS" \
+			-v json="
+			{
+				'items': [
+					'name',
+					'key'
+				],
+				'input': {
+					'items': [$i]
+				}
+			}
+		" "
+			$(nx_init_include -i "$G_NEX_MOD_LIB/awk/nex-tui.awk")
+		"'
+			BEGIN {
+				nx_json(json, arr, 2)
+				l = split(opt, args, "<nx:null/>")
+				if (nx_json_type(".input.items", arr) == 2)
+					nx_json_split(".items", arr, opts)
+				for (i = 1; i <= l; i++) {
+					if (! ((i == 1 || i == l) && args[i] == "")) {
+						if (l > 1) {
+							nx_json_split(".input.items[" i "]", arr, flgs)
+							do {
+								if (k = nx_json_match(".items", flgs[flgs[0]], arr, opts))
+									arr[".nx.input.items[" i "]." k] = arr[".nx.input.items[" i "]." flgs[flgs[0]]]
+							} while (--flgs[0] > 0)
+						}
+						++c
+						k = __nx_else(arr[".nx.input.items[" i "].key"], __nx_else(arr[".nx.input.items[" i "].name"], c))
+						gsub(/ /, "_", k)
+						gsub(/[^a-zA-Z0-9_]/, "", k)
+						if (k ~ /^[0-9]+/)
+							k = "_" k
+						printf("%s=\x22%s\x22 ","G_NEX_DIALOG_" c, k)
+						printf("%s=\x22%s\x22 ", k, args[i])
+					}
+				}
+				printf("G_NEX_DIALOG=\x22%s\x22", c)
+				delete opts
+				delete args
+				delete flgs
+				delete arr
+			}
+		'
 		return $DIALOG_EXIT_STATUS
 	)
 }

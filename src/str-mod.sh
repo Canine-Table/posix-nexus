@@ -51,7 +51,15 @@ nx_str_optarg()
 	${AWK:-$(nx_cmd_awk)} \
 		-v str="$(nx_str_chain "$@")" \
 	"
-		$(nx_init_include -i "$G_NEX_MOD_LIB/awk/nex-shell.awk")
+		$(cat \
+			"$G_NEX_MOD_LIB/awk/nex-misc.awk" \
+			"$G_NEX_MOD_LIB/awk/nex-struct.awk" \
+			"$G_NEX_MOD_LIB/awk/nex-log.awk" \
+			"$G_NEX_MOD_LIB/awk/nex-json.awk" \
+			"$G_NEX_MOD_LIB/awk/nex-str.awk" \
+			"$G_NEX_MOD_LIB/awk/nex-shell.awk" \
+			"$G_NEX_MOD_LIB/awk/nex-math.awk"
+		)
 	"'
 		BEGIN {
 			if (s = nx_str_opts(str))

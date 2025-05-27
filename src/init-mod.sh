@@ -3,12 +3,13 @@
 nx_init_include()
 {
 	(
-		while getopts :d:f:s:o:i: OPT; do
-			case $OPT in
-				s|d|f|o|i) eval "$OPT"="'${OPTARG:-true}'";;
-			esac
-		done
-		shift $((OPTIND - 1))
+		eval "$(nx_str_optarg ':d:f:s:o:i:' "$@")"
+		#while getopts :d:f:s:o:i: OPT; do
+		#	case $OPT in
+		#		s|d|f|o|i) eval "$OPT"="'${OPTARG:-true}'";;
+		#	esac
+		#done
+		#shift $((OPTIND - 1))
 		[ -e "$o" -a -n "$f" ] && mv "$o" "${o}-$(date +"%s").bak"
 		[ -z "$o" ] && o='/dev/stdout'
 		i="$(nx_content_path "${i:-$1}")"
