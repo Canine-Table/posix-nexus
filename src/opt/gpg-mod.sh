@@ -5,7 +5,7 @@ nx_gpg_menu()
 	(
 		while :; do
 			DIALOG_OPTIONS="$(
-				nx_dialog_factory -v 'check' -l '
+				nx_dialog_menu -v 'check' -l '
 					"title": "GNU Privacy Guard",
 					"ok": "Select",
 					"cancel": "Exit"

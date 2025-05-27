@@ -303,50 +303,57 @@ function nx_json_meta(D1, V, D2)
 	}
 }
 
-function nx_json_tostring(D1, V1, V2, D2,	v, d, l, i)
+function nx_json_flatten(D1, V1, N, V2, D2,	v)
 {
-	while (D2 = nx_json_split(D1, V1, V2, D2)) {
-		if (D2 == 1) {
-			v["cr"] = "["
-			v["cbk"] = "]"
+	__nx_bracket_map(v, 1, 1)
+	if (N != 0 || N == "") {
+		N = __nx_else(nx_natural(N), 2)
+		v["ksep"] = " "
+		v["ln"] = "\x0a"
+		if (nx_divisible(N, 8)) {
+			N = N / 8
+			v["ind"] = "\x09"
 		} else {
-			v["cr"] = "{"
-			v["cbk"] = "}"
+			v["ind"] = "\x20"
 		}
-		for (i = 1; i <= V2[0]; i++) {
-			if (D2 == 2) {
-				v["cr"] = v["cr"] "\x22" V2[i] "\x22:"
-				if (".nx" D1 "." V2[i] "{0}" in V1) {
-					nx_grid(v, D1 "." V2[i])
-				} else if (".nx" D1 "." V2[i] "[0]" in V1) {
-					nx_grid(v, D1 "." V2[i])
-				} else {
-					V2[i] = V1[".nx" D1 "." V2[i]]
-				}
-			} else {
-				if (".nx" D1 "[" i "][0]" in V1)
-					nx_grid(v, D1 "[" i "]")
-				else if (".nx" D1 "[" i "]{0}" in V1)
-					nx_grid(v, D1 "[" i "]")
+	}
+	while (D2 = nx_json_split(D1, V1, V2, D2)) {
+		if (D2 == 1)
+			v["dt"] = "{"
+		else
+			v["dt"] = "["
+		if (! (D1 in v))
+			v[D1] = ""
+		v["td"] = v["ln"] v[D1] v[v["dt"]]
+		v["icr"] = v[D1] nx_append_str(v["ind"], N)
+		v["dt"] = v["dt"] v["ln"] v["icr"]
+		for (v["cr"] = 1; v["cr"] <= V2[0]; v["cr"]++) {
+			if (D2 == 1) {
+				v["dt"] = v["dt"] "\x22" V2[v["cr"]] "\x22:" v["ksep"]
+				if (nx_json_type(D1 "." V2[v["cr"]], V1) < 3)
+					nx_grid(v, D1 "." V2[v["cr"]])
+				else
+					V2[v["cr"]] = V1[".nx" D1 "." V2[v["cr"]]]
+			} else if (nx_json_type(D1 "[" v["cr"] "]", V1) < 3) {
+				nx_grid(v, D1 "[" v["cr"] "]")
 			}
 			if (1 in v && v[1] > v["dth"]) {
 				v["dth"] = v[1]
-				v["cr"] = v["cr"] "<nx:placeholder for='" v[1] "'/>"
-			} else if (! (nx_digit(V2[i], 1) && V2[i] ~ /^(true|false|null)$/)) {
-				v["cr"] = v["cr"] "\x22" V2[i] "\x22"
+				v[v["1," v[1]]] = v["icr"]
+				v["dt"] = v["dt"] "<nx:placeholder index=" v[1] "/>"
+			} else if (! (nx_digit(V2[v["cr"]], 1) && V2[v["cr"]] ~ /^(true|false|null)$/)) {
+				v["dt"] = v["dt"] "\x22" V2[v["cr"]] "\x22"
 			} else {
-				v["cr"] = v["cr"] V2[i]
+				v["dt"] = v["dt"] V2[v["cr"]]
 			}
-			if (i < V2[0])
-				v["cr"] =  v["cr"] ","
-			else
-				v["cr"] = v["cr"]
+			if (v["cr"] < V2[0])
+				v["dt"] =  v["dt"] "," v["ln"] v["icr"]
 		}
-		v["cr"] = v["cr"] v["cbk"]
+		v["dt"] = v["dt"] v["td"]
 		if ("rec" in v)
-			sub("<nx:placeholder for='" v["|"] - 1 "'/>", v["cr"], v["rec"])
+			sub("<nx:placeholder index=" v["|"] - 1 "/>", v["dt"], v["rec"])
 		else
-			v["rec"] = v["cr"]
+			v["rec"] = v["dt"]
 		if (! (D1 = nx_grid(v)))
 			break
 	}
@@ -360,7 +367,8 @@ function nx_json_delete(D1, V1, V2,	v, i, j)
 {
 	if (nx_json_type(D1, V1) != 3) {
 		v["srt"] = ".nx" D1
-		nx_json(nx_json_tostring(D1, V1), V2, 2, v)
+		if (j = nx_json(nx_json_flatten(D1, V1, 0), V2, 2, v))
+			return j
 		for (i in V2) {
 			if (i "(0)" in V1) {
 				j = split(V1[i "(0)"], v, "<nx:null/>")
@@ -369,12 +377,9 @@ function nx_json_delete(D1, V1, V2,	v, i, j)
 				} while (--j > 0)
 				delete V1[i "(0)"]
 			}
-			if (i "{0}" in V1) {
-				delete V1[i "{0}"]
-			} else if (i "[0]" in V1) {
-				delete V1[i "[0]"]
-			}
 			delete V1[i]
+			if (sub(/(\x5b0\x5d|\x7b0\x7d)$/, "", i))
+				delete V1[i]
 		}
 		delete v
 		delete V2

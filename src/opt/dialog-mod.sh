@@ -4,7 +4,7 @@ nx_dialog_factory()
 {
 	(
 		eval "export $(nx_tty_all)"
-		eval "$(nx_str_optarg ':i:v:m:l:f:p:' "$@")"
+		eval "$(nx_str_optarg ':i:v:m:l:f:' "$@")"
 		DIALOG_ESC=255 DIALOG_ITEM_HELP=4 DIALOG_EXTRA=3 DIALOG_HELP=2 DIALOG_CANCEL=1 DIALOG_OK=0
 		DIALOG_OPTIONS="$(${AWK:-$(get_cmd_awk)} \
 			-v json="{
@@ -69,7 +69,7 @@ nx_dialog_factory()
 					'quoted': '<nx:false/>',
 					'reorder': '<nx:false/>',
 					'scrollbar': '<nx:true/>',
-					'single-quoted': '<nx:false/>',
+					'single-quoted': '<nx:true/>',
 					'size-err': '<nx:true/>',
 					'stderr': '<nx:false/>',
 					'stdout': '<nx:false/>',
@@ -78,7 +78,8 @@ nx_dialog_factory()
 					'insecure': '<nx:true/>',
 					'visit-items': '<nx:false/>',
 					'no-collapse': '<nx:true/>',
-					'erase-on-exit': '<nx:true/>'
+					'erase-on-exit': '<nx:true/>',
+					'separate-output': '<nx:true/>'
 				},
 				'toggle': {
 					'on': [
@@ -219,13 +220,22 @@ nx_dialog_factory()
 		}
 		DIALOG_OPTIONS=$(eval "dialog $DIALOG_OPTIONS" 3>&1 1>&2 2>&3)
 		DIALOG_EXIT_STATUS=$?
+		echo "$DIALOG_OPTIONS"
+		return $DIALOG_EXIT_STATUS
+	)
+}
+
+nx_dialog_output()
+{
+	(
+		eval "$(nx_str_optarg ':i:' "$@")"
 		${AWK:-$(get_cmd_awk)} \
-			-v opt="$DIALOG_OPTIONS" \
-			-v json="
-			{
+			-v outpt="$(nx_dialog_factory "$@")" \
+			-v json="{
 				'items': [
 					'name',
-					'key'
+					'key',
+					'value'
 				],
 				'input': {
 					'items': [$i]
@@ -236,37 +246,50 @@ nx_dialog_factory()
 		"'
 			BEGIN {
 				nx_json(json, arr, 2)
-				l = split(opt, args, "<nx:null/>")
-				if (nx_json_type(".input.items", arr) == 2)
-					nx_json_split(".items", arr, opts)
-				for (i = 1; i <= l; i++) {
-					if (! ((i == 1 || i == l) && args[i] == "")) {
-						if (l > 1) {
-							nx_json_split(".input.items[" i "]", arr, flgs)
-							do {
-								if (k = nx_json_match(".items", flgs[flgs[0]], arr, opts))
-									arr[".nx.input.items[" i "]." k] = arr[".nx.input.items[" i "]." flgs[flgs[0]]]
-							} while (--flgs[0] > 0)
-						}
-						++c
-						k = __nx_else(arr[".nx.input.items[" i "].key"], __nx_else(arr[".nx.input.items[" i "].name"], c))
+				split(outpt, args, "<nx:null/>")
+				for (i in args) {
+					if (args[i] != "")
+						opts[args[i]] = 1
+				}
+				nx_json_split(".items", arr, args)
+				for (i = 1; i <= arr[".nx.input.items[0]"]; i++) {
+					nx_json_split(".input.items[" i "]", arr, flgs)
+					do {
+						if (k = nx_json_match(".items", args[args[0]], arr, args))
+							arr[".nx.input.items[" i "]." k] = arr[".nx.input.items[" i "]." flgs[flgs[0]]]
+					} while (--flgs[0] > 0)
+					k = __nx_else(arr[".nx.input.items[" i "].key"], __nx_else(arr[".nx.input.items[" i "].name"], i))
+					if (k in opts || i in opts) {
 						gsub(/ /, "_", k)
 						gsub(/[^a-zA-Z0-9_]/, "", k)
 						if (k ~ /^[0-9]+/)
 							k = "_" k
-						printf("%s=\x22%s\x22 ","G_NEX_DIALOG_" c, k)
-						printf("%s=\x22%s\x22 ", k, args[i])
+						printf("%s=\x22%s\x22 ","G_NEX_DIALOG_" ++c, k)
+						printf("i%s=\x22%s\x22 ", k, i)
+						if (arr[".nx.input.items[" i "].value"])
+							printf("v%s=\x22%s\x22 ", k, arr[".nx.input.items[" i "].value"])
+						if (arr[".nx.input.items[" i "].key"])
+							printf("k%s=\x22%s\x22 ", k, arr[".nx.input.items[" i "].key"])
 					}
+				nx_json_delete(".input.items[" i "]", arr)
 				}
-				printf("G_NEX_DIALOG=\x22%s\x22", c)
-				delete opts
-				delete args
-				delete flgs
+				printf("G_NEX_DIALOG=\x22%s\x22 ", c)
 				delete arr
+				delete opts
+				delete flgs
+				delete args
 			}
 		'
-		return $DIALOG_EXIT_STATUS
 	)
 }
 
+nx_dialog_form()
+{
+	nx_dialog_output "$@"
+}
+
+nx_dialog_menu()
+{
+	nx_dialog_output "$@"
+}
 

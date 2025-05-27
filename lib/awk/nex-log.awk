@@ -1,69 +1,6 @@
 #nx_include "nex-misc.awk"
 #nx_include "nex-str.awk"
 
-function __nx_color_map(D1, D2,		c)
-{
-	if (D2 == "<")
-		c = 10
-	else
-		c = 0
-	if ((D2 = tolower(D1)) == "c")
-		return c + 39
-	if (D2 == "r")
-		return c + 38
-	if (D1 != D2)
-		c += 60
-	if (D2 == "b")
-		return c + 30
-	if (D2 == "e")
-		return c + 31
-	if (D2 == "s")
-		return c + 32
-	if (D2 == "w")
-		return c + 33
-	if (D2 == "i")
-		return c + 34
-	if (D2 == "d")
-		return c + 35
-	if (D2 == "a")
-		return c + 36
-	if (D2 == "l")
-		return c + 37
-	return 0
-}
-
-function __nx_style_map(D,	c)
-{
-	if (D == "o") # overline
-		return 53
-	if (D == "O") # not overline
-		return 55
-	if (D != (c = tolower(D))) {
-		D = c
-		c = 20
-	} else {
-		c = 0
-	}
-	if (D == "n") # normal
-		return "0"
-	if (D == "b") # bold
-		return c + 1
-	if (D == "d") # dim
-		return c + 2
-	if (D == "i") # italic
-		return c + 3
-	if (D == "u") # underline
-		return c + 4
-	if (D == "f") # flash
-		return c + 5
-	if (D == "r") # reverse video
-		return c + 7
-	if (D == "h") # hide
-		return c + 8
-	if (D == "s") # strike
-		return c + 9
-}
-
 function __nx_emoji_map(V)
 {
 	V["Fsmiling_sunglasses"] = "\xF0\x9F\x98\x8E"
@@ -80,7 +17,6 @@ function __nx_emoji_map(V)
 	V["Fgrin_sweat"] = "\xF0\x9F\x98\x85"
 	V["Fgrin_squint"] = "\xF0\x9F\x98\x86"
 	V["Ftear_joy"] = "\xF0\x9F\x98\x82"
-	V["Froll_laugh"] = ""
 	V["Fslight_smile"] = "\xF0\x9F\x99\x82"
 	V["Fdown"] = "\xF0\x9F\x99\x83"
 	V["Fwink"] = "\xF0\x9F\x98\x89"
@@ -287,6 +223,70 @@ function __nx_emoji_map(V)
 	V["Fhighway"] = "\xF0\x9F\x9B\xA3"
 	V["Fbridge"] = "\xF0\x9F\x9B\xA4"
 }
+
+function __nx_color_map(D1, D2,		c)
+{
+	if (D2 == "<")
+		c = 10
+	else
+		c = 0
+	if ((D2 = tolower(D1)) == "c")
+		return c + 39
+	if (D2 == "r")
+		return c + 38
+	if (D1 != D2)
+		c += 60
+	if (D2 == "b")
+		return c + 30
+	if (D2 == "e")
+		return c + 31
+	if (D2 == "s")
+		return c + 32
+	if (D2 == "w")
+		return c + 33
+	if (D2 == "i")
+		return c + 34
+	if (D2 == "d")
+		return c + 35
+	if (D2 == "a")
+		return c + 36
+	if (D2 == "l")
+		return c + 37
+	return 0
+}
+
+function __nx_style_map(D,	c)
+{
+	if (D == "o") # overline
+		return 53
+	if (D == "O") # not overline
+		return 55
+	if (D != (c = tolower(D))) {
+		D = c
+		c = 20
+	} else {
+		c = 0
+	}
+	if (D == "n") # normal
+		return "0"
+	if (D == "b") # bold
+		return c + 1
+	if (D == "d") # dim
+		return c + 2
+	if (D == "i") # italic
+		return c + 3
+	if (D == "u") # underline
+		return c + 4
+	if (D == "f") # flash
+		return c + 5
+	if (D == "r") # reverse video
+		return c + 7
+	if (D == "h") # hide
+		return c + 8
+	if (D == "s") # strike
+		return c + 9
+}
+
 
 function __nx_symbol_map(D,	c)
 {
