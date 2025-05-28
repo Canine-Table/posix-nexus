@@ -298,7 +298,9 @@ nx_dialog_form()
 				'items': [
 					'name',
 					'key',
-					'value'
+					'value',
+					'error',
+					'type'
 				],
 				'input': {
 					'items': [$i]

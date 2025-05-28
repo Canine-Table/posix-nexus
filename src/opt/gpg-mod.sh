@@ -8,7 +8,7 @@ nx_gpg_encrypt()
 				"ok": "Select"
 			'
 		)"
-		echo "$(nx_dialog_form -v 'form' -l '
+		eval "$(nx_dialog_form -v 'form' -l '
 			"title": "GNU Privacy Guard",
 			"ok": "Encrypt"
 		' -i '
@@ -28,9 +28,9 @@ nx_gpg_encrypt()
 			}
 		')"
 
-		#echo --recipient "$recipient_id" \
-		#	--output "$voutput_file" \
-		#	--encrypt "$vencrypt_file"
+		gpg --recipient "$recipient_id" \
+			--output "$output_file" \
+			--encrypt "$encrypt_file"
 	)
 }
 
