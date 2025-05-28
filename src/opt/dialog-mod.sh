@@ -78,8 +78,7 @@ nx_dialog_factory()
 					'insecure': '<nx:true/>',
 					'visit-items': '<nx:false/>',
 					'no-collapse': '<nx:true/>',
-					'erase-on-exit': '<nx:true/>',
-					'separate-output': '<nx:true/>'
+					'erase-on-exit': '<nx:true/>'
 				},
 				'toggle': {
 					'on': [
@@ -162,14 +161,15 @@ nx_dialog_factory()
 				}
 				nx_json_delete(".labels", arr)
 				nx_json_delete(".input.labels", arr)
-				s = s " --output-separator \x27<nx:null/>\x27 --trace \x27" __nx_else(ENVIRON["G_NEX_MOD_LOG"], "/var/log") "/nex-dialog.log\x27 --" arr[".nx.input.variant"] " \x27" __nx_else(arr[".nx.input.message"], " ") "\x27 " ENVIRON["G_NEX_TTY_ROWS"] " " ENVIRON["G_NEX_TTY_COLUMNS"]
+				S = " --trace \x27" __nx_else(ENVIRON["G_NEX_MOD_LOG"], "/var/log") "/nex-dialog.log\x27 --" arr[".nx.input.variant"] " \x27" __nx_else(arr[".nx.input.message"], " ") "\x27 " ENVIRON["G_NEX_TTY_ROWS"] " " ENVIRON["G_NEX_TTY_COLUMNS"]
 				if (arr[".nx.input.variant"] ~ /^((password|mixed)?form|(radio|check|build)list|(input)?menu|treeview)$/) {
 					nx_tui_log_db(db)
 					if (nx_json_type(".input.items", arr) != 2) {
 						print nx_log_error(nx_tui_log_db(db, 1, ".input.items[0] (-i)"))
 						err = 120
 					} else {
-						s = s " " ENVIRON["G_NEX_TTY_ROWS"]
+						s = s " --output-separator \x27<nx:null/>\x27"
+						S = S " " ENVIRON["G_NEX_TTY_ROWS"]
 						nx_json_split(".toggle.off", arr, ste)
 						nx_json_split(".items", arr, opts)
 						for (i = 1; i <= arr[".nx.input.items[0]"]; i++) {
@@ -185,9 +185,9 @@ nx_dialog_factory()
 							arr[".nx.input.items[" i "].name"] = __nx_else(arr[".nx.input.items[" i "].name"], i)
 							if (arr[".nx.input.variant"] ~ /^((password|mixed)?form)$/) {
 								kl = length(arr[".nx.input.items[" i "].name"])
-								s = s " \x27" arr[".nx.input.items[" i "].name"] ":\x27 " i " 2 \x27" arr[".nx.input.items[" i "].value"]  "\x27 " i " " kl + 4 " " ENVIRON["G_NEX_TTY_COLUMNS"] - kl - 10 " 0"
+								S = S " \x27" arr[".nx.input.items[" i "].name"] ":\x27 " i " 2 \x27" arr[".nx.input.items[" i "].value"]  "\x27 " i " " kl + 4 " " ENVIRON["G_NEX_TTY_COLUMNS"] - kl - 10 " 0"
 							} else if (arr[".nx.input.variant"] ~ /^((radio|check|build)list|treeview|menu)$/) {
-								s = s " \x27" arr[".nx.input.items[" i "].name"] "\x27 \x27" arr[".nx.input.items[" i "].value"] "\x27"
+								S = S " \x27" arr[".nx.input.items[" i "].name"] "\x27 \x27" arr[".nx.input.items[" i "].value"] "\x27"
 								if (arr[".nx.input.variant"] != "menu") {
 									if (arr[".nx.input.variant"] == "radiolist") {
 										if (arr[".nx.input.items[" i "].state"] == "on" && 0 in ste)
@@ -195,10 +195,9 @@ nx_dialog_factory()
 										else
 											arr[".nx.input.items[" i "].state"] = "off"
 									}
-									s = s " " __nx_else(arr[".nx.input.items[" i "].state"], "off")
-
+									S = S " " __nx_else(arr[".nx.input.items[" i "].state"], "off")
 									if (arr[".nx.input.variant"] == "treeview")
-										s = s " " __nx_else(arr[".nx.input.items[" i "].depth"], 0)
+										S = S " " __nx_else(arr[".nx.input.items[" i "].depth"], 0)
 								}
 							}
 							nx_json_delete(".input.items[" i "]", arr)
@@ -211,7 +210,7 @@ nx_dialog_factory()
 				delete flgs
 				if (err)
 					exit err
-				print s
+				print s S
 			}
 		')" || {
 			DIALOG_EXIT_STATUS=$?
@@ -225,12 +224,14 @@ nx_dialog_factory()
 	)
 }
 
-nx_dialog_output()
+nx_dialog_menu()
 {
 	(
 		eval "$(nx_str_optarg ':i:' "$@")"
+		DIALOG_OPTIONS="$(nx_dialog_factory "$@")"
+		DIALOG_EXIT_STATUS=$?
 		${AWK:-$(get_cmd_awk)} \
-			-v outpt="$(nx_dialog_factory "$@")" \
+			-v outpt="$DIALOG_OPTIONS" \
 			-v json="{
 				'items': [
 					'name',
@@ -265,31 +266,102 @@ nx_dialog_output()
 						if (k ~ /^[0-9]+/)
 							k = "_" k
 						printf("%s=\x22%s\x22 ","G_NEX_DIALOG_" ++c, k)
+						s = s " " c
 						printf("i%s=\x22%s\x22 ", k, i)
 						if (arr[".nx.input.items[" i "].value"])
 							printf("v%s=\x22%s\x22 ", k, arr[".nx.input.items[" i "].value"])
 						if (arr[".nx.input.items[" i "].key"])
 							printf("k%s=\x22%s\x22 ", k, arr[".nx.input.items[" i "].key"])
 					}
-				nx_json_delete(".input.items[" i "]", arr)
+					nx_json_delete(".input.items[" i "]", arr)
 				}
-				printf("G_NEX_DIALOG=\x22%s\x22 ", c)
+				printf("G_NEX_DIALOG=\x22%s\x22 ", s)
 				delete arr
 				delete opts
 				delete flgs
 				delete args
 			}
 		'
+		return $DIALOG_EXIT_STATUS
 	)
 }
 
 nx_dialog_form()
 {
-	nx_dialog_output "$@"
+	(
+		eval "$(nx_str_optarg ':i:' "$@")"
+		DIALOG_OPTIONS="$(nx_dialog_factory "$@")"
+		DIALOG_EXIT_STATUS=$?
+		${AWK:-$(get_cmd_awk)} \
+			-v outpt="$DIALOG_OPTIONS" \
+			-v json="{
+				'items': [
+					'name',
+					'key',
+					'value'
+				],
+				'input': {
+					'items': [$i]
+				}
+			}
+		" "
+			$(nx_init_include -i "$G_NEX_MOD_LIB/awk/nex-tui.awk")
+		"'
+			BEGIN {
+				nx_json(json, arr, 2)
+				split(outpt, opts, "<nx:null/>")
+				nx_json_split(".items", arr, args)
+				for (i = 1; i <= arr[".nx.input.items[0]"]; i++) {
+					nx_json_split(".input.items[" i "]", arr, flgs)
+					do {
+						if (k = nx_json_match(".items", args[args[0]], arr, args))
+							arr[".nx.input.items[" i "]." k] = arr[".nx.input.items[" i "]." flgs[flgs[0]]]
+					} while (--flgs[0] > 0)
+					k = __nx_else(arr[".nx.input.items[" i "].key"], __nx_else(arr[".nx.input.items[" i "].name"], i))
+					gsub(/ /, "_", k)
+					gsub(/[^a-zA-Z0-9_]/, "", k)
+					if (k ~ /^[0-9]+/)
+						k = "_" k
+					printf("%s=\x22%s\x22 ","G_NEX_DIALOG_" i, k)
+					s = s " " i
+					printf("i%s=\x22%s\x22 ", k, i)
+					if (arr[".nx.input.items[" i "].value"] == opts[i])
+						printf("s%s=\x22%s\x22 ", k, "<nx:eq/>")
+					else if (opts[i] != "")
+						printf("s%s=\x22%s\x22 ", k, "<nx:diff/>")
+					else
+						printf("s%s=\x22%s\x22 ", k, "<nx:null/>")
+					printf("%s=\x22%s\x22 ", k, opts[i])
+					if (arr[".nx.input.items[" i "].key"])
+						printf("k%s=\x22%s\x22 ", k, arr[".nx.input.items[" i "].key"])
+					nx_json_delete(".input.items[" i "]", arr)
+				}
+				printf("G_NEX_DIALOG=\x22%s\x22 ", s)
+				delete arr
+				delete opts
+				delete flgs
+				delete args
+			}
+		'
+		return $DIALOG_EXIT_STATUS
+	)
 }
 
-nx_dialog_menu()
+nx_dialog_explorer()
 {
-	nx_dialog_output "$@"
+	(
+		eval "$(nx_str_optarg ':f:' "$@")"
+		[ -z "$f" ] && {
+			[ -n "$1" ] && {
+				f="$(nx_content_path "$1")"
+			} || {
+				f="$(nx_content_path "$(pwd)")"
+			}
+		} || {
+			f="$(nx_content_path "$f")"
+		}
+		nx_dialog_factory "$@" ${f:+-m "$f"}
+		return $DIALOG_EXIT_STATUS
+	)
 }
 
