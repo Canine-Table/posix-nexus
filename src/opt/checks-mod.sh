@@ -49,7 +49,6 @@ nx_check_network()
 		[ -n "$c" ] && curl --cookie "$c" "$ul"
 		[ -n "$r" ] && curl --C - -o "$r" "$ul"
 		[ -n "$C" ] && curl --cookie-jar "$C" "$ul"
-		[ -n "$s" ] && for ((i = 1; i <= $s; i++)); do nx_io_printf -i "$(curl -o /dev/null  -w "%{time_total}" "$ul" &)"; done
 		[ -n "$k" ] && nx_io_printf -f '_b>l<b%' "$(curl -k "$ul")"
 		[ -n "$p" ] && nx_io_printf -l "Port $p: $(curl -v telnet://$l:$p)"
 		

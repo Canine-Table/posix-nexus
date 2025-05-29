@@ -1,3 +1,15 @@
+nx_gpg_init()
+{
+	(
+		eval "$(nx_init_os)"
+		case "$G_NEX_OS_ID" in
+			'gentoos')
+				{
+					gpg --auto-key-locate=clear,nodefault,wkd --locate-key releng@gentoo.org
+				};;
+		esac
+	)
+}
 
 nx_gpg_encrypt()
 {

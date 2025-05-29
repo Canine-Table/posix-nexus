@@ -341,7 +341,7 @@ function nx_json_flatten(D1, V1, N, V2, D2,	v)
 				v["dth"] = v[1]
 				v[v["1," v[1]]] = v["icr"]
 				v["dt"] = v["dt"] "<nx:placeholder index=" v[1] "/>"
-			} else if (! (nx_digit(V2[v["cr"]], 1) && V2[v["cr"]] ~ /^(true|false|null)$/)) {
+			} else if (! (nx_digit(V2[v["cr"]], 1) != "" || V2[v["cr"]] ~ /^(true|false|null)$/)) {
 				v["dt"] = v["dt"] "\x22" V2[v["cr"]] "\x22"
 			} else {
 				v["dt"] = v["dt"] V2[v["cr"]]

@@ -19,12 +19,12 @@ g_nx_cmd()
 
 nx_cmd_pager()
 {
-	g_nx_cmd less more tee
+	g_nx_cmd less more most tee
 }
 
 nx_cmd_awk()
 {
-	g_nx_cmd mawk nawk awk gawk
+	g_nx_cmd mawk nawk gawk awk
 }
 
 nx_cmd_shell()
@@ -50,5 +50,15 @@ nx_cmd_pkgmgr()
 nx_cmd_aurmgr()
 {
 	g_nx_cmd yay pacaur aurutils trizen pikaur paru
+}
+
+nx_cmd_container()
+{
+	g_nx_cmd podman docker-rootless docker
+}
+
+nx_cmd_sudo()
+{
+	g_nx_cmd doas sudo sudo-rs
 }
 

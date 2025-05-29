@@ -1,3 +1,5 @@
+
+
 nx_io_fifo_mgr()
 {
 	h_nx_cmd mkfifo && {
@@ -43,6 +45,21 @@ nx_io_swap()
 		mv "$2" "$1"
 		mv "${1}.swap" "$2"
 	}
+}
+
+nx_io_list()
+{
+	ls --color=never -A1 "$1" | ${AWK:-$(nx_cmd_awk)} '
+		{
+			if (s)
+				s = s ","
+			else
+				s = "["
+			s = s "\x22" $0 "\x22"
+		} END {
+			print s "]"
+		}
+	'
 }
 
 nx_io_printf()
