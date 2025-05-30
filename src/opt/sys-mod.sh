@@ -23,7 +23,7 @@ nx_sys_sudo()
 
 nx_sys_getent()
 {
-	h_nx_cmd getent && {
+	[ -n "$1" ] && h_nx_cmd getent && {
 		getent "$1"
 	} || [ -n "$2" -a -f "$2" -a -r "$2" ] && {
 		cat "$2"
@@ -42,13 +42,7 @@ nx_sys_user()
 					s = s ","
 				else
 					s = "["
-				s = s "{\x22username\x22:\x22" $1 "\x22,"
-				s = s "\x22password\x22:\x22" $2 "\x22,"
-				s = s "\x22uid\x22:" $3 ","
-				s = s "\x22gid\x22:" $4 ","
-				s = s "\x22gecos\x22:\x22" $5 "\x22,"
-				s = s "\x22home\x22:\x22" $6 "\x22,"
-				s = s "\x22shell\x22:\x22" $7 "\x22}"
+				s = s "{\x22username\x22:\x22" $1 "\x22,\x22password\x22:\x22" $2 "\x22,\x22uid\x22:" $3 ",\x22gid\x22:" $4 ",\x22gecos\x22:\x22" $5 "\x22,\x22home\x22:\x22" $6 "\x22,\x22shell\x22:\x22" $7 "\x22}"
 			}
 		} END {
 			nx_json(s "]", js, 2)
@@ -70,10 +64,7 @@ nx_sys_group()
 					s = s ","
 				else
 					s = "["
-				s = s "{\x22group\x22:\x22" $1 "\x22,"
-				s = s "\x22password\x22:\x22" $2 "\x22,"
-				s = s "\x22gid\x22:" $3 ","
-				s = s "\x22members\x22:["
+				s = s "{\x22group\x22:\x22" $1 "\x22,\x22password\x22:\x22" $2 "\x22,\x22gid\x22:" $3 ",\x22members\x22:["
 				gsub(/,/, "\x22,\x22", $4)
 				s = s "\x22" $4 "\x22]}"
 			}
@@ -222,7 +213,7 @@ nx_sys_shadow()
 					s = s ","
 				else
 					s = "["
-					s = s "{\x22username\x22:\x22" $1 "\x22,\x22encrypted password\x22:\x22" __nx_if($2 == "!*", "<nx:disabled/>", __nx_if($2 == "!", "<nx:locked/>", $2)) "\x22,\x22last password change\x22:" __nx_else($3, 0) ",\x22minimum age\x22:" __nx_else($4, 0) ",\x22maximum age\x22:"  __nx_else($5, 0) ",\x22warning period\x22:" __nx_else($6, 0) ",\x22inactive period\x22:" __nx_else($7, 0) ",\x22experation date\x22:" __nx_else($8, 0) ",\x22reserved\x22:" __nx_else($9, 0) "}"
+				s = s "{\x22username\x22:\x22" $1 "\x22,\x22encrypted password\x22:\x22" __nx_if($2 == "!*", "<nx:disabled/>", __nx_if($2 == "!", "<nx:locked/>", $2)) "\x22,\x22last password change\x22:" __nx_else($3, 0) ",\x22minimum age\x22:" __nx_else($4, 0) ",\x22maximum age\x22:"  __nx_else($5, 0) ",\x22warning period\x22:" __nx_else($6, 0) ",\x22inactive period\x22:" __nx_else($7, 0) ",\x22experation date\x22:" __nx_else($8, 0) ",\x22reserved\x22:" __nx_else($9, 0) "}"
 			}
 		} END {
 			nx_json(s "]", js, 2)
@@ -245,6 +236,29 @@ nx_sys_gshadow()
 				else
 					s = "["
 				s = s "{\x22username\x22:\x22" $1 "\x22,\x22encrypted password\x22:\x22" __nx_if($2 == "!*", "<nx:disabled/>", __nx_if($2 == "!", "<nx:locked/>", $2)) "\x22,\x22group administrators\x22:\x22" $3 "\x22,\x22group members\x22:\x22" $4 "\x22}"
+			}
+		} END {
+			nx_json(s "]", js, 2)
+			print nx_json_flatten("", js, num)
+			delete js
+		}
+	'
+}
+
+
+nx_sys_cgroups()
+{	
+	nx_sys_getent '' '/proc/cgroups' | ${AWK:-$(nx_cmd_awk)} -v num="$1" "
+		$(nx_init_include -i "$G_NEX_MOD_LIB/awk/nex-json.awk")
+	"'
+		{
+			gsub(/(^[ \t]+$|#.*$)/, "", $0)
+			if ($0) {
+				if (s)
+					s = s ","
+				else
+					s = "["
+				s = s "{\x22subsystem name\x22:\x22" $1 "\x22,\x22hierarchy\x22:\x22" $2 "\x22,\x22number of cgroups\x22:\x22" $3 "\x22,\x22enabled\x22:\x22" __nx_if($4 == 1, "<nx:true/>", "<nx:false/>") "\x22}"
 			}
 		} END {
 			nx_json(s "]", js, 2)

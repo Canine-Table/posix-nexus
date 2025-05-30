@@ -1,3 +1,12 @@
+#nx_include "nex-struct.awk"
+#nx_include "nex-misc.awk"
+#nx_include "nex-struct.awk"
+#nx_include "nex-str.awk"
+#nx_include "nex-log.awk"
+#nx_include "nex-math.awk"
+#nx_include "nex-json.awk"
+#nx_include "nex-tui.awk"
+
 function __nx_keyword_map(V)
 {
 	# Control Flow

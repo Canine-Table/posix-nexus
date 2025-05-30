@@ -82,69 +82,131 @@
 #endif
 
 #if NX_IS_64BIT && (NX_SUPPORTS_LONG_LONG || (__SIZEOF_LONG__ == 8))
-	typedef unsigned long long nx_uint64_t;
-	typedef signed long long nx_sint64_t;
-	typedef unsigned long long nx_size_t;
-	typedef signed long long nx_ptrdiff_t;
-	typedef signed long int nx_sint_t;
-	typedef unsigned long int nx_uint_t;
+	#define NX_LONG_LONG = 1
 #else /* 32-bit system */
-	typedef unsigned long nx_size_t;
-	typedef signed long nx_ptrdiff_t;
-	typedef signed int nx_sint_t;
-	typedef unsigned int nx_uint_t;
-	typedef struct {
-		nx_size_t low;
-		nx_size_t high;
-	} nx_uint64_t;
-	typedef struct {
-		nx_ptrdiff_t low;
-		nx_ptrdiff_t high;
-	} nx_sint64_t;
+	#define NX_LONG_LONG = 0
 #endif
 
 #define NX_TOK_LENGTH 64
 #define NX_BUF_SIZE 4096
 
-/* Pointer types */
-typedef void* nx_ptr_t;			/* Generic pointer */
-typedef void* const nx_Ptr_t;		/* Constant generic pointer */
+typedef void nx_void_t;
+typedef nx_void_t *nx_void_pt;
 
-typedef const void* nx_cptr_t;		/* Constant pointer to a constant object */
-typedef const void* const nx_CPtr_t;	/* Fully constant pointer */
+/* Byte */
+typedef char nx_char_t;
+typedef const nx_char_t nx_char_T;
+typedef nx_char_t *nx_char_pt;
+typedef nx_char_T *nx_char_pT;
+typedef nx_char_pt const nx_char_Pt;
+typedef nx_char_pT const nx_char_PT;
 
-/* Floating-point types */
-typedef float nx_flt_t;			/* 32-bit floating-point */
-typedef const float nx_Flt_t;		/* Constant 32-bit floating-point */
+typedef unsigned char nx_char_ut;
+typedef const nx_char_ut nx_char_uT;
+typedef nx_char_ut *nx_char_put;
+typedef nx_char_uT *nx_char_puT;
+typedef nx_char_put const nx_char_Put;
+typedef nx_char_puT const nx_char_PuT;
 
-typedef double nx_dbl_t;		/* 64-bit floating-point */
-typedef const double nx_Dbl_t;		/* Constant 64-bit floating-point */
+typedef signed char nx_char_st;
+typedef const nx_char_st nx_char_sT;
+typedef nx_char_st *nx_char_pst;
+typedef nx_char_sT *nx_char_psT;
+typedef nx_char_pst const nx_char_Pst;
+typedef nx_char_psT const nx_char_PsT;
 
-typedef long double nx_ldbl_t;		/* 128-bit (or extended precision) floating-point */
-typedef const long double nx_Ldbl_t;	/* Constant 128-bit floating-point */
+typedef union {
+	nx_char_t _char;
+	nx_char_ut u_char;
+	nx_char_st s_char;
+} nx_db_Ut;
 
-/* integer types */
-typedef const nx_sint_t nx_Sint_t;
-typedef const nx_uint_t nx_Uint_t;
+typedef enum {
+	_CHAR, U_CHAR, S_CHAR
+} nx_db_Et;
 
-typedef unsigned short nx_ushrt_t;		/* 16-bit unsigned integer (most of the time) */
-typedef unsigned const short nx_Ushrt_t;	/* 16-bit unsigned constant integer (most of the time) */
-typedef signed short nx_sshrt_t;		/* 16-bit signed integer */
-typedef signed const short nx_Sshrt_t;		/* Constant 16-bit signed integer */
+typedef struct {
+	nx_db_Et type;
+	nx_db_Ut data;
+} nx_db_St;
 
-typedef char nx_char_t;				/* 8-bit integer */
-typedef const char nx_Char_t;			/* 8-bit constant integer */
-typedef unsigned char nx_uchar_t;		/* 8-bit unsigned integer */
-typedef unsigned const char nx_Uchar_t;		/* 8-bit unsigned constant integer */
-typedef signed char nx_schar_t;			/* 8-bit signed integer */
-typedef signed const char nx_Schar_t;		/* Constant 8-bit signed integer */
+nx_char_t nx_db_char_f(nx_db_St*, nx_char_t);
+nx_char_st nx_db_char_sf(nx_db_St*, nx_char_st);
+nx_char_ut nx_db_char_uf(nx_db_St*, nx_char_ut);
+nx_void_t nx_db_f(nx_db_St*, nx_db_Et, nx_void_pt);
 
-typedef unsigned char nx_uint8_t;
-typedef signed char nx_sint8_t;
-typedef unsigned short nx_uint16_t;
-typedef signed short nx_sint16_t;
-typedef unsigned int nx_uint32_t;
-typedef signed int nx_sint32_t;
+/* Word */
+typedef short nx_short_st;
+typedef const nx_short_st nx_short_sT;
+typedef nx_short_sT *nx_short_psT;
+typedef nx_short_psT const nx_short_PsT;
+
+typedef unsigned short nx_short_ut;
+typedef const nx_short_ut nx_short_uT;
+typedef nx_short_ut *nx_short_put;
+typedef nx_short_uT *nx_short_puT;
+typedef nx_short_put const nx_short_Put;
+typedef nx_short_puT const nx_short_PuT;
+
+typedef union {
+	nx_short_st s_short;
+	nx_short_ut u_short;
+} nx_dw_Ut;
+
+typedef enum {
+	U_SHORT, S_SHORT
+} nx_dw_Et;
+
+typedef struct {
+	nx_dw_Et type;
+	nx_dw_Ut data;
+} nx_dw_St;
+
+nx_short_st nx_dw_short_sf(nx_dw_St*, nx_short_st);
+nx_short_ut nx_dw_short_uf(nx_dw_St*, nx_short_ut);
+nx_void_t nx_dw_f(nx_dw_St*, nx_dw_Et, nx_void_pt);
+
+/* Double Word */
+typedef float nx_float_t;
+typedef const nx_float_t nx_float_T;
+typedef nx_float_t *nx_float_pt;
+typedef nx_float_T *nx_float_pT;
+typedef nx_float_pt const nx_float_Pt;
+typedef nx_float_pT const nx_float_PT;
+
+typedef int nx_int_st;
+typedef const nx_int_st nx_int_sT;
+typedef nx_int_st *nx_int_pst;
+typedef nx_int_sT *nx_int_psT;
+typedef nx_int_pst const nx_int_Pst;
+typedef nx_int_psT const nx_int_PsT;
+
+typedef unsigned int nx_int_ut;
+typedef const nx_int_ut nx_int_uT;
+typedef nx_int_ut *nx_int_put;
+typedef nx_int_uT *nx_int_puT;
+typedef nx_int_put const nx_int_Put;
+typedef nx_int_puT const nx_int_PuT;
+
+typedef union {
+	nx_int_st s_int;
+	nx_int_ut u_int;
+	nx_float_t _float;
+} nx_dd_Ut;
+
+typedef enum {
+	U_INT, S_INT, _FLOAT
+} nx_dd_Et;
+
+typedef struct {
+	nx_dd_Et type;
+	nx_dd_Ut data;
+} nx_dd_St;
+
+nx_int_ut nx_dd_int_uf(nx_dd_St*, nx_int_ut);
+nx_int_st nx_dd_int_sf(nx_dd_St*, nx_int_st);
+nx_float_t nx_dd_float_f(nx_dd_St*, nx_float_t);
+nx_void_t nx_dd_f(nx_dd_St*, nx_dd_Et e, nx_void_pt);
 
 #endif
 
