@@ -1,5 +1,15 @@
-#ifndef NX_TYPE_H
-#define NX_TYPE_H
+#ifndef NX_DEFINE_H
+#define NX_DEFINE_H
+
+ #if defined(_WIN32)
+	#define NX_OS_NAME "windows"
+#elif defined(__linux__)
+	#define NX_OS_NAME "linux"
+#elif defined(__APPLE__)
+	#define NX_OS_NAME "macos"
+#else
+	#define NX_OS_NAME "unix"
+#endif
 
 #if defined(__STDC_VERSION__)
 	#if __STDC_VERSION__ >= 199901L  /* C99 or newer */
@@ -41,26 +51,29 @@
 	#define NX_IS_BIT 0  /* Undefined architecture */
 #endif
 
-#define NX_SWAP64(v) ((((v) >> 56) & 0x00000000000000FF) | \
-	(((v) >> 40) & 0x000000000000FF00) | \
-	(((v) >> 24) & 0x0000000000FF0000) | \
-	(((v) >> 8) & 0x000000000FF00000) | \
-	(((v) << 8) & 0x0000000FF0000000) | \
-	(((v) << 24) & 0x0000FF0000000000) | \
-	(((v) << 40) & 0x00FF000000000000) | \
-	(((v) << 56) & 0xFF00000000000000))
-#define NX_SWAP32(v) ((((v) >> 24) & 0x000000FF) | \
-	(((v) >> 8)  & 0x0000FF00) | \
-	(((v) << 8)  & 0x00FF0000) | \
-	(((v) << 24) & 0xFF000000))
-#define NX_SWAP16(v) (((v) >> 8) | ((v) << 8))
+#define NX_SWAP64(D) ((((D) >> 56) & 0x00000000000000FF) | \
+	(((D) >> 40) & 0x000000000000FF00) | \
+	(((D) >> 24) & 0x0000000000FF0000) | \
+	(((D) >> 8) & 0x000000000FF00000) | \
+	(((D) << 8) & 0x0000000FF0000000) | \
+	(((D) << 24) & 0x0000FF0000000000) | \
+	(((D) << 40) & 0x00FF000000000000) | \
+	(((D) << 56) & 0xFF00000000000000))
+#define NX_SWAP32(D) ((((D) >> 24) & 0x000000FF) | \
+	(((D) >> 8)  & 0x0000FF00) | \
+	(((D) << 8)  & 0x00FF0000) | \
+	(((D) << 24) & 0xFF000000))
+#define NX_SWAP16(D) (((D) >> 8) | ((D) << 8))
+#define NX_SWAP8(D) (D)
 
 #if NX_IS_BIT == 64
-	#define NX_SWAP(v) (NX_SWAP64(v))
+	#define NX_SWAP(D) (NX_SWAP64(D))
 #elif NX_IS_BIT == 32
-	#define NX_SWAP(v) (NX_SWAP32(v))
+	#define NX_SWAP(D) (NX_SWAP32(D))
 #elif NX_IS_BIT == 16
-	#define NX_SWAP(v) (NX_SWAP16(v))
+	#define NX_SWAP(D) (NX_SWAP16(D))
+#else
+	#define NX_SWAP(D) (NX_SWAP8(D))
 #endif
 
 #if defined(__SIZEOF_LONG_DOUBLE__) && __SIZEOF_LONG_DOUBLE__ == 16
@@ -87,11 +100,71 @@
 	#define NX_LONG_LONG = 0
 #endif
 
+/* Memory Alignment Macros */
+#define NX_ALIGN_4 __attribute__((aligned(4)))   /* Align to 4 bytes */
+#define NX_ALIGN_8 __attribute__((aligned(8)))   /* Align to 8 bytes */
+#define NX_ALIGN_16 __attribute__((aligned(16))) /* Align to 16 bytes */
+#define NX_ALIGN_32 __attribute__((aligned(32))) /* Align to 32 bytes */
+#define NX_CACHE_ALIGN_64 __attribute__((aligned(64))) /* Align to 64-byte cache line */
+#define NX_CACHE_ALIGN_128 __attribute__((aligned(128))) /* Align to 128-byte cache line */
+#define NX_CACHE_ALIGN_256 __attribute__((aligned(256))) /* Align to 256-byte cache line */
+
+/* CPU Instruction Set Detection */
+#if defined(__SSE__) || defined(__x86_64__) || defined(_M_X64)
+	#define NX_HAS_SSE 1  /* SSE Instructions Available */
+#else
+	#define NX_HAS_SSE 0
+#endif
+
+#if defined(__AVX__) || defined(__AVX2__) || defined(__x86_64__) || defined(_M_X64)
+	#define NX_HAS_AVX 1  /* AVX Instructions Available */
+#else
+	#define NX_HAS_AVX 0
+#endif
+
+#if defined(__ARM_NEON) || defined(__ARM_FEATURE_NEON)
+	#define NX_HAS_NEON 1 /* NEON Instructions Available (ARM) */
+#else
+	#define NX_HAS_NEON 0
+#endif
+
+#if defined(__CACHE_LINE_SIZE)
+	#define NX_CACHE_LINE_SIZE __CACHE_LINE_SIZE /* Cache line size */
+#elif defined(__GNUC__) && defined(__x86_64__)
+	#include <unistd.h>
+	#define NX_CACHE_LINE_SIZE sysconf(_SC_LEVEL1_DCACHE_LINESIZE) /* Retrieve cache line size */
+#else
+	#define NX_CACHE_LINE_SIZE 64 /* Default to 64 bytes (common architecture) */
+#endif
+
+/* Branch Prediction Macros */
+/* Instruction Prefetching */
+#if defined(__GNUC__) || defined(__clang__)
+	#define NX_PREFETCH(D) __builtin_prefetch(D)
+	#define NX_LIKELY(D) __builtin_expect(!!(D), 1) /* Likely branch */
+	#define NX_UNLIKELY(D) __builtin_expect(!!(D), 0) /* Unlikely branch */
+#else
+	#define NX_PREFETCH(D) /* No prefetch available */
+	#define NX_LIKELY(D) (D) /* No prediction available */
+	#define NX_UNLIKELY(D) (D)
+#endif
+
 #define NX_TOK_LENGTH 64
 #define NX_BUF_SIZE 4096
+#define NX_XSTR(D) NX_STR(D)
+#define NX_STR(D) #D
+#define NX_TYPE_DEF(D1, D2, D3) nx_##D2##D3##t nx_##D1##_##D2##D3##f(nx_##D1##_St*, nx_##D2##D3##t)
+#define NX_TYPE_CAST(D1) nx_void_t nx_##D1##_f(nx_##D1##_St*, nx_##D1##_Et, nx_void_pt)
+#define NX_TYPE(D1, D2, D3, D4) nx_##D2##D3##t nx_##D1##_##D2##D3##f(nx_##D1##_St *s, nx_##D2##D3##t d) \
+{ \
+	nx_##D2##D3##t t = d; \
+	nx_##D1##_f(s, D4, (nx_void_pt)&t); \
+	return t; \
+}
 
 typedef void nx_void_t;
 typedef nx_void_t *nx_void_pt;
+#define NX_NULL ((nx_void_pt)0)
 
 /* Byte */
 typedef char nx_char_t;
@@ -100,6 +173,10 @@ typedef nx_char_t *nx_char_pt;
 typedef nx_char_T *nx_char_pT;
 typedef nx_char_pt const nx_char_Pt;
 typedef nx_char_pT const nx_char_PT;
+typedef nx_char_t **nx_char_ppt;
+typedef nx_char_T **nx_char_ppT;
+typedef nx_char_ppt const nx_char_pPt;
+typedef nx_char_ppT const nx_char_pPT;
 
 typedef unsigned char nx_char_ut;
 typedef const nx_char_ut nx_char_uT;
@@ -130,10 +207,10 @@ typedef struct {
 	nx_db_Ut data;
 } nx_db_St;
 
-nx_char_t nx_db_char_f(nx_db_St*, nx_char_t);
-nx_char_st nx_db_char_sf(nx_db_St*, nx_char_st);
-nx_char_ut nx_db_char_uf(nx_db_St*, nx_char_ut);
-nx_void_t nx_db_f(nx_db_St*, nx_db_Et, nx_void_pt);
+NX_TYPE_DEF(db, char, _u);
+NX_TYPE_DEF(db, char, _s);
+NX_TYPE_DEF(db, char, _);
+NX_TYPE_CAST(db);
 
 /* Word */
 typedef short nx_short_st;
@@ -162,9 +239,9 @@ typedef struct {
 	nx_dw_Ut data;
 } nx_dw_St;
 
-nx_short_st nx_dw_short_sf(nx_dw_St*, nx_short_st);
-nx_short_ut nx_dw_short_uf(nx_dw_St*, nx_short_ut);
-nx_void_t nx_dw_f(nx_dw_St*, nx_dw_Et, nx_void_pt);
+NX_TYPE_DEF(dw, short, _u);
+NX_TYPE_DEF(dw, short, _s);
+NX_TYPE_CAST(dw);
 
 /* Double Word */
 typedef float nx_float_t;
@@ -203,10 +280,10 @@ typedef struct {
 	nx_dd_Ut data;
 } nx_dd_St;
 
-nx_int_ut nx_dd_int_uf(nx_dd_St*, nx_int_ut);
-nx_int_st nx_dd_int_sf(nx_dd_St*, nx_int_st);
-nx_float_t nx_dd_float_f(nx_dd_St*, nx_float_t);
-nx_void_t nx_dd_f(nx_dd_St*, nx_dd_Et e, nx_void_pt);
+NX_TYPE_DEF(dd, int, _s);
+NX_TYPE_DEF(dd, int, _u);
+NX_TYPE_DEF(dd, float, _);
+NX_TYPE_CAST(dd);
 
 #endif
 
