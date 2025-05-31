@@ -164,6 +164,9 @@
 
 typedef void nx_void_t;
 typedef nx_void_t *nx_void_pt;
+typedef nx_void_t **nx_void_ppt;
+typedef nx_void_t ***nx_void_pppt;
+typedef nx_void_t ****nx_void_ppppt;
 #define NX_NULL ((nx_void_pt)0)
 
 /* Byte */
