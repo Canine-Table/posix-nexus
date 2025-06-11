@@ -1,69 +1,100 @@
-#include "nex-define.h"
-#include "nex-misc.h"
+#include "nex-type.h"
+#include "nex-math.h"
 #include "nex-string.h"
-#include <stdio.h>
 #include <stdlib.h>
 
-nx_int_st nx_is_space(nx_char_t s)
+NX_CLASS_DEF(bin)
 {
-        return s == ' ' || s == '\t' || s == '\v' || s == '\f';
+	return NX_IN_RANGE(s, '0', '1');
 }
 
-nx_int_st nx_is_digit(nx_char_t s)
+NX_CLASS_DEF(oct)
 {
-        return ! (s < '0' || s > '9');
+	return NX_IN_RANGE(s, '0', '7');
 }
 
-nx_int_st nx_is_lower(nx_char_t s)
+NX_CLASS_DEF(dec)
 {
-        return ! (s < 'a' || s > 'z');
+	return NX_IN_RANGE(s, '0', '9');
 }
 
-nx_int_st nx_is_upper(nx_char_t s)
+NX_CLASS_DEF(lhex)
 {
-        return ! (s < 'A' || s > 'Z');
+	return NX_IN_RANGE(s, 'a', 'f');
 }
 
-nx_int_st nx_is_alpha(nx_char_t s)
+NX_CLASS_DEF(uhex)
 {
-        return nx_is_upper(s) || nx_is_lower(s);
+	return NX_IN_RANGE(s, 'A', 'F');
 }
 
-nx_int_st nx_is_alnum(nx_char_t s)
+NX_CLASS_DEF(lower)
 {
-        return nx_is_alpha(s) || nx_is_digit(s);
+	return NX_IN_RANGE(s, 'a', 'z');
 }
 
-nx_int_st nx_is_quote(nx_char_t s)
+NX_CLASS_DEF(upper)
 {
-        return s == '"' || s == '\'' || s == '`';
+	return NX_IN_RANGE(s, 'A', 'Z');
 }
 
-nx_int_pst nx_atol(nx_int_ut l, nx_char_ppT c)
+NX_CLASS_DEF(islhex)
 {
-	if (l < 2) {
-		fprintf(stderr, "Usage: %s <numbers>\n",  c[0]);
-		return(NULL);
+	return nx_dd_dec_isF(s) || nx_dd_lhex_isF(s);
+}
+
+NX_CLASS_DEF(isuhex)
+{
+	return nx_dd_dec_isF(s) || nx_dd_uhex_isF(s);
+}
+
+NX_CLASS_DEF(hex)
+{
+	return nx_dd_dec_isF(s) || nx_dd_lhex_isF(s) || nx_dd_uhex_isF(s);
+}
+
+NX_CLASS_DEF(alpha)
+{
+	return nx_dd_lower_isF(s) || nx_dd_upper_isF(s);
+}
+
+NX_CLASS_DEF(alnum)
+{
+	return nx_dd_dec_isF(s) || nx_dd_alpha_isF(s);
+}
+
+nx_dd_ist nx_dd_isnum_isF(nx_db_PcT c)
+{
+	nx_dd_iut i = 0, j = (c[0] == '+' || c[0] == '-') ? 1 : 0;
+	nx_dd_ist k = 0, l = (c[0] == '-') ? -1 : 1;
+	do {
+		if (c[j] == '.' && k && ! i)
+			i = l;
+		else if (! nx_dd_dec_isF(c[j]))
+			return(0);
+		k = 1;
+	} while (c[++j] != '\0');
+	return (! j || c[j - 1] == '.') ? 0 : i + l;
+}
+
+nx_dd_E nx_dd_atolf_EF(nx_dd_pS s, nx_db_PcT c)
+{
+
+	nx_dd_ist e = nx_dd_isnum_isF(c);
+	if (! e)
+		return NX_DD_NT;
+	if (NX_ABS(e) == 1) {
+		if (atol(c) > NX_DD_MAX_IST) {
+			nx_dd_iuF(s, atol(c));
+			return NX_DD_IUT;
+		}
+		nx_dd_isF(s, atol(c));
+		return NX_DD_IST;
 	}
-	nx_int_pst p_num = (nx_int_pst)malloc(l * sizeof(nx_int_st));
-	if (nx_mem_chk(p_num) == -1) /* Handle memory allocation failure here */
-		return(NULL);
-	for (nx_int_ut i = 1; i < l; i++)
-			p_num[i] = atol(c[i]);
-	return p_num;
+	nx_dd_fF(s, atof(c));
+	return NX_DD_FT;
 }
 
-nx_float_pt nx_atof(nx_int_ut l, nx_char_ppT c)
-{
-	if (l < 2) {
-		fprintf(stderr, "Usage: %s <floats>\n",  c[0]);
-		return(NULL);
-	}
-	nx_float_pt p_flt = (nx_float_pt)malloc(l * sizeof(nx_float_t));
-	if (nx_mem_chk(p_flt) == -1) /* Handle memory allocation failure here */
-		return(NULL);
-	for (nx_int_ut i = 1; i < l; i++)
-		p_flt[i] = atof(c[i]);
-	return p_flt;
-}
+NX_BIN_PRINT_IMP(dd, is, d);
+NX_BIN_PRINT_IMP(dw, ss, hd);
 

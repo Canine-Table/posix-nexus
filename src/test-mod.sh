@@ -2,31 +2,21 @@
 
 nx_test_box()
 {
-	${AWK:-$(get_cmd_awk)} \
-		-v json='{
-			"hello": {
-				"hi": [ "hi", {"bye": "hi" } ],
-				"hello": "world",
-				"world": "hello"
-			}
-		}' \
-		-v comp='{
-			"hi": "bye",
-			"yes": [[[[["no"]]]]],
-			"bro": [ "yes", { "yes": "no", "no": "yes" }]
-		}' \
-		-v lol='[
-			[ "a", "list"],
-			[ "of", "lists"]
-		]' \
-	"
+	${AWK:-$(get_cmd_awk)} "
 		$(nx_init_include -i "$G_NEX_MOD_LIB/awk/nex-struct.awk")
 	"'
+		function nx_print_box(a, b, c, d) {
+			if  (--d <= 0)
+				return
+			printf("typedef const *%s nx_%s_P%st;\n", a, b, c);
+			nx_print_box(a " const *", b, "P" c, d);
+			printf("typedef const *%s nx_%s_P%st;\n", a, b, c);
+
+			printf("typedef %s *const nx_%s_p%sT;\n", a, b, c);
+			printf("typedef const %s *const nx_%s_P%sT;\n", a, b, c);
+		}
 		BEGIN {
-			nx_json(json, js, 2)
-			nx_json_delete(".hello.hi", js)
-			for (i in js)
-				print i " = " js[i]
+			nx_print_box("int", "dd", "u", 3)
 		}
 	'
 }

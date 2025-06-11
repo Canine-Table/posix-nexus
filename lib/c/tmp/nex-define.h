@@ -100,15 +100,6 @@
 	#define NX_LONG_LONG = 0
 #endif
 
-/* Memory Alignment Macros */
-#define NX_ALIGN_4 __attribute__((aligned(4)))   /* Align to 4 bytes */
-#define NX_ALIGN_8 __attribute__((aligned(8)))   /* Align to 8 bytes */
-#define NX_ALIGN_16 __attribute__((aligned(16))) /* Align to 16 bytes */
-#define NX_ALIGN_32 __attribute__((aligned(32))) /* Align to 32 bytes */
-#define NX_CACHE_ALIGN_64 __attribute__((aligned(64))) /* Align to 64-byte cache line */
-#define NX_CACHE_ALIGN_128 __attribute__((aligned(128))) /* Align to 128-byte cache line */
-#define NX_CACHE_ALIGN_256 __attribute__((aligned(256))) /* Align to 256-byte cache line */
-
 /* CPU Instruction Set Detection */
 #if defined(__SSE__) || defined(__x86_64__) || defined(_M_X64)
 	#define NX_HAS_SSE 1  /* SSE Instructions Available */
@@ -139,23 +130,72 @@
 
 /* Branch Prediction Macros */
 /* Instruction Prefetching */
+
+#define NX_PACKED_STRUCT
+#define NX_PACKED_END
+#define NX_LIKELY(D) (D)
+#define NX_UNLIKELY(D) (D)
+#define NX_PREFETCH(D) (D)
+#define NX_HAS_PRAGMA_PACK 0
+
 #if defined(__GNUC__) || defined(__clang__)
+	#if defined(__GNUC__)
+		#define NX_COMPILER GNUC
+	#else
+		#define NX_COMPILER CLANG
+	#endif
+
+	#undef NX_PACKED_STRUCT
+	#undef NX_PREFETCH
+	#undef NX_LIKELY
+	#undef NX_UNLIKELY
+	#undef NX_HAS_PRAGMA_PACK
+
 	#define NX_PREFETCH(D) __builtin_prefetch(D)
 	#define NX_LIKELY(D) __builtin_expect(!!(D), 1) /* Likely branch */
 	#define NX_UNLIKELY(D) __builtin_expect(!!(D), 0) /* Unlikely branch */
+	#define NX_HAS_PRAGMA_PACK 1
+
+	/* Memory Alignment Macros */
+	#define NX_ALIGN_4 __attribute__((aligned(4)))   /* Align to 4 bytes */
+	#define NX_ALIGN_8 __attribute__((aligned(8)))   /* Align to 8 bytes */
+	#define NX_ALIGN_16 __attribute__((aligned(16))) /* Align to 16 bytes */
+	#define NX_ALIGN_32 __attribute__((aligned(32))) /* Align to 32 bytes */
+	#define NX_CACHE_ALIGN_64 __attribute__((aligned(64))) /* Align to 64-byte cache line */
+	#define NX_CACHE_ALIGN_128 __attribute__((aligned(128))) /* Align to 128-byte cache line */
+	#define NX_CACHE_ALIGN_256 __attribute__((aligned(256))) /* Align to 256-byte cache line */
+	#define NX_PACKED_STRUCT __attribute__((packed))
+
+#elif defined(_MSC_VER)
+	#undef NX_PACKED_STRUCT
+	#undef NX_PACKED_END
+	#undef NX_HAS_PRAGMA_PACK
+
+	#define NX_COMPILER MSC
+	#define NX_ALIGN_4 __declspec(align(4))
+	#define NX_ALIGN_8 __declspec(align(8))
+	#define NX_PACKED_STRUCT __pragma(pack(push, 1))
+	#define NX_PACKED_END __pragma(pack(pop))
+	#define NX_HAS_PRAGMA_PACK 1
+
+#elif defined(__ICC)
+    #define NX_COMPILER ICC  /* Intel Compiler */
+
+#elif defined(__ARMCC_VERSION)
+	#define NX_COMPILER ARMCC  /* ARM Compiler */
+
 #else
-	#define NX_PREFETCH(D) /* No prefetch available */
-	#define NX_LIKELY(D) (D) /* No prediction available */
-	#define NX_UNLIKELY(D) (D)
+	#define NX_COMPILER UNKNOWN
+
 #endif
 
 #define NX_TOK_LENGTH 64
 #define NX_BUF_SIZE 4096
 #define NX_XSTR(D) NX_STR(D)
 #define NX_STR(D) #D
-#define NX_TYPE_DEF(D1, D2, D3) nx_##D2##D3##t nx_##D1##_##D2##D3##f(nx_##D1##_St*, nx_##D2##D3##t)
+#define NX_TYPE_DEF(D1, D2, D3) nx_##D2##D3##t nx_##D1##_##D2##D3##f(nx_##D1##_St *s, nx_##D2##D3##t d)
 #define NX_TYPE_CAST(D1) nx_void_t nx_##D1##_f(nx_##D1##_St*, nx_##D1##_Et, nx_void_pt)
-#define NX_TYPE(D1, D2, D3, D4) nx_##D2##D3##t nx_##D1##_##D2##D3##f(nx_##D1##_St *s, nx_##D2##D3##t d) \
+#define NX_TYPE(D1, D2, D3, D4) NX_TYPE_DEF(D1, D2, D3) \
 { \
 	nx_##D2##D3##t t = d; \
 	nx_##D1##_f(s, D4, (nx_void_pt)&t); \
@@ -196,16 +236,16 @@ typedef nx_char_pst const nx_char_Pst;
 typedef nx_char_psT const nx_char_PsT;
 
 typedef union {
-	nx_char_t _char;
-	nx_char_ut u_char;
-	nx_char_st s_char;
+	nx_char_t _CHAR;
+	nx_char_ut U_CHAR;
+	nx_char_st S_CHAR;
 } nx_db_Ut;
 
 typedef enum {
 	_CHAR, U_CHAR, S_CHAR
 } nx_db_Et;
 
-typedef struct {
+typedef struct  {
 	nx_db_Et type;
 	nx_db_Ut data;
 } nx_db_St;
@@ -218,7 +258,9 @@ NX_TYPE_CAST(db);
 /* Word */
 typedef short nx_short_st;
 typedef const nx_short_st nx_short_sT;
+typedef nx_short_st *nx_short_pst;
 typedef nx_short_sT *nx_short_psT;
+typedef nx_short_pst const nx_short_Pst;
 typedef nx_short_psT const nx_short_PsT;
 
 typedef unsigned short nx_short_ut;
@@ -229,8 +271,8 @@ typedef nx_short_put const nx_short_Put;
 typedef nx_short_puT const nx_short_PuT;
 
 typedef union {
-	nx_short_st s_short;
-	nx_short_ut u_short;
+	nx_short_st S_SHORT;
+	nx_short_ut U_SHORT;
 } nx_dw_Ut;
 
 typedef enum {
@@ -269,16 +311,16 @@ typedef nx_int_put const nx_int_Put;
 typedef nx_int_puT const nx_int_PuT;
 
 typedef union {
-	nx_int_st s_int;
-	nx_int_ut u_int;
-	nx_float_t _float;
+	nx_int_st S_INT;
+	nx_int_ut U_INT;
+	nx_float_t _FLOAT;
 } nx_dd_Ut;
 
 typedef enum {
 	U_INT, S_INT, _FLOAT
 } nx_dd_Et;
 
-typedef struct {
+typedef struct NX_ALIGN_4 {
 	nx_dd_Et type;
 	nx_dd_Ut data;
 } nx_dd_St;
@@ -287,6 +329,7 @@ NX_TYPE_DEF(dd, int, _s);
 NX_TYPE_DEF(dd, int, _u);
 NX_TYPE_DEF(dd, float, _);
 NX_TYPE_CAST(dd);
+nx_void_pt nx_aligned_alloc(nx_int_ut, nx_int_ut);
 
 #endif
 

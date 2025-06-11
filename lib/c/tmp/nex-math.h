@@ -31,6 +31,8 @@
 #define NX_GIGABYTE (1024 * NX_MEGABYTE)	/* Bytes in a gigabyte */
 #define NX_FLOAT_EPSILON 1.19209290e-7		/* Smallest float difference (32-bit) */
 #define NX_DOUBLE_EPSILON 2.22044605e-16	/* Smallest double difference (64-bit) */
+#define NX_MAX_INT 2147483647			/* Maximum value of a 32-bit int */
+#define NX_MIN_INT -2147483648			/* Minimum value of a 32-bit int */
 
 /* Astronomy Constants */
 #define NX_AU 149597870700		/* Astronomical Unit (meters) */
@@ -64,20 +66,16 @@
 #define NX_F2C(F) (((F) - 32) * 5 / 9)		/* Converts Fahrenheit to Celsius */
 #define NX_C2F(C) (((C) * 9 / 5) + 32)		/* Converts Celsius to Fahrenheit */
 
-#define NX_ADD(D1, D2) ((D1) + (D2))
-#define NX_SUB(D1, D2) ((D1) - (D2))
-#define NX_MUL(D1, D2) ((D1) * (D2))
-#define NX_DIV(D1, D2) ((D1) / (D2))
-
+#define NX_ADD(D1, D2) (D1 + D2)
+#define NX_SUB(D1, D2) (D1 - D2)
+#define NX_MUL(D1, D2) (D1 * D2)
+#define NX_DIV(D1, D2) (D1 / D2)
 #define NX_SQUARE(D) NX_MUL(D, D)
 #define NX_CUBE(D) NX_MUL(NX_SQUARE(D), D)
-
 #define NX_AVG(D1, D2) NX_DIV(NX_ADD(D1, D2), 2)
 #define NX_ABS(D) (D < 0) ? NX_MUL(D, -1) : (D)
-
 #define NX_MIN(D1, D2) ((D1) < (D2) ? (D1) : (D2))
 #define NX_MAX(D1, D2) ((D1) > (D2) ? (D1) : (D2))
-
 #define NX_CLAMP(D1, D2, D3) ((D1) < (D2) ? (D2) : ((D1) > (D3) ? (D3) : (D1)))
 #define NX_IN_RANGE(D1, D2, D3) ((D1) >= (D2) && (D1) <= (D3))
 #define NX_CDIV(D1, D2) NX_DIV(NX_SUB(NX_ADD(D1, D2), 1), D2)
@@ -85,78 +83,32 @@
 #define NX_CLEAR_BIT(D1, D2) ((D1) &= ~(1 << (D2)))
 #define NX_TOGGLE_BIT(D1, D2) ((D1) ^= (1 << (D2)))
 #define NX_CHECK_BIT(D1, D2) ((D1) & (1 << (D2)))
-
-#define NX_ORS(D1, D2) ((D1) | (D1) >> (D2))
-#define NX_XRS(D1, D2) ((D1) ^ (D1) >> (D2))
-
-#define NX_EVEN_PARITY(D) (((NX_XRS(1, NX_XRS(2, NX_XRS(4, NX_XRS(8, NX_XRS(D, 16)))))) & 1) == 0)
+#define NX_ORS(D1, D2) (D1 | D1 >> D2)
 #define NX_NXT_POT(D) NX_ADD(NX_ORS(NX_ORS(NX_ORS(NX_ORS(NX_ORS(NX_SUB(D, 1), 1), 2), 4), 8), 16), 1)
-
-#define NX_EXP_POT_ST(D) (1 << (D))
-#define NX_EXP_POT_UT(D) (1U << (D))
-#define NX_EXP_POT_FT(D) (1.0f * NX_EXP_POT_ST(D))
-
 #define NX_EVEN(D) (NX_MOD_POT(D, 2) == 0)
 #define NX_ODD(D) (NX_EVEN(D) == 0)
-
 #define NX_MUL_POT(D) (D << 1)
 #define NX_DIV_POT(D) ((D > 0) ? (D >> 1) : 0)
 #define NX_MOD_POT(D1, D2) (D1 & NX_SUB(NX_NXT_POT(D2), 1))
-
 #define NX_IS_POT(D) ((D > 0) && ((D & NX_SUB(D, 1)) == 0))
-
-#define NX_MIN_ST(D) NX_EXP_POT_ST(NX_SUB(sizeof(D) * 8, 1))
-#define NX_MAX_ST(D) NX_SUB(-NX_MIN_ST(D), 1)
-#define NX_MIN_UT(D) 0
-#define NX_MAX_UT(D) NX_SUB(NX_MAX_ST(D), NX_MIN_ST(D))
-
-#define NX_DB_MAX_CUT NX_MAX_UT(nx_dd_cut)
-#define NX_DB_MIN_CUT NX_MIN_UT(nx_dd_cut)
-
-#define NX_DB_MAX_CST NX_MAX_ST(nx_dd_cst)
-#define NX_DB_MIN_CST NX_MIN_ST(nx_dd_cst)
-
-#define NX_DW_MAX_SUT NX_MAX_UT(nx_dw_sut)
-#define NX_DW_MIN_SUT NX_MIN_UT(nx_dw_sut)
-
-#define NX_DW_MAX_SST NX_MAX_ST(nx_dw_sst)
-#define NX_DW_MIN_SST NX_MIN_ST(nx_dw_sst)
-
-#define NX_DD_MAX_IUT NX_MAX_UT(nx_dd_iut)
-#define NX_DD_MIN_IUT NX_MIN_UT(nx_dd_iut)
-
-#define NX_DD_MAX_IST NX_MAX_ST(nx_dd_ist)
-#define NX_DD_MIN_IST NX_MIN_ST(nx_dd_ist)
-
-#define NX_BIN_DEF(D1, D2, D3) nx_##D1##_##D2##t nx_##D1##_##D3##_##D2##F(nx_##D1##_##D2##t n1, nx_##D1##_##D2##t n2)
-#define NX_BADD_IMP(D1, D2) NX_BIN_DEF(D1, D2, badd) \
+#define NX_ROUND_DEF(D1, D2) nx_int_##D1##t nx_dd_##D2##_##D1##f(nx_dd_St *s)
+#define NX_ROUND(D1, D2, D3, D4, D5, D6) NX_ROUND_DEF(D1, D2) \
 { \
-	printf("%d\t", nx_dd_bkbc_isF((nx_d_pt)&n1, sizeof(nx_##D1##_##D2##t))); \
-	nx_##D1##_bprint_F(n1); \
-	printf("%d\t", nx_dd_bkbc_isF((nx_d_pt)&n2, sizeof(nx_##D1##_##D2##t))); \
-	nx_##D1##_bprint_F(n2); \
-	while (n2) { \
-		nx_##D1##_##D2##t c = (n1 & n2) << 1; \
-		n1 ^= n2; \
-		n2 = c; \
-	} \
-	printf("%d\t", nx_dd_bkbc_isF((nx_d_pt)&n1, sizeof(nx_##D1##_##D2##t))); \
-	nx_##D1##_bprint_F(n1); \
-	return n1; \
+	nx_float_t t; \
+	if (s->type == _FLOAT) \
+		t = s->data._FLOAT + D6; \
+	else \
+		return nx_dd_int_##D1##f(s, s->data.D3); \
+	return (t D4 nx_dd_int_##D1##f(s, t)) ? (nx_dd_int_##D1##f(s, s->data.D3 + D5)) : (s->data.D3); \
 }
 
-#define NX_BSUB_IMP(D1, D2) NX_BIN_DEF(D1, D2, bsub) \
-{ \
-	return nx_##D1##_badd_##D2##F(n1, nx_##D1##_badd_##D2##F(~n2, 1)); \
-}
-
-
-NX_BIN_DEF(dd, is, badd);
-NX_BIN_DEF(dw, ss, badd);
-NX_BIN_DEF(dd, is, bsub);
-NX_BIN_DEF(dw, ss, bsub);
-
-nx_dd_ist nx_dd_bkbc_isF(nx_d_pt, nx_dd_ist);
+NX_ROUND_DEF(s, floor);
+NX_ROUND_DEF(s, ceil);
+NX_ROUND_DEF(s, round);
+NX_ROUND_DEF(s, trunc);
+NX_ROUND_DEF(u, floor);
+NX_ROUND_DEF(u, ceil);
+NX_ROUND_DEF(u, round);
 
 #endif
 

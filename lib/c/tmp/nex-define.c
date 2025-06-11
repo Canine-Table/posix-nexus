@@ -8,13 +8,13 @@ nx_void_t nx_db_f(nx_db_St *s, nx_db_Et e, nx_void_pt d)
 	s->type = e;
 	switch (e) {
 		case _CHAR:
-			s->data._char = *(nx_char_t*)d;
+			s->data._CHAR = *(nx_char_t*)d;
 			break;
 		case U_CHAR:
-			s->data.u_char = *(nx_char_ut*)d;
+			s->data.U_CHAR = *(nx_char_ut*)d;
 			break;
 		case S_CHAR:
-			s->data.s_char = *(nx_char_st*)d;
+			s->data.S_CHAR = *(nx_char_st*)d;
 			break;
 	}
 }
@@ -26,10 +26,10 @@ nx_void_t nx_dw_f(nx_dw_St *s, nx_dw_Et e, nx_void_pt d)
 	s->type = e;
 	switch (e) {
 		case U_SHORT:
-			s->data.u_short = *(nx_short_ut*)d;
+			s->data.U_SHORT = *(nx_short_ut*)d;
 			break;
 		case S_SHORT:
-			s->data.s_short = *(nx_short_st*)d;
+			s->data.S_SHORT = *(nx_short_st*)d;
 			break;
 	}
 }
@@ -42,13 +42,13 @@ nx_void_t nx_dd_f(nx_dd_St *s, nx_dd_Et e, nx_void_pt d)
 	s->type = e;
 	switch (e) {
 		case _FLOAT:
-			s->data._float = *(nx_float_t*)d;
+			s->data._FLOAT = *(nx_float_t*)d;
 			break;
 		case U_INT:
-			s->data.u_int = *(nx_int_ut*)d;
+			s->data.U_INT = *(nx_int_ut*)d;
 			break;
 		case S_INT:
-			s->data.s_int = *(nx_int_st*)d;
+			s->data.S_INT = *(nx_int_st*)d;
 			break;
 	}
 }
