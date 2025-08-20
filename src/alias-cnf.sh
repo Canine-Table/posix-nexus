@@ -1,1 +1,0 @@
-opt/alias-cnf.sh

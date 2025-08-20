@@ -1,4 +1,3 @@
-#!/bin/sh
 
 nx_asm_export()
 {
@@ -83,10 +82,10 @@ nx_8bit_al8800bt_rom()
 {
 	#https://www.planetemu.net/rom/mame-roms/al8800bt
 	[ -n "$1" ] && h_nx_cmd mame unzip && {
-		! [ "$G_NEX_MOD_ENV/rom/al8800bt/88dskrom.bin" -a "$G_NEX_MOD_ENV/rom/al8800bt/turnmon.bin" ] && {
-			unzip "$G_NEX_MOD_CNF/al8800bt.zip" -d "$G_NEX_MOD_ENV/rom/al8800bt/"
+		! [ "${NEXUS_ENV}/rom/al8800bt/88dskrom.bin" -a "${NEXUS_ENV}/rom/al8800bt/turnmon.bin" ] && {
+			unzip "$G_NEX_MOD_CNF/al8800bt.zip" -d "${NEXUS_ENV}/rom/al8800bt/"
 		}
-		mame al8800bt -window -nowindow -rompath "$G_NEX_MOD_ENV/rom/" -flop "$1"
+		mame al8800bt -window -nowindow -rompath "${NEXUS_ENV}/rom/" -flop "$1"
 	}
 }
 
@@ -103,26 +102,25 @@ nx_elf_asm()
 		)
 	elif [ -n "$1" ]; then
 		h_nx_cmd nasm && {
-			nx_init_include -s '@' -i "${1}.asm" -o ".${1}.S" -f -d 'nx_include'
+			nx_data_include -s '@' -i "${1}.asm" -o ".${1}.S" -f -d 'nx_include'
 			nasm -f elf64 -o ".${1}.o" ".${1}.S"
 		}
 		h_nx_cmd arm-openwrt-linux-muslgnueabi-gcc && {
-			nx_init_include -s '@' -i "${1}.s" -o ".${1}.S" -f -d 'nx_include'
+			nx_data_include -s '@' -i "${1}.s" -o ".${1}.S" -f -d 'nx_include'
 			as -o ".${1}.o" ".${1}.S"
 		}
 		[ -e ".${1}.o" ] && (
 			ld ".${1}.o" -o "$1"
-			h_nx_cmd tty stty && d="$(nx_str_div)"
-			echo -n $d
 			h_nx_cmd objdump && {
 				objdump -d "$1"
 				echo -n $d
 			}
 			./"${1}"
-			echo -e "\n$d"
 			return
 		)
 		return 1
 	fi
 }
+
+nx_asm_export
 

@@ -1,1 +1,0 @@
-opt/editor-mod.sh

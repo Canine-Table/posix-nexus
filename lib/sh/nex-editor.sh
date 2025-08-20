@@ -1,0 +1,1 @@
+opt/nex-editor.sh

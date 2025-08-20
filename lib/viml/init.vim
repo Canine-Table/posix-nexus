@@ -88,14 +88,14 @@ function! NxPath(args)
 endfunction
 
 function! NxCallFile(...)
-	if ! exists('g:nex_mod_viml') && ! empty(getenv('G_NEX_MOD_LIB'))
-		let l:tmpa = expand(getenv('G_NEX_MOD_LIB'))
+	if ! exists('g:nex_mod_viml') && ! empty(getenv('NEXUS_LIB'))
+		let l:tmpa = expand(getenv('NEXUS_LIB'))
 		if isdirectory(l:tmpa)
-			let g:nex_mod_viml = getenv('G_NEX_MOD_LIB') . '/viml/'
+			let g:nex_mod_viml = getenv('NEXUS_LIB') . '/viml/'
 			if ! isdirectory(g:nex_mod_viml)
 				unlet! g:nex_mod_viml
 			endif
-			let g:nex_mod_lua = getenv('G_NEX_MOD_LIB') . '/lua/nvim/'
+			let g:nex_mod_lua = getenv('NEXUS_LIB') . '/lua/nvim/'
 			if ! isdirectory(g:nex_mod_lua)
 				unlet! g:nex_mod_lua
 			endif

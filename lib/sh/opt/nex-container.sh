@@ -82,3 +82,5 @@ nx_container_rm_all_c()
 	)
 }
 
+nx_container_export
+

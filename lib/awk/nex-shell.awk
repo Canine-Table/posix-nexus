@@ -145,3 +145,11 @@ function nx_file_type(D,	trk, v1, v2, v3, i, j)
 	return D
 }
 
+function nx_environ(D1,		l)
+{
+	if (nx_is_file(D1)) {
+		while ((getline l < D1) > 0)
+			print l
+		close(D1)
+	}
+}

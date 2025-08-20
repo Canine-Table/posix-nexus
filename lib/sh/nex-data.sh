@@ -65,4 +65,3 @@ nx_data_append()
 		esac
 	)"
 }
-

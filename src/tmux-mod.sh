@@ -1,1 +1,0 @@
-opt/tmux-mod.sh

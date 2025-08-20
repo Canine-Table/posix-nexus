@@ -9,3 +9,5 @@ nx_tex_export()
 	export LUAINPUTS="${G_NEX_MOD_LIB}/lua://:"
 }
 
+nx_tex_export
+

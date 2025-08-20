@@ -2,11 +2,20 @@
 nx_init()
 {
 	. "$(
-		"$(find /opt /usr/local "$HOME" -type f -path '*/lib/sh/nex-bundle.sh' -print -quit 2>/dev/null \
-			|| find / -path /opt -prune -o -path /usr/local -prune -o -path "$HOME" -prune -o -path /run -prune -o -path /boot -prune -o \
-				-type f -path '*/lib/sh/nex-bundle.sh' -print -quit 2>/dev/null)"
+		tmpa="${HOME}/.nx-root"
+		tmpb="$(cat "$tmpa" 2> /dev/null)"
+		if test "$1" != '-f' -a -f "$tmpb" -a -r "$tmpb"; then
+			printf '%s' "$tmpb"
+		else
+			"$(find "$HOME" /opt /usr/local -type f -path '*/lib/sh/nex-bundle.sh' -print -quit 2>/dev/null \
+				|| find / -path /opt -prune -o -path /usr/local -prune -o -path "$HOME" -prune -o -path /run -prune -o -path /boot -prune -o \
+					-type f -path '*/lib/sh/nex-bundle.sh' -print -quit 2>/dev/null)" | tee "$tmpa"
+		fi
 	)"
+	for tmpa in "${NEXUS_CNF}/nex-export.cnf" "${NEXUS_CNF}/nex-alias.cnf"; do
+		test -f "$tmpa" -a -r "$tmpa" && . "$tmpa"
+	done
+	unset tmpa
 }
 
-nx_init
-
+nx_init "$@"

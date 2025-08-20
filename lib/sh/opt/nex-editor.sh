@@ -9,3 +9,5 @@ nx_editor_export()
 	esac
 }
 
+nx_editor_export
+
