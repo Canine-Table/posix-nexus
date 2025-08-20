@@ -1,1 +1,0 @@
-opt/gpg-mod.sh

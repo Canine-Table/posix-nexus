@@ -79,3 +79,69 @@ function nx_str_opts(D, S1, S2, S3, B,		i, j, k, l, res, v, opts, flg, kw, param
 	}
 }
 
+function nx_file_map(V)
+{
+	V["b"] = "-b " # -b file — True if file is a block special file
+	V["c"] = "-c " # -c file — True if file is a character special file
+	V["d"] = "-d " # -d file — True if file is a directory
+	V["e"] = "-e " # -e file — True if file exists
+	V["f"] = "-f " # -f file — True if file is a regular file
+	V["g"] = "-g " # -g file — True if file has set-group-ID flag set
+	V["l"] = "-h " # -h file — True if file is a symbolic link
+	V["p"] = "-p " # -p file — True if file is a named pipe
+	V["u"] = "-u " # -u file — True if file has set-user-ID flag set
+	V["t"] = "-t " # -t fd — True if file descriptor fd is open on a terminal
+	V["s"] = "-S " # -S file — True if file is a socket
+	V["h"] = "-s " # -s file — True if file has size greater than zero
+	V["r"] = "-r " # -r file — True if file is readable
+	V["w"] = "-w " # -w file — True if file is writable
+	V["x"] = "-x " # -x file — True if file is executable
+}
+
+function nx_file_type(D,	trk, v1, v2, v3, i, j)
+{
+	nx_trim_split(D, v1, "<nx:null/>")
+	nx_file_map(v3)
+	trk["hld"] = 0
+	trk["bl"] = "a"
+	trk["gte"] = " || "
+	for (i = 1; i <= v1[0]; i++) {
+		if (sub(/^-/, "", v1[i])) {
+			if ((trk["opt"] = tolower(v1[i])) == "f") {
+				continue
+			} else if (trk["opt"] ~ /^[ao]$/) {
+				trk["ng"] = __nx_if(nx_is_upper(v1[i]), "! ", "")
+				trk["gte"] = __nx_if(trk["opt"] == "a", " && ", " || ") trk["ng"]
+			}
+		} else if (trk["opt"] == "f") {
+			trk["fl"] = v1[i]
+			trk["hld"] = trk["hld"] + 1
+			delete trk["opt"]
+		} else {
+			j = split(v1[i], v2, "")
+			v2[0] = j
+			if (! trk["fl"])
+				trk["fl"] = "<nx:placeholder" __nx_if(trk["hld"], " index=" trk["hld"], "") "/>"
+			trk["par"] = ""
+			for (j = 1; j <= v2[0]; j++) {
+				if ((trk["fg"] = tolower(v2[j])) ~ /^[ao]$/)
+					trk["bl"] = tolower(v2[j])
+				else if (trk["fg"] = v3[trk["fg"]])
+					trk["par"] = nx_join_str(trk["par"], __nx_if(nx_is_upper(v2[j]), "! ", "") trk["fg"] "\x27" trk["fl"] "\x27 ", "-" trk["bl"] " ")
+			}
+			if (trk["par"]) {
+				trk["par"] = "test " trk["par"]
+				if (! trk["str"])
+					trk["par"] = trk["ng"] trk["par"]
+				trk["str"] = nx_join_str(trk["str"], trk["par"], trk["gte"])
+			}
+		}
+	}
+	D = trk["str"]
+	delete trk
+	delete v1
+	delete v2
+	delete v3
+	return D
+}
+

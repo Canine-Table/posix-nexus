@@ -1,0 +1,68 @@
+
+nx_data_ref()
+{
+	[ -n "$1" ] && eval "echo \$$1"
+}
+
+nx_data_ref_append()
+{
+	tmpa="$(nx_data_ref "$1")"
+	[ -n "$tmpa" -a -n "$2" ] && v="${tmpa}${3:-,}"
+	echo "$v$2"
+}
+
+nx_data_include()
+(
+	eval "$(nx_str_optarg ':d:f:s:o:i:' "$@")"
+	[ -e "$o" -a -n "$f" ] && mv "$o" "${o}-$(date +"%s").bak"
+	[ -z "$o" ] && o='/dev/stdout'
+	i="$(nx_info_path -p "${i:-"$1"}")"
+	[ -f "$i" -a -r "$i" ] && {
+		cat "$i" | ${AWK:-$(nx_cmd_awk)} \
+			-v sig="${s:-#}" \
+			-v dir="${d:-nx_include}" \
+			-v inpt="$i" \
+		"
+			$(cat \
+				"${NEXUS_LIB}/awk/nex-misc.awk" \
+				"${NEXUS_LIB}/awk/nex-struct.awk" \
+				"${NEXUS_LIB}/awk/nex-log.awk" \
+				"${NEXUS_LIB}/awk/nex-json.awk" \
+				"${NEXUS_LIB}/awk/nex-str.awk" \
+				"${NEXUS_LIB}/awk/nex-math.awk"
+			)
+		"'
+			BEGIN {
+				d = sig dir
+			} {
+				if (s = nx_include($0, d, inpt, arr))
+					print s
+			} END {
+				delete arr
+			}
+		' > "$o"
+	}
+)
+
+nx_data_append()
+{
+	printf '%s\n' "$(
+		v="$(nx_data_ref "$1")"
+		[ -z "$2" ] && {
+			echo "$v"
+			exit
+		}
+		s="${3:-:}"
+		case "$s$v$s" in
+			*"$s$2$s"*) printf '%s' "$v";;
+			*) {
+				if [ -n "$4" ]; then
+					printf '%s' "$2${v:+$s$v}"
+				else
+					printf '%s' "${v:+$v$s}$2"
+				fi
+			};;
+		esac
+	)"
+}
+

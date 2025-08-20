@@ -1,9 +1,0 @@
-\def\NewDimension#1{%
-	\CheckDef{#1}{%
-		\csname#1\endcsname=\expandafter\PickFirstOfOne%
-	}{%
-		\expandafter\newcount\csname #1\endcsname\relax%
-		\NewCount{#1}%
-	}%
-}
-

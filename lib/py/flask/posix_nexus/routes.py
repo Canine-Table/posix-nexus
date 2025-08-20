@@ -8,5 +8,5 @@ def posix_nexus():
 
 @nexus.app.route("/sandbox", methods=['GET','POST'])
 def posix_nexus_sandbox():
-    return render_template("index.html")
+    return render_template("test.html")
 

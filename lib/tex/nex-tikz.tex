@@ -1,0 +1,74 @@
+\makeatletter
+\tikzset{%
+	nxRemPic/.append style={remember picture}%
+}
+
+\long\def\nxCoverPage[#1]{%
+	\pgfkeys{%
+		nx cover page,%
+		title,%
+		author,%
+		ref,
+		abstract,%
+		image,%
+		#1%
+	}%
+	\def\nx@ref{\pgfkeysvalueof{/nx/cover page/ref}}
+	\begin{tikzpicture}[remember picture, overlay]
+		\shade[
+			right color=nex.danger.back,%
+			left color=nex.dark.back,%
+			draw=nex.danger.frame,%
+			ultra thick,%
+		] (current page.north west) -| (current page.south east) -| (current page.north west);
+		\node[%
+			circle,%
+			outer color=nex.dark.back,%
+			inner color=nex.warning.back,%
+			minimum width=0.7\pagewidth,%
+			circular drop shadow={%
+				shadow scale=1.05%
+			},%
+			draw=nex.warning.frame,%
+			ultra thick,%
+			postaction={%
+				decorate,%
+				decoration={%
+					raise=2mm,
+					text along path,%
+					text align={align=center},%
+					text color=nex.warning.text,%
+					text={\today}
+				}
+			}
+		] (logo) at (current page.center) {};
+		\node at (current page.center) {\includegraphics[width=0.6\pagewidth]{\nx@image}};
+		\node[above=of logo, text=nex.danger.text, yshift=1cm] (title) {\nxSFont{36pt} \bf \nx@title};
+		\node[below=of logo, text=nex.danger.text, yshift=-1cm] (author) {\nxSFont{24pt} \bf \nx@author};
+		\node[below=of author, text=nex.primary.text] (link) {\nxSFont{24pt} \href{\nx@link}{\bf \nx@ref}};
+	\end{tikzpicture}
+	\newpage
+	\begin{tcolorbox}[nxCol=light, sdwA]
+		\begin{tcolorbox}[nxCol=light, title={\bf Abstract}, hdrD, sdwA]
+			\nx@abstract
+		\end{tcolorbox}
+	\end{tcolorbox}
+	\bigskip
+}
+
+\def\nxSnowFade{%
+	\AddToShipoutPictureBG{%
+		\AtPageLowerLeft{%
+			\begin{tikzpicture}[remember picture, overlay]
+				\expandafter\shade\expandafter[%
+					top color={\ifodd\the\count0 nex.page.top\else nex.page.bottom\fi},
+					middle color=nex.page.middle,%
+					bottom color={\ifodd\the\count0 nex.page.bottom\else nex.page.top\fi},
+				](current page.south west) rectangle (current page.north east);
+			\end{tikzpicture}
+		}
+	}
+}
+
+\makeatother
+

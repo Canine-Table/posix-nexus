@@ -1,4 +1,5 @@
 function! s:NxTeXSettings()
+	set tabstop=2 softtabstop=0 shiftwidth=2 noexpandtab autoindent
 	if empty(v:servername) && exists('*remote_startserver')
 		call remote_startserver('VIM')
 	endif

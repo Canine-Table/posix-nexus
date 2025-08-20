@@ -1,0 +1,462 @@
+\makeatletter
+\tcbset{%
+	enhanced,%
+	autoparskip,%
+	hyphenationfix,%
+	enhanced jigsaw,%
+	nxCol/.style={%
+		colframe=nex.#1.frame,%
+		colback=nex.#1.back,%
+		colbacktitle=nex.#1.back.title,%
+		colbacklower=nex.#1.back.lower,%
+		colupper=nex.#1.lower,%
+		collower=nex.#1.upper,%
+		coltitle=nex.#1.title,%
+		coltext=nex.#1.text%
+	},%
+	nxCol/.default=dark,%
+	nxLn/.style={%
+		on line,%
+		size=fbox%
+	},%
+	nxLnArc/.style={
+		arc=7pt,%
+		outer arc=7pt,%
+		left=1pt,%
+		right=1pt%
+	},
+	nxBackOpacity/.style={%
+		opacityfill={#1},%
+		coltitle=tcbcollower,%
+		colupper=tcbcollower%
+	},%
+	nxBackOpacity/.default=0.0,%
+	nxHSAlign/.code args={#1,#2}{%
+		\def\nx@tmpa{#1}%
+		\def\nx@tmpb{#2}%
+		\ifx\nx@tmpb\empty%
+			\def\nx@tmpb{#1}%
+		\fi%
+		\tcbset{%
+			halign upper={\nx@tmpa},%
+			halign lower={\nx@tmpb},%
+			sidebyside
+		}%
+	},
+	nxHSAlign/.default={center,},%
+	nxHTAlign/.code args={#1,#2}{%
+		\def\nx@tmpa{#1}%
+		\def\nx@tmpb{#2}%
+		\ifx\nx@tmpb\empty%
+			\def\nx@tmpb{flush center}%
+		\fi%
+		\tcbset{%
+			adjusted title={\nxtmpa},%
+			halign title={\nx@tmpb}%
+		}%
+	},%
+	shpA/.style={
+		square,
+		halign=center,
+		valign=center,
+		circular arc
+	},
+	ovrA/.style={
+		overlay={
+			\foreach \x in {2cm,3.5cm}{
+				\begin{scope}[shift={([xshift=\x]frame.north west)}]
+					\path[draw=tcbcolframe,fill=tcbcolframe!10,line width=1mm] (0,0) arc (0:180:5mm);
+					\path[fill=black] (-0.2,0) arc (0:180:1mm);
+				\end{scope}
+			}
+		}
+	},
+	crnA/.style={
+		arc=8pt,
+		if odd page={
+			sharp corners=downhill,
+			leftrule=3mm
+		}{
+			sharp corners=uphill,
+			rightrule=3mm
+		}
+	},
+	crnE/.style={
+		arc=8pt,
+		sharp corners,
+		rightrule=1.5mm,
+		rounded corners=east
+	},
+	crnW/.style={
+		arc=8pt,
+		sharp corners,
+		leftrule=1.5mm,
+		rounded corners=west
+	},
+	grwA/.style={
+		grow to right by=1cm,
+		grow to left by=1cm
+	},
+	grwB/.style={
+		grow to right by=1.5cm,
+		grow to left by=1.5cm
+	},
+	sdwA/.style={
+		lifted shadow={1mm}{-2mm}{3mm}{0.1mm}{black!50!white}
+	},
+	frmA/.style={
+		frame style={pattern=crosshatch dots light steel blue}
+	},
+	frmB/.style={
+		frame code={
+			\foreach \n in {north east,north west,south east,south west}{%
+				\path[fill=tcbcolframe] (interior.\n) circle (3mm);
+			}
+		}
+	},
+	frmC/.style={
+		frame style={
+			left color={\ifodd\the\count0 nex.danger.frame\else nex.warning.frame\fi},
+			right color={\ifodd\the\count0 nex.warning.frame\else nex.danger.frame\fi}
+		}
+	},
+	frmD/.style={
+		frame style={
+		left color={\ifodd\the\count0 nex.success.frame\else nex.secondary.back.title\fi},
+			right color={\ifodd\the\count0 nex.secondary.back.title\else nex.success.frame\fi}
+		}
+	},
+	frmE/.style={
+		frame style={
+			left color={\ifodd\the\count0 nex.info.back\else nex.warning.frame\fi},
+			right color={\ifodd\the\count0 nex.warning.frame\else nex.info.back\fi}
+		}
+	},
+	inrA/.style={
+		interior code={
+			\path[draw=red!5!white,line width=5mm,line cap=round]
+			([xshift=3mm,yshift=-3mm]interior.north west)
+				--([xshift=-3mm,yshift=3mm]interior.south east)
+			([xshift=3mm,yshift=3mm]interior.south west)
+				--([xshift=-3mm,yshift=-3mm]interior.north east);
+		}
+	},
+	inrB/.style={
+		drop fuzzy shadow,
+		borderline={0.3mm}{0.35mm}{tcbcolback},
+		finish={
+			\ifodd\the\count0%
+				\begin{tcbclipframe}
+					\path[bottom color=black,top color=black!50!white,opacity=0.1]
+						(frame.south west) -- (frame.south east) -- (frame.north east) -- cycle;
+					\path[top color=white,bottom color=black!50!white,opacity=0.1]
+					(frame.south west) -- (frame.north east) -- (frame.north west) -- cycle;
+				\end{tcbclipframe}
+			\else%
+				\begin{tcbclipframe}
+					\path[top color=white,bottom color=black!50!white,opacity=0.1]
+						(frame.north east) -- (frame.south west) -- (frame.south east) -- cycle;
+					\path[bottom color=black,top color=black!50!white,opacity=0.1]
+						(frame.north west) -- (frame.north east) -- (frame.south east) -- cycle;
+				\end{tcbclipframe}
+			\fi%
+		}
+	},
+	segA/.style={
+		segmentation code={
+			\path[top color=tcbcolframe,bottom color=tcbcolframe,middle color=tcbcolback]
+				(segmentation.south west) rectangle (segmentation.north east);
+			}
+	},
+	segB/.style={
+		segmentation style={
+			double=white,
+			draw=tcbcolframe,
+			double distance=1pt,
+			solid
+		}
+	},
+	titA/.style={
+		title code={
+			\path[draw=tcbcolback,decorate,line width=2mm, decoration={coil,aspect=0,segment length=10.1mm}]
+				([xshift=1mm]title.west) -- ([xshift=-1mm]title.east);
+		}
+	},
+	titB/.style={
+		title style={
+			left color=blue!15!yellow,
+			right color=red!85!black
+		}
+	},
+	titC/.style={
+		titlerule style={
+			arrows ={
+				Hooks[arc=270]-Hooks[arc=270]
+			}
+		}
+	},
+	hdrA/.style={
+		boxed title style={%
+			frame code={%
+				\path[fill=tcbcolback!30!black]%
+				([yshift=-1mm,xshift=-1mm]frame.north west) arc[%
+					start angle=0,%
+					end angle=180,%
+					radius=1mm%
+				]%
+				([yshift=-1mm,xshift=1mm]frame.north east) arc[
+					start angle=180,%
+					end angle=0,%
+					radius=1mm%
+				];%
+				\path[%
+					left color=tcbcolback!60!black,%
+					right color=tcbcolback!60!black,%
+					middle color=tcbcolback!80!black%
+				] ([xshift=-2mm]frame.north west)%
+				-- ([xshift=2mm]frame.north east) [rounded corners=1mm]%
+				-- ([xshift=1mm, yshift=-1mm]frame.north east)%
+				-- (frame.south east)%
+				-- (frame.south west)%
+				-- ([xshift=-1mm, yshift=-1mm]frame.north west) [sharp corners]%
+				-- cycle;%
+			},%
+			interior engine=empty%
+		},
+		attach boxed title to top left={
+			xshift=1cm,
+			yshift*=1mm-\tcboxedtitleheight
+		}%
+	},
+	hdrB/.style={
+		attach boxed title to top center={%
+			yshift=-0.25mm-\tcboxedtitleheight/2,%
+			yshifttext=2mm-\tcboxedtitleheight/2%
+		},%
+		boxed title style={%
+			boxrule=0.5mm,%
+			frame code={%
+				\path[tcb fill frame] ([xshift=-4mm]frame.west)%
+				-- (frame.north west) -- (frame.north east) -- ([xshift=4mm]frame.east)%
+				-- (frame.south east) -- (frame.south west) -- cycle; },%
+				interior code={ \path[tcb fill interior] ([xshift=-2mm]interior.west)%
+				-- (interior.north west) -- (interior.north east)%
+				-- ([xshift=2mm]interior.east) -- (interior.south east) -- (interior.south west)%
+				-- cycle;%
+			}%
+		}%
+	},
+	hdrC/.style={
+		skin=enhancedlast jigsaw,
+		attach boxed title to top left={xshift=-4mm,yshift=-0.5mm},
+		boxed title style={empty,arc=0pt,outer arc=0pt,boxrule=0pt},
+		underlay boxed title={
+			\fill[tcbcolbacktitle!45!white] (title.north west) -- (title.north east)
+			-- +(\tcboxedtitleheight-1mm,-\tcboxedtitleheight+1mm)
+			-- ([xshift=4mm,yshift=0.5mm]frame.north east) -- +(0mm,-1mm)
+			-- (title.south west) -- cycle;
+			\fill[tcbcolbacktitle!45!white!50!black] ([yshift=-0.5mm]frame.north west)
+			-- +(-0.4,0) -- +(0,-0.3) -- cycle;
+			\fill[tcbcolbacktitle!45!white!50!black] ([yshift=-0.5mm]frame.north east)
+			-- +(0,-0.3) -- +(0.4,0) -- cycle;
+		}
+	},
+	hdrD/.style={
+		skin=enhancedlast jigsaw,interior hidden,
+		boxsep=0pt,top=0pt,
+		attach boxed title to bottom center,
+		boxed title style={empty,boxrule=0.5mm},
+		varwidth boxed title=0.5\linewidth,
+		underlay boxed title={
+		\draw[tcbcolframe,line width=0.5mm]
+		([xshift=0.3mm-\tcboxedtitleheight*2,yshift=0.3mm]title.north west)
+			--([xshift=-0.3mm+\tcboxedtitleheight*2,yshift=0.3mm]title.north east);
+			\path[draw=tcbcolbacktitle,top color=tcbcolframe,bottom color=tcbcolbacktitle,line width=0.5mm]
+			([xshift=0.25mm-\tcboxedtitleheight*2,yshift=0.25mm]title.north west)
+			cos +(\tcboxedtitleheight,-\tcboxedtitleheight/2)
+			sin +(\tcboxedtitleheight,-\tcboxedtitleheight/2)
+			-- ([xshift=0.25mm,yshift=0.25mm]title.south west)
+			-- ([yshift=0.25mm]title.south east)
+			cos +(\tcboxedtitleheight,\tcboxedtitleheight/2)
+			sin +(\tcboxedtitleheight,\tcboxedtitleheight/2);
+		}%
+	},
+	hdrE/.style={
+		toprule=1mm,
+		titlerule=1mm,
+		lefttitle=4mm,
+		righttitle=4mm,
+		toptitle=1mm,
+		bottomtitle=1mm
+	},
+	lstA/.style={
+		enhanced,
+		before skip=6pt,
+		after skip=6pt,
+		borderline west={8mm}{0pt}{nex.#1.frame},
+		colframe={nex.#1.frame},
+		coltext={nex.#1.text}
+	}
+}
+
+\makeatother
+
+\def\nxToc#1{%
+	\renewcommand{\contentsname}{}
+	\phantomsection{}\label{sec:topOfDocument}
+	\global\def\nxSec{topOfDocument}
+	\begin{tcolorbox}[nxCol=light, title={\bf#1}, hdrB, breakable, sdwA]
+		\thispagestyle{plain}
+		\tableofcontents
+	\end{tcolorbox}
+}%
+
+
+\newtcblisting{NxCodeBox}[2]{
+	listing engine=minted,
+	minted style=colorful,%
+	minted language=#1,%
+	skin=spartan,%
+	left=14mm,%
+	hdrE,%
+	listing only,%
+	enhanced,%
+	breakable,%
+	overlay={%
+		\begin{tcbclipinterior}
+			\fill[nex.dark.frame] (frame.south west) rectangle ([xshift=10mm]frame.north west);%
+		\end{tcbclipinterior}
+		\node[below left, text width=\textwidth, align=left] at (frame.north west) {\tcbtitle};% Make the title wrap & fill
+	},%
+	minted options={%
+		linenos,%
+		autogobble,%
+		frame=lines,%
+		numberblanklines,%
+		rulecolor=\color{nex.dark.frame},%
+		framesep=3mm,%
+		style=solarized-dark,
+		encoding=UTF-8,%
+		tabsize=4,%
+		fontsize=\footnotesize,%
+		keywordcase=lower,%
+		numbers=left,%
+		breaklines,%
+		breakautoindent=false,%
+		breaksymbolindentleft=0pt,%
+		breaksymbolsepleft=0pt,%
+		breaksymbolindentright=0pt,%
+		escapeinside=@@%
+	},%
+	IfBlankF={#2}{#2}%
+}
+
+\newtcbox{\nxLnBox}[1][]{nxLn, #1}
+\newtcbox{\nxLnArcBox}[1][]{nxLn, nxLnArc, #1}
+
+\makeatletter
+
+\def\nxList#1{%
+	\edef\nx@tmpa{Nx\nxTitle{#1}{ }{ }List}
+	\newenvironment{\nx@tmpa}{\begin{itemize}}{\end{itemize}}
+	\tcolorboxenvironment{\nx@tmpa}{%
+		blanker,%
+		before skip=5mm,%
+		after skip=5mm,%
+		borderline west={1mm}{0pt}{nex.#1.frame},%
+		coltext={nex.#1.text}%
+	}
+}
+
+\nxThemed{nxList}
+
+\def\nx@Item#1#2{\item[\textcolor{nex.#1.frame}{#2}] }
+
+%#1 == color
+%#2 == name
+%#3 == fa
+\def\nxItem#1#2#3{
+	\edef\nx@tmpa{nx#2\nxTitle{#1}{ }{ }Item}
+	\expandafter\def\csname\nx@tmpa\endcsname{\nx@Item{#1}{#3}}
+}
+
+\def\nxThemedItems#1#2{%
+	\def\nxItemTheme##1{\nxItem{##1}{#1}{#2}}
+	\nxThemed{nxItemTheme}
+}
+
+\nxThemedItems{Arrow}{\faArrowAltCircleRight}
+\nxThemedItems{Check}{\faCheckCircle}
+\nxThemedItems{Times}{\faTimesCircle}
+\nxThemedItems{Circle}{\faCircle}
+\nxThemedItems{Dot}{\faDotCircle}
+\nxThemedItems{RArrow}{\faArrowAltCircleRight[regular]}
+\nxThemedItems{RCheck}{\faCheckCircle[regular]}
+\nxThemedItems{RTimes}{\faTimesCircle[regular]}
+\nxThemedItems{RCircle}{\faCircle[regular]}
+\nxThemedItems{RDot}{\faDotCircle[regular]}
+\nxThemedItems{ThumbTack}{\faThumbtack}
+\nxThemedItems{Code}{\faCode }
+\nxThemedItems{ChartLine}{\faChartLine}
+\nxThemedItems{Search}{\faSearch}
+\nxThemedItems{Link}{\faLink}
+\nxThemedItems{Term}{\faTerminal}
+\nxThemedItems{Rocket}{\faRocket}
+\nxThemedItems{BoxOpen}{\faBoxOpen}
+\nxThemedItems{Brain}{\faBrain}
+\nxThemedItems{Tools}{\faTools}
+\nxThemedItems{Toolbox}{\faToolbox}
+\nxThemedItems{Globe}{\faGlobe}
+\nxThemedItems{Archive}{\faArchive}
+\nxThemedItems{MapMarked}{\faMapMarked*}
+\nxThemedItems{MapMarker}{\faMapMarker*}
+\nxThemedItems{Boxes}{\faBoxes}
+\nxThemedItems{Code}{\faCode}
+
+\def\nxIconList[#1]{%
+	\pgfkeys{/nx/list box, #1}
+}
+
+\def\nxEachItem#1#2{
+	\foreach \x in {#2} {
+		\expandafter\csname nx#1Item\endcsname\x
+	}
+}
+
+\def\nxListBox#1{
+	\edef\nx@tmpa{Nx\nxTitle{#1}{ }{ }ListBox}
+	\newenvironment{\nx@tmpa}[1][]{%
+		\edef\nx@tmpa{Nx\nxTitle{#1}{ }{ }List}
+		\begin{tcolorbox}[inrB, crnA, nxCol=#1, ##1]
+			\begin{\nx@tmpa}
+	}{
+			\end{\nx@tmpa}
+		\end{tcolorbox}
+	}
+}
+
+\nxThemed{nxListBox}
+
+\def\nxNestedList#1#2#3#4{%
+	{\nxSFont{16pt}\bf #1}
+	\begin{NxLightList}
+		\global\nx@cnta=0
+		\foreach \x/\y in {#4} {
+			\global\advance\nx@cnta by 1
+			\expandafter\csname nx#2Item\endcsname\nxLnBox[nxCol=tertiary]{~\nxLnArcBox{\the\nx@cnta}~~\bf\x\nxKern{4pt}}
+			\begin{NxLightList}
+				\foreach \z in \y {
+					\expandafter\csname nx#3Item\endcsname\z%
+				}%
+			\end{NxLightList}
+		}
+	\end{NxLightList}
+}
+
+
+\def\nxParameters#1{%
+	\nxNestedList{Parameters}{CodeDark}{ArrowDark}{#1}
+}
+
+\makeatother
+

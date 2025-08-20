@@ -257,7 +257,8 @@ function nx_option(D, V1, V2, B1, B2,	i, v1)
 
 function nx_trim_split(D, V, S)
 {
-	return (V[0] = split(nx_trim_str(D), V, "[ \v\t\n\f]*" __nx_else(S, ",") "[ \v\t\n\f]*"))
+	D = split(nx_trim_str(D), V, "[ \v\t\n\f]*" __nx_else(S, ",") "[ \v\t\n\f]*")
+	return V[0] = D
 }
 
 function nx_compare_vector(D, V1, V2, V3, B,		i, v)

@@ -1,0 +1,192 @@
+\def\nxAD{\char`&}
+\def\nxAT{\char`@}
+\def\nxUS{\char`_}
+\def\nxHT{\char`^}
+\def\nxLB{\char`\{}
+\def\nxRB{\char`\}}
+\def\nxLA{$\langle$}
+\def\nxRA{$\rangle$}
+
+\def\nxExpr#1#2{\the\csname#1expr\endcsname#2\relax}
+\def\nxNumExpr#1{\nxExpr{num}{#1}}
+\def\nxDimExpr#1{\nxExpr{dim}{#1}}
+\def\nxGlueExpr#1{\nxExpr{glue}{#1}}
+\def\nxMuExpr#1{\nxExpr{mu}{#1}}
+
+\def\nxOdd#1#2{\ifodd#1\else#2\fi}
+\def\nxMath#1#2{\ifmmode#1\else#2\fi}
+\def\nxKern#1{\nxMath{\mkern#1}{\kern#1}}
+\def\nxHSkip#1{\nxMath{\mskip#1}{\hskip#1}}
+
+\def\nxSFont#1{\fontsize{#1}{\nxDimExpr{#1*6/5}}\selectfont}
+\def\nxNoParIndent{\setlength{\parindent}{0pt}}
+\long\def\nxVerb#1{\expandafter\csname Verb\endcsname @#1@}
+
+\makeatletter
+
+\def\nx@empty{}%
+\def\nx@default{ ~}%
+
+\def\nx@resa{}%
+\def\nx@resb{}%
+\def\nx@resc{}%
+
+
+\def\nxThemed#1{%
+	\csname#1\endcsname{dark}%
+	\csname#1\endcsname{light}%
+	\csname#1\endcsname{primary}%
+	\csname#1\endcsname{secondary}%
+	\csname#1\endcsname{success}%
+	\csname#1\endcsname{warning}%
+	\csname#1\endcsname{danger}%
+	\csname#1\endcsname{info}%
+	\csname#1\endcsname{tertiary}%
+	\csname#1\endcsname{obsolete}%
+	\csname#1\endcsname{experimental}%
+}
+
+\def\nxDelimeter#1#2#3{%
+	\def\nx@tmpc##1#1##2#1{%
+		\nxDefault{#3}{%
+			{##2}%
+		}{%
+			{##1}%
+		}%
+	}%
+	\nx@tmpc#2#1%
+}
+
+\def\nxEmpty#1#2#3{%
+	\edef\nx@tmpa{\unexpanded{#1}}%
+	\ifx\nx@tmpa\nx@empty%
+		#2%
+	\else%
+		#3%
+	\fi%
+}
+
+\def\nxDefault#1#2#3{%
+	\edef\nx@tmpa{}%
+	\def\nx@tmpa{#1}%
+	\ifx\nx@tmpa\nx@default%
+		#2%
+	\else%
+		#3%
+	\fi%
+}
+
+\def\nxCs#1#2#3{%
+	\expandafter\ifx\csname#1\endcsname\relax%
+		#3%
+	\else%
+		#2%
+	\fi%
+}
+
+\def\nxLabel#1#2#3{\nxCs{r@#1}{#2}{#3}}
+
+\def\nxCrossRef#1#2{%
+	#1%
+}
+
+\long\def\nx@Topic#1#2{\nxDefault{#1}{\nxTopic{#2}}{\nxTopic{#1}}}
+\long\def\nxTopic#1{\nxEmpty{#1}{}{\dashuline{\textbf{#1}}~$\Rightarrow$~}}
+
+
+\def\nxChar#1#2#3{%
+	\ifcat\noexpand#1\relax%
+		#3%
+	\else%
+		#2%
+	\fi%
+}
+
+\def\nxDigit#1{%
+	\ifx#1\nx@empty%
+		-1% invalid
+	\else%
+		\ifnum\number`#1<48
+			-2%
+		\else
+			\ifnum\number`#1>57%
+				-3%
+			\else%
+				\nxNumExpr{\number`#1-48}% returns numeric digit 0–9
+			\fi%
+		\fi%
+	\fi%
+}
+
+\def\nx@Digits#1{%
+	\ifx#1\relax\else
+		\edef\nx@tmpb{\nxDigit{#1}}
+		\ifnum\nx@tmpb>-1
+			\xdef\nx@resa{\nx@resa{#1}}
+		\fi
+		\expandafter\nx@Digits
+	\fi
+}
+
+\def\nxDigits#1{%
+	\xdef\nx@resa{}
+	\expandafter\nx@Digits#1\relax%
+	\nx@resa
+}
+
+\def\nxRegister#1#2{%
+	\nxEmpty{#1}{%
+		\typeout{empty name for a register is not allowed}%
+	}{%
+		\nxCs{#1}{%
+			\typeout{Looks like the register '#1' is already a household name...}
+		}{%
+			\edef\nx@tmpb{\nxDigit{#2}}
+			\ifnum\nx@tmpb>-1
+				\ifcase\nx@tmpb
+					\let\nx@tmpa=\newdimen% Case 0: Dimension register
+				\or%
+					\let\nx@tmpa=\newcount% Case 1: Count register
+				\or%
+					\let\nx@tmpa=\newskip% Case 2: Glue register (skip)
+				\or%
+					\let\nx@tmpa=\newmuskip% Case 3: Math glue register (muskip)
+				\or%
+					\let\nx@tmpa=\newbox % Case 4: Box register
+				\or%
+					\let\nx@tmpa=\newinsert% Case 5: Insert register
+				\else
+					\let\nx@tmpa=\newtoks% Case (Default): Token register
+				\fi\global\expandafter\nx@tmpa\csname#1\endcsname\relax%
+			\fi
+		}
+	}
+}
+
+\nxRegister{nx@cnta}{1}
+\nxRegister{nx@cntb}{1}
+\nxRegister{nx@cntc}{1}
+
+\nxRegister{nx@toka}{6}
+\nxRegister{nx@tokb}{6}
+\nxRegister{nx@tokc}{6}
+
+\def\nxReadFile#1{%
+	\newread\stream%
+	\openin\stream={#1}%
+	\loop\unless\ifeof\stream%
+		\read\stream to\nx@tmpa%
+		\nx@tmpa\par%
+	\repeat%
+	\closein\stream%
+}
+
+\long\def\nxWriteFile#1#2{%
+	\newwrite\stream%
+	\openout\stream={#1}%
+	\immediate\write\stream{#2}%
+	\closeout\stream%
+}
+
+\makeatother
+

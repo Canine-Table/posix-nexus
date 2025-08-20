@@ -1,23 +1,30 @@
-#include "nex-type.h"
-#include "nex-string.h"
+#include "nex-define.h"
 #include "nex-math.h"
 
-NX_BADD_IMP(dd, is)
-NX_BADD_IMP(dw, ss)
-NX_BSUB_IMP(dd, is)
-NX_BSUB_IMP(dw, ss)
+nx_dm_op_silM(add, add)
 
-nx_dd_ist nx_dd_bkbc_isF(nx_d_pt b, nx_dd_ist l)
+nx_d_isT nx_bkbc_isF(nx_d_pT b, nx_d_isT l)
 {
-	nx_dd_ist n = 0;
-	nx_db_PcT p = (nx_db_pct)b;
-	for(nx_dd_ist i = 0; i < l; i++) {
-		nx_db_ct c = p[i];
+	nx_d_isT n = 0;
+	nx_D_PcT p = (nx_d_pcT)b;
+	for (nx_d_isT i = 0; i < l; i++) {
+		nx_d_cT c = p[i];
 		while (c) {
 			c &= (c - 1);
 			n++;
 		}
 	}
 	return n;
+}
+
+nx_d_T nx_swap_F(nx_d_pT a, nx_d_pT b, nx_d_isT s)
+{
+	nx_d_pcT x = (nx_d_pcT)a;
+	nx_d_pcT y = (nx_d_pcT)b;
+	for (nx_d_isT i = 0; i < s; i++) {
+		x[i] ^= y[i];
+		y[i] ^= x[i];
+		x[i] ^= y[i];
+	}
 }
 

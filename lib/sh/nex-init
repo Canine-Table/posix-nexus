@@ -1,0 +1,12 @@
+
+nx_init()
+{
+	. "$(
+		"$(find /opt /usr/local "$HOME" -type f -path '*/lib/sh/nex-bundle.sh' -print -quit 2>/dev/null \
+			|| find / -path /opt -prune -o -path /usr/local -prune -o -path "$HOME" -prune -o -path /run -prune -o -path /boot -prune -o \
+				-type f -path '*/lib/sh/nex-bundle.sh' -print -quit 2>/dev/null)"
+	)"
+}
+
+nx_init
+

@@ -1,0 +1,96 @@
+\pagestyle{empty}
+\pgfplotsset{%
+	compat=1.18%
+}%
+\tcbuselibrary{%
+	minted,%
+	vignette%
+}%
+\usetikzlibrary{%
+	shadows,%
+	mindmap,%
+	patterns,%
+	positioning,%
+	arrows.meta,%
+	decorations.text,%
+	shapes.geometric,%
+	decorations.fractals,%
+	decorations.shapes,%
+	decorations.pathmorphing%
+}%
+
+\renewcommand{\theFancyVerbLine}{
+	\sffamily\textcolor{nex.primary.frame}{
+		\scriptsize\oldstylenums{
+			\textbf{\arabic{FancyVerbLine}}
+		}
+	}
+}
+
+\def\nxSnowFlakeHeader#1{%
+	\pagestyle{fancy}%
+	\setlength{\headheight}{20.97897pt}%
+	\nxLabel{sec:topOfDocument}{}{\phantomsection{}\label{sec:topOfDocument}}
+	\nxCs{nxSec}{}{\global\def\nxSec{topOfDocument}}
+	\fancyhead{}%
+	\fancyhead[LO, RE]{%
+		\nxLnBox{\hyperref[sec:topOfDocument]{#1}}%
+	}%
+	\global\renewcommand\headrule{%
+		\vspace{-0.75in}%
+		\def\SnowFlake{%
+			\tikz[decoration=Koch snowflake]{%
+				\draw decorate{%
+					decorate{%
+						decorate{(0,-2) -- (3,-2)}%
+					}%
+				};%
+			}%
+		}%
+		\ifodd\the\count0%
+			\hrulefill{\SnowFlake}%
+		\else%
+			\SnowFlake\hrulefill{}%
+		\fi%
+	}
+}
+
+\def\nxRomanFooter{%
+	\pagenumbering{Roman}%
+	\fancyfoot{}
+	\fancyfoot[C]{\thepage}%
+	\renewcommand{\thesection}{\Roman{section}}%
+	\renewcommand{\thesubsection}{\Roman{section}}%
+	\renewcommand{\thesubsubsection}{\Roman{section}}%
+	\global\renewcommand\footrule{%
+		\hrulefill%
+		\raisebox{-2.1pt}{%
+			\quad\decofourleft\decotwo\decofourright\quad%
+		}%
+		\hrulefill%
+	}%
+}
+
+\makeatletter
+\def\nxHyper[#1]{%
+	\pgfkeys{%
+		nx cover page,%
+		title,%
+		author,%
+		subject,%
+		keywords,%
+		#1%
+	}%
+	\hypersetup{%
+		linktoc=all,%
+		colorlinks=true,%
+		linkcolor=nex.primary.back,%
+		pdfborder={0 0 0},%
+		pdftitle={\nx@title},%
+		pdfauthor={\nx@author},%
+		pdfsubject={\nx@subject},%
+		pdfkeywords={\nx@keywords}%
+	}%
+}
+
+\makeatother

@@ -1,0 +1,8 @@
+    nxType.isSet(new Set())
+// returns: true
+
+    nxType.isSet([])
+// returns: false
+
+    nxType.isSet("set")
+// returns: false

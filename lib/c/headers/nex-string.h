@@ -1,36 +1,39 @@
-#ifndef NX_STRING_H
-#define NX_STRING_H
-#include <stdio.h>
+#ifndef nx_Dm_string_H
+#define nx_Dm_string_H
 
-#define NX_CLASS_DEF(D) nx_dd_ist nx_dd_##D##_isF(nx_db_cT s)
-#define NX_BIN_PRINT_DEF(D1, D2) nx_d_t nx_##D1##_bprint_##D2##F(nx_##D1##_##D2##t n)
-#define NX_BIN_PRINT_IMP(D1, D2, D3) NX_BIN_PRINT_DEF(D1, D2) \
+#define nx_dm_str_class_M(D) nx_d_isT nx_##D##_isF(nx_d_cT s)
+#define nx_dm_str_case_M(D) nx_d_pcT nx_to##D##_pcF(nx_d_pcT c)
+#define nx_dM_str_case_M(D1, D2, D3) nx_dm_str_case_M(D1) \
 { \
-	for (nx_dd_ist i = sizeof(nx_##D1##_##D2##t) * 8 - 1; i >= 0; i--) { \
-		printf("%" #D3, (n >> i) & 1); \
-		if (! NX_MOD_POT(i, 4)) \
-			printf(" "); \
+	nx_d_isT l = -1; \
+	while (c[++l] != '\0') { \
+		if (nx_##D2##_isF(c[l])) \
+			c[l] = c[l] + D3; \
 	} \
-	printf("\n"); \
+	return c; \
 }
 
-NX_BIN_PRINT_DEF(dd, is);
-NX_BIN_PRINT_DEF(dw, ss);
+nx_dm_str_class_M(bin);
+nx_dm_str_class_M(blank);
+nx_dm_str_class_M(space);
+nx_dm_str_class_M(punct);
+nx_dm_str_class_M(oct);
+nx_dm_str_class_M(dec);
+nx_dm_str_class_M(lhex);
+nx_dm_str_class_M(uhex);
+nx_dm_str_class_M(islhex);
+nx_dm_str_class_M(isuhex);
+nx_dm_str_class_M(hex);
+nx_dm_str_class_M(lower);
+nx_dm_str_class_M(upper);
+nx_dm_str_class_M(alpha);
+nx_dm_str_class_M(alnum);
+nx_dm_str_class_M(ctrl);
+nx_dm_str_class_M(graph);
+nx_dm_str_class_M(print);
+nx_dm_str_class_M(word);
 
-NX_CLASS_DEF(bin);
-NX_CLASS_DEF(oct);
-NX_CLASS_DEF(dec);
-NX_CLASS_DEF(lhex);
-NX_CLASS_DEF(uhex);
-NX_CLASS_DEF(islhex);
-NX_CLASS_DEF(isuhex);
-NX_CLASS_DEF(hex);
-NX_CLASS_DEF(lower);
-NX_CLASS_DEF(upper);
-NX_CLASS_DEF(alpha);
-NX_CLASS_DEF(alnum);
-
-nx_dd_ist nx_dd_isnum_isF(nx_db_PcT);
-nx_dd_E nx_dd_atolf_EF(nx_dd_pS, nx_db_PcT);
+nx_dm_str_case_M(lower);
+nx_dm_str_case_M(upper);
 
 #endif

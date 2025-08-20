@@ -1,0 +1,1 @@
+opt/gimp-mod.sh

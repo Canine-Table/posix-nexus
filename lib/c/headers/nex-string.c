@@ -1,100 +1,103 @@
-#include "nex-type.h"
+#include "nex-define.h"
 #include "nex-math.h"
 #include "nex-string.h"
-#include <stdlib.h>
 
-NX_CLASS_DEF(bin)
+nx_dm_str_class_M(bin)
 {
-	return NX_IN_RANGE(s, '0', '1');
+	return nx_dm_range_M(s, '0', '1');
 }
 
-NX_CLASS_DEF(oct)
+nx_dm_str_class_M(blank)
 {
-	return NX_IN_RANGE(s, '0', '7');
+	return (s == ' ') ? 1 : (s == '\t');
 }
 
-NX_CLASS_DEF(dec)
+nx_dm_str_class_M(space)
 {
-	return NX_IN_RANGE(s, '0', '9');
+	return (s == ' ') ? 1 : nx_dm_range_M(s, '\b', '\r');
 }
 
-NX_CLASS_DEF(lhex)
+nx_dm_str_class_M(punct)
 {
-	return NX_IN_RANGE(s, 'a', 'f');
+	return nx_dm_range_M(s, '!', '/') || nx_dm_range_M(s, ':', '@') || nx_dm_range_M(s, '[', '`') || nx_dm_range_M(s, '{', '~');
 }
 
-NX_CLASS_DEF(uhex)
+nx_dm_str_class_M(oct)
 {
-	return NX_IN_RANGE(s, 'A', 'F');
+	return nx_dm_range_M(s, '0', '7');
 }
 
-NX_CLASS_DEF(lower)
+nx_dm_str_class_M(dec)
 {
-	return NX_IN_RANGE(s, 'a', 'z');
+	return nx_dm_range_M(s, '0', '9');
 }
 
-NX_CLASS_DEF(upper)
+nx_dm_str_class_M(lhex)
 {
-	return NX_IN_RANGE(s, 'A', 'Z');
+	return nx_dm_range_M(s, 'a', 'f');
 }
 
-NX_CLASS_DEF(islhex)
+nx_dm_str_class_M(uhex)
 {
-	return nx_dd_dec_isF(s) || nx_dd_lhex_isF(s);
+	return nx_dm_range_M(s, 'A', 'F');
 }
 
-NX_CLASS_DEF(isuhex)
+nx_dm_str_class_M(islhex)
 {
-	return nx_dd_dec_isF(s) || nx_dd_uhex_isF(s);
+	return nx_lhex_isF(s) || nx_dec_isF(s);
 }
 
-NX_CLASS_DEF(hex)
+nx_dm_str_class_M(isuhex)
 {
-	return nx_dd_dec_isF(s) || nx_dd_lhex_isF(s) || nx_dd_uhex_isF(s);
+	return nx_uhex_isF(s) || nx_dec_isF(s);
 }
 
-NX_CLASS_DEF(alpha)
+nx_dm_str_class_M(hex)
 {
-	return nx_dd_lower_isF(s) || nx_dd_upper_isF(s);
+	return nx_lhex_isF(s) || nx_uhex_isF(s) || nx_dec_isF(s);
 }
 
-NX_CLASS_DEF(alnum)
+nx_dm_str_class_M(lower)
 {
-	return nx_dd_dec_isF(s) || nx_dd_alpha_isF(s);
+	return nx_dm_range_M(s, 'a', 'z');
 }
 
-nx_dd_ist nx_dd_isnum_isF(nx_db_PcT c)
+nx_dm_str_class_M(upper)
 {
-	nx_dd_iut i = 0, j = (c[0] == '+' || c[0] == '-') ? 1 : 0;
-	nx_dd_ist k = 0, l = (c[0] == '-') ? -1 : 1;
-	do {
-		if (c[j] == '.' && k && ! i)
-			i = l;
-		else if (! nx_dd_dec_isF(c[j]))
-			return(0);
-		k = 1;
-	} while (c[++j] != '\0');
-	return (! j || c[j - 1] == '.') ? 0 : i + l;
+	return nx_dm_range_M(s, 'A', 'Z');
 }
 
-nx_dd_E nx_dd_atolf_EF(nx_dd_pS s, nx_db_PcT c)
+nx_dm_str_class_M(alpha)
 {
-
-	nx_dd_ist e = nx_dd_isnum_isF(c);
-	if (! e)
-		return NX_DD_NT;
-	if (NX_ABS(e) == 1) {
-		if (atol(c) > NX_DD_MAX_IST) {
-			nx_dd_iuF(s, atol(c));
-			return NX_DD_IUT;
-		}
-		nx_dd_isF(s, atol(c));
-		return NX_DD_IST;
-	}
-	nx_dd_fF(s, atof(c));
-	return NX_DD_FT;
+	return nx_lower_isF(s) || nx_upper_isF(s);
 }
 
-NX_BIN_PRINT_IMP(dd, is, d);
-NX_BIN_PRINT_IMP(dw, ss, hd);
+nx_dm_str_class_M(alnum)
+{
+	return nx_alpha_isF(s) || nx_dec_isF(s);
+}
+
+nx_dm_str_class_M(ctrl)
+{
+	return (s == 0x7F) ? 1 : nx_dm_range_M(s, '\0', 0x1F);
+}
+
+nx_dm_str_class_M(graph)
+{
+	return nx_alnum_isF(s) || nx_ctrl_isF(s);
+}
+
+nx_dm_str_class_M(print)
+{
+	return (s == ' ') ? 1 : nx_graph_isF(s);
+}
+
+nx_dm_str_class_M(word)
+{
+	return (s == '_') ? 1 : nx_alpha_isF(s);
+}
+
+nx_dM_str_case_M(lower, upper, 32)
+
+nx_dM_str_case_M(upper, lower, -32)
 

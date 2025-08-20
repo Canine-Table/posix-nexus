@@ -1,7 +1,0 @@
-		meta = {
-		    __index = function(t, k)
-			return "Default value"
-		    end
-		}
-		setmetatable(myTable, meta)
-		print(myTable["missingKey"]) -- Output: Default value

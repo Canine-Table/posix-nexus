@@ -397,7 +397,7 @@ function nx_json_root(V1, V2, V3)
 		if (V2["dth"] > V2["stk"]) {
 			if (V3[V2["stk"]] == "\x5b") {
 				sub(/[^\x5b]+$/, "", V2["rt"])
-				sub(/\x5b$/, "", V2["rt"])
+				sub(/[\x5b]$/, "", V2["rt"])
 			} else {
 				sub(/[^.]+$/, "", V2["rt"])
 				sub(/[.]$/, "", V2["rt"])
@@ -424,7 +424,7 @@ function nx_json_apply(V1, V2, V3, B, V4)
 				V2["nxt"] = V2["rec"]
 				if (V2["rt"] "." V2["nxt"] in V1) {
 					if (B > 1)
-						print nx_log_warn(nx_json_log(V2, nx_json_log_db(V4, 10, V2["rt"] "." V2["nxt"])))
+						print nx_log_warn(nx_json_log(V2, nx_json_log_db(V4, 10, V2["rt"] "." V2["nxt"]))) > /dev/stderr
 				} else {
 					V1[V2["rt"] "\x7b0\x7d"] = nx_join_str(V1[V2["rt"] "\x7b0\x7d"], V2["nxt"], "<nx:null/>")
 				}
@@ -445,7 +445,7 @@ function nx_json_float(V1, V2, V3, V4, B, V5)
 			V2["rec"] = V2["rec"] 0 # Append a zero for valid float representation
 		V2["cat"] = "NX_DIGIT"
 		if (B > 2) # Debugging
-			print nx_log_alert(nx_json_log(V2, V2["rec"]))
+			print nx_log_alert(nx_json_log(V2, V2["rec"])) > /dev/stderr
 		nx_json_apply(V1, V2, V4, B, V5) # Apply the parsed value
 		V2["ste"] = "NX_DELIMITER" # Move to delimiter state
 		if (! nx_is_space(V3[V2["cr"]])) # If next character is not a space
@@ -480,12 +480,12 @@ function nx_json_string(V1, V2, V3, V4, V5, B, V6)
 		} else {
 			V2["cat"] =  "NX_ERR_MISSING_QUOTE"
 			if (B)
-				print nx_log_error(nx_json_log(V2, nx_json_log_db(V6, 2, V2["qte"])))
+				print nx_log_error(nx_json_log(V2, nx_json_log_db(V6, 2, V2["qte"]))) > /dev/stderr
 			return 21
 		}
 		V2["qte"] = ""
 		if (B > 2)
-			print nx_log_alert(nx_json_log(V2, V2["rec"]))
+			print nx_log_alert(nx_json_log(V2, V2["rec"])) > /dev/stderr
 		nx_json_apply(V1, V2, V4, B, V6)
 		V2["ste"] = "NX_DELIMITER"
 	}
@@ -504,11 +504,11 @@ function nx_json_identifier(V1, V2, V3, V4, B, V5,	t)
 		} else {
 			V2["cat"] = "NX_ERR_INVALID_IDENTIFIER"
 			if (B)
-				print nx_log_error(nx_json_log(V2, nx_json_log_db(V5, 5, V2["rec"])))
+				print nx_log_error(nx_json_log(V2, nx_json_log_db(V5, 5, V2["rec"]))) > /dev/stderr
 			return 50
 		}
 		if (B > 2)
-			print nx_log_alert(nx_json_log(V2, V2["rec"]))
+			print nx_log_alert(nx_json_log(V2, V2["rec"])) > /dev/stderr
 		nx_json_apply(V1, V2, V4, B, V5)
 		V2["ste"] = "NX_DELIMITER"
 		if (! nx_is_space(V3[V2["cr"]]))
@@ -525,7 +525,7 @@ function nx_json_delimiter(V1, V2, V3, V4, V5, B, V6)
 	if (V3[V2["cr"]] != V2["dlm"]) {
 		V2["cat"] = "NX_ERR_UNEXPECTED_DELIM"
 		if (B)
-			print nx_log_error(nx_json_log(V2, nx_json_log_db(V6, 4, V3[V2["cr"]] "<nx:null/>" V2["dlm"])))
+			print nx_log_error(nx_json_log(V2, nx_json_log_db(V6, 4, V3[V2["cr"]] "<nx:null/>" V2["dlm"]))) > /dev/stderr
 		return 40
 	} else if (V4[V2["stk"]] == "[" || V2["dlm"] == ":") {
 		V2["dlm"] = ","
@@ -542,7 +542,7 @@ function nx_json_delimiter(V1, V2, V3, V4, V5, B, V6)
 		V2["cat"] = "NX_OBJECT"
 	}
 	if (B > 3)
-		print nx_log_debug(nx_json_log_delim(V2, V3[V2["cr"]]))
+		print nx_log_debug(nx_json_log_delim(V2, V3[V2["cr"]])) > /dev/stderr
 	V2["ste"] = "NX_DEFAULT" # Set state back to default
 }
 
@@ -555,23 +555,23 @@ function nx_json_depth(V1, V2, V3, V4, V5, B, V6)
 		V2["ste"] = "NX_DEFAULT"
 	} else if (V3[V2["cr"]] == V5[V4[V2["stk"]]]) { # Matching Bracket
 		if (V2["lcr"] == "\x2c" && B > 1)
-			print nx_log_warn(nx_json_log_delim(V2, nx_json_log_db(V6, 11, V3[V2["cr"]])))
+			print nx_log_warn(nx_json_log_delim(V2, nx_json_log_db(V6, 11, V3[V2["cr"]]))) > /dev/stderr
 		V2["cat"] = V5[V4[V2["stk"]]V5[V4[V2["stk"]]]]
 		delete V4[V2["stk"]--]
 		V2["ste"] = "NX_DELIMITER"
 		V2["dlm"] = ","
 	} else if (V2["ste"] == "NX_NONE") { # Never pushed to stack
 		if (B)
-			print nx_log_error(nx_json_log_delim(V2, nx_json_log_db(V6, 6, "[' or '{<nx:null/>" V3[V2["cr"]])))
+			print nx_log_error(nx_json_log_delim(V2, nx_json_log_db(V6, 6, "[' or '{<nx:null/>" V3[V2["cr"]]))) > /dev/stderr
 		return 60
 	} else if (! V2["stk"]) { # Empty Stack
 		if (B)
-			print nx_log_error(nx_json_log_delim(V2, nx_json_log_db(V6, 7, V3[V2["cr"]])))
+			print nx_log_error(nx_json_log_delim(V2, nx_json_log_db(V6, 7, V3[V2["cr"]]))) > /dev/stderr
 		return 70
 	} else { # Invalid Bracket Pair
 		V2["cat"] = "NX_ERR_BRACKET_MISMATCH"
 		if (B)
-			print nx_log_error(nx_json_log(V2, nx_json_log_db(V6, 3, V5[V4[V2["stk"]]] "<nx:null/>" V3[V2["cr"]])))
+			print nx_log_error(nx_json_log(V2, nx_json_log_db(V6, 3, V5[V4[V2["stk"]]] "<nx:null/>" V3[V2["cr"]]))) > /dev/stderr
 		return __nx_if(V2["ste"] == "NX_NONE", 31, 30)
 	}
 	if (V4[V2["stk"]] == "\x7b")
@@ -582,7 +582,7 @@ function nx_json_depth(V1, V2, V3, V4, V5, B, V6)
 		V2["idx"] = ""
 	nx_json_apply(V1, V2, V4, B, V6)
 	if (B > 3)
-		print nx_log_debug(nx_json_log_delim(V2, V3[V2["cr"]]))
+		print nx_log_debug(nx_json_log_delim(V2, V3[V2["cr"]])) > /dev/stderr
 }
 
 function nx_json_default(V1, V2, V3, V4, V5, V6, B, V7)
@@ -593,7 +593,7 @@ function nx_json_default(V1, V2, V3, V4, V5, V6, B, V7)
 	} else if (V2["idx"] == "NX_KEY" && V3[V2["cr"]] != V5[V4[V2["stk"]]]) {
 		V2["cat"] = "NX_ERR_UNEXPECTED_KEY"
 		if (B)
-			print nx_log_error(nx_json_log(V2, nx_json_log_db(V7, 8, V3[V2["cr"]])))
+			print nx_log_error(nx_json_log(V2, nx_json_log_db(V7, 8, V3[V2["cr"]]))) > /dev/stderr
 		return 80
 	} else if (V3[V2["cr"]] in V5) {
 		return nx_json_depth(V1, V2, V3, V4, V5, B, V7)
@@ -606,7 +606,7 @@ function nx_json_default(V1, V2, V3, V4, V5, V6, B, V7)
 	} else {
 		V2["cat"] = "NX_ERR_UNEXPECTED_CHAR"
 		if (B)
-			print nx_log_error(nx_json_log(V2, nx_json_log_db(V7, 9, V3[V2["cr"]])))
+			print nx_log_error(nx_json_log(V2, nx_json_log_db(V7, 9, V3[V2["cr"]]))) > /dev/stderr
 		return 90
 	}
 }
@@ -658,7 +658,7 @@ function nx_json(D, V, B,	tok, stk, rec, bm, qm, db)
 	nx_json_log_db(db)
 	if (D == "") {
 		if (B)
-			print nx_log_error(nx_json_log_db(db, 1, "", 1))
+			print nx_log_error(nx_json_log_db(db, 1, "", 1)) > /dev/stderr
 		return 10
 	}
 	tok["ste"] = "NX_NONE"
@@ -682,13 +682,13 @@ function nx_json(D, V, B,	tok, stk, rec, bm, qm, db)
 	if (tok["qte"] && ! tok["err"]) {
 		tok["cat"] = "NX_ERR_MISSING_QUOTE"
 		if (B)
-			print nx_log_error(nx_json_log(tok, nx_json_log_db(db, 2, tok["qte"])))
+			print nx_log_error(nx_json_log(tok, nx_json_log_db(db, 2, tok["qte"]))) > /dev/stderr
 		tok["err"] = 20
 	}
 	if (stk[tok["stk"]] && ! tok["err"]) {
 		tok["cat"] = "NX_ERR_BRACKET_MISMATCH"
 		if (B)
-			print nx_log_error(nx_json_log(tok, nx_json_log_db(db, 3, bm[stk[tok["stk"]]], "<nx:null/>" rec[tok["cr"]])))
+			print nx_log_error(nx_json_log(tok, nx_json_log_db(db, 3, bm[stk[tok["stk"]]], "<nx:null/>" rec[tok["cr"]]))) > /dev/stderr
 		tok["err"] = 30
 	}
 	D = tok["err"]

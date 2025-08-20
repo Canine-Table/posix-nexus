@@ -1,0 +1,84 @@
+\makeatletter
+\pgfkeys{%
+	/nx/.is family,%
+	/nx/.style={
+		/nx/.cd%
+	},%
+	%%% Cover Page Family %%%
+	/nx/cover page/.is family,%
+	nx cover page/.style={%
+		nx, cover page/.cd%
+	},%
+	/nx/cover page/.cd,%
+	% Default Values
+	title/.default={Posix-Nexus},%
+	author/.default={Canine-Table},%
+	image/.default={img/posix-nexus.png},%
+	link/.default={https://github.com/Canine-Table/posix-nexus},%
+	abstract/.default={POSIX Nexus serves as a comprehensive cross-language reference hub that explores the implementation and behavior of POSIX-compliant functionality across a diverse set of programming environments. Built atop the foundational IEEE Portable Operating System Interface (POSIX) standards, this project emphasizes compatibility, portability, and interoperability between operating systems.},%
+	keywords/.default={%
+		posix,%
+		portability,%
+		compatibility,%
+		system calls,%
+		apis,%
+		threads,%
+		shells,%
+		utilities,%
+		filesystems,%
+		file handling%
+		permissions,%
+		signals,%
+		nexus%
+	},%
+	subject/.default={%
+		The Portable Operating System Interface%
+	},%
+	% Key Storage
+	title/.store in=\nx@title,%
+	author/.store in=\nx@author,%
+	image/.store in=\nx@image,%
+	abstract/.store in=\nx@abstract,%
+	link/.store in=\nx@link,%
+	subject/.store in=\nx@subject,%
+	keywords/.store in=\nx@keywords,%
+	% Code
+	ref/.code={%
+		\pgfkeysifdefined{/nx/cover page/link}{}{%
+			\pgfkeys{/nx/cover page/link}%
+		}%
+		\ifx#1\pgfkeysnovalue%
+			\pgfkeysifdefined{/nx/cover page/ref}{}{%
+				\def\nx@tmpa{\nx@link}%
+			}%
+		\else%
+			\def\nx@tmpa{#1}%
+		\fi%
+		\pgfkeysgetvalue{/nx/cover page/ref}\nx@tmpb%
+		\ifx\nx@tmpa\nx@tmpb\else%
+			\pgfkeyssetvalue{/nx/cover page/ref}{\nx@tmpa}%
+		\fi%
+	},%
+	%%% List Box Family %%%
+	/nx/list box/.is family,%
+	nx list box/.style={%
+		nx, list box/.cd%
+	},%
+	/nx/list box/.cd,%
+	% Code Defs
+	location/.code 2 args={\nxMapMarkerDangerItem\nx@Topic{#1}{Location}{#2}},%
+	module/.code 2 args={\nxBoxOpenObsoleteItem\nx@Topic{#1}{Module}{#2}},%
+	parameters/.code 2 args={\nxCodeSuccessItem\nx@Topic{#1}{Parameters}{#2}},%
+	class/.code 2 args={\nxBoxesObsoleteItem\nx@Topic{#1}{Class}{#2}},%
+	type/.code 2 args={\nxToolboxDangerItem\nx@Topic{#1}{Type}{#2}},%
+	summary/.code 2 args={\nxRocketInfoItem\nx@Topic{#1}{Summary}{#2}},%
+	behavior/.code 2 args={\nxSearchInfoItem\nx@Topic{#1}{Behavior}{#2}},%
+	dependencies/.code 2 args={\nxLinkInfoItem\nx@Topic{#1}{Dependencies}{#2}},%
+	reference/.code 2 args={\nxThumbTackDangerItem\nx@Topic{#1}{Reference}{#2}},%
+	availability/.code 2 args={\nxBrainExperimentalItem\nx@Topic{#1}{Availability}{#2}},%
+	true/.code 2 args={\nxCheckSuccessItem\nx@Topic{#1}{True}{#2}},%
+	false/.code 2 args={\nxTimesDangerItem\nx@Topic{#1}{False}{#2}}%
+}
+\makeatother
+
+

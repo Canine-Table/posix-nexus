@@ -1,0 +1,21 @@
+\documentclass[a4paper,12pt]{article}
+\input{../lib/tex/nex-preamble.tex}
+\nxHyper[]%
+\nxSnowFade%
+\nxNoParIndent
+
+\def\nxInput#1{\input{./contents/posix-nexus/#1.tex}}%
+
+\begin{document}
+	\nxCoverPage[title={Project Documentation}, ref={Github}]
+	\nxRomanFooter
+	%\catcode`\_=11
+	\nxToc{Contents}
+	%\catcode`\_=13
+	\newpage
+	\nxSnowFlakeHeader{Posix-Nexus}
+	\nxInput{js-toolkit}
+	%\nxInput{awk-toolkit}
+\end{document}
+
+

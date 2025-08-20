@@ -7,6 +7,7 @@ nx_editor_export
 nx_asm_export
 nx_tmux_export
 nx_container_export
+nx_gimp_export
 
 export G_NEX_WEB_FETCH="$(g_nx_cmd curl wget)"
 export LESS='-R'
