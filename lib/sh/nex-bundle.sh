@@ -15,7 +15,7 @@ nx_init_env()
 		exit 1
 	}
 	cat > "${tmpb}env/.nexus-shell.bundle.sh" <<- EOF
-		#!${SHELL:-sh}
+		#!${SHELL:-$(command -v sh)}
 		export NEXUS_ROOT="$tmpb"
 		export NEXUS_SRC="${tmpb}src"
 		export NEXUS_LIB="${tmpb}lib"
@@ -23,6 +23,12 @@ nx_init_env()
 		export NEXUS_CNF="${tmpb}cnf"
 		export NEXUS_DOC="${tmpb}docs"
 		export NEXUS_LOG="${tmpb}env"
+		nx_cnf_export()
+		{
+			for tmpa in "\${NEXUS_CNF}/nex-export.cnf" "\${NEXUS_CNF}/nex-alias.cnf"; do
+				test -f "\$tmpa" -a -r "\$tmpa" && . "\$tmpa"
+			done
+		}
 	EOF
 	for tmpc in "${tmpb}lib/sh/"*".sh"; do
 		! [ "$tmpc" = "${tmpb}lib/sh/${tmpa}" ] \

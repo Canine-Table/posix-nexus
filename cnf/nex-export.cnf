@@ -8,6 +8,9 @@ export PAGER="$(nx_cmd_pager)"
 export SHELL="$(nx_cmd_shell)"
 export AWK="$(nx_cmd_awk)"
 export CC="$(nx_cmd_cc)"
+test "$E_NEX_ASM" = true && nx_tex_export
+test "$E_NEX_TEX" = true && nx_asm_export
+test "$E_NEX_EDITOR" = true && nx_editor_export
 
 ##############################################################################################
 

@@ -12,10 +12,9 @@ nx_init()
 					-type f -path '*/lib/sh/nex-bundle.sh' -print -quit 2>/dev/null)" | tee "$tmpa"
 		fi
 	)"
-	for tmpa in "${NEXUS_CNF}/nex-export.cnf" "${NEXUS_CNF}/nex-alias.cnf"; do
-		test -f "$tmpa" -a -r "$tmpa" && . "$tmpa"
-	done
-	unset tmpa
+	nx_cnf_export
+
 }
 
 nx_init "$@"
+

@@ -4,10 +4,10 @@ nx_editor_export()
 	case "$EDITOR" in
 		*vim)
 			{
-				export VIMINIT="source $G_NEX_ROOT/lib/viml/init.vim"
+				export VIMINIT="source ${NEXUS_LIB}/viml/init.vim"
 			};;
 	esac
 }
 
-nx_editor_export
+export E_NEX_EDITOR=true
 

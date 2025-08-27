@@ -4,6 +4,7 @@ function! PlugUpdateUpgrade()
 endfunction
 
 call plug#begin(g:nx_config_path . 'plugged')
+
 Plug 'lervag/vimtex'
 Plug 'Mofiqul/dracula.nvim'
 Plug 'hrsh7th/nvim-cmp'

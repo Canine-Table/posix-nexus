@@ -68,6 +68,7 @@ nx_asm_export()
 				return 1
 			};;
 	esac
+	unset E_NEX_ASM
 }
 
 nx_8bit_asm()
@@ -122,5 +123,5 @@ nx_elf_asm()
 	fi
 }
 
-nx_asm_export
+export E_NX_ASM=true
 

@@ -82,7 +82,7 @@ endfunction
 function! NxPath(args)
 	for [key, val] in items(a:args)
 		if ! filereadable(g:nx_config_path . key)
-			execute l:nx_download_cmd . g:nx_config_path . key . l:nx_download_cmd_options . val
+			execute g:nx_download_cmd . g:nx_config_path . key . g:nx_download_cmd_options . val
 		endif
 	endfor
 endfunction
@@ -120,11 +120,16 @@ function! s:NxColorTheme()
 	try
 		colorscheme dracula-soft
 	catch /^Vim\%((\a\+)\)\=:E185/
-		colorscheme dracula
-	catch /^Vim\%((\a\+)\)\=:E185/
-		colorscheme nord
-	catch /^Vim\%((\a\+)\)\=:E185/
-		colorscheme industry
+		call PlugUpdateUpgrade()
+		try
+			colorscheme dracula
+		catch /^Vim\%((\a\+)\)\=:E185/
+			try
+				colorscheme nord
+			catch
+				colorscheme industry
+			endtry
+		endtry
 	endtry
 endfunction
 

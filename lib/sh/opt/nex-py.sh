@@ -1,10 +1,9 @@
-#!/bin/sh
 
 nx_py_venv()
 {
 	while [ ${#@} -gt 0 ]; do
 		[ "$1" = '-a' ] && {
-			. "${NEXUS_LIB}/py/${{L_NEX_APP_ROOT}}/venv/bin/activate"
+			. "${NEXUS_LIB}/py/${L_NEX_APP_ROOT}/venv/bin/activate"
 		}
 		[ "$1" = '-d' ] && {
 			deactivate 2>/dev/null
