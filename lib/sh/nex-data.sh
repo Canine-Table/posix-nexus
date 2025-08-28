@@ -65,3 +65,19 @@ nx_data_append()
 		esac
 	)"
 }
+
+nx_data_jdump()
+{
+
+	${AWK:-$(nx_cmd_awk)} -v jdump="$*" \
+	"
+		$(nx_data_include -i "${NEXUS_LIB}/awk/nex-json.awk")
+	"'
+		BEGIN {
+			nx_json(jdump, arr, 2)
+			for (jdump in arr)
+				printf("%s = %s\n", jdump, arr[jdump])
+			delete arr;
+		}
+	'
+}

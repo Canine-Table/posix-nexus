@@ -7,7 +7,7 @@ nx_init_env()
 		if (sub("lib/sh/.+[.]sh$", "", path)) {
 			print path
 		} else {
-			printf("\x1b[1;31m[x] Please make sure the initiator file is executable before proceeding.\x1b[0m");
+			printf("\x1b[1;31m[x] Please make sure the initiator file is executable before proceeding.\x1b[0m")
 			exit 1
 		}
 	}')" || {
@@ -30,6 +30,26 @@ nx_init_env()
 			done
 		}
 	EOF
+	tmpc="${tmpb}cnf/.nexrc"
+	test -f "$tmpc" -a -r "$tmpc" && printf 'export ENV="%s"\n' "${tmpc}" >> "${tmpb}env/.nexus-shell.bundle.sh"
+	for tmpc in cnf env src docs; do
+		test -d "${tmpb}${tmpc}" || {
+			test -e "${tmpb}${tmpc}" && {
+				while :; do
+					tmpd="${tmpb}{tmpc}-$(date '+%s').bak"
+					test -e "$tmpd" || break
+				done
+				mv "${tmpb}${tmpc}" "$tmpd" || {
+					printf '\x1b[1;31m[x] %s\x1b[0m\n' "The path to '${tmpb}${tmpc}' must be either be a directory or a path that does not yet exist, manual intervention required."
+					exit 2
+				}
+			}
+			mkdir "${tmpb}${tmpc}" || {
+				printf '\x1b[1;31m[x] %s\x1b[0m\n' "The path to '${tmpb}${tmpc}' could not be created, manual intervention required."
+				exit 3
+			}
+		}
+	done
 	for tmpc in "${tmpb}lib/sh/"*".sh"; do
 		! [ "$tmpc" = "${tmpb}lib/sh/${tmpa}" ] \
 		&& [ -r "$tmpc" ] \
