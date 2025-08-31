@@ -1,7 +1,7 @@
 
 nx_misc_lemonade()
 {
-	h_nx_cmd lemonade && test -z "$SSH_CLIENT" -a "$(nx_info_path -b "$G_NEX_CLIPBOARD")" = 'lemonade' && {
+	h_nx_cmd lemonade && test -z "$SSH_CLIENT" && {
 		$G_NEX_SOCKETS -atp | grep -q 'lemonade' || {
 			nx_io_printf -i "starting the lemonade service"
 			nohup lemonade server \
