@@ -11,6 +11,9 @@ export CC="$(nx_cmd_cc)"
 test "$E_NEX_ASM" = true && nx_tex_export
 test "$E_NEX_TEX" = true && nx_asm_export
 test "$E_NEX_EDITOR" = true && nx_editor_export
+test "$E_NEX_LEMONADE" = true && nx_misc_lemonade
+test "$E_NEX_SOFFICE" = true && nx_misc_soffice
+
 tty -s && case "${TERM}" in
 	screen*|Eterm*|alacritty*|aterm*|foot*|gnome*|konsole*|kterm*|putty*|rxvt*|tmux*|xterm*)
 		{
@@ -29,7 +32,17 @@ tty -s && case "${TERM}" in
 		export PS1='\[\e[4;1;32m\])(\w)\[\e[m\]'
 	};;
 esac
-
+for tmpa in \
+        "$NEXUS_BIN" \
+        "$NEXUS_SBIN"\
+        "usr/local/bin" \
+        "usr/local/sbin" \
+        "$HOME/.local/bin" \
+        "$HOME/.local/sbin"; do
+        export PATH="$(nx_data_append PATH "$tmpa" ':' 1)"
+done
+export PATH
+unset tmpa
 
 ##############################################################################################
 

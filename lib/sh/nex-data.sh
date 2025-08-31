@@ -1,7 +1,7 @@
 
 nx_data_ref()
 {
-	[ -n "$1" ] && eval "echo \$$1"
+	[ -n "$1" ] && eval "printf \$$1"
 }
 
 nx_data_ref_append()
@@ -48,18 +48,18 @@ nx_data_append()
 {
 	printf '%s\n' "$(
 		v="$(nx_data_ref "$1")"
-		[ -z "$2" ] && {
-			echo "$v"
+		test -z "$2" && {
+			printf '%s' "$v"
 			exit
 		}
 		s="${3:-:}"
 		case "$s$v$s" in
 			*"$s$2$s"*) printf '%s' "$v";;
 			*) {
-				if [ -n "$4" ]; then
-					printf '%s' "$2${v:+$s$v}"
+				if test -n "$4"; then
+					printf '%s' "$2${v:+"$s$v"}"
 				else
-					printf '%s' "${v:+$v$s}$2"
+					printf '%s' "${v:+"$v$s"}$2"
 				fi
 			};;
 		esac
@@ -68,7 +68,6 @@ nx_data_append()
 
 nx_data_jdump()
 {
-
 	${AWK:-$(nx_cmd_awk)} -v jdump="$*" \
 	"
 		$(nx_data_include -i "${NEXUS_LIB}/awk/nex-json.awk")

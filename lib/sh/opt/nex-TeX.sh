@@ -11,5 +11,4 @@ nx_tex_export()
 	unset E_NEX_TEX
 }
 
-export E_NEX_TEX='true'
-
+export E_NEX_TEX=true

@@ -145,4 +145,53 @@ function nx_file_type(D,	trk, v1, v2, v3, i, j)
 	return D
 }
 
+function nx_expand_path(D,	q, c)
+{
+	while (match(D, /[,{}]/)) {
+		q["c"] = substr(D, RSTART, RLENGTH)
+		q["m"] = substr(D, 1, RSTART - 1)
+		D = substr(D, RSTART + RLENGTH)
+		if (q["c"] == "{") {
+			if (D ~ /^[0-9]+[.][.][0-9]+([.][.][0-9]+)?\}/) {
+				q["i"] = index(D, "}")
+				q["j"] = split(substr(D, 1, q["i"] - 1), c, "\.\.")
+				D = substr(D, q["i"] + 1)
+				if (q["j"] < 3)
+					c[3] = 1
+				q["n"] = q["t"] + 1
+				for (q["i"] = q["h"]; q["i"] <= q["t"]; ++q["i"]) {
+					for (q["j"] = c[1]; q["j"] <= c[2]; q["j"] += c[3])
+						q[++q["n"]] = q[1+q["n"]] q["m"] q[q["i"]] q["j"]
+				}
+				delete c
+				q["h"] = q["t"] + 2
+				q["t"] = q["n"]
+			} else {
+				for (q["i"] = q["h"]; q["i"] <= q["t"]; ++q["i"])
+					q[q["i"]] = q[q["i"]] q["m"]
+				q["n"] = q["i"]
+			}
+		} else {
+			for (q["i"] = q["h"]; q["i"] <= q["t"]; ++q["i"]) {
+				q[++q["n"]] = q[q["i"]] q["m"]
+				if (q["c"] == "}")
+					delete q[q["i"]]
+			}
+			if (q["c"] == "}") {
+				q["h"] = q["t"] + 2
+				q["t"] = q["n"]
+			}
+		}
+	}
+	for (q["i"] = q["h"]; q["i"] <= q["t"]; ++q["i"]) {
+		q[q["i"]] = q[q["i"]] D
+		gsub(/\/\/+/, "/", q[q["i"]])
+		gsub(/\'/, "\\'", q[q["i"]])
+		q["s"] = q["s"] "\x27" q[q["i"]] "\x27 "
+		delete q[q["i"]]
+	}
+	D = q["s"]
+	delete q
+	return D
+}
 

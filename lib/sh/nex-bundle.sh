@@ -23,6 +23,8 @@ nx_init_env()
 		export NEXUS_CNF="${tmpb}cnf"
 		export NEXUS_DOC="${tmpb}docs"
 		export NEXUS_LOG="${tmpb}env"
+		export NEXUS_SBIN="${tmpb}sbin"
+		export NEXUS_BIN="${tmpb}bin"
 		nx_cnf_export()
 		{
 			for tmpa in "\${NEXUS_CNF}/nex-export.cnf" "\${NEXUS_CNF}/nex-alias.cnf"; do
@@ -32,7 +34,7 @@ nx_init_env()
 	EOF
 	tmpc="${tmpb}cnf/.nexrc"
 	test -f "$tmpc" -a -r "$tmpc" && printf 'export ENV="%s"\n' "${tmpc}" >> "${tmpb}env/.nexus-shell.bundle.sh"
-	for tmpc in cnf env src docs; do
+	for tmpc in cnf env src docs bin sbin; do
 		test -d "${tmpb}${tmpc}" || {
 			test -e "${tmpb}${tmpc}" && {
 				while :; do

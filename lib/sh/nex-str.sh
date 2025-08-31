@@ -138,3 +138,18 @@ nx_str_append()
 	'
 )
 
+nx_str_path()
+{
+	${AWK:-$(nx_cmd_awk)} \
+		-v str="$*" \
+	"
+		$(nx_data_include -i "${NEXUS_LIB}/awk/nex-shell.awk")
+	"'
+		BEGIN {
+			if (str = nx_expand_path(str))
+				print str
+			else
+				exit 1
+		}
+	'
+}
