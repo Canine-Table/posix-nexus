@@ -62,7 +62,7 @@ nx_cmd_sudo()
 }
 
 nx_cmd_clipboard() {
-	g_nx_cmd ${DISPLAY:-lemonade} ${DISPLAY:+xsel xclip} ${WAYLAND_DISPLAY:+wl-copy wayclip} ${TMUX:+tmux}
+	g_nx_cmd ${SSH_CLIENT:+lemonade} ${DISPLAY:+xsel xclip} ${WAYLAND_DISPLAY:+wl-copy wayclip} ${TMUX:+tmux}
 }
 
 
