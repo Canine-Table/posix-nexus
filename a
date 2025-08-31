@@ -1,0 +1,2 @@
+${DISPLAY:-lemonade} ${DISPLAY:+xsel xclip} ${WAYLAND_DISPLAY:+wl-copy wayclip} ${TMUX:+tmux}
+

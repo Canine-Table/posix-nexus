@@ -61,3 +61,17 @@ nx_cmd_sudo()
 	g_nx_cmd doas sudo sudo-rs
 }
 
+nx_cmd_clipboard() {
+	g_nx_cmd ${DISPLAY:-lemonade} ${DISPLAY:+xsel xclip} ${WAYLAND_DISPLAY:+wl-copy wayclip} ${TMUX:+tmux}
+}
+
+
+nx_cmd_wget()
+{
+	g_nx_cmd curl wget
+}
+
+nx_cmd_sockets()
+{
+	g_nx_cmd ss netstat
+}

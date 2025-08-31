@@ -1,11 +1,14 @@
 
-
 nx_misc_lemonade()
 {
-	h_nx_cmd lemonade && test -z "$DISPLAY" && {
-		ps -a | grep -q 'lemonade' || {
+	h_nx_cmd lemonade && test "$(nx_info_path -b "$G_NEX_CLIPBOARD")" = 'lemonade' && {
+		$G_NEX_SOCKETS -atp | grep -q 'lemonade' || {
 			nx_io_printf -i "starting the lemonade service"
-			nohup lemonade server 1> /dev/null 2>&1 &
+			nohup lemonade server \
+				--allow=0.0.0.0/0 \
+				--host="localhost" \
+				--trans-loopback=true \
+				--port=2489 1> /dev/null 2>&1 &
 		}
 	}
 	unset E_NEX_LEMONADE

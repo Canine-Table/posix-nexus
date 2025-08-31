@@ -23,11 +23,12 @@ function! s:NxInit()
 		\ 'str.vim',
 		\ 'xml.vim',
 		\ 'mappings.vim',
+		\ 'variables.vim',
 	\)
-	if NxBaseName(getenv('G_NEX_WEB_FETCH')) == 'curl'
+	if NxBaseName(getenv('G_NEX_WGET')) == 'curl'
 		let g:nx_download_cmd = 'silent !curl -fLo '
 		let g:nx_download_cmd_options = ' --create-dirs '
-	elseif NxBaseName(getenv('G_NEX_WEB_FETCH')) == 'wget'
+	elseif NxBaseName(getenv('G_NEX_WGET')) == 'wget'
 		let g:nx_download_cmd = 'silent !wget -O '
 		let g:nx_download_cmd_options = ' '
 	else
