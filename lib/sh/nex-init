@@ -13,7 +13,6 @@ nx_init()
 		fi
 	)"
 	nx_cnf_export
-
 }
 
 nx_init "$@"

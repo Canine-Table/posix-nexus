@@ -38,7 +38,7 @@ nx_init_env()
 		test -d "${tmpb}${tmpc}" || {
 			test -e "${tmpb}${tmpc}" && {
 				while :; do
-					tmpd="${tmpb}{tmpc}-$(date '+%s').bak"
+					tmpd="${tmpb}${tmpc}-$(date '+%s').bak"
 					test -e "$tmpd" || break
 				done
 				mv "${tmpb}${tmpc}" "$tmpd" || {

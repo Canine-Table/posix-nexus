@@ -1,4 +1,3 @@
-
-. "$(cat $HOME/.nx-root)"
-nx_cnf_export
-
+. "$(cat $HOME/.nx-root)" && {
+	nx_cnf_export
+}

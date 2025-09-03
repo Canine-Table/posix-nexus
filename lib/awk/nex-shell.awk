@@ -1,5 +1,8 @@
 #nx_include "nex-misc.awk"
 #nx_include "nex-str.awk"
+#nx_include "nex-struct.awk"
+#nx_include "nex-log.awk"
+#nx_include "nex-json.awk"
 
 function nx_str_opts(D, S1, S2, S3, B,		i, j, k, l, res, v, opts, flg, kw, param)
 {
@@ -144,6 +147,7 @@ function nx_file_type(D,	trk, v1, v2, v3, i, j)
 	delete v3
 	return D
 }
+
 
 function nx_expand_path(D,	q, c)
 {

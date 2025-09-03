@@ -28,7 +28,7 @@ nx_cmd_awk()
 
 nx_cmd_shell()
 {
-	g_nx_cmd dash sh ash mksh posh yash ksh loksh pdksh bash zsh fish
+	g_nx_cmd sh ash dash mksh posh yash ksh loksh pdksh bash zsh fish
 }
 
 nx_cmd_editor()

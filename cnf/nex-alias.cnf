@@ -28,4 +28,6 @@ alias now='date +"%T"'
 alias nowdate='date +"%d-%m-%Y"'
 alias epoch='date +"%s"'
 
+h_nx_cmd tmux && alias tmux="tmux -f $NEXUS_CNF/.tmux.conf"
+
 ##############################################################################################

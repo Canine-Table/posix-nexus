@@ -301,7 +301,7 @@ nx_dialog_form()
 			}
 		}
 	" "
-		$(nx_init_include -i "${NEXUS_LIB}/awk/nex-tui.awk")
+		$(nx_data_include -i "${NEXUS_LIB}/awk/nex-tui.awk")
 	"'
 		BEGIN {
 			nx_json(json, arr, 2)

@@ -14,26 +14,35 @@
 # O(n!):		Factoral Time
 ###########################################
 
+
+
 function nx_bijective(V, D1, D2, D3)
 {
-	if (D1 != "") {
-		if (D2) {
-			if (D3 != "") {
-				V[D1] = D2
-				V[D2] = D3
-				V[D3] = D1
-			} else {
-				V[D1] = D2
-				V[D2] = D1
-			}
-		} else if (D3 != "") {
-				V[V[D1]] = D3
-			if (D2 != "")
-				delete V[D1]
+	if (D1 == "")
+		return
+	if (D2) {
+		if (D3 != "") {
+			V[D1] = D2
+			V[D2] = D3
+			V[D3] = D1
+		} else {
+			V[D1] = D2
+			V[D2] = D1
 		}
+	} else if (D3 != "") {
+			V[V[D1]] = D3
+		if (D2 != "")
+			delete V[D1]
 	}
+
 }
 
+
+# Argument	Purpose
+# D1		The input string to search within.
+# S		The pattern or delimiter to search for (e.g. "=", ",", etc.).
+# D2		The escape sequence pattern (e.g. "\\\\" for backslashes).
+# f		The cumulative offset/index of the match (used internally and returned).
 function nx_find_index(D1, S, D2,	f)
 {
 	if (D1 != "") {
@@ -50,7 +59,19 @@ function nx_find_index(D1, S, D2,	f)
 		return f
 	}
 }
-
+# Argument	Purpose
+# D1		The input string to parse.
+# V1		An associative array of start delimiters as keys and their matching end delimiters as values.
+# V2		An output array where results (positions and lengths) are stored.
+# D2		Escape sequence pattern (same as above).
+# B1		Boolean flag: if no match is found, use end of string as fallback.
+# B2		Boolean flag: determines whether to prefer earlier or later matches.
+# s		Start position of the match (used internally).
+# s_l		Length of the start delimiter.
+# e		End position of the match (used internally).
+# e_l		Length of the end delimiter.
+# f		Temporary index used during matching.
+# i		Iterator for looping through V1.
 function nx_next_pair(D1, V1, V2, D2, B1, B2,	s, s_l, e, e_l, f, i)
 {
 	if (D1 != "") {
@@ -77,11 +98,28 @@ function nx_next_pair(D1, V1, V2, D2, B1, B2,	s, s_l, e, e_l, f, i)
 	}
 }
 
+# Argument	Role
+# D1		The input string to tokenize.
+# V1		Output array to store tokens or key-value pairs.
+# S1		Primary delimiter (e.g. , or =).
+# S2		Secondary delimiter (e.g. : or closing quote).
+# V2		Delimiter map used by nx_next_pair to find token boundaries.
+# D2		Escape character pattern (e.g. \\).
+# B1		Boolean: controls behavior when no end delimiter is found.
+# B2		Boolean: whether to trim tokens (via nx_trim_str).
+# v1		Internal map of start → end delimiters (bijective).
+# v2		Internal array for storing positions from nx_next_pair.
+# c		Current expected delimiter (used for pairing logic).
+# s		Accumulator for current token string.
+# i		Index of current delimiter pair.
+# l		Position offset for substring slicing.
+# t		Current delimiter token.
+# k		Key for key-value assignment.
 function nx_tokenize(D1, V1, S1, S2, V2, D2, B1, B2,	v1, v2, c, s, i, l, t, k)
 {
 	if (D1 != "") {
 		if (! length(V2))
-			__nx_quote_map(V2)
+			__nx_quote_map(V2, "0", "0", "0")
 		S1 = __nx_else(S1, ",")
 		V2[S1] = ""
 		if (S2) {

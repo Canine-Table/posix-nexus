@@ -116,7 +116,6 @@ function nx_append_str(D1, N, D2, B,	s)
 				s = D1 s
 			else
 				s = s D1
-
 		} while (--N)
 		return s
 	}

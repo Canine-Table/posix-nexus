@@ -19,12 +19,12 @@ function __nx_is_signed(N)
 
 function __nx_is_integral(N, B)
 {
-	return __nx_or(B, N ~ /^([-]|[+])?[0-9]+$/, N ~ /^[0-9]+$/)
+	return __nx_if(B, N ~ /^([-]|[+])?[0-9]+$/, N ~ /^[0-9]+$/)
 }
 
 function __nx_is_float(N, B)
 {
-	return __nx_or(B, N ~ /^([-]|[+])?[0-9]+[.][0-9]+$/, N ~ /^[0-9]+[.][0-9]+$/)
+	return __nx_if(B, N ~ /^([-]|[+])?[0-9]+[.][0-9]+$/, N ~ /^[0-9]+[.][0-9]+$/)
 }
 
 function nx_natural(N, B)

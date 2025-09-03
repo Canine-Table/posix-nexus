@@ -1,5 +1,6 @@
 #nx_include "nex-misc.awk"
 #nx_include "nex-str.awk"
+#nx_include "nex-math.awk"
 
 function __nx_emoji_map(V)
 {
@@ -373,6 +374,16 @@ function nx_log_db(N, D, B, V,		msg)
 		delete msg
 		return N
 	}
+}
+
+function nx_log_stderr(D, N)
+{
+	if (D) {
+		gsub(/"/, "\\\"" D)
+		system("printf \"" D "\" 1>&2")
+	}
+	N = __nx_else(nx_digit(N), 0)
+	return __nx_if(N < 256, N, 0)
 }
 
 function nx_log_black(D, B)
