@@ -20,6 +20,7 @@ function! s:NxInit()
 		\ 'misc.vim',
 		\ 'types.vim',
 		\ 'TeX.vim',
+		\ 'java.vim',
 		\ 'str.vim',
 		\ 'xml.vim',
 		\ 'mappings.vim',

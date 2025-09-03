@@ -5,6 +5,7 @@ nx_init_env()
 	tmpa="$(basename "$0")"
 	tmpb="$("${AWK:-awk}" -v path="$(cd "$(dirname "$0")" && pwd)/${tmpa}" 'BEGIN {
 		if (sub("lib/sh/.+[.]sh$", "", path)) {
+			gsub("//", "/", path)
 			print path
 		} else {
 			printf("\x1b[1;31m[x] Please make sure the initiator file is executable before proceeding.\x1b[0m")

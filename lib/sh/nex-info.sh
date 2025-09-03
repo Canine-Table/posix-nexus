@@ -8,7 +8,7 @@ nx_info_path()
 	tmpb="${1:-"$0"}"
 	tmpc="$(basename "$tmpb")"
 	tmpd="$(cd "$(dirname "$tmpb")" && pwd)"
-	test -e "${tmpd}/${tmpc}" || exit 1
+	test -e "${tmpd}/${tmpc}" || return 1
 	case "$tmpa" in
 		-p) printf '%s/%s\n' "$tmpd" "$tmpc";;
 		-d) printf '%s\n' "$tmpd";;

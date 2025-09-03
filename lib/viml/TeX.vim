@@ -37,6 +37,14 @@ function! s:NxTeXSettings()
 		call NxCallFunction(l:backends[g:vimtex_compiler_method])
 		echo 'VimTeX Compiler:' g:vimtex_compiler_method
 		echo 'VimTex Executable:' g:nex_tex_compiler
+		nnoremap <buffer> <Leader>lv :VimtexView<CR>
+		nnoremap <buffer> <Leader>ll :VimtexCompile<CR>
+		noremap <buffer> <Leader>lL :VimtexCompileSS<CR>
+		nnoremap <buffer> <Leader>LL :VimtexCompileSelected<CR>
+		nnoremap <buffer> <Leader>lq :VimtexStop<CR>
+		noremap <buffer> <Leader>lm :VimtexToggleMain<CR>
+		noremap <buffer> <Leader>lt :VimtexLog<CR>
+		noremap <buffer> <leader>wc <Cmd>VimtexCountWords<CR>
 	else
 		echoerr "Unknown compiler method:" g:vimtex_compiler_method
 	endif
