@@ -23,6 +23,7 @@ function! s:NxInit()
 		\ 'java.vim',
 		\ 'str.vim',
 		\ 'xml.vim',
+		\ 'md.vim',
 		\ 'mappings.vim',
 		\ 'variables.vim',
 	\)
