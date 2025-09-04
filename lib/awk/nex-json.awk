@@ -389,7 +389,7 @@ function nx_json_delete(D1, V1, V2,	v, i, j)
 				delete V1[i "(0)"]
 			}
 			delete V1[i]
-			if (sub(/(\x5b0\x5d|\x7b0\x7d)$/, "", i))
+			if (sub("(\x5b0\x5d|\x7b0\x7d)$", "", i))
 				delete V1[i]
 		}
 		delete v

@@ -38,13 +38,18 @@ tty -s && case "${TERM}" in
 	};;
 esac
 for tmpa in \
-        "$NEXUS_BIN" \
-        "$NEXUS_SBIN"\
-        "usr/local/bin" \
-        "usr/local/sbin" \
+        "/bin" \
+        "/sbin" \
+        "/usr/bin"\
+        "/usr/sbin"\
+        "/usr/local/bin" \
+        "/usr/local/sbin" \
         "$HOME/.local/bin" \
-        "$HOME/.local/sbin"; do
-        export PATH="$(nx_data_append PATH "$tmpa" ':' 1)"
+        "$HOME/.local/sbin" \
+        "$NEXUS_BIN" \
+        "$NEXUS_SBIN"
+do
+        PATH="$(nx_data_append PATH "$tmpa" ':' 1)"
 done
 export PATH
 unset tmpa

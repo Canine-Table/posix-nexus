@@ -12,8 +12,7 @@ nx_init()
 					-type f -path '*/lib/sh/nex-bundle.sh' -print -quit 2>/dev/null)" | tee "$tmpa"
 		fi
 	)"
-	nx_cnf_export
 }
 
 nx_init "$@"
-
+nx_cnf_export
