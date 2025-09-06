@@ -24,6 +24,8 @@ alias fgrep='fgrep --color=auto'
 
 alias cls=clear
 
+alias nxns='nsenter --net=/var/run/netns/posix-nexus bash'
+
 alias now='date +"%T"'
 alias nowdate='date +"%d-%m-%Y"'
 alias epoch='date +"%s"'
