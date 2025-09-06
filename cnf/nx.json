@@ -1,5 +1,14 @@
 {
 	"java": {
 		"project": "main"
+	},
+	"cgroup": {
+		"memory.max": 8589934592,
+		"memory.swap.max": 25769803776,
+		"cpu.max": "300000 100000",
+		"io.max": "",
+		"pids.max": "",
+		"cpuset.cpus": ""
 	}
 }
+

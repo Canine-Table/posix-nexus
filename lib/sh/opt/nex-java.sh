@@ -44,11 +44,5 @@ nx_java_export()
 	export G_NEX_JAVA_PROJECT="$tmpa"
 }
 
-
-nx_java_run()
-{
-
-}
-
 export E_NEX_JAVA=true
 
