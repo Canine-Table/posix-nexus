@@ -27,6 +27,7 @@ function! s:NxInit()
 		\ 'mappings.vim',
 		\ 'variables.vim',
 	\)
+	let g:nx_home_dir = expand(getenv('HOME'))
 	if NxBaseName(getenv('G_NEX_WGET')) == 'curl'
 		let g:nx_download_cmd = 'silent !curl -fLo '
 		let g:nx_download_cmd_options = ' --create-dirs '
@@ -57,25 +58,26 @@ endfunction
 
 function! s:NxNeoVimInit()
 	if empty(getenv('LOCALAPPDATA'))
-		let g:nx_data_path = glob('~/local/.share/nvim/')
-		let g:nx_config_path = glob('~/.config/nvim/')
-		let g:nx_cache_path = glob('~/.cache/nvim/')
+		let g:nx_data_path = g:nx_home_dir . '/.local/share/nvim/'
+		let g:nx_config_path = g:nx_home_dir . '/.config/nvim/'
+		let g:nx_cache_path = g:nx_home_dir . '/.cache/nvim/'
 	else
-		let g:nx_data_path = glob('~/AppData/Local/nvim/')
-		let g:nx_config_path = glob('~/AppData/Local/nvim-data/')
-		let g:nx_cache_path = glob('~/AppData/Local/nvim-cache/')
+		let g:nx_data_path = g:nx_home_dir . '/AppData/Local/nvim/'
+		let g:nx_config_path = g:nx_home_dir . '/AppData/Local/nvim-data/'
+		let g:nx_cache_path = g:nx_home_dir . '/AppData/Local/nvim-cache/'
 	endif
 endfunction
 
 function! s:NxVimInit()
+
 	if empty(getenv('LOCALAPPDATA'))
-		let g:nx_data_path = glob('~/.vim/')
-		let g:nx_config_path = glob('~/.vim/')
-		let g:nx_cache_path = glob('~/.vim/')
+		let g:nx_data_path = g:nx_home_dir . '/.vim/'
+		let g:nx_config_path = g:nx_home_dir . '/.vim/'
+		let g:nx_cache_path = g:nx_home_dir . '/.vim/'
 	else
-		let g:nx_data_path = glob('~/vimfiles/')
-		let g:nx_config_path = glob('~/vimfiles/')
-		let g:nx_cache_path = glob('~/vimfiles/')
+		let g:nx_data_path = g:nx_home_dir . '/vimfiles/'
+		let g:nx_config_path = g:nx_home_dir . '/vimfiles/'
+		let g:nx_cache_path = g:nx_home_dir . '/vimfiles/'
 	endif
 	call NxPath({
 		\ 'colors/dracula.vim': 'https://raw.githubusercontent.com/dracula/vim/master/colors/dracula.vim',

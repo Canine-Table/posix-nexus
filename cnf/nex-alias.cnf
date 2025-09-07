@@ -24,7 +24,10 @@ alias fgrep='fgrep --color=auto'
 
 alias cls=clear
 
-alias nxns='nsenter --net=/var/run/netns/posix-nexus bash'
+nxns()
+{
+	nsenter --target "$(cat '/var/run/posix-nexus.pid' 2>/dev/null)" --net --uts -- "$SHELL"
+}
 
 alias now='date +"%T"'
 alias nowdate='date +"%d-%m-%Y"'
