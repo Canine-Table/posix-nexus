@@ -1,4 +1,17 @@
 
+nx_misc_brave()
+{
+	h_nx_cmd brave && {
+		while test "${#@}" -gt 0; do
+			case "$1" in
+				-u|--unlock) rm "$HOME/.config/BraveSoftware/Brave-Browser/Singleton"*;;
+				-o|--open) nohup setsid brave 1>/dev/null 2>&1 &;;
+			esac
+			shift
+		done
+	}
+}
+
 nx_misc_lemonade()
 {
 	h_nx_cmd lemonade && test -z "$SSH_CLIENT" && {

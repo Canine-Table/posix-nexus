@@ -12,8 +12,8 @@ export G_NEX_WGET="$(nx_cmd_wget)"
 export G_NEX_PAGER="$(nx_cmd_pager)"
 export G_NEX_SOCKETS="$(nx_cmd_sockets)"
 
-test "$E_NEX_ASM" = true && nx_tex_export
-test "$E_NEX_TEX" = true && nx_asm_export
+test "$E_NEX_ASM" = true && nx_asm_export
+test "$E_NEX_TEX" = true && nx_tex_export
 test "$E_NEX_JAVA" = true && nx_java_export
 test "$E_NEX_EDITOR" = true && nx_editor_export
 test "$E_NEX_LEMONADE" = true && nx_misc_lemonade

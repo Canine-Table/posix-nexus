@@ -116,7 +116,7 @@ test -n "$(getent passwd | ${AWK:-$(nx_cmd_awk)} -F ':' '{ if ($1 == "nex") { pr
 }
 
 for tmpa in subuid subgid; do
-	test -n "$(cat "/etc/$tmpa" | ${AWK:-$(nx_cmd_awk)} -F ':' '{ if ($1 == "nex") { print; exit }}')" || {
+	test -n "$(${AWK:-$(nx_cmd_awk)} -F ':' '/^nex:/{ print; exit }' "/etc/$tmpa")" || {
 		printf '%s\n' 'nex:100000:65536' | tee -a "/etc/$tmpa"
 	}
 done

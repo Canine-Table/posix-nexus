@@ -3,7 +3,7 @@
 	\usepackage{luacode} % Allows embedding Lua code directly in LaTeX
 	\edef\nxTeXPath{\directlua{tex.sprint(os.getenv("TEXMFHOME"))}}
 	\directlua{
-		local pkgrt = os.getenv('G_NEX_MOD_LIB') .. '/lua/'
+		local pkgrt = os.getenv('NEXUS_LIB') .. '/lua/'
 		package.path = pkgrt .. '?.lua;' .. pkgrt .. 'opt/?.lua;' .. package.path
 		package.path = pkgrt .. 'luatex/?.lua;' .. pkgrt  .. 'luatex/opt/?.lua;' .. package.path
 		nex = require('luatex/nex-luatex-init')

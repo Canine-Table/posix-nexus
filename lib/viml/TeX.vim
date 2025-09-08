@@ -34,9 +34,21 @@ function! s:NxTeXSettings()
 		else
 			let vimtex_parser_bib_backend = BaseName(getenv('G_NEX_BIB_BACKEND'))
 		endif
+		augroup NxVimKeyMap
+			autocmd!
+			nnoremap <buffer> <Leader>lv :VimtexView<CR>
+			nnoremap <buffer> <Leader>ll :VimtexCompile<CR>
+			noremap  <buffer> <Leader>lL :VimtexCompileSS<CR>
+			nnoremap <buffer> <Leader>LL :VimtexCompileSelected<CR>
+			nnoremap <buffer> <Leader>lq :VimtexStop<CR>
+			noremap  <buffer> <Leader>lm :VimtexToggleMain<CR>
+			noremap  <buffer> <Leader>lt :VimtexLog<CR>
+			noremap  <buffer> <Leader>wc <Cmd>VimtexCountWords<CR>
+		augroup END
 		call NxCallFunction(l:backends[g:vimtex_compiler_method])
 		echo 'VimTeX Compiler:' g:vimtex_compiler_method
 		echo 'VimTex Executable:' g:nex_tex_compiler
+
 	else
 		echoerr "Unknown compiler method:" g:vimtex_compiler_method
 	endif
@@ -110,11 +122,3 @@ endfunction
 
 autocmd Filetype tex call s:NxTeXSettings()
 
-		nnoremap <Leader>lv :VimtexView<CR>
-		nnoremap <Leader>ll :VimtexCompile<CR>
-		noremap <Leader>lL :VimtexCompileSS<CR>
-		nnoremap <Leader>LL :VimtexCompileSelected<CR>
-		nnoremap <Leader>lq :VimtexStop<CR>
-		noremap <Leader>lm :VimtexToggleMain<CR>
-		noremap <Leader>lt :VimtexLog<CR>
-		noremap <leader>wc <Cmd>VimtexCountWords<CR>
