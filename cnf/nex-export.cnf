@@ -2,6 +2,7 @@
 
 export LESS='-R'
 export COLORFGBG=';0'
+export PGDATA="/var/lib/postgres/data"
 export DIALOGRC="${NEXUS_CNF}/.dialogrc"
 export SHELL="$(nx_cmd_shell)"
 export AWK="$(nx_cmd_awk)"
@@ -11,6 +12,13 @@ export G_NEX_CLIPBOARD="$(nx_cmd_clipboard)"
 export G_NEX_WGET="$(nx_cmd_wget)"
 export G_NEX_PAGER="$(nx_cmd_pager)"
 export G_NEX_SOCKETS="$(nx_cmd_sockets)"
+export G_NEX_SQL="$(nx_cmd_sql)"
+
+tmpa="/run/user/$(id -u)"
+test -d  "$tmpa" -a -r "$tmpa" && {
+	export XDG_RUNTIME_DIR="$tmpa"
+	export DBUS_SESSION_BUS_ADDRESS="unix:path=$tmpa/bus"
+}
 
 test "$E_NEX_ASM" = true && nx_asm_export
 test "$E_NEX_TEX" = true && nx_tex_export

@@ -71,6 +71,12 @@ nx_cmd_wget()
 	g_nx_cmd curl wget
 }
 
+
+nx_cmd_sql()
+{
+	g_nx_cmd mariadb mysql
+}
+
 nx_cmd_sockets()
 {
 	g_nx_cmd ss netstat

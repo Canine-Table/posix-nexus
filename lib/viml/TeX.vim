@@ -4,8 +4,9 @@ function! s:NxTeXSettings()
 		call remote_startserver('VIM')
 	endif
 	let g:nex_tex_root = expand('%:p:h')
-	let g:nex_tex_aux = g:nex_tex_root . '/contents/' . expand('%:t:r') . '/meta'
+	let g:nex_tex_aux = g:nex_tex_root . '/aux/'
 	let g:vimtex_latexmk_build_dir = g:nex_tex_aux
+	let g:vimtex_view_automatic = 1
 	let g:vimtex_compiler_method = NxBaseName(getenv('G_NEX_TEX_BACKEND'))
 	let g:nex_tex_compiler = NxBaseName(getenv('G_NEX_TEX_COMPILER'))
 	let g:vimtex_view_method = NxBaseName(getenv('G_NEX_TEX_VIEWER'))
@@ -56,39 +57,39 @@ endfunction
 
 function! NxConfigureLaTeXMK()
 	let g:vimtex_compiler_latexmk_engines = {
-		\ '_'				: '-lualatex',
-		\ 'pdfdvi'		   : '-pdfdvi',
-		\ 'pdfps'			: '-pdfps',
-		\ 'pdflatex'		 : '-pdf',
-		\ 'luatex'		   : '-lualatex',
-		\ 'lualatex'		 : '-lualatex',
-		\ 'xelatex'		  : '-xelatex',
-		\}
+		\ '_' : '-lualatex',
+		\ 'pdfdvi' : '-pdfdvi',
+		\ 'pdfps' : '-pdfps',
+		\ 'pdflatex' : '-pdf',
+		\ 'luatex' : '-lualatex',
+		\ 'lualatex' : '-lualatex',
+		\ 'xelatex' : '-xelatex',
+	\ }
+	echo g:vimtex_compiler_method
+
+	echo g:vimtex_latexmk_build_dir 
 	let g:vimtex_compiler_lualatex = {
-		\ 'aux_dir' : g:nex_tex_aux,
-		\ 'out_dir' : g:nex_tex_aux,
 		\ 'callback' : 1,
 		\ 'continuous' : 1,
 		\ 'executable' : g:vimtex_compiler_method,
-		\ 'hooks' : [],
+		\ 'hooks' : [{ 'name': 'copy-pdf', 'callback': {-> system('cp ' . g:nx_tex_aux . '/' . expand('%:t:r') . '.pdf .') } } ],
 		\ 'options' : [
-			\  '--verbose',
-			\  '--synctex=1',
-			\  '--interaction=nonstopmode',
-			\ '--pdflua',
-			\ '--file-line-error',
-			\ '--halt-on-error',
-			\ '--reorder',
-			\ '--shell-escape',
-			\ '--auxdir=' .  g:nex_tex_aux,
-			\ '--outdir=' . g:nex_tex_aux,
+			\  '-verbose',
+			\  '-synctex=1',
+			\  '-interaction=nonstopmode',
+			\ '-file-line-error',
+			\ '-halt-on-error',
+			\ '-reorder',
+			\ '-shell-escape',
+			\ '-outdir=aux',
+			\ '-aux-directory=aux'
 		\ ],
-\}
+	\ }
+
 endfunction
 
 function! NxConfigureLaTeXRun()
 	let g:vimtex_compiler_latexrun = {
-		\ 'out_dir' : g:nex_tex_aux,
 		\ 'options' : [
 			\ '-verbose-cmds',
 			\ '--latex-args="-synctex=1"',
@@ -104,20 +105,19 @@ endfunction
 
 function! NxConfigureTectonic()
 	let g:vimtex_compiler_tectonic = {
-		\ 'out_dir' : g:nex_tex_aux,
 		\ 'hooks' : [],
 		\ 'options' : [
 			\ '--keep-logs',
 			\ '--synctex'
 		\ ],
-	\}
+	\ }
 endfunction
 
 function! NxConfigureArara()
 	let g:vimtex_compiler_arara = {
 		\ 'options' : ['--log'],
 		\ 'hooks' : [],
-	\}
+	\ }
 endfunction
 
 autocmd Filetype tex call s:NxTeXSettings()

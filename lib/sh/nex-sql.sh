@@ -1,0 +1,1 @@
+opt/nex-sql.sh

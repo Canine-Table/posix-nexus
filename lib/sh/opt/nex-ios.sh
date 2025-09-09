@@ -1,4 +1,3 @@
-#!/bin/sh
 
 g_nx_ios_info()
 {

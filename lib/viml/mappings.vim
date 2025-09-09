@@ -54,5 +54,4 @@ noremap <Leader>lm :VimtexToggleMain<CR>
 noremap <Leader>lt :VimtexLog<CR>
 noremap <leader>wc <Cmd>VimtexCountWords<CR>
 "nnoremap <leader><F5> :call NxRunCurrentFile()<CR>
-echo "Nexus Mapping: enabled"
 
