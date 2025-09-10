@@ -22,18 +22,37 @@ nx_io_fifo_mgr()
 	done
 }
 
+nx_io_noclobber()
+(
+	eval "$(nx_str_optarg ':d:p:s:f' "$@")"
+	tmpa=""
+	tmpb=""
+	test -n "$p$s" || exit
+	p="$(nx_io_parent -p "$p" "$d")"
+	test -n "$f" && f="$p$s" || f=""
+	test -e "$p$tmpa$s" && tmpb="_"
+	while test -e "$p$tmpa$s"; do
+		tmpa="$tmpb$(nx_str_rand 32)"
+	done
+	test -n "$f" && mv "$f" "$p$tmpa$s"
+	printf '%s\n' "$p$tmpa$s"
+)
 
 nx_io_parent()
 (
+	test "$1" = '-p' && {
+		tmpc='false'
+		shift
+	} || tmpc='true'
 	test -n "$1" && {
-		tmpa="${2:-/}"
+		tmpa=$(nx_info_path -p "${2:-/}")
 		tmpb="$(printf '%s' "$1" | sed 's/\/*$//g')"
 		if test "$tmpb" != "${tmpb%/*}"; then
 			tmpa="$(printf '%s' "$tmpa${tmpb%/*}" | sed 's/\/\//\//g')"
 			tmpb="${tmpb##*/}"
 		fi
 		mkdir -p "$tmpa"
-		test -f "$tmpa/$tmpb" -a -r "$tmpa/$tmpb" || touch "$tmpa/$tmpb"
+		test -f "$tmpa/$tmpb" -a -r "$tmpa/$tmpb" -a "$tmpc" = 'true' && touch "$tmpa/$tmpb"
 		printf '%s\n' "$tmpa/$tmpb"
 	}
 )

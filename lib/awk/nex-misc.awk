@@ -2,6 +2,19 @@
 #nx_include "nex-str.awk"
 #nx_include "nex-math.awk"
 
+function nx_to_environ(D,	m)
+{
+	D = toupper(nx_trim_str(D))
+	gsub(/[ \t]/, "_", D)
+	if (! (m = sub(/^[.]/, "L_", D)))
+	if (! (m = sub(/^[*]/, "G_", D)))
+	if (! (m = sub(/^[@]/, "NEXUS_", D)))
+	if (! (m = sub(/^[%]/, "P_", D)))
+		sub(/^[0-9]/, "_\\&", D)
+	gsub(/[^0-9A-Z_]/, "", D)
+	return D
+}
+
 function nx_is_file(D)
 {
 	if ((getline < D) > 0)

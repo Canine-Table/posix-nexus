@@ -79,21 +79,6 @@ nx_str_rand()
 	'
 }
 
-
-nx_str_reverse()
-{
-	${AWK:-$(nx_cmd_awk)} \
-		-v str="$*" \
-	"
-		$(nx_data_include -i "${NEXUS_LIB}/awk/nex-str.awk")
-	"'
-		BEGIN {
-			print nx_reverse_str(str)
-		}
-	'
-}
-
-
 nx_str_hex()
 {
 	h_nx_cmd hexdump && {

@@ -51,7 +51,7 @@ nx_misc_brave()
 		while test "${#@}" -gt 0; do
 			case "$1" in
 				-u|--unlock) rm "$HOME/.config/BraveSoftware/Brave-Browser/Singleton"*;;
-				-o|--open) nohup setsid brave 1> /dev/null 1>&2 &;;
+				-o|--open) nohup setsid brave 1> /dev/null 2>&1 &;;
 			esac
 			shift
 		done

@@ -1,19 +1,8 @@
-
 #nx_include "nex-misc.awk"
 #nx_include "nex-str.awk"
 #nx_include "nex-math.awk"
 #nx_include "nex-json.awk"
 
-#function nx_find_best(D1, V, B, D2,	i, f, m)
-#{
-#	D2 = __nx_else(__nx_defined(D2, 1), "\\\\")
-#	for (i in V) {
-#		m = nx_find_index(D1, V[i], D2)
-#		if (! f || B && m > f)
-#			f = m
-#	}
-#	return f
-#}
 #function nx_struct_log_db(V, N, D, B)
 #{
 #	if (length(V)) {

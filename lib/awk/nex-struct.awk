@@ -37,6 +37,17 @@ function nx_bijective(V, D1, D2, D3)
 
 }
 
+function nx_find_best(D1, V, B, D2,	i, f, m)
+{
+	D2 = __nx_else(__nx_defined(D2, 1), "\\\\")
+	for (i in V) {
+		m = nx_find_index(D1, V[i], D2)
+		if (! f || B && m > f)
+			f = m
+	}
+	return f
+}
+
 
 # Argument	Purpose
 # D1		The input string to search within.
