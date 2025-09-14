@@ -22,6 +22,15 @@ nx_io_fifo_mgr()
 	done
 }
 
+nx_io_disown()
+{
+	(
+		nohup exec "$*" 1>/dev/null 2>&1 0>&2 &
+		printf '%d\n' "$!"
+		kill $$
+	) &
+}
+
 nx_io_noclobber()
 (
 	eval "$(nx_str_optarg ':d:p:s:f' "$@")"
