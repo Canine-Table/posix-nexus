@@ -1,0 +1,20 @@
+\documentclass[a4paper,12pt]{article}
+\input{../lib/tex/nex-preamble.tex}
+\nxHyper[]%
+\nxSnowFade%
+\nxNoParIndent
+
+\def\nxInput#1{\input{./pages/nex-java/#1.tex}}%
+
+\begin{document}
+	\nxCoverPage[title={Project Documentation}, ref={Github}]
+	\nxRomanFooter
+	%\catcode`\_=11
+	\nxToc{Contents}
+	%\catcode`\_=13
+	\newpage
+	\nxSnowFlakeHeader{Posix-Nexus Java}
+	\nxInput{Basics}
+\end{document}
+
+

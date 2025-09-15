@@ -57,3 +57,12 @@ nx_ip_alias()
 	ip link set "$1" alias "$2"
 }
 
+g_nx_ip_l2()
+{
+	nx_data_jdump "$(ip -json address show "$1")" | ${AWK:-$(nx_awk_cmd)} '/.nx\[[0-9]+\]\.address =/{print $NF}'
+}
+
+g_nx_ip_ifname()
+{
+	nx_data_jdump "$(ip -json link show "$1")" | ${AWK:-$(nx_awk_cmd)} '/.nx\[[0-9]+\].ifname/{print $NF}'
+}

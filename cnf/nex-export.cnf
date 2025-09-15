@@ -13,6 +13,7 @@ export G_NEX_WGET="$(nx_cmd_wget)"
 export G_NEX_PAGER="$(nx_cmd_pager)"
 export G_NEX_SOCKETS="$(nx_cmd_sockets)"
 export G_NEX_SQL="$(nx_cmd_sql)"
+export G_NEX_CONTAINER="$(nx_cmd_container)"
 
 tmpa="/run/user/$(id -u)"
 test -d  "$tmpa" -a -r "$tmpa" && {

@@ -1,0 +1,17 @@
+[Unit]
+Description=Posix Nexus Network Namespace Initialization
+After=network.target local-fs.target
+Requires=network.target
+
+[Service]
+Type=oneshot
+User=root
+Group=root
+ExecStart=/bin/sh /opt/posix-nexus/src/nex-ns-setup.sh
+#CapabilityBoundingSet=CAP_NET_ADMIN CAP_SYS_ADMIN CAP_SYS_CHROOT CAP_SETUID CAP_SETGID
+#AmbientCapabilities=CAP_NET_ADMIN CAP_SYS_ADMIN
+#PrivateTmp=yes
+
+[Install]
+WantedBy=multi-user.target
+

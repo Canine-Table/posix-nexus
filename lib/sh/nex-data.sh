@@ -82,4 +82,20 @@ nx_data_jdump()
 }
 
 
+nx_data_jtree()
+(
+	eval "$(nx_str_optarg ':r:j:n:' "$@")"
+	test "$n" -eq 0 || n="$(nx_int_natural "$n")"
+	${AWK:-$(nx_cmd_awk)} -v jdump="$j" -v root="${r:-}" -v indent="$n" \
+	"
+		$(nx_data_include -i "${NEXUS_LIB}/awk/nex-json.awk")
+	"'
+		BEGIN {
+			if (err = nx_json(jdump, arr, 2))
+				exit err
+			print nx_json_flatten(root, arr, indent)
+			delete arr
+		}
+	'
+)
 
