@@ -23,6 +23,8 @@ nx_ip_net()
 
 nx_ip_l2()
 (
+	eval "$(nx_str_optarg ':n:' "$@")"
+	test -n "$n" && n="-n $n"
 	while :; do
 		tmpa="$(${AWK:-$(nx_cmd_awk)} -v addr="$(nx_str_rand 12 xdigit)" '
 			BEGIN {
@@ -34,7 +36,7 @@ nx_ip_l2()
 				print substr(s, 2)
 			}
 		')"
-		g_nx_ip_l2 -a | grep -q "$tmpa" || break
+		g_nx_ip_l2 $n -a | grep -q "$tmpa" || break
 	done
 	printf '%s\n' "$tmpa"
 )
@@ -88,37 +90,18 @@ nx_ip_netns()
 	)"
 )
 
-nx_ip_exec()
+__nx_ip_exec()
 {
-	ip netns exec $*
+	test -n "$1" && {
+		nx_ip_netns "$1"
+		printf '%s ' "${1:+ip netns exec $1}"
+	}
 }
 
-
-s_nx_ip_group()
+d_nx_ip_alt()
 {
-	$3 ip link set "$1" group "$(nx_int_natural "$2" || printf '%s' 'default')"
-}
-
-s_nx_ip_alias()
-{
-	g_nx_ip_alias | grep -q '^'"$2"'$' && return 1
-	ip link set "$1" alias "$2"
-}
-
-s_nx_ip_l2()
-{
-	ip link set "$1" address "$2"
-}
-
-s_nx_ip_name()
-{
-	ip link set "$1" name "$2"
-}
-
-s_nx_ip_alt()
-{
-	g_nx_ip_alt | grep -q '^'"${2}"'$' && return 1
-	ip link property add dev "$1" altname "$2"
+	g_nx_ip_alt $2 | grep -q '^'"$1"'$' || return 1
+	$(__nx_ip_exec "$2") ip link property del dev $(g_nx_ip_ifname "$1" "$2") altname "$1"
 }
 
 g_nx_ip_l2()
@@ -131,69 +114,119 @@ g_nx_ip_l2()
 
 g_nx_ip_ifname()
 (
-	tmpa="$(ip -json link show $1 2> /dev/null)" && nx_data_jdump "$tmpa" | ${AWK:-$(nx_awk_cmd)} '/.nx\[[0-9]+\]\.ifname/{print $NF}'
+	tmpa="$($(__nx_ip_exec "$2") ip -json link show $1 2> /dev/null)" && nx_data_jdump "$tmpa" | ${AWK:-$(nx_awk_cmd)} '/.nx\[[0-9]+\]\.ifname/{print $NF}'
 )
 
 g_nx_ip_alt()
 (
-	tmpa="$(ip -json link show $1 2> /dev/null)" && nx_data_jdump "$tmpa" | ${AWK:-$(nx_awk_cmd)} '/\.nx\[[0-9]+\]\.altnames\[[1-9][0-9]*\]/{print $NF}'
+	tmpa="$($(__nx_ip_exec "$2") ip -json link show $1 2> /dev/null)" && nx_data_jdump "$tmpa" | ${AWK:-$(nx_awk_cmd)} '/\.nx\[[0-9]+\]\.altnames\[[1-9][0-9]*\]/{print $NF}'
 )
 
 g_nx_ip_alias()
 (
-	tmpa="$(ip -json link show $1 2> /dev/null)" && nx_data_jdump "$tmpa" | ${AWK:-$(nx_awk_cmd)} '/\.nx\[[0-9]+\]\.ifalias/{print substr($0, index($0, "=") + 1)}'
+	tmpa="$($(__nx_ip_exec "$3") ip -json link show $1 2> /dev/null)" && nx_data_jdump "$tmpa" | ${AWK:-$(nx_awk_cmd)} '/\.nx\[[0-9]+\]\.ifalias/{print substr($0, index($0, "=") + 1)}'
 )
 
-nx_ip_veth()
+s_nx_ip_group()
+{
+	$(__nx_ip_exec "$3") ip link set "$1" group "$(nx_int_natural "$2" || printf '%s' 'default')"
+}
+
+s_nx_ip_alias()
+{
+	g_nx_ip_alias | grep -q '^'"$2"'$' && return 1
+	$(__nx_ip_exec "$3") ip link set "$1" alias "$2"
+}
+
+s_nx_ip_l2()
+{
+	$(__nx_ip_exec "$3") ip link set "$1" address "$2"
+}
+
+s_nx_ip_netns()
+{
+	test -n "$(__nx_ip_exec "$2")" -a -n "$(g_nx_ip_ifname "$1")" && ip link set "$1" netns "$2"
+}
+
+s_nx_ip_name()
+{
+	$(__nx_ip_exec "$3") ip link set "$1" name "$2"
+}
+
+s_nx_ip_alt()
+{
+	g_nx_ip_alt $3 | grep -q '^'"$2"'$' && return 1
+	g_nx_ip_ifname "$1" "$3" | grep -q '^'"$1"'$' || return 2
+	$(__nx_ip_exec "$3") ip link property add dev "$1" altname "$2"
+}
+
+s_nx_ip_state()
+{
+	g_nx_ip_ifname "$1" "$3" | grep -q '^'"$1"'$' || return 1
+	$(__nx_ip_exec "$3") ip link set "$2" "$1"
+}
+
+s_nx_ip_inet()
+{
+	g_nx_ip_ifname "$1" "$3" | grep -q '^'"$1"'$' || return 1
+	$(__nx_ip_exec "$3") ip link set "$2" "$1"
+}
+
+s_nx_ip_dev()
 (
-	eval "$(nx_str_optarg ':n:e:p:' "$@")"
-	e="${e:-"$p"}"
-	p="${p:-"$e"}"
-	test -n "$e" || exit
-	tmpa="$(ip -oneline link show "$e" type veth 2> /dev/null)"
-	test -n "$tmpa" || {
-		if test -n "$n"; then
-			nx_ip_netns "$n"
-			tmpc="ip netns exec '$n'"
-			tmpb="$(nx_str_rand 15)"
-			ip link add "$e" type veth peer name "$tmpb"
-			ip link set "$tmpb" netns "$n"
-			nx_ip_name -n "$n" "$p" || exit
-			ip netns exec "$n" ip link set "$tmpb" name "$tmpa"
-			s_nx_ip_group "$e" 3
-			s_nx_ip_group "$tmpb" 3
-			ip link set "$tmpb" up
-			ip link set "$e" up
-		else
-			nx_ip_name "$p" || exit
-			ip link add "$e" type veth peer name "$tmpa"
-			ip link set "$tmpa" up
-			ip link set "$e" up
-		fi
-	}
+	eval "$(nx_str_optarg ':n:t:l:i:u' "$@")"
+	tmpa="$(__nx_ip_exec "$n")"
+	i=${i:-"$(nx_ip_name -v "$(nx_str_rand 8)")"}
+	i="$(nx_ip_name -n "$n" -v -b "$i" "$i")"
+	$tmpa ip link add "$i" type "${t:-dummy}"
+	test -n "$u" && $tmpa ip link set up "$i"
 )
 
-nx_ip_brtun()
+s_nx_ip_veth()
 (
-	eval "$(nx_str_optarg ':n:b:t:' "$@")"
-	test -n "$n" && tmpb="ip netns exec $n" || tmpb=""
+	# upper -> peer
+	eval "$(nx_str_optarg ':n:N:p:P:' "$@")"
+	
+	p="${p:-${P:-'ethernet'}}"
+	nx_ip_netns "$n"
+	prnm="$(nx_ip_name -v "$(nx_str_rand 8)")"
+	pnm="$(nx_ip_name -n "$n" -v -b "$p" "$p")"
+
+	P="${P:-$p}"
+	nx_ip_netns "$N"
+	Prnm="$(nx_ip_name -v "$(nx_str_rand 8)")"
+	Pnm="$(nx_ip_name -n "$N" -v -b "$P" "$P")"
+
+	ip link add "$prnm" type veth peer name "$Prnm"
+
+	s_nx_ip_group "$prnm" 3
+	s_nx_ip_group "$Prnm" 3
+
+	s_nx_ip_netns "$prnm" "$n"
+	s_nx_ip_netns "$Prnm" "$N"
+
+	s_nx_ip_name "$Prnm" "$Pnm" "$N"
+	s_nx_ip_name "$prnm" "$pnm" "$n"
+
+	s_nx_ip_state "$Pnm" 'up' "$N"
+	s_nx_ip_state "$pnm" 'up' "$n"
+
+)
+
+s_nx_ip_brtun()
+(
+	eval "$(nx_str_optarg ':u:n:b:t:' "$@")"
 	b="${b:-bridge}"
 	t="${t:-tap}"
-	tmpa="$(ip netns exec posix-nexus ip link show "$b" type bridge)"\
-	test -z "$tmpa" && {
-		nx_ip_name "$b"
-		b="$tmpa"
-		$tmpb ip link add name "$b" type bridge
-		$tmpb ip link set "$t" group 1
-	}
-	$tmpb ip -detail -oneline link show "$t" | grep -q 'tun type tap' || {
-		nx_ip_name "$t"
-		t="$tmpa"
-		$tmpb ip tuntap add dev "$t" mode tap user "${u:-${USER:-$LOGNAME}}"
-		$tmpb ip link set "$t" group 32
-		$tmpb ip link set "$t" master "$b"
-		$tmpb ip link set "$t" up
-	}
-	$tmpb ip link set dev "$b" up
+	tmpa="$(__nx_ip_exec "$n")"
+	bnm="$(nx_ip_name -n "$n" -v -b "$b" "$b")"
+	$tmpa ip link add "$bnm" type bridge
+	s_nx_ip_group "$pnm" 1 "$n"
+	tnm="$(nx_ip_name -n "$n" -v -b "$t" "$t")"
+	$tmpa ip tuntap add dev "$tnm" mode tap user "${u:-${USER:-$LOGNAME}}"
+	$tmpa ip link set "$tnm" group 32
+	$tmpa ip link set "$tnm" master "$bnm"
+	s_nx_ip_state "$tnm" 'up' "$n"
+	s_nx_ip_state "$bnm" 'up' "$n"
 )
 
