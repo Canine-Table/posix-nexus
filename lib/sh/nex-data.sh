@@ -44,6 +44,17 @@ nx_data_include()
 	}
 )
 
+nx_data_repeat()
+{
+	${AWK:-$(nx_cmd_awk)} -v cmd="$1" -v repeat="$2" '
+		BEGIN {
+			for (i = split(repeat, arr, "<nx:null/>"); i > 0; --i)
+				printf("NX_ARG=\x22%s\x22;%s;", arr[i], cmd)
+			delete arr
+		}
+	'
+}
+
 nx_data_append()
 {
 	printf '%s\n' "$(

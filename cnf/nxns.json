@@ -1,0 +1,16 @@
+{
+	"address": "172.16.128.1/17",
+	"bridge": "bridge0",
+	"tap": "tap0",
+	"veth": {
+		"namespace": "posix-nexus",
+		"address": "172.16.128.3/17",
+		"name": "nexus0",
+		"peer": "nexus0"
+	},
+	"posix-nexus": {
+		"address": "172.16.128.3/17",
+		"bridge": "bridge0",
+		"tap": "tap0"
+	}
+}

@@ -94,6 +94,11 @@ nx_str_hex()
 	}
 }
 
+nx_str_len()
+{
+	${AWK:-$(nx_cmd_awk)} -v str="$*" 'BEGIN { print length(str) }'
+}
+
 nx_str_reverse()
 {
 	${AWK:-$(nx_cmd_awk)} \

@@ -66,7 +66,10 @@ function nx_str_opts(D, S1, S2, S3, B,		i, j, k, l, res, v, opts, flg, kw, param
 		delete kw
 		delete flg
 		delete param
-		j = "NX_OPT_TOP=\x27" opts[0] "\x27 NX_OPT_RMDR=\x27" j "\x27"
+		D = j
+		gsub(S2, " ", D)
+		j = "NX_OPT_TOP=\x27" opts[0] "\x27 NX_OPT_RMDR=\x27" j "\x27 NX_OPTSTR_RMDR=\x27" D "\x27"
+
 		# Construct output string from extracted options
 		for (i = opts[0]; i > 0; i--)
 			j = "NX_OPT_" i "=\x27" opts[i] "\x27 " opts[i] "=\x27" opts[opts[i]] "\x27 " j
