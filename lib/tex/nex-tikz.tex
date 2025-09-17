@@ -1,6 +1,59 @@
 \makeatletter
 \tikzset{%
-	nxRemPic/.append style={remember picture}%
+	line/.style={%
+		draw,%
+		-{Latex}%
+	},%
+	startstop/.style={%
+		ellipse,%
+		draw,%
+		fill=red!20,%
+		text centered,%
+		minimum height=2em%
+	},%
+	process/.style={%
+		rectangle,%
+		draw,%
+		fill=blue!20,%
+		text centered,%
+		minimum height=2em%
+	},%
+	decision/.style={%
+		diamond,%
+		draw, fill=green!20,%
+		text centered,%
+		aspect=2%
+	},%
+	io/.style={%
+		trapezium,%
+		trapezium left angle=70,%
+		trapezium right angle=110,%
+		draw,%
+		fill=orange!20,%
+		text centered%
+	},%
+	terminator/.style={%
+		rounded rectangle,%
+		draw, fill=purple!20,%
+		text centered,%
+		minimum height=2em%
+	},%
+	labeltop/.style={%
+		above,%
+		font=\small\itshape%
+	},%
+	labelbottom/.style={%
+		below,%
+		font=\small\ttfamily%
+	},%
+	labelleft/.style={%
+		left,%
+		font=\scriptsize%
+	},%
+	labelright/.style={%
+		right,%
+		font=\scriptsize\bfseries%
+	},%
 }
 
 \long\def\nxCoverPage[#1]{%

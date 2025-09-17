@@ -24,46 +24,24 @@ nx_io_fifo_mgr()
 
 nx_io_disown()
 {
-	(
-		nohup exec "$*" 1>/dev/null 2>&1 0>&2 &
-		printf '%d\n' "$!"
-		kill $$
-	) &
+	nohup setsid exec $@ 1>/dev/null 2>&1 & printf '%d\n' "$!"
 }
 
 nx_io_noclobber()
 (
-	eval "$(nx_str_optarg ':d:p:s:f' "$@")"
+	eval "$(nx_str_optarg ':p:s:n:f' "$@")"
 	tmpa=""
-	tmpb=""
+	n="$(nx_int_natural "$n")"
+	p="$(nx_info_canonize "$p")"
 	test -n "$p$s" || exit
-	p="$(nx_io_parent -p "$p" "$d")"
 	test -n "$f" && f="$p$s" || f=""
-	test -e "$p$tmpa$s" && tmpb="_"
+	mkdir -p "${p%/*}"
+	test -e "$p$tmpa$s" && tmpb="_" || tmpb=""
 	while test -e "$p$tmpa$s"; do
-		tmpa="$tmpb$(nx_str_rand 32)"
+		tmpa="$tmpb$(nx_str_rand ${n:-8})"
 	done
 	test -n "$f" && mv "$f" "$p$tmpa$s"
 	printf '%s\n' "$p$tmpa$s"
-)
-
-nx_io_parent()
-(
-	test "$1" = '-p' && {
-		tmpc='false'
-		shift
-	} || tmpc='true'
-	test -n "$1" && {
-		tmpa=$(nx_info_path -p "${2:-/}")
-		tmpb="$(printf '%s' "$1" | sed 's/\/*$//g')"
-		if test "$tmpb" != "${tmpb%/*}"; then
-			tmpa="$(printf '%s' "$tmpa${tmpb%/*}" | sed 's/\/\//\//g')"
-			tmpb="${tmpb##*/}"
-		fi
-		mkdir -p "$tmpa"
-		test -f "$tmpa/$tmpb" -a -r "$tmpa/$tmpb" -a "$tmpc" = 'true' && touch "$tmpa/$tmpb"
-		printf '%s\n' "$tmpa/$tmpb"
-	}
 )
 
 nx_io_type()

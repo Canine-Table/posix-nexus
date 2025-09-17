@@ -311,7 +311,6 @@
 	\end{tcolorbox}
 }%
 
-
 \newtcblisting{NxCodeBox}[2]{
 	listing engine=minted,
 	minted style=colorful,%
@@ -422,6 +421,17 @@
 		\expandafter\csname nx#1Item\endcsname\x
 	}
 }
+
+\def\nxBox#1{
+	\edef\nx@tmpa{Nx\nxTitle{#1}{ }{ }Box}
+	\newenvironment{\nx@tmpa}[1][]{%
+		\begin{tcolorbox}[inrB, crnA, nxCol=#1, ##1]
+	}{
+		\end{tcolorbox}
+	}
+}
+
+\nxThemed{nxBox}
 
 \def\nxListBox#1{
 	\edef\nx@tmpa{Nx\nxTitle{#1}{ }{ }ListBox}

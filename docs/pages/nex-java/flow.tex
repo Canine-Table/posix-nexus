@@ -1,0 +1,57 @@
+
+\nxSections{Flowchart}{2}
+\begin{tikzpicture}[node distance=2cm]
+  \node[startstop] (start) {Start};
+  \node[io, below of=start] (output1) {Output "Please input an integer."};
+  \node[io, below of=output1] (input) {Input integer x};
+  \node[process, below of=input] (assignY) {Set y = 3};
+  \node[process, below of=assignY] (computeZ) {Compute z = x * y};
+  \node[io, below of=computeZ] (output2) {Output "The product is z"};
+  \node[startstop, below of=output2] (end) {End};
+
+  \draw[arrow] (start) -- (output1);
+  \draw[arrow] (output1) -- (input);
+  \draw[arrow] (input) -- (assignY);
+  \draw[arrow] (assignY) -- (computeZ);
+  \draw[arrow] (computeZ) -- (output2);
+  \draw[arrow] (output2) -- (end);
+\end{tikzpicture}
+\newpage
+
+\nxSections{Pseudocode}{2}
+\begin{NxCodeBox}{python}{title={Pseudocode}}
+START
+
+Output: "Please input an integer."
+   Input x
+
+Set y to 3
+Calculate: z = x * y
+
+Output: "The product is " + z
+
+END
+\end{NxCodeBox}
+\newpage
+
+\nxSections{Test Plan}{2}
+\begin{NxLightBox}[title={Test Plan}]
+	\begin{tabular}{|c|c|c|c|p{4.3cm}|}
+		\hline
+		\textbf{Test Case} & \textbf{Input (x)} & \textbf{Expected Output} & \textbf{Behavior} & \textbf{Notes} \\
+		\hline
+		TC1 & 5 & The product is 15 & Pass & Standard positive integer input \\
+		\hline
+		TC2 & 0 & The product is 0 & Pass & Edge case: zero, neutral multiplier \\
+		\hline
+		TC3 & -1 & The product is -3 & Pass & Edge case: first negative integer \\
+		\hline
+		TC4 & hello & InputMismatchException & Fail & Invalid input: non-numeric string triggers exception \\
+		\hline
+		TC5 & 2.5 & InputMismatchException & Fail & Invalid input: decimal not accepted by nextInt() \\
+		\hline
+		TC6 & 1 & The product is 3 & Pass & Edge case: first positive integer \\
+		\hline
+	\end{tabular}
+\end{NxLightBox}
+

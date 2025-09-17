@@ -1,0 +1,11 @@
+START
+
+Output: "Please input an integer."
+   Input x
+
+Set y to 3
+Calculate: z = x * y
+
+Output: "The product is " + z
+
+END

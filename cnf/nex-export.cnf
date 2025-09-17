@@ -6,6 +6,8 @@ export PGDATA="/var/lib/postgres/data"
 export DIALOGRC="${NEXUS_CNF}/.dialogrc"
 export SHELL="$(nx_cmd_shell)"
 export AWK="$(nx_cmd_awk)"
+export PAGER="$(nx_cmd_pager)"
+
 
 export G_NEX_CC="$(nx_cmd_cc)"
 export G_NEX_CLIPBOARD="$(nx_cmd_clipboard)"

@@ -31,7 +31,7 @@ for tmpa in $G_NEX_NET_PHY; do
 		}
 	fi
 	s_nx_ip_alt "$tmpb" "$tmpa"
-	s_nx_ip_l2 "${tmpb:-$tmpa}" "$(nx_ip_l2)"
+	s_nx_ip_l2 "${tmpb:-$tmpa}"
 	ip link set up "${tmpb:-$tmpa}"
 done
 

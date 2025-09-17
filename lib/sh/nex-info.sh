@@ -1,13 +1,19 @@
 
+nx_info_canonize()
+{
+	printf '%s' "$*" | sed 's|//*|/|g; s|/*$||g; s/ *$//g; s/^ *//g; s|^\./||g'
+}
+
 nx_info_path()
 {
 	case "$1" in
 		-e|-E|-b|-d|-p|-s|-S) tmpa="$1"; shift;;
 		*) tmpa='-p';;
 	esac
-	tmpb="${1:-"$0"}"
+	tmpb="$(nx_info_canonize "${1:-"$0"}")"
 	tmpc="$(basename "$tmpb")"
 	tmpd="$(cd "$(dirname "$tmpb")" && pwd)"
+	mkdir -p "$tmpd"
 	test -e "${tmpd}/${tmpc}" || return 1
 	case "$tmpa" in
 		-p) printf '%s/%s\n' "$tmpd" "$tmpc";;
