@@ -14,8 +14,6 @@
 # O(n!):		Factoral Time
 ###########################################
 
-
-
 function nx_bijective(V, D1, D2, D3)
 {
 	if (D1 == "")
@@ -70,6 +68,70 @@ function nx_find_index(D1, S, D2,	f)
 		return f
 	}
 }
+
+function nx_find_pair(D1, V1, V2, D2, B1, B2,	s)
+{
+	if (D1 == "")
+		return ""
+	V2["csidx"] = ""
+	V2["ceidx"] = ""
+	V2["osidx"] = ""
+	V2["oeidx"] = ""
+	for (s in V1) {
+		if ((V2["idx"] = nx_find_index(D1, s, D2)) && (! V2["osidx"] || __nx_if(B2, V2["idx"] > V2["osidx"], V2["idx"] < V2["osidx"]))) {
+			V2["osidx"] = V2["idx"]
+			V2["oeidx"] = length(s)
+			if (length(V1[s]) && (V2["idx"] = nx_find_index(substr(D1, V2["osidx"] + V2["oeidx"] + 1), V1[s], D2))) {
+				V2["csidx"] = V2["idx"]
+				V2["ceidx"] = length(V1[s])
+			} else {
+				V2["csidx"] = ""
+				V2["ceidx"] = ""
+			}
+		}
+	}
+	if (! V2["osidx"] && B1)
+		V2["osidx"] = length(D1) + 1
+}
+
+function nx_entries(D1, D2, D3,		trk)
+{
+	if (! nx_is_file(D1))
+		return
+	D3 = __nx_else(__nx_defined(D3, 1), "\\\\")
+	D2 = __nx_else(D2, ";")
+	while ((getline trk["ln"] < D1) > 0) {
+		if (D2 != "" && (trk["idx"] = nx_find_index(trk["ln"], D2))) {
+			if (trk["nl"])
+				trk[trk[0]] = trk[trk[0]] substr(trk["ln"], 1, trk["idx"] - 1)
+			else
+				trk[++trk[0]] = substr(trk["ln"], 1, trk["idx"] - 1)
+			break
+		}
+		if (D3 && match(trk["ln"], D3 "+$") && int(RLENGTH % 2) == 1) {
+			sub(D3 "$", "", trk["ln"])
+			if (trk["nl"]) {
+				trk[trk[0]] = trk[trk[0]] trk["ln"]
+			} else {
+				trk[++trk[0]] = trk["ln"]
+				trk["nl"] = 1
+			}
+		} else {
+			if (trk["nl"])
+				trk[trk[0]] = trk[trk[0]] trk["ln"]
+			else
+				trk[++trk[0]] = trk["ln"]
+			trk["nl"] = 0
+		}
+	}
+	close(D1)
+	for (trk["ln"] = 1; trk["ln"] <= trk[0]; ++trk["ln"])
+		trk["str"] = trk["str"] "<nx:null/>" trk[trk["ln"]]
+	D1 = trk["str"]
+	delete trk
+	return D1
+}
+
 # Argument	Purpose
 # D1		The input string to parse.
 # V1		An associative array of start delimiters as keys and their matching end delimiters as values.

@@ -92,7 +92,6 @@ nx_data_jdump()
 	'
 }
 
-
 nx_data_jtree()
 (
 	eval "$(nx_str_optarg ':r:j:n:' "$@")"
@@ -109,4 +108,38 @@ nx_data_jtree()
 		}
 	'
 )
+
+nx_data_pair()
+{
+	${AWK:-$(nx_cmd_awk)} -v str="$@" \
+	"
+		$(nx_data_include -i "${NEXUS_LIB}/awk/nex-struct.awk")
+	"'
+		BEGIN {
+			sep["\x22"] = "\x22"
+			sep["\x27"] = "\x27"
+			sep["\x09"] = ""
+			sep["\x20"] = ""
+			nx_find_pair(str, sep, arr)
+			print substr(str, arr["osidx"] + arr["oeidx"], arr["csidx"] + arr["ceidx"] - 1)
+			delete arr
+			delete sep
+		}
+	'
+}
+
+nx_data_entries()
+{
+	${AWK:-$(nx_cmd_awk)} -v str="$1" -v ed="$2" \
+	"
+		$(nx_data_include -i "${NEXUS_LIB}/awk/nex-struct.awk")
+	"'
+		BEGIN {
+			if (ed = nx_entries(str, ed))
+				print ed
+			else
+				exit 1
+		}
+	'
+}
 

@@ -10,6 +10,36 @@ nx_str_chain()
 	done
 }
 
+nx_str_od()
+{
+	h_nx_cmd od && (
+		tmpb="$(nx_str_case -l "$1" | cut -d '-' -f 2)"
+		case "$tmpb" in
+			d|o|x) shift;;
+			*) tmpb="x";;
+		esac
+		h_nx_cmd wc || tmpc=1024 && tmpc="$(printf '%s' "$@" | wc --bytes)"
+		test "$G_NEX_ASM_ENDIAN" -eq 1 && tmpa="big" || tmpa="little"
+		printf '%s' "$@" | od \
+			--endian="$tmpa" \
+			--address-radix=none \
+			--format="${tmpb}1" \
+			--width="$tmpc" | ${AWK:-$(nx_cmd_awk)} -v fmt="$tmpb" \
+		'	BEGIN {
+				if (fmt == "o")
+					esc = "\\0"
+				else if (fmt == "x")
+					esc = "\\x"
+			} {
+				for (i = 1; i <= NF; ++i)
+					s = s esc $i
+			} END {
+				print s
+			}
+		'
+	)
+}
+
 nx_str_optarg()
 {
 	${AWK:-$(nx_cmd_awk)} \
@@ -36,24 +66,23 @@ nx_str_optarg()
 
 nx_str_case()
 (
-	while getopts ult OPT; do
-		case $OPT in
-			u|l|t) c="$OPT";;
-		esac
-	done
-	shift $((OPTIND - 1))
+	tmpb="$(printf '%s' "$1" | tr 'A-Z' 'a-z')"
+	case "$tmpb" in
+		-u|-l|-t) shift;;
+		*) tmpb=''
+	esac
 	${AWK:-$(nx_cmd_awk)} \
 		-v inpt="$@" \
-		-v strcase="$c" \
+		-v strcase="$tmpb" \
 	"
 		$(nx_data_include -i "${NEXUS_LIB}/awk/nex-str.awk")
 	"'
 		BEGIN {
-			if (strcase == "t")
+			if (strcase == "-t")
 				print nx_totitle(inpt)
-			else if (strcase == "u")
+			else if (strcase == "-u")
 				print toupper(inpt)
-			else if (strcase == "l")
+			else if (strcase == "-l")
 				print tolower(inpt)
 			else
 				print inpt
@@ -77,21 +106,6 @@ nx_str_rand()
 				exit 1
 		}
 	'
-}
-
-nx_str_hex()
-{
-	h_nx_cmd hexdump && {
-		nx_str_case -u "$(printf '%s' "$*" | hexdump)" | ${AWK:-$(nx_cmd_awk)} '
-			{
-				for (i = 2; i <= NF; i++)
-					h = h "\\x" substr($i, 3) "\\x" substr($i, 1, 2)
-			} END {
-				sub("\\\\x00$", "", h)
-				print h
-			}
-		'
-	}
 }
 
 nx_str_len()

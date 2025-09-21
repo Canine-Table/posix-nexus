@@ -1,0 +1,15 @@
+\documentclass[a5paper,13pt]{article}
+\input{../lib/tex/nex-preamble.tex}
+\nxHyper[]%
+\nxSnowFade%
+\nxNoParIndent
+\def\nxInput#1{\input{./pages/nex-math/#1.tex}}%
+\begin{document}
+	%\nxCoverPage[title={Project Documentation}, ref={Github}]
+	\nxRomanFooter
+	\nxToc{Contents}
+	\newpage
+	\nxSnowFlakeHeader{Math Nodes}
+	\nxInput{rules}
+\end{document}
+

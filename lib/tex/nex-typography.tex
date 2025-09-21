@@ -1,0 +1,24 @@
+\makeatletter
+\def\nxEm#1#2{%
+	\edef\nx@tmpb{\nxDigit{#2}}
+	\ifnum\nx@tmpb>-1
+		\csname
+		\ifcase#2
+			uuline
+		\or
+			uwave
+		\or
+			sout
+		\or
+			xout
+		\or
+			dashuline
+		\or
+			dotuline
+		\else
+			uline
+		\fi\endcsname{#1}
+	\fi
+}
+\makeatother
+

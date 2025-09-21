@@ -123,5 +123,5 @@ nx_elf_asm()
 	fi
 }
 
-export E_NX_ASM=true
+export E_NEX_ASM=true
 

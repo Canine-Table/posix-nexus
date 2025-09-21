@@ -586,6 +586,7 @@ function nx_convert_base(N1, N2, N3, N4, V1, V2, N5,	v, l, n, i, j)
 	}
 }
 
+
 function nx_add(N1, N2, N3, N4, V1, V2, N5, N6,		j, i, c, d, e, v1, v2)
 {
 	if (N3 = __nx_get_base(N3, V2)) {

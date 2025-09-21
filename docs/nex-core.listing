@@ -1,0 +1,7 @@
+nx_8118_w2p2()
+(
+        tmpa='25f/computer_essentials_cst8118/week2/CST8118 Notes for Benjamin Stroobach-Wilson'
+        file "$tmpa/Lecture Notes/Notes.docx"
+        file "$tmpa/Lab Work/Formula Practice.xlsx"
+        file "$tmpa/Teamwork/Presentation.pptx"
+)

@@ -127,6 +127,19 @@ nx_io_mv()
 	}
 }
 
+nx_io_swap()
+{
+	test -e "$1" -a -e "$2" && {
+		tmpa="$(nx_io_noclobber -p "$1")"
+		mv "$1" "$tmpa"
+		mv "$2" "$1"
+		mv "$tmpa" "$2"
+	} || {
+		nx_io_printf -W "Hmm... I tried to swap $1 and $2, but they’re playing hide-and-seek. One of them vanished into the quantum filesystem."
+	}
+	unset tmpa
+}
+
 nx_io_dd()
 {
 	(

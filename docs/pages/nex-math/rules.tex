@@ -1,0 +1,37 @@
+\nxSections{Boolean Algebra Rules}{1}
+
+\def\nxBN#1{\overline{#1}}
+\def\nxBA#1#2{#1~\land~#2}
+\def\nxBNA#1#2{\nxBN{(\nxBA{#1}{#2})}}
+\def\nxBO#1#2{#1~\lor~#2}
+\def\nxBNO#1#2{\nxBN{(\nxBO{#1}{#2})}}
+\nxBO{\nxBN{A}}{\nxBN{B}}
+
+\nxTopic{Commutatively (AND)}{$
+	AB = BA
+$}\smallskip
+
+\nxTopic{Commutatively (OR)}{$
+	\nxBO{A}{B} = \nxBO{B}{A}
+$}\smallskip
+
+\nxTopic{Associativity (AND)}{$
+	A(BC) = (AB)C = ABC
+$}\smallskip
+
+\nxTopic{Associativity (OR)}{$
+	\nxBO{A}{(\nxBO{B}{C})} = \nxBO{(\nxBO{A}{B})}{C} = \nxBO{\nxBO{A}{B}}{C}
+$}\smallskip
+
+\nxTopic{Distributivity}{$
+	A(BC) = \nxBO{AB}{AC}
+$}\smallskip
+
+\nxTopic{Absorption}{$
+	\nxBO{A}{(AB)} = A
+$}\smallskip
+
+\nxTopic{De Morgan}{$
+	\nxBNA{A}{B} = \nxBO{\nxBN{A}}{\nxBN{B}}
+$}\smallskip
+

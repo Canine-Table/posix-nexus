@@ -1,8 +1,8 @@
 [Unit]
 Description=Nexus Interface Initialization Ritual
-#After=network.target
+After=network.target
 Before=NetworkManager.service
-#Wants=network.target
+Wants=network.target
 
 [Service]
 Type=oneshot

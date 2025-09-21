@@ -18,3 +18,9 @@ nx_pod_pid()
 {
 	"$G_NEX_CONTAINER" inspect -f '{{.State.Pid}}' "$1"
 }
+
+nx_pod_exec()
+{
+	"$G_NEX_CONTAINER" exec -it "$(nx_pod_id "$1")" sh
+}
+

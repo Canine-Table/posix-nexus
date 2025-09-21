@@ -1,0 +1,40 @@
+\nxSections{Relationships and Keys}{1}
+
+\nxEm{hello}{2}
+
+\nxSections{Cardinality}{2}
+
+%\begin{nxTertiaryListBox}
+
+%\end{nxTertiaryListBox}
+
+\nxSections{Three Types of Minimum Cardinality}{3}
+\begin{tikzpicture}
+	\node (nodeA) [process] {EMPLOYEE}
+		node (nodeB) [decision, right of=nodeA, xshift=2cm] {1:1}
+		node (labelA) [below of=nodeB] {Employee\_Identity}
+		node (labelB) [below of=labelA] {(a) Mandatory-to-Mandatory (M-M) Relaitonship}
+		node (nodeC) [process, right of=nodeB, xshift=2cm] {BADGE};
+	\draw (nodeA) -- (nodeB) -- (nodeC);
+\end{tikzpicture}
+\begin{tikzpicture}
+	\node (nodeA) [process] {EMPLOYEE}
+		node (nodeB) [decision, right of=nodeA, xshift=2cm] {1:N}
+		node (labelA) [below of=nodeB] {Computer\_Assignment}
+		node (labelB) [below of=labelA] {(b) Optional-to-Optional (O-O) Relaitonship}
+		node (nodeC) [process, right of=nodeB, xshift=2cm] {COMPUTER};
+	\draw (nodeA) -- (nodeB) -- (nodeC);
+\end{tikzpicture}
+\bigskip
+
+\begin{tikzpicture}
+	\node (nodeA) [process] {EMPLOYEE}
+		node (nodeB) [decision, right of=nodeA, xshift=2cm] {N:M}
+		node (labelA) [below of=nodeB] {Qualification}
+		node (labelB) [below of=labelA] {(c) Optional-to-Mandatory (O-M) Relaitonship}
+		node (nodeC) [process, right of=nodeB, xshift=2cm] {SKILL};
+	\draw (nodeA) -- (nodeB) -- (nodeC);
+\end{tikzpicture}
+\bigskip
+
+
