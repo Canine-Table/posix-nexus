@@ -4,7 +4,6 @@
 
 # B2	if B1 it look for the furthest match from the start of D1
 
-
 function nx_parser_machine(V1, V2, V3, V4, V5)
 {
 	if (match(V1["ln"], V1["sig"] "nx_")) {

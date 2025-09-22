@@ -51,3 +51,20 @@ test -z "$(g_nx_ip_ifname 'nexus0' 'posix-nexus')" && {
 	s_nx_ip_master -m 'bridge0' -i 'nexus0'
 }
 
+NX_IDX=3
+NX_IFACE=1
+for NX_NS in 'pgadmin4' 'phpmyadmin'; do
+	test -z "$(g_nx_ip_ifname "nexus$NX_IFACE" 'posix-nexus')" && {
+		s_nx_ip_veth -N 'posix-nexus' -p 'nexus' -n "nexus-$NX_NS"
+		s_nx_ip_master -m 'bridge0' -i "nexus$NX_IFACE" -n 'posix-nexus'
+		s_nx_ip_inet -a "172.16.128.$NX_IDX/17" -l 'veth4' -i 'nexus0' -n "nexus-$NX_NS"
+		s_nx_ip_inet -a "dead:deaf:beef:acad::$NX_IDX/113" -l 'veth6' -i 'nexus0' -n "nexus-$NX_NS"
+		s_nx_ip_route -n "nexus-$NX_NS" -a '172.16.128.2' -i 'nexus0'
+		s_nx_ip_route -n "nexus-$NX_NS" -a 'dead:deaf:beef:acad::2' -i 'nexus0'
+	}
+	test "$NX_IDX" -eq 254 && break
+	NX_IDX="$((NX_IDX + 1))"
+	NX_IFACE="$((NX_IFACE + 1))"
+done
+unset NX_IDX NX_IFACE NX_NS
+

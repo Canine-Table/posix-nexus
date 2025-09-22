@@ -31,6 +31,20 @@ nx_tty_all()
 	}
 }
 
+nx_tty_div()
+(
+	eval $(nx_tty_all) || exit
+	case "$1" in
+		-s) tmpa="─";;
+		-t) tmpa='━';;
+		-j) tmpa='╍';;
+		-r) tmpa='╼';;
+		-l) tmpa='╾';;
+		*) tmpa="═";;
+	esac
+	nx_str_append "$G_NEX_TTY_COLUMNS" "$tmpa"
+)
+
 nx_tty_hault()
 {
 	trap "printf '\x1b[?25h'" EXIT HUP INT

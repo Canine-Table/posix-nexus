@@ -10,6 +10,64 @@ nx_str_chain()
 	done
 }
 
+nx_str_look()
+(
+	eval "$(nx_str_optarg ':e:s:n:b:a:c:r:u' "$@")"
+	$c | ${AWK:-$(nx_cmd_awk)} \
+		-v bfre="${b:-"<nx:null/>"}" \
+		-v aftr="${a:-"<nx:null/>"}" \
+		-v utl="$u" \
+		-v regx="$r" \
+		-v num="$n" \
+		-v ed="${e:-"<nx:null/>"}" \
+		-v st="${s:-"<nx:null/>"}" \
+	"
+		$(nx_data_include -i "${NEXUS_LIB}/awk/nex-math.awk")
+	"'
+		{
+			if (fnd) {
+				if (! _aftr) {
+					if ($0 ~ ed)
+						_aftr = 1
+				} else if (! __nx_is_integral(aftr, 1) || --aftr <= 0) {
+					_aftr = 2
+					if (utl)
+						exit 0
+				}
+				print $0
+				if (_aftr == 2)
+					exit 0
+			} else if ($0 ~ regx && --num <= 0) {
+				if (__nx_is_integral(bfre)) {
+					if (st == "<nx:null/>")
+						_bfre = 1
+					else
+						_bfre = 0
+					for (bfre = __nx_if(bfre == 0 || +bfre > fld[0], 1, fld[0] - bfre); +bfre <= fld[0]; ++bfre) {
+						if (! _bfre && fld[bfre] ~ st) {
+							_bfre = 1
+							if (utl)
+								continue
+						}
+						if (_bfre)
+							print fld[bfre]
+					}
+				}
+				fnd = 1
+				if (ed == "<nx:null/>")
+					_aftr = 1
+				else
+					_aftr = 0
+				if (utl && ! (_aftr || __nx_is_integral(aftr)))
+					exit 0
+				print $0
+			} else {
+				fld[++fld[0]] = $0
+			}
+		}
+	'
+)
+
 nx_str_od()
 {
 	h_nx_cmd od && (

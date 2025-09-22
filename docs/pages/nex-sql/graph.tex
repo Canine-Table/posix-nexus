@@ -1,0 +1,151 @@
+
+\nxSections{Modelling}{1}
+
+\begin{NxLightListBox}[title={Scenario 0 (Book Store System)}]
+	\nxEachItem{ArrowDark}{
+        {A book store is designing a database system to manage its inventory, customers, authors, and purchase records. The following describes the structure of their data.},
+        {Customers are tracked by their name, email, address, phone number, and the date of their purchases.},
+        {Each customer has a unique CustomerID.},
+        {Books are tracked by their title, genre, price, and publication year.},
+        {Each book has a unique BookID.},
+        {Authors are tracked by their name, email, and biography.},
+        {Each author has a unique AuthorID.},
+        {Customers can purchase multiple books, and each purchase records the quantity and date.},
+        {Each purchase links a CustomerID and a BookID, forming a many-to-many relationship between customers and books.},
+        {Books may be authored by multiple authors, and authors may write multiple books.},
+        {The AuthoredBy relationship tracks which author wrote which book, along with the royalty percentage, year of publication, and a unique AuthorshipID.},
+        {Books and authors are also directly linked through a many-to-many relationship, separate from AuthoredBy.},
+        {The system uses relationship nodes to clarify cardinalities, such as mandatory or optional participation and one-to-many or many-to-many connections.}
+    }
+\end{NxLightListBox}
+
+\begin{tikzpicture}[line width=1pt]
+	\begin{scope}[%
+		grow=left,%
+		level distance=4cm%
+		] \node[process] (customer) at (0,0) {Customer} child {
+			node[startstop, xshift=3cm, yshift=-1cm] {CustomerId}
+		} child {
+			node[startstop] {Name}
+		} child {
+			node[startstop] {Email}
+		} child {
+			node[startstop] {Address}
+		} child {
+			node[startstop] {Phone}
+		};
+	\end{scope}
+	\begin{scope}[%
+		grow=right,%
+		level distance=2cm,%
+	] \node[process, right of=customer, xshift=6cm] (book) {Book} child {
+			node[startstop] {BookID}
+		} child {
+			node[startstop] {Title}
+		} child {
+			node[startstop] {Gendre}
+		} child {
+			node[startstop, xshift=-1cm] {Price}
+		} child {
+			node[startstop, xshift=-4cm, yshift=-1cm] {PubYear}
+		};
+	\end{scope}
+	\begin{scope}[%
+	grow=left,%
+	level distance=4cm,%
+] \node[process, below of=customer, yshift=-6cm] (purchases) {Purchases} child {
+		node[startstop] {PurchaseID}
+	} child {
+		node[startstop] {PurchDate}
+	} child {
+		node[startstop] {Quantity}
+	} child {
+		node[startstop] {CustomerID (FK)}
+	} child {
+		node[startstop, xshift=2cm] {BookID (FK)}
+	};
+	\end{scope}
+
+	\begin{scope}[%
+	grow=right,%
+	level distance=2cm%
+] \node[process, right of=purchases, xshift=6cm] (author) {Author} child {
+		node[startstop] {AuthorID}
+	} child {
+		node[startstop] {Email}
+	} child {
+		node[startstop] {Name}
+	} child {
+		node[startstop] {Biography}
+	};
+	\end{scope}
+
+	\begin{scope}[%
+		level distance=2cm,%
+		sibling distance=3cm%
+	] \node[process, below of=purchases, yshift=-2cm, xshift=2cm] (authored) {AuthoredBy} child {
+			node[startstop] {BookID (FK)}
+		} child {
+			node[startstop, yshift=-1cm] {AuthorID (FK)}
+		} child {
+			node[startstop] {Royalty\%}
+		} child {
+			node[startstop, yshift=-1cm] {YearPub}
+		} child {
+			node[startstop] {AuthorshipID}
+		};
+	\end{scope}
+
+		\node[decision, below of=customer, yshift=-2cm] (nodeA) {Relationship};
+		\node[decision, below of=book, xshift=-5mm, yshift=-2.7cm] (nodeB) {Relationship};
+		\node[decision, above of=authored, xshift=3cm, yshift=5mm] (nodeC) {Relationship};
+		\node[decision, below of=customer, yshift=1cm, xshift=4cm] (nodeD) {Relationship};
+		\node[decision, left of=book, yshift=-4.6cm, xshift=-2.3cm] (nodeE) {Relationship};
+
+		\draw[mandatoryOne] (nodeA) -- (customer);
+		\draw[optionalMany] (nodeA) -- (purchases);
+
+		\draw[mandatoryMany] (nodeB) -- (book);
+		\draw[mandatoryMany] (nodeB) -- (author);
+
+		\draw[mandatoryOne] (nodeC) -- (authored);
+		\draw[mandatoryOne] (nodeC) -- (author);
+
+		\draw[mandatoryOne] (nodeD) -- (book);
+		\draw[optionalMany] (nodeD) -- (purchases);
+
+		\draw[mandatoryMany] (nodeE) -- (authored);
+		\draw[mandatoryMany] (nodeE) -- (book);
+\end{tikzpicture}
+
+\begin{NxLightListBox}[title={Scenario 1 (Veterinary Hospital)}]
+	\nxEachItem{ArrowDark}{
+			{A local veterinary hospital is looking for a replacement for their patient tracking system. When asked to describe their data, they responded as follows.},
+			{Clients may have one or more pets.},
+			{Clients are identified by their phone number.},
+			{Clients are tracked by their name and address.},
+			{A pet is owned by a single client only.},
+			{A pet is identified by their owner's name and the pet name.},
+			{Pets are tracked by their species, breed, sex, and neutering status.},
+			{A pet can be treated by several different doctors and/or technicians (staff).},
+			{Each doctor and technician has an employee number and a name.},
+			{A pet may have multiple visits that are tracked by date and reason for visit.},
+		}
+\end{NxLightListBox}
+
+\begin{NxLightListBox}[title={Scenario 2 (Software Company)}]
+	\nxEachItem{ArrowDark}{
+		{A software development company is modeling its internal structure and project assignments.},
+		{The company has many employees.},
+		{Employees are tracked by their name and a unique employee ID.},
+		{The company has several departments, such as engineering, quality assurance, and tech support.},
+		{Each department has a name and a manager.},
+		{Managers are also employees and have unique employee IDs.},
+		{Each department must have at least one employee assigned to it.},
+		{Employees must be assigned to at least one department, but may belong to multiple departments.},
+		{Projects are tracked by a unique project ID and a project name.},
+		{Each project must have at least one employee assigned to it.},
+		{An employee may be assigned to zero or more projects.},
+		{Departments, projects, managers, and employees are all tracked by their names.},
+	}
+\end{NxLightListBox}

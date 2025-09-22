@@ -1,0 +1,38 @@
+\nxSections{Logic Gates}{1}
+
+\tikz\draw (0,0) node[and port, inputs=2] (AND) {AND}
+	(AND.in 1)  node[left] {A}
+ 	(AND.in 2) node[left] {B}
+ 	(AND.out) node[right] {AB};
+\hfill
+\begin{tabular}{|c|c|c|}
+	\toprule
+	\textbf{A} & \textbf{B} & \textbf{AB (A $\cdot$ B)} \\
+	\midrule
+	0 & 0 & 0 \\
+	0 & 1 & 0 \\
+	1 & 0 & 0 \\
+	1 & 1 & 1 \\
+	\bottomrule
+\end{tabular}
+
+\tikz\draw (0,0) node[/nx/nand, inputs=2] (NAND) {}
+  (NAND.in 1) node[left] {A}
+  (NAND.in 2) node[left] {B}
+  (NAND.out) node[right] {$\overline{AB}$};
+\vspace{1em}
+
+\tikz\draw (0,0) node[not port, fill=gray!10] (NOT) {NOT}
+  (NOT.in) node[left] {A}
+  (NOT.out) node[right] {$\overline{A}$};
+\hfill
+\begin{tabular}{|c|c|c|}
+	\toprule
+	\textbf{A} & \textbf{B} & \textbf{AB (A $\cdot$ B)} \\
+	\midrule
+	0 & 0 & 0 \\
+	0 & 1 & 0 \\
+	1 & 0 & 0 \\
+	1 & 1 & 1 \\
+	\bottomrule
+\end{tabular}

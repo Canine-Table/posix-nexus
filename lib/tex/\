@@ -1,58 +1,6 @@
 \makeatletter
 
-%Mandatory–Many
-
 \tikzset{%
-	mandatoryMany/.style={
-		postaction={
-			decorate,
-			decoration={markings,
-				mark=at position 1 with {
-						\draw[thick] (-0.3,0) -- (0.0,0.2) (-0.3,0) -- (0.0,-0.2) (-0.3,0.2) -- (-0.3,-0.2);
-				}
-			}
-		}
-	},
-	mandatoryOne/.style={
-		postaction={
-			decorate,
-			decoration={markings,
-				mark=at position 1 with {
-						\draw[thick] (-0.2,0.2) -- (-0.2,-0.2)  (-0.1,0.2) -- (-0.1,-0.2);
-				}
-			}
-		}
-	},
-	optionalMany/.style={
-		postaction={
-			decorate,
-			decoration={markings,
-				mark=at position 1 with {
-					\draw[thick, fill=white] (-0.4,0) circle[radius=1mm] (-0.3,0) -- (0.0,0.2) (-0.3,0) -- (0.0,-0.2);
-				}
-			}
-		}
-	},
-	optionalOne/.style={
-		postaction={
-			decorate,
-			decoration={markings,
-				mark=at position 1 with {
-					\draw[thick, fill=white] (-0.3,0) circle[radius=1mm] (-0.3,-0.2) (-0.1,0.2) -- (-0.1,-0.2);
-				}
-			}
-		}
-	},
-	crowsfoot/.style={
-		postaction={
-			decorate, 
-			decoration={markings,
-				mark=at position 1 with {
-						\draw[thick] (-0.3,0) -- (0.0,0.2) (-0.3,0) -- (0.0,-0.2);
-				}
-			}
-		}
-	},
 	line/.style={%
 		draw,%
 		-{Latex}%
@@ -230,19 +178,19 @@
 
 \pgfarrowsdeclare{crowsfoot}{crowsfoot}
 {
-	\pgfarrowsleftextend{-2pt}
-	\pgfarrowsrightextend{7pt}
-	\pgfarrowsuptextend{2.5pt}
-	\pgfarrowsdowntextend{-2.5pt}
+  \pgfarrowsleftextend{-2pt}
+  \pgfarrowsrightextend{7pt}
+  \pgfarrowsuptextend{2.5pt}
+  \pgfarrowsdowntextend{-2.5pt}
 }
 {
-	\pgfsetlinewidth{0.6pt}
-	\pgfpathmoveto{\pgfpoint{0pt}{0pt}}
-	\pgfpathlineto{\pgfpoint{6pt}{0pt}}
-	\pgfpathmoveto{\pgfpoint{0pt}{0pt}}
-	\pgfpathlineto{\pgfpoint{6pt}{2pt}}
-	\pgfpathmoveto{\pgfpoint{0pt}{0pt}}
-	\pgfpathlineto{\pgfpoint{6pt}{-2pt}}
-	\pgfarrowsdrawline
+  \pgfsetlinewidth{0.6pt}
+  \pgfpathmoveto{\pgfpoint{0pt}{0pt}}
+  \pgfpathlineto{\pgfpoint{6pt}{0pt}}
+  \pgfpathmoveto{\pgfpoint{0pt}{0pt}}
+  \pgfpathlineto{\pgfpoint{6pt}{2pt}}
+  \pgfpathmoveto{\pgfpoint{0pt}{0pt}}
+  \pgfpathlineto{\pgfpoint{6pt}{-2pt}}
+  \pgfarrowsdrawline
 }
 \makeatother
