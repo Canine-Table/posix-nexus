@@ -143,28 +143,3 @@ nx_data_entries()
 	'
 }
 
-nx_data_dfs()
-{
-	${AWK:-$(nx_cmd_awk)} -v str="$1" -v ed="$2" \
-	"
-		$(nx_data_include -i "${NEXUS_LIB}/awk/nex-struct.awk")
-	"'
-		BEGIN {
-			arr[".0"] = 5
-			arr[".1"] = "one"
-			arr[".2"] = "a"
-			arr[".3"] = "b"
-			arr[".4"] = "three"
-			arr[".5"] = "nine"
-			arr[".2.0"] = 3
-			arr[".2.1"] = "c"
-			arr[".2.2"] = "d"
-			arr[".2.3"] = "e"
-			arr[".2.3.0"] = 1
-			arr[".2.3.1"] = "hi"
-			arr[".2.3.1.0"] = 1
-			arr[".2.3.1.1"] = "bye"
-			print nx_dfs(arr, 1)
-		}
-	'
-}
