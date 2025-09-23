@@ -7,6 +7,7 @@
 \def\nxLA{$\langle$}
 \def\nxRA{$\rangle$}
 
+\long\def\nxComment#1{\iffalse#1\fi}
 \def\nxExpr#1#2{\the\csname#1expr\endcsname#2\relax}
 \def\nxNumExpr#1{\nxExpr{num}{#1}}
 \def\nxDimExpr#1{\nxExpr{dim}{#1}}

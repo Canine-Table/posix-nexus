@@ -1,6 +1,180 @@
 \nxSections{Relationships and Keys}{1}
 
-\nxEm{hello}{2}
+\begin{NxLightBox}[title={Alternative Terminology}]
+		\begin{tabularx}{\textwidth}{|X|X|X|}
+		\hline
+		\rowcolor{blue!10}
+		Table & Column & Row \\
+		\hline
+		\rowcolor{green!10}
+		Relation & Attribute & Tuple \\
+		\hline
+		\rowcolor{yellow!10}
+		File & Field & Record \\
+		\hline
+		\rowcolor{}
+	\end{tabularx}
+	\bigskip
+
+	\caption{Equivalent Terminologies in Data Management Systems}
+\end{NxLightBox}
+
+\nxSections{Relation}{2}
+\begin{NxLightListBox}[title={Characteristics of Relations}]
+	\nxEachItem{ArrowDark}{
+		{Rows contain data about an entity.},
+		{Columns contain data about attributes of the entities.},
+		{All entries in a column are of the same kind.},
+		{Each column has a unique name.},
+		{Cells of the table hold a single value.},
+		{The order of the columns is unimportant.},
+		{The order of the rows is unimportant.},
+		{No two rows may be identical.}
+	}
+\end{NxLightListBox}
+
+\begin{NxCodeBox}{sql}{nxCol=dark,title={create the example database}}
+DELIMITER $$
+
+CREATE PROCEDURE SwitchDatabase(IN dbName VARCHAR(64))
+BEGIN
+    -- Build the USE statement dynamically
+    SET @sql = CONCAT('USE ', dbName);
+    PREPARE stmt FROM @sql;
+    EXECUTE stmt;
+    DEALLOCATE PREPARE stmt;
+END$$
+
+DELIMITER ;
+
+CREATE OR REPLACE DATABASE nexusDB
+	CHARACTER SET utf8mb4
+	COLLATE uca1400_as_cs
+	COMMENT 'Where collations go to argue about accents and case, but everything is encrypted anyway.';
+
+CREATE DATABASE IF NOT EXISTS posixDB
+	CHARACTER SET utf8mb4
+	COLLATE uca1400_ai_ci
+	COMMENT 'Because even databases deserve a POSIX-compliant bedtime story.';
+
+	SHOW DATABASES;
+\end{NxCodeBox}
+
+\begin{NxLightBox}[title={EXAMPLE OF AN EMPLOYEE RELATION}]
+		\begin{tabularx}{\textwidth}{|c|X|X|X|X|l|}
+				\hline
+				EmployeeNumber & FirstName & LastName & Department & EmailAddress & Phone \\
+				\hline
+				100 & Jerry		& Johnson		& Accounting & JJ@somewhere.com & 518-834-1101 \\
+				200 & Mary		& Abernathy & Finance		 & MA@somewhere.com & 518-834-2101 \\
+				300 & Liz			& Smathers	& Finance		 & LS@somewhere.com & 518-834-3102 \\
+				400 & Tom			& Caruthers & Accounting & TC@somewhere.com & 518-834-1102 \\
+				500 & Ken			& Jackson		& Production & KJ@somewhere.com & 518-834-2102 \\
+				600 & Eleanor & Caldera		& Legal			 & EC@somewhere.com & 518-834-3101 \\
+				700 & Richard & Bandalone & Legal			 & RB@somewhere.com & 518-834-3102 \\
+				\hline
+		\end{tabularx}
+\end{NxLightBox}
+
+\begin{NxCodeBox}{sql}{nxCol=dark,title={mariadb code example}}
+USE nexusDB
+-- Create the Employee table
+CREATE TABLE IF NOT EXISTS Employees (
+		EmployeeNumber INT PRIMARY KEY,
+		FirstName			 VARCHAR(50) NOT NULL,
+		LastName			 VARCHAR(50) NOT NULL,
+		Department		 VARCHAR(50) NOT NULL,
+		EmailAddress	 VARCHAR(100) UNIQUE NOT NULL,
+		Phone					 VARCHAR(20)
+);
+
+-- Insert employee records
+INSERT INTO Employees (EmployeeNumber, FirstName, LastName, Department, EmailAddress, Phone) VALUES
+(100, 'Jerry',	 'Johnson',		'Accounting', 'JJ@somewhere.com', '518-834-1101'),
+(200, 'Mary',		 'Abernathy', 'Finance',		'MA@somewhere.com', '518-834-2101'),
+(300, 'Liz',		 'Smathers',	'Finance',		'LS@somewhere.com', '518-834-3102'),
+(400, 'Tom',		 'Caruthers', 'Accounting', 'TC@somewhere.com', '518-834-1102'),
+(500, 'Ken',		 'Jackson',		'Production', 'KJ@somewhere.com', '518-834-2102'),
+(600, 'Eleanor', 'Caldera',		'Legal',			'EC@somewhere.com', '518-834-3101'),
+(700, 'Richard', 'Bandalone', 'Legal',			'RB@somewhere.com', '518-834-3102');
+\end{NxCodeBox}
+
+\begin{NxLightBox}[title={Employee Directory with Multiple Phone Entries}]
+		\begin{tabularx}{\textwidth}{|c|X|X|X|X|X|}
+				\hline
+				EmployeeNumber & FirstName & LastName & Department & EmailAddress & Phone \\
+				\hline
+				100 & Jerry			& Johnson		& Accounting & JJ@somewhere.com & 518-834-1101 \\
+				\hline
+				200 & Mary			& Abernathy & Finance		 & MA@somewhere.com & 518-834-2101 \\
+				\hline
+				300 & Liz				& Smathers	& Finance		 & LS@somewhere.com & 518-834-2102 \\
+				\hline
+				400 & Tom				& Caruthers & Accounting & TC@somewhere.com & Fax: 518-834-9711 \\ 
+						&						&						&						 &									& Home: 518-834-9915 \\
+				\hline
+				500 & Tom				& Jackson		& Production & TJ@somewhere.com & 518-834-3101 \\
+				\hline
+				600 & Eleanore	& Caldera		& Legal			 & EC@somewhere.com & Fax: 518-834-9711 \\
+						&						&						&						 &									& Home: 518-834-9915 \\
+				\hline
+				700 & Richard		& Bandalone & Legal			 & RB@somewhere.com & 518-834-3102 \\
+				\hline
+		\end{tabularx}
+\end{NxLightBox}
+
+\begin{NxCodeBox}{sql}{nxCol=dark,title={mariadb code example}}
+USE nexusDB
+	-- Create Employees table if it does not exist
+	CREATE TABLE IF NOT EXISTS Employees (
+		EmployeeNumber INT PRIMARY KEY,
+		FirstName			 VARCHAR(50) NOT NULL,
+		LastName			 VARCHAR(50) NOT NULL,
+		Department		 VARCHAR(50) NOT NULL,
+		EmailAddress	 VARCHAR(100) UNIQUE NOT NULL
+	);
+
+	-- Create EmployeePhones table if it does not exist
+	CREATE TABLE IF NOT EXISTS EmployeePhones (
+		PhoneID				 INT AUTO_INCREMENT PRIMARY KEY,
+		EmployeeNumber INT NOT NULL,
+		PhoneType			 VARCHAR(20) NOT NULL,	 -- e.g. 'Work', 'Fax', 'Home'
+		PhoneNumber		 VARCHAR(30) NOT NULL,
+		FOREIGN KEY (EmployeeNumber) REFERENCES Employees(EmployeeNumber)
+	);
+
+	DELIMETER$$
+	CREATE PROCEDURE AddEmployeeWithPhone(
+		IN pEmployeeNumber INT,
+		IN pFirstName			 VARCHAR(50),
+		IN pLastName			 VARCHAR(50),
+		IN pDepartment		 VARCHAR(50),
+		IN pEmailAddress	 VARCHAR(100),
+		IN pPhoneType			 VARCHAR(20),
+		IN pPhoneNumber		 VARCHAR(30)
+	) BEGIN
+	-- If employee does not exist, insert them
+	IF NOT EXISTS (
+		SELECT 1 FROM Employees WHERE EmployeeNumber = pEmployeeNumber
+	) THEN
+		INSERT INTO Employees (EmployeeNumber, FirstName, LastName, Department, EmailAddress)
+		VALUES (pEmployeeNumber, pFirstName, pLastName, pDepartment, pEmailAddress);
+	END IF;
+
+		-- Insert the phone entry (can be multiple per employee)
+		INSERT INTO EmployeePhones (EmployeeNumber, PhoneType, PhoneNumber)
+		VALUES (pEmployeeNumber, pPhoneType, pPhoneNumber);
+	EN$$
+
+	DELIMITER ;
+
+	CALL AddEmployeeWithPhone(
+			800, 'Alice', 'Walker', 'HR', 'AW@somewhere.com',
+			'Work', '518-834-4101'
+	);
+
+\end{NxCodeBox}
+
 
 \nxSections{Cardinality}{2}
 

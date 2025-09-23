@@ -1,0 +1,49 @@
+USE nexusDB
+	-- Create Employees table if it does not exist
+	CREATE TABLE IF NOT EXISTS Employees (
+		EmployeeNumber INT PRIMARY KEY,
+		FirstName			 VARCHAR(50) NOT NULL,
+		LastName			 VARCHAR(50) NOT NULL,
+		Department		 VARCHAR(50) NOT NULL,
+		EmailAddress	 VARCHAR(100) UNIQUE NOT NULL
+	);
+
+	-- Create EmployeePhones table if it does not exist
+	CREATE TABLE IF NOT EXISTS EmployeePhones (
+		PhoneID				 INT AUTO_INCREMENT PRIMARY KEY,
+		EmployeeNumber INT NOT NULL,
+		PhoneType			 VARCHAR(20) NOT NULL,	 -- e.g. 'Work', 'Fax', 'Home'
+		PhoneNumber		 VARCHAR(30) NOT NULL,
+		FOREIGN KEY (EmployeeNumber) REFERENCES Employees(EmployeeNumber)
+	);
+
+	DELIMETER$$
+	CREATE PROCEDURE AddEmployeeWithPhone(
+		IN pEmployeeNumber INT,
+		IN pFirstName			 VARCHAR(50),
+		IN pLastName			 VARCHAR(50),
+		IN pDepartment		 VARCHAR(50),
+		IN pEmailAddress	 VARCHAR(100),
+		IN pPhoneType			 VARCHAR(20),
+		IN pPhoneNumber		 VARCHAR(30)
+	) BEGIN
+	-- If employee does not exist, insert them
+	IF NOT EXISTS (
+		SELECT 1 FROM Employees WHERE EmployeeNumber = pEmployeeNumber
+	) THEN
+		INSERT INTO Employees (EmployeeNumber, FirstName, LastName, Department, EmailAddress)
+		VALUES (pEmployeeNumber, pFirstName, pLastName, pDepartment, pEmailAddress);
+	END IF;
+
+		-- Insert the phone entry (can be multiple per employee)
+		INSERT INTO EmployeePhones (EmployeeNumber, PhoneType, PhoneNumber)
+		VALUES (pEmployeeNumber, pPhoneType, pPhoneNumber);
+	EN$$
+
+	DELIMITER ;
+
+	CALL AddEmployeeWithPhone(
+			800, 'Alice', 'Walker', 'HR', 'AW@somewhere.com',
+			'Work', '518-834-4101'
+	);
+

@@ -446,4 +446,41 @@ function nx_grid(V, D, N)
 	}
 }
 
+function nx_dfs(V, B, trk, stk)
+{
+	if (! (".0" in V && int(V[".0"]) > 0))
+		return
+	stk[++stk[0]] = 1
+	stk[++stk[0]] = V[".0"]
+	if (B ~ /^[02]$/)
+		V[0] = 0
+	do {
+		for (; stk[1] <= stk[2]; ++stk[1]) {
+			trk["ky"] = trk["rt"] "." stk[1]
+			if (B ~ /^[12]$/)
+				trk["str"] = trk["str"] "<nx:null/>" V[trk["ky"]]
+			if (B ~ /^[02]$/)
+				nx_bijective(V, ++V[0], 0, trk["ky"])
+			if (trk["ky"] ".0" in V && int(V[trk["ky"] ".0"]) > 0) {
+				trk["rt"] = trk["ky"]
+				stk[++stk[0]] = stk[1]
+				stk[++stk[0]] = stk[2]
+				stk[1] = 0
+				stk[2] = V[trk["rt"] ".0"]
+			}
+		}
+		if (stk[1] > 0 && sub(/[^.]+$/, "", trk["rt"])) {
+			sub(/[.]$/, "", trk["rt"])
+			stk[2] = stk[stk[0]--]
+			stk[1] = stk[stk[0]--] + 1
+		}
+	} while (stk[0] > 2 || stk[1] <= stk[2])
+	if (B ~ /^[12]$/)
+		B = substr(trk["str"], 11)
+	else
+		B = ""
+	delete trk
+	delete stk
+	return B
+}
 
