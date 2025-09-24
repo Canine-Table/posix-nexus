@@ -43,6 +43,7 @@ nx_info_os()
 nx_info_list()
 (
 	eval "export $(nx_tty_all)"
+	trap 'nx_io_fifo_mgr -r "$tmpc"' EXIT
 	tmpc="$(nx_io_fifo_mgr -c)"
 	while test "${#@}" -gt 0; do
 		tmpa="$(nx_info_path "$1")"
@@ -59,5 +60,5 @@ nx_info_list()
 		shift
 		test "$(cat "$tmpc")" -eq 0 && nx_tty_hault
 	done
-	nx_io_fifo_mgr -r "$tmpc"
 )
+
