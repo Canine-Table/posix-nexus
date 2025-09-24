@@ -1,15 +1,18 @@
-\documentclass[a4paper,12pt]{book}
+\documentclass[a4paper,12pt]{article}
 \input{../lib/tex/nex-preamble.tex}
 \nxHyper[]%
 \nxSnowFade%
 \nxNoParIndent
 \def\nxInput#1{\input{./pages/nex-core/#1.tex}}%
+\def\nxEnv#1{\input{./pages/nex-core/.env/#1.tex}}%
 \begin{document}
 	\nxCoverPage[title={Computer Systems}, ref={Github}]
 	\nxRomanFooter
 	\nxToc{Contents}
 	\newpage
-	%\nxSnowFlakeHeader{}
-	\nxInput{computer_systems}
+	\nxSnowFlakeHeader{Core Linux Concepts}
+	%\nxInput{filesystem}
+	%\nxInput{computer_systems}
+	\nxEnv{l3}
 \end{document}
 

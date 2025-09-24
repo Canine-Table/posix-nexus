@@ -1,4 +1,3 @@
-
 nx_info_canonize()
 {
 	printf '%s' "$*" | sed 's|//*|/|g; s|/*$||g; s/ *$//g; s/^ *//g; s|^\./||g'
@@ -7,14 +6,20 @@ nx_info_canonize()
 nx_info_path()
 {
 	case "$1" in
-		-e|-E|-b|-d|-p|-s|-S) tmpa="$1"; shift;;
+		-e|-E|-b|-d|-p|-s|-S|-q) tmpa="$1"; shift;;
 		*) tmpa='-p';;
 	esac
 	tmpb="$(nx_info_canonize "${1:-"$0"}")"
 	tmpc="$(basename "$tmpb")"
-	tmpd="$(cd "$(dirname "$tmpb")" && pwd)"
+	tmpd="$(cd -P "$(dirname "$tmpb")" && pwd)"
 	mkdir -p "$tmpd"
 	test -e "${tmpd}/${tmpc}" || return 1
+	while test -L "${tmpd}/${tmpc}"; do
+		tmpb="$tmpd/$(nx_str_sfld -n 10 -c "ls -lnA '${tmpd}/${tmpc}'")"
+		tmpc="$(basename "$tmpb")"
+		tmpd="$(dirname "$tmpb")"
+	done
+	test "$tmpa" = '-q' && return
 	case "$tmpa" in
 		-p) printf '%s/%s\n' "$tmpd" "$tmpc";;
 		-d) printf '%s\n' "$tmpd";;
@@ -36,11 +41,23 @@ nx_info_os()
 }
 
 nx_info_list()
-{
-	for tmpa in "$@"; do
-		[ -e "$tmpa" ] && {
-			[ -d "$tmpa" ] && ls -dl "$tmpa" || ls -l "$tmpa"
-		}
+(
+	eval "export $(nx_tty_all)"
+	tmpc="$(nx_io_fifo_mgr -c)"
+	while test "${#@}" -gt 0; do
+		tmpa="$(nx_info_path "$1")"
+		test -f "$tmpa" && {
+			nx_io_printf -I "$tmpa"
+			cat "$tmpa" | tee "$tmpc" &
+		} | (test "$(($(cat "$tmpc" | wc -l) + 6))" -ge "$G_NEX_TTY_ROWS" && {
+			"$PAGER"
+			printf '%d' 1 > "$tmpc" &
+		} || {
+			tee
+			printf '%d' 0 > "$tmpc" &
+		})
+		shift
+		test "$(cat "$tmpc")" -eq 0 && nx_tty_hault
 	done
-}
-
+	nx_io_fifo_mgr -r "$tmpc"
+)

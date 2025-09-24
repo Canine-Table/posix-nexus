@@ -1,0 +1,87 @@
+\nxSections{The Filesystem}{1}
+
+\rowcolors{2}{yellow!10}{green!10}
+
+\nxSections{Pseudo Virtual Filesystems}{2}
+\begin{NxLightBox}[title={Pseudo Virtual Filesystems}]
+	\begin{tabularx}{\textwidth}{|l|X|}
+		\hline
+		\textbf{Filesystem} & \textbf{Purpose} \\
+		\hline
+		tmpfs & In-memory temporary storage; commonly used for \texttt{/tmp}, \texttt{/run}, and other volatile directories \\
+		\hline
+		procfs (\texttt{/proc}) & Exposes process and kernel information; includes system stats, memory, CPU, and more \\
+		\hline
+		sysfs (\texttt{/sys}) & Structured view of kernel objects and hardware devices \\
+		\hline
+		devtmpfs & Automatically managed device nodes in \texttt{/dev}; used by udev \\
+		\hline
+		debugfs & Kernel debugging interface; exposes internal kernel data for developers \\
+		\hline
+		securityfs & Interface for security modules like SELinux and AppArmor \\
+		\hline
+		configfs & Allows user-space to create and configure kernel objects dynamically \\
+		\hline
+		cgroupfs & Manages control groups for resource allocation and process isolation \\
+		\hline
+		tracefs & Provides access to kernel tracing infrastructure (e.g., ftrace) \\
+		\hline
+		pstore & Persistent storage for crash logs and kernel messages across reboots \\
+		\hline
+		fusectl & Interface for managing FUSE (Filesystem in Userspace) mounts \\
+		\hline
+		overlayfs & Combines multiple filesystems into one unified view; often used in containers \\
+		\hline
+		ramfs & Simple in-memory filesystem; unlike tmpfs, it doesn't support size limits or swapping \\
+		\hline
+		aufs, unionfs & Layered filesystems used in older container setups \\
+		\hline
+		nfs, cifs & Network filesystems (NFS for Unix, CIFS/SMB for Windows shares) \\
+		\hline
+	\end{tabularx}
+\end{NxLightBox}
+
+
+\nxSections{sys}{2}
+\begin{NxLightBox}[title=Pseudo Virtual Filesystems]
+	\begin{tabularx}{\textwidth}{|l|X|}
+		\hline
+		\textbf{Directory} & \textbf{Description} \\
+		\hline
+		/sys/class/ & Logical groupings of devices by type (e.g., net, block, input, power\_supply, thermal) \\
+		\hline
+		/sys/block/ & Block devices like hard drives, SSDs, and partitions \\
+		\hline
+		/sys/bus/ & Devices organized by bus type (e.g., pci, usb, i2c, scsi) \\
+		\hline
+		/sys/devices/ & Physical device tree; includes CPU, memory, PCIe, USB, etc. \\
+		\hline
+		/sys/firmware/ & Firmware-related data (ACPI tables, EFI variables, etc.) \\
+		\hline
+		/sys/fs/ & Filesystem-specific settings (e.g., cgroup, fuse, ext4) \\
+		\hline
+		/sys/kernel/ & Kernel-level settings and features (e.g., debug, security, mm, kexec) \\
+		\hline
+		/sys/module/ & Loaded kernel modules and their parameters \\
+		\hline
+		/sys/power/ & Power management controls (e.g., suspend, hibernate) \\
+		\hline
+		/sys/class/net/ & Network interfaces and their configuration \\
+		\hline
+		/sys/class/input/ & Input devices like keyboards, mice, touchscreens \\
+		\hline
+		/sys/class/thermal/ & Thermal zones and temperature sensors \\
+		\hline
+		/sys/class/power\_supply/ & Battery and AC adapter info \\
+		\hline
+		/sys/class/drm/ & Graphics cards and display devices (DRM = Direct Rendering Manager) \\
+		\hline
+		/sys/class/leds/ & LED indicators (e.g., keyboard backlight, status LEDs) \\
+		\hline
+		/sys/class/sound/ & Sound devices (ALSA-related) \\
+		\hline
+		/sys/class/hwmon/ & Hardware monitoring sensors (temperature, voltage, fan speed) \\
+		\hline
+	\end{tabularx}
+\end{NxLightBox}
+

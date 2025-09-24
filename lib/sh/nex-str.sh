@@ -216,3 +216,28 @@ nx_str_path()
 	'
 }
 
+nx_str_sfld()
+(
+	eval "$(nx_str_optarg ':n:c:d:' "$@")"
+	$c | ${AWK:-$(nx_cmd_awk)} \
+		-v num="$n" \
+		-v dlm="$d" \
+	"
+		$(nx_data_include -i "${NEXUS_LIB}/awk/nex-math.awk")
+	"'
+		BEGIN {
+			num = __nx_if(__nx_is_integral(num), num, 0)
+			if (dlm == "")
+				dlm = ".*"
+		} {
+			s = ""
+			for (i = 1; i <= num; ++i)
+				s = s dlm $i
+			match($0, s)
+			s = substr($0, RSTART + RLENGTH)
+			gsub(/(^[ \t]+)|([ \t]+$)/, "", s)
+			print s
+		}
+	'
+)
+

@@ -1,14 +1,14 @@
 
 nx_io_fifo_mgr()
-{
+(
 	h_nx_cmd mkfifo || {
 		nx_io_printf -W "mkfifo not found! The realm of named pipes is closed to us." 1>&2
 		return 1
 	}
-	while test "${#@}" -gt 0; do
+	while test ${#@} -gt 0; do
 		if test "$1" = '-r' -a -p "$2"; then
 			rm "$2"
-			shift 2
+			shift
 		elif test "$1" = '-c'; then
 			tmpa=""
 			while test -z "$tmpa"; do
@@ -20,7 +20,7 @@ nx_io_fifo_mgr()
 		fi
 		shift
 	done
-}
+)
 
 nx_io_disown()
 {

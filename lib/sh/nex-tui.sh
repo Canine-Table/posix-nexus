@@ -25,7 +25,7 @@ nx_tui_box()
 
 nx_tui_yn()
 (
-	echo "$(nx_tui_box -b 's' -t "$* (y/n)")"
+	printf '%s\n' "$(nx_tui_box -b 's' -t "$* (y/n)")"
 	nx_tty_hault
 	test "$tmpa" = 'y' -o "$tmpa" = 1
 )
