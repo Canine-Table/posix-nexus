@@ -1,7 +1,22 @@
-nx_8118_w2p2()
-(
-        tmpa='25f/computer_essentials_cst8118/week2/CST8118 Notes for Benjamin Stroobach-Wilson'
-        file "$tmpa/Lecture Notes/Notes.docx"
-        file "$tmpa/Lab Work/Formula Practice.xlsx"
-        file "$tmpa/Teamwork/Presentation.pptx"
-)
+nx_ip_net()
+{
+        ls --color=never -l '/sys/class/net/' | ${AWK:-$(nx_cmd_awk)} -v ex="$1" -F '/' '
+                BEGIN {
+                        if (ex == "-e")
+                                ex = "export "
+                        else
+                                ex = ""
+                        virt = ""
+                        phy = ""
+                }
+                /devices\/pci/{
+                        phy = phy " " $NF
+                }
+                /devices\/virtual/{
+                        virt = virt " " $NF
+                }
+                END {
+                        printf("%sG_NEX_NET_VIRT\x22=%s\x22\n%sG_NEX_NET_PHY=\x22%s\x22\n", ex, substr(virt, 2), ex, substr(phy, 2));
+                }
+        '
+}

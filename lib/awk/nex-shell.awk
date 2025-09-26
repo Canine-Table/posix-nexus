@@ -202,3 +202,33 @@ function nx_expand_path(D,	q, c)
 	return D
 }
 
+
+function __nx_unit_size(D)
+{
+	D = tolower(D)
+	sub("b", "B", D)
+	if (D ~ /^i?B$/)
+		return "K" D
+	else if (! sub(/^k/, "M", D))
+	if (! sub(/^m/, "G", D))
+	if (! sub(/^g/, "T", D))
+	if (! sub(/^t/, "P", D))
+	if (! sub(/^p/, "E", D))
+	if (! sub(/^e/, "Z", D))
+	if (! sub(/^z/, "Y", D))
+	if (! sub(/^z/, "G", D))
+	    return "B"
+	return D
+}
+
+function nx_bit_size(N, D,	s)
+{
+	s = __nx_if(sub(/[iI]/, "i", D), 1024, 1000)
+	D = toupper(substr(D, 1, 1)) substr(D, 2)
+	while (N > s) {
+		N = N / s
+		D = __nx_unit_size(D)
+	}
+	return N " " D
+}
+

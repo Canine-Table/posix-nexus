@@ -1,9 +1,9 @@
 
 nx_str_chain()
 {
-	while [ "${#@}" -gt 0 ]; do
+	while [ "$#" -gt 0 ]; do
 		printf '%s' "$1"
-		[ "${#@}" -gt 1 ] && {
+		[ "$#" -gt 1 ] && {
 			printf '%s' "<nx:null/>"
 		}
 		shift
@@ -76,7 +76,7 @@ nx_str_od()
 			d|o|x) shift;;
 			*) tmpb="x";;
 		esac
-		h_nx_cmd wc || tmpc=1024 && tmpc="$(printf '%s' "$@" | wc --bytes)"
+		h_nx_cmd wc && tmpc="$(printf '%s' "$@" | wc --bytes)" || tmpc=1024
 		test "$G_NEX_ASM_ENDIAN" -eq 1 && tmpa="big" || tmpa="little"
 		printf '%s' "$@" | od \
 			--endian="$tmpa" \

@@ -47,7 +47,7 @@ nx_tty_div()
 
 nx_tty_hault()
 {
-	trap "printf '\x1b[?25h'" EXIT HUP INT
+	trap "printf '\x1b[?25h'; return" EXIT HUP INT TERM
 	printf '\x1b[?25l'
 	tmpa="$(nx_int_natural "$1")"
 	read -n 1 -s ${tmpa:+-t $tmpa} tmpa

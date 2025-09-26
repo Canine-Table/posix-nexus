@@ -171,3 +171,8 @@ nx_io_dd()
 	)
 }
 
+nx_io_prompt()
+{
+	nx_io_printf -f '_b>L%_ui>A%>L_nb%>S%' '┌──[' "$@" ']\n│\n└' '$ '
+}
+

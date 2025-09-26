@@ -1,38 +1,146 @@
 \nxSections{Logic Gates}{1}
 
-\tikz\draw (0,0) node[and port, inputs=2] (AND) {AND}
-	(AND.in 1)  node[left] {A}
- 	(AND.in 2) node[left] {B}
- 	(AND.out) node[right] {AB};
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% AND/NAND
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{circuitikz}
+	\draw (0,0) node[and port, inputs=2] (AND) {}
+		(AND.in 1)  node[left] {A}
+		(AND.in 2) node[left] {B}
+		(AND.out) node[right] {AB};
+\end{circuitikz}
 \hfill
 \begin{tabular}{|c|c|c|}
-	\toprule
-	\textbf{A} & \textbf{B} & \textbf{AB (A $\cdot$ B)} \\
-	\midrule
+	\hline
+	$A$ & $B$ & $AB$ \\
+	\hline
 	0 & 0 & 0 \\
 	0 & 1 & 0 \\
 	1 & 0 & 0 \\
 	1 & 1 & 1 \\
-	\bottomrule
+	\hline
 \end{tabular}
-
-\tikz\draw (0,0) node[/nx/nand, inputs=2] (NAND) {}
-  (NAND.in 1) node[left] {A}
-  (NAND.in 2) node[left] {B}
-  (NAND.out) node[right] {$\overline{AB}$};
 \vspace{1em}
 
-\tikz\draw (0,0) node[not port, fill=gray!10] (NOT) {NOT}
-  (NOT.in) node[left] {A}
-  (NOT.out) node[right] {$\overline{A}$};
+\tikz\draw (0,0) node[nx/logic gates/nand=2] (NAND) {}
+  (NAND.in 1) node[left] {$A$}
+  (NAND.in 2) node[left] {$B$}
+  (NAND.out) node[right] {$\overline{AB}$};
 \hfill
 \begin{tabular}{|c|c|c|}
-	\toprule
-	\textbf{A} & \textbf{B} & \textbf{AB (A $\cdot$ B)} \\
-	\midrule
-	0 & 0 & 0 \\
+	\hline
+	$A$ & $B$ & $\overline{AB}$ \\
+	\hline
+	0 & 0 & 1 \\
 	0 & 1 & 0 \\
 	1 & 0 & 0 \\
-	1 & 1 & 1 \\
-	\bottomrule
+	1 & 1 & 0 \\
+	\hline
 \end{tabular}
+\vspace{1em}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% NOR/OR
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\tikz\draw (0,0) node[nx/logic gates/or=2] (OR) {}
+  (OR.in 1) node[left] {$A$}
+  (OR.in 2) node[left] {$B$}
+  (OR.out) node[right] {$A + B$};
+\hfill
+\begin{tabular}{|c|c|c|}
+	\hline
+	$A$ & $B$ & $A + B$ \\
+	\hline
+	0 & 0 & 1 \\
+	0 & 1 & 0 \\
+	1 & 0 & 0 \\
+	1 & 1 & 0 \\
+	\hline
+\end{tabular}
+\vspace{1em}
+
+\tikz\draw (0,0) node[nx/logic gates/nor=2] (NOR) {}
+  (NOR.in 1) node[left] {$A$}
+  (NOR.in 2) node[left] {$B$}
+  (NOR.out) node[right] {$\overline{A \oplus B}$};
+\hfill
+\begin{tabular}{|c|c|c|}
+	\hline
+	$A$ & $B$ & $\overline{A + B}$ \\
+	\hline
+	0 & 0 & 1 \\
+	0 & 1 & 0 \\
+	1 & 0 & 0 \\
+	1 & 1 & 0 \\
+	\hline
+\end{tabular}
+\vspace{1em}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% XNOR/XOR
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\tikz\draw (0,0) node[nx/logic gates/xor=2] (XOR) {}
+  (XOR.in 1) node[left] {$A$}
+  (XOR.in 2) node[left] {$B$}
+  (XOR.out) node[right] {$\overline{A \oplus B}$};
+\hfill
+\begin{tabular}{|c|c|c|}
+	\hline
+	$A$ & $B$ & $\overline{A \oplus B}$ \\
+	\hline
+	0 & 0 & 0 \\
+	0 & 1 & 1 \\
+	1 & 0 & 1 \\
+	1 & 1 & 0 \\
+	\hline
+\end{tabular}
+\vspace{1em}
+
+\tikz\draw (0,0) node[nx/logic gates/xnor=2] (XNOR) {}
+  (XNOR.in 1) node[left] {$A$}
+  (XNOR.in 2) node[left] {$B$}
+  (XNOR.out) node[right] {$\overline{A \oplus B}$};
+\hfill
+\begin{tabular}{|c|c|c|}
+	\hline
+	$A$ & $B$ & $\overline{A + B}$ \\
+	\hline
+	0 & 0 & 0 \\
+	0 & 1 & 1 \\
+	1 & 0 & 1 \\
+	1 & 1 & 0 \\
+	\hline
+\end{tabular}
+\vspace{1em}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% NOT/BUF
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\tikz\draw (0,0) node[nx/logic gates/not] (NOT) {}
+  (NOT.in) node[left] {$A$}
+  (NOT.out) node[right] {$\overline{A}$};
+\hfill
+\begin{tabular}{|c|c|}
+	\hline
+	A & $\overline{A}$ \\
+	\hline
+	0 & 1 \\
+	1 & 0 \\
+	\hline
+\end{tabular}
+\vspace{1em}
+
+\tikz\draw (0,0) node[nx/logic gates/buf] (BUF) {}
+  (BUF.in) node[left] {A}
+  (BUF.out) node[right] {A};
+\hfill
+\begin{tabular}{|c|c|}
+	\hline
+	A & A \\
+	\hline
+	0 & 0 \\
+	1 & 1 \\
+	\hline
+\end{tabular}
+

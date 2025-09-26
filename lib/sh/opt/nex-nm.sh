@@ -5,7 +5,6 @@ nx_nm_wifi_ls()
 
 nx_nm_wifi_pskpass()
 (
-
 	eval "$(nx_str_optarg ':d:p:c:s:' "$@")"
 	h_nx_cmd nmcli && nmcli connection add \
 		type wifi \
@@ -64,15 +63,4 @@ nx_nm_wifi_eap()
 		802-1x.password "$p" \
 		connection.autoconnect yes
 }
-
-nx_nm_terse()
-(
-	nmcli --terse device
-	nmcli general status
-	nmcli general logging
-	nmcli connection show --active
-	nmcli device status
-
-)
-
 

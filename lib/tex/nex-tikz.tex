@@ -1,7 +1,4 @@
 \makeatletter
-
-%Mandatory–Many
-
 \tikzset{%
 	mandatoryMany/.style={
 		postaction={
@@ -107,59 +104,57 @@
 		right,%
 		font=\scriptsize\bfseries%
 	},%
-	nx/and/.style={
-		and port,
-		inputs=#1,
-		fill=blue!10,
-		label={center=$\land$}
-	},
-	nx/nand/.style={
-		nand port,
-		inputs=#1,
-		fill=purple!10,
-		label={center:$\overline{\land}$}
-	},
-	nx/or/.style={
-		or port,
-		inputs=#1,
-		fill=yellow!10,
-		label={center=$\lor$}
-	},
-	nx/nor/.style={
-		nor port,
-		inputs=#1,
-		fill=green!10,
-	label={center=$\overline{\lor}$}
-	},
-	nx/xor/.style={
-		xor port,
-		inputs=#1,
-		fill=gray!10,
-		label={center=$\oplus$}
-	},
-	nx/xnor/.style={
-		xnor port,
-		inputs=#1,
-		fill=teal!10,
-		label={[xshift=0pt, yshift=0pt]center:$\overline{\oplus}$}
-	},
-	nx/buffer/.style={
-		buffer port,
-		fill=green!10
-	},
-	nx/not/.style={
-		not port,
-		fill=red!10,
-		label={[xshift=0pt, yshift=0pt]center:$\neg$}
-	}
+	nx/.cd,%
+  logic gates/.cd,%
+	and/.style={%
+			and port,%
+			logic gate inputs={#1},%
+			fill=blue!10%
+	},%
+	nand/.style={%
+		nand port,%
+		logic gate inputs={#1},%
+		fill=purple!10%
+	},%
+	or/.style={%
+		or port,%
+		logic gate inputs={#1},%
+		fill=yellow!10%
+	},%
+	nor/.style={%
+		nor port,%
+		logic gate inputs={#1},%
+		fill=green!10%
+	},%
+	xor/.style={%
+		xor port,%
+		logic gate inputs={#1},%
+		fill=gray!10%
+	},%
+	xnor/.style={%
+		xnor port,%
+		inputs={#1},%
+		logic gate inputs={#1},%
+		fill=brown!10%
+	},%
+	buf/.style={%
+		buffer port,%
+		fill=green!10%
+	},%
+	not/.style={%
+		not port,%
+		fill=red!10%
+	}%
 }
 
-%\ctikzset{
-	%logic ports/scale=1.2,
-	%logic ports/label/.style={font=\small\ttfamily},
-	%logic ports/input anchors=1,2,
-	%logic ports/output anchor=out
-%}
+\begin{comment}
+\ctikzset{%
+	logic ports/scale=1.2,%
+	logic ports/label/.style={font=\small\ttfamily},%
+	logic ports/input anchors=1,2,%
+	logic ports/output anchor=out%
+}
+\end{comment}
 
 \long\def\nxCoverPage[#1]{%
 	\pgfkeys{%

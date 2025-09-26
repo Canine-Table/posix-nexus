@@ -1,6 +1,7 @@
 #nx_include "nex-misc.awk"
 #nx_include "nex-str.awk"
 #nx_include "nex-math.awk"
+#nx_include "nex-log.awk"
 
 function __nx_emoji_map(V)
 {

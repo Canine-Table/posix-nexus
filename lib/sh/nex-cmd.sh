@@ -1,7 +1,7 @@
 
 h_nx_cmd()
 {
-	while [ ${#@} -gt 0 ]; do
+	while test "$#" -gt 0; do
 		command -v "$1" 1>/dev/null 2>&1 || return 1
 		shift
 	done
@@ -9,7 +9,7 @@ h_nx_cmd()
 
 g_nx_cmd()
 {
-	while [ ${#@} -gt 0 ]; do
+	while test "$#" -gt 0; do
 		command -v "$1" && return
 		shift
 	done
@@ -81,3 +81,4 @@ nx_cmd_sockets()
 {
 	g_nx_cmd ss netstat
 }
+
