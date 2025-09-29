@@ -35,6 +35,7 @@ function! s:NxTeXSettings()
 		else
 			let vimtex_parser_bib_backend = BaseName(getenv('G_NEX_BIB_BACKEND'))
 		endif
+		call NxCallFunction(l:backends[g:vimtex_compiler_method])
 		augroup NxVimKeyMap
 			autocmd!
 			nnoremap <buffer> <Leader>lv :VimtexView<CR>
@@ -46,10 +47,8 @@ function! s:NxTeXSettings()
 			noremap  <buffer> <Leader>lt :VimtexLog<CR>
 			noremap  <buffer> <Leader>wc <Cmd>VimtexCountWords<CR>
 		augroup END
-		call NxCallFunction(l:backends[g:vimtex_compiler_method])
 		echo 'VimTeX Compiler:' g:vimtex_compiler_method
 		echo 'VimTex Executable:' g:nex_tex_compiler
-
 	else
 		echoerr "Unknown compiler method:" g:vimtex_compiler_method
 	endif
@@ -65,9 +64,6 @@ function! NxConfigureLaTeXMK()
 		\ 'lualatex' : '-lualatex',
 		\ 'xelatex' : '-xelatex',
 	\ }
-	echo g:vimtex_compiler_method
-
-	echo g:vimtex_latexmk_build_dir 
 	let g:vimtex_compiler_lualatex = {
 		\ 'callback' : 1,
 		\ 'continuous' : 1,

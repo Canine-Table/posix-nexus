@@ -12,14 +12,352 @@
 		\rowcolor{yellow!10}
 		File & Field & Record \\
 		\hline
-		\rowcolor{}
 	\end{tabularx}
-	\bigskip
-
-	\caption{Equivalent Terminologies in Data Management Systems}
 \end{NxLightBox}
 
-\nxSections{Relation}{2}
+\begin{NxLightListBox}[title={Key Types in Relational Schema}]
+    \nxEachItem{ArrowDark}{
+        {Relational databases use keys to uniquely identify rows in a table. These keys are the glyphs of identity.},
+        {A primary key is a natural or chosen attribute that uniquely identifies each record. It must be unique and not null.},
+        {A surrogate key is an artificial identifier—often an auto-incremented number or UUID—used solely for uniqueness. It has no business meaning.},
+        {A composite key is formed by combining two or more columns to uniquely identify a record. Each part alone may not be unique.},
+        {Primary keys are often meaningful, like email or username. Surrogate keys are silent stamps, like ID numbers.},
+        {Composite keys are used when no single attribute suffices—like (OwnerName, PetName) in a veterinary schema.},
+        {Surrogate keys simplify joins and indexing, while composite keys preserve domain logic.},
+        {Choosing between them depends on schema ancestry, query performance, and semantic clarity.}
+    }
+\end{NxLightListBox}
+
+\begin{NxLightBox}[title={Primary vs Surrogate vs Composite Keys}]
+	\begin{tabularx}{\linewidth}{|l|X|X|X|}
+		\hline
+		\textbf{Aspect} & \textbf{Primary Key} & \textbf{Surrogate Key} & \textbf{Composite Key} \\
+		\hline
+		Definition & Natural or chosen attribute that uniquely identifies a row & Artificial identifier with no domain meaning & Combination of multiple columns for uniqueness \\
+		\hline
+		Semantic Meaning & Often meaningful (e.g., email, username) & None—used purely for identity & Each part may be meaningful, but only together ensures uniqueness \\
+		\hline
+		Common Types & Email, SSN, username & Auto-incremented ID, UUID & (FirstName, LastName), (OwnerID, PetName) \\
+		\hline
+		Usage in Joins & Can be used directly & Preferred for performance & Requires matching all parts \\
+		\hline
+		Schema Simplicity & Simple if domain key is stable & Very simple and clean & More complex, especially with foreign keys \\
+		\hline
+		Performance & Depends on data type and indexing & Optimized for joins and indexing & May be slower due to multiple columns \\
+		\hline
+		Best Use Case & When domain attribute is stable and unique & When no natural key exists or domain key is volatile & When uniqueness depends on multiple attributes \\
+		\hline
+	\end{tabularx}
+\end{NxLightBox}
+
+\nxSections{Primary Keys}{2}
+\begin{NxLightListBox}[title={Primary Key Principles}]
+    \nxEachItem{ArrowDark}{
+        {Each row in a table is identified by a primary key.},
+        {A primary key is a combination of one or more column values that make a record unique.},
+        {Primary keys are essential for defining relationships between records in relational databases.},
+        {Good primary keys improve lookup speed and reliability.},
+        {Keep it short—short keys are faster for comparisons and indexing.},
+        {Prefer numbers—numeric keys are processed faster than character types.},
+        {Maintain simplicity—avoid special characters, spaces, and mixed casing.},
+        {Do not change the primary key once assigned—it must remain stable.},
+        {Primary keys do not allow duplicates or null values.},
+        {They can be defined at the column level (single key) or table level (composite key).}
+    }
+\end{NxLightListBox}
+
+\begin{NxLightBox}[title={Primary Key Summary}]
+	\begin{tabularx}{\linewidth}{|l|X|}
+		\hline
+		\textbf{Aspect} & \textbf{Primary Key Principle} \\
+		\hline
+		Definition & A column or combination of columns that uniquely identifies each row in a table. \\
+		\hline
+		Purpose & Used to compare, join, and define relationships between records. \\
+		\hline
+		Uniqueness & Must be unique across all rows. \\
+		\hline
+		Nullability & Cannot contain null values. \\
+		\hline
+		Length & Should be short for faster lookups and indexing. \\
+		\hline
+		Data Type Preference & Prefer numeric types over strings for performance. \\
+		\hline
+		Simplicity & Avoid special characters, spaces, and mixed casing. \\
+		\hline
+		Immutability & Should not be changed once assigned. \\
+		\hline
+		Definition Scope & Can be defined at column level (single key) or table level (composite key). \\
+		\hline
+	\end{tabularx}
+\end{NxLightBox}
+
+
+\nxSections{Surrogate Keys}{2}
+\begin{NxLightListBox}[title={Surrogate Key Doctrine}]
+    \nxEachItem{ArrowDark}{
+        {Surrogate keys are artificial identifiers assigned by the DBMS to uniquely identify records.},
+        {They are typically numeric and auto-generated, such as PropertyID or UserID.},
+        {In the RENTAL\_PROPERTY table without a surrogate key, uniqueness is derived from a combination of Street, City, State/Province, Zip/PostalCode, and Country.},
+        {These columns form a composite candidate key, but they are long and semantically heavy.},
+        {With a surrogate key, the table uses PropertyID as the primary key, simplifying joins and indexing.},
+        {Surrogate keys decouple schema from domain logic and improve performance.},
+        {They are ideal when natural keys are volatile, lengthy, or composed of multiple attributes.},
+        {Surrogate keys are internal stamps—they carry no business meaning but serve as anchors for relational integrity.}
+    }
+\end{NxLightListBox}
+
+\begin{NxLightBox}[title={Surrogate Key Comparison}]
+	\begin{tabularx}{\linewidth}{|l|X|X|}
+		\hline
+		\textbf{Aspect} & \textbf{Without Surrogate Key} & \textbf{With Surrogate Key} \\
+		\hline
+		Primary Key & Composite of Street, City, State/Province, Zip/PostalCode, Country & Single-column PropertyID \\
+		\hline
+		Key Type & Candidate key derived from domain attributes & Surrogate key auto-generated by DBMS \\
+		\hline
+		Semantic Meaning & High—each part reflects real-world location & None—used purely for identity \\
+		\hline
+		Length & Long and multi-column & Short and single-column \\
+		\hline
+		Performance & Slower joins and indexing due to multiple columns & Faster joins and indexing \\
+		\hline
+		Stability & May change if address changes & Immutable once assigned \\
+		\hline
+		Foreign Key Usage & Requires multi-column references & Simple single-column references \\
+		\hline
+		Best Use Case & When domain attributes are stable and meaningful & When domain keys are volatile or complex \\
+		\hline
+	\end{tabularx}
+\end{NxLightBox}
+
+\nxSections{Composite Keys}{2}
+\begin{NxLightListBox}[title={Composite Key Principles}]
+    \nxEachItem{ArrowDark}{
+        {Composite keys are formed by combining two or more columns to uniquely identify each row in a table.},
+        {They are used when no single attribute is sufficient to guarantee uniqueness.},
+        {Each component of a composite key may be meaningful, but only together do they form a unique glyph.},
+        {In a veterinary schema, (OwnerName, PetName) might be used to identify pets uniquely.},
+        {Composite keys enforce domain logic and preserve semantic clarity.},
+        {They require multi-column foreign keys in related tables, which can increase schema complexity.},
+        {Joins using composite keys must match all parts, which may affect performance.},
+        {Composite keys are defined at the table level, not the column level.},
+        {They are ideal when the natural identity of a record is inherently multi-attribute.}
+    }
+\end{NxLightListBox}
+
+\begin{NxLightBox}[title={Composite Key Principles}]
+	\begin{tabularx}{\linewidth}{|l|X|X|X|}
+		\hline
+		\textbf{Aspect} & \textbf{Primary Key} & \textbf{Surrogate Key} & \textbf{Composite Key} \\
+		\hline
+		Definition & Natural or chosen attribute for uniqueness & Artificial identifier with no domain meaning & Combination of columns for uniqueness \\
+		\hline
+		Semantic Meaning & Often meaningful (e.g., email, username) & None—used purely for identity & Each part may be meaningful, but only together ensures uniqueness \\
+		\hline
+		Common Types & Email, SSN, username & Auto-incremented ID, UUID & (OwnerName, PetName), (CourseID, StudentID) \\
+		\hline
+		Schema Simplicity & Simple if domain key is stable & Very simple and clean & More complex, especially with foreign keys \\
+		\hline
+		Performance & Depends on data type and indexing & Optimized for joins and indexing & May be slower due to multiple columns \\
+		\hline
+		Best Use Case & Stable, unique domain attribute & No natural key or volatile domain logic & Uniqueness depends on multiple attributes \\
+		\hline
+		Nulls Allowed & Not allowed & Not allowed & Not allowed \\
+		\hline
+		Duplicates Allowed & Not allowed & Not allowed & Not allowed \\
+		\hline
+		Definition Location & Column or table level & Column level only & Table level only \\
+		\hline
+		Foreign Key Complexity & Simple single-column reference & Simple single-column reference & Requires multi-column reference \\
+		\hline
+	\end{tabularx}
+\end{NxLightBox}
+
+\nxSections{Foreign Keys}{2}
+\begin{NxLightListBox}[title={Foreign Key Principles}]
+    \nxEachItem{ArrowDark}{
+        {When a table references data from another table, it forms a relationship.},
+        {The key in the referenced table is the primary key; the referencing table holds the foreign key.},
+        {A foreign key is the attribute that identifies a primary key in another table.},
+        {It provides the link between two tables, enabling relational integrity and joins.},
+        {A foreign key can be a single column or a composite of columns.},
+        {The term "foreign" arises because the key originates from a different table.},
+        {Foreign keys must match the data type and constraints of the referenced primary key.},
+        {They may be italicized in schema notation to distinguish them from primary keys.},
+        {Example: In EMPLOYEE (EmployeeNumber, LastName, FirstName, Department), the Department attribute is a foreign key referencing DEPARTMENT.},
+        {This relationship binds EMPLOYEE to DEPARTMENT, allowing queries to traverse organizational ancestry.}
+    }
+\end{NxLightListBox}
+
+\begin{NxLightBox}[title={Foreign Key Summary}]
+	\begin{tabularx}{\linewidth}{|l|X|}
+		\hline
+		\textbf{Aspect} & \textbf{Foreign Key Principle} \\
+		\hline
+		Definition & A column or composite of columns that references the primary key of another table. \\
+		\hline
+		Purpose & Establishes relationships between tables, enabling joins and enforcing referential integrity. \\
+		\hline
+		Origin & Defined in the referencing table, pointing to a primary key in the referenced table. \\
+		\hline
+		Multiplicity & Can be single-column or composite. \\
+		\hline
+		Naming Convention & Often italicized in schema notation to distinguish from primary keys. \\
+		\hline
+		Example & EMPLOYEE.Department is a foreign key referencing DEPARTMENT.DepartmentName. \\
+		\hline
+		Constraints & Must match the data type and uniqueness of the referenced primary key. \\
+		\hline
+		Relational Role & Enables traversal of schema ancestry and enforces valid references. \\
+		\hline
+	\end{tabularx}
+\end{NxLightBox}
+
+\nxSections{Identifiers and Attributes}{2}
+\begin{NxLightListBox}[title={Identifiers and Attributes in Relational Schema}]
+    \nxEachItem{ArrowDark}{
+        {An identifier is an attribute that distinguishes one entity instance from all others in the database.},
+        {A primary key is the chosen identifier—an attribute or set of attributes that uniquely identifies each row in a table.},
+        {Primary keys must not contain null values and must be unique across all rows.},
+        {Candidate keys are attributes or combinations of attributes that could serve as a primary key.},
+        {Each candidate key is a valid identifier, but only one is chosen as the primary key.},
+        {Attributes describe the characteristics of an entity, such as name, address, or birthdate.},
+        {All instances of an entity class share the same attributes, but differ in their values.},
+        {In early data models, attributes were shown as ellipses; modern tools use rectangles.},
+        {Choosing the right primary key from candidate keys ensures reliable lookups and relational integrity.}
+    }
+\end{NxLightListBox}
+
+\begin{NxLightBox}[title={Identifier and Attribute Summary}]
+	\begin{tabularx}{\linewidth}{|l|X|}
+		\hline
+		\textbf{Concept} & \textbf{Definition and Role} \\
+		\hline
+		Identifier & An attribute that uniquely distinguishes one entity instance from another \\
+		\hline
+		Primary Key & The chosen identifier that uniquely identifies each row in a table; must be unique and not null \\
+		\hline
+		Candidate Key & A set of attributes that could serve as a primary key; one is selected as the actual primary key \\
+		\hline
+		Attribute & A property or characteristic of an entity; describes its features and values \\
+		\hline
+		Attribute Consistency & All instances of an entity class share the same attributes, but have different values \\
+		\hline
+		Modeling Convention & Originally shown as ellipses in ER diagrams; now commonly shown as rectangles \\
+		\hline
+		Selection Importance & Choosing the right primary key from candidate keys ensures schema clarity and performance \\
+		\hline
+	\end{tabularx}
+\end{NxLightBox}
+
+\nxSections{Modeling Convention}{3}
+\begin{tikzpicture}[line width=1pt]
+	\begin{scope}[%
+		level distance=2cm%
+		] \node[process] (employeeA) at (0,0) {EMPLOYEE} child {
+			node[startstop, above=of employeeA.north] {Phone}
+		} child {
+			node[startstop, above right=of employeeA.south east] (nameA) {EmployeeName}
+		} child {
+			node[startstop, above left=of employeeA.south west] {EmailAddress}
+		} child {
+			node[startstop, below=of employeeA.south] (numberA) {EmployeeNumber}
+		} child {
+			node[startstop, below left=of employeeA.north west] {HireDate}
+		} child {
+			node[startstop, below right=of employeeA.north east] {ReviewDate}
+		};
+	\end{scope}
+	\node[right=6cm of name.east] (employeeB) {
+		\begin{NxLightBox}[%
+			width=0.3\linewidth,%
+			title={EmployeeNumber}%
+		]
+			\begin{tabularx}{\linewidth}{|X|}
+				\hline
+				EmployeeName \\
+				\hline
+				Phone \\
+				\hline
+				EmployeeAddress \\
+				\hline
+				HireDate \\
+				\hline
+				ReviewDate \\
+				\hline
+			\end{tabularx}
+		\end{NxLightBox}
+	};
+	\node[above left=-1mm of employeeB.north] {EMPLOYEE};
+	\node[below=5mm of employeeB.south] {\nxLnArcBox{(a) Attributes in Elipses}};
+	\node[below=5mm of numberA.south] {\nxLnArcBox{(b) Attributes in Rectangle}};
+\end{tikzpicture}
+
+
+\nxSections{Entities}{2}
+\begin{NxLightListBox}[title={Entity Principles in Relational Schema}]
+    \nxEachItem{ArrowDark}{
+        {Entities are the foundational objects in a relational database—each representing a distinct concept or thing.},
+        {An entity corresponds to a table, and each row within that table represents an instance of the entity.},
+        {Entities are defined by their attributes—columns that describe properties of each instance.},
+        {Every entity must have a primary key to uniquely identify its instances.},
+        {Entities may participate in relationships with other entities, forming links across the schema.},
+        {Examples of entities include Customer, Book, Author, Employee, Department, Pet, and Visit.},
+        {Entities can be strong (having their own primary key) or weak (dependent on another entity’s key).},
+        {Entity design should reflect real-world concepts clearly and consistently.},
+        {Attributes should be atomic, meaningful, and normalized to avoid redundancy.},
+        {Entities are the scrolls upon which relational logic is inscribed—they anchor the schema and define its ancestry.}
+    }
+\end{NxLightListBox}
+
+\begin{NxLightBox}[title={Entity Summary}]
+	\begin{tabularx}{\linewidth}{|l|X|}
+		\hline
+		\textbf{Concept} & \textbf{Definition and Role} \\
+		\hline
+		Identifier & An attribute that uniquely distinguishes one entity instance from another \\
+		\hline
+		Primary Key & The chosen identifier that uniquely identifies each row in a table; must be unique and not null \\
+		\hline
+		Candidate Key & A set of attributes that could serve as a primary key; one is selected as the actual primary key \\
+		\hline
+		Attribute & A property or characteristic of an entity; describes its features and values \\
+		\hline
+		Attribute Consistency & All instances of an entity class share the same attributes, but have different values \\
+		\hline
+		Modeling Convention & Originally shown as ellipses in ER diagrams; now commonly shown as rectangles \\
+		\hline
+		Selection Importance & Choosing the right primary key from candidate keys ensures schema clarity and performance \\
+		\hline
+	\end{tabularx}
+
+\end{NxLightBox}
+
+\begin{NxLightBox}[title={Entity Examples}]
+	\begin{tabularx}{\linewidth}{|l|X|X|}
+		\hline
+		\textbf{Entity} & \textbf{Attributes} & \textbf{Notes} \\
+		\hline
+		Customer & CustomerID (PK), Name, Email, Address, Phone & Represents a person who purchases items or services \\
+		\hline
+		Book & BookID (PK), Title, Genre, Price, Year & Represents a book in inventory or catalog \\
+		\hline
+		Author & AuthorID (PK), Name, Email, Biography & Represents a writer associated with books \\
+		\hline
+		Employee & EmployeeNumber (PK), FirstName, LastName, Department (FK) & Represents a staff member in an organization \\
+		\hline
+		Department & DepartmentName (PK), BudgetCode, OfficeNumber, Phone & Represents a division or unit within an organization \\
+		\hline
+		Pet & OwnerName + PetName (PK), Species, Breed, Sex, Neutered & Represents an animal owned by a client \\
+		\hline
+		Visit & VisitID (PK), PetID (FK), StaffID (FK), Date, Reason & Represents a medical or service encounter \\
+		\hline
+	\end{tabularx}
+\end{NxLightBox}
+
+
+\nxSections{Relations}{2}
 \begin{NxLightListBox}[title={Characteristics of Relations}]
 	\nxEachItem{ArrowDark}{
 		{Rows contain data about an entity.},
@@ -33,161 +371,256 @@
 	}
 \end{NxLightListBox}
 
-\begin{NxCodeBox}{sql}{nxCol=dark,title={create the example database}}
-DELIMITER $$
+\begin{NxLightListBox}[title={Entities vs Relations}]
+    \nxEachItem{ArrowDark}{
+        {Entities are the core objects in a database—real-world concepts like Customer, Book, or Pet.},
+        {Each entity is represented by a table, and each row is an instance of that entity.},
+        {Entities are defined by attributes, and must have a primary key to ensure uniqueness.},
+        {Relations describe how entities are connected—such as a Customer purchasing a Book or a Pet visiting a Doctor.},
+        {A relation is often implemented as a foreign key or a separate relationship table.},
+        {Entities hold data; relations define structure and connectivity between that data.},
+        {Relations can be one-to-one, one-to-many, or many-to-many, depending on the schema design.},
+        {In ER diagrams, entities are boxes and relations are lines or diamonds connecting them.},
+        {Entities are the scrolls; relations are the threads that bind them into a coherent tapestry.}
+    }
+\end{NxLightListBox}
 
-CREATE PROCEDURE SwitchDatabase(IN dbName VARCHAR(64))
-BEGIN
-    -- Build the USE statement dynamically
-    SET @sql = CONCAT('USE ', dbName);
-    PREPARE stmt FROM @sql;
-    EXECUTE stmt;
-    DEALLOCATE PREPARE stmt;
-END$$
-
-DELIMITER ;
-
-CREATE OR REPLACE DATABASE nexusDB
-	CHARACTER SET utf8mb4
-	COLLATE uca1400_as_cs
-	COMMENT 'Where collations go to argue about accents and case, but everything is encrypted anyway.';
-
-CREATE DATABASE IF NOT EXISTS posixDB
-	CHARACTER SET utf8mb4
-	COLLATE uca1400_ai_ci
-	COMMENT 'Because even databases deserve a POSIX-compliant bedtime story.';
-
-	SHOW DATABASES;
-\end{NxCodeBox}
-
-\begin{NxLightBox}[title={EXAMPLE OF AN EMPLOYEE RELATION}]
-		\begin{tabularx}{\textwidth}{|c|X|X|X|X|l|}
+\nxSections{Entity Instances}{3}
+\begin{center}
+\begin{tikzpicture}
+	\node (customerA) {
+		\begin{NxLightBox}[%
+			width=0.5\linewidth,%
+			title={CUSTOMER}%
+		]
+			\begin{tabularx}{\linewidth}{|X|}
 				\hline
-				EmployeeNumber & FirstName & LastName & Department & EmailAddress & Phone \\
+				CustomerNumber \\
 				\hline
-				100 & Jerry		& Johnson		& Accounting & JJ@somewhere.com & 518-834-1101 \\
-				200 & Mary		& Abernathy & Finance		 & MA@somewhere.com & 518-834-2101 \\
-				300 & Liz			& Smathers	& Finance		 & LS@somewhere.com & 518-834-3102 \\
-				400 & Tom			& Caruthers & Accounting & TC@somewhere.com & 518-834-1102 \\
-				500 & Ken			& Jackson		& Production & KJ@somewhere.com & 518-834-2102 \\
-				600 & Eleanor & Caldera		& Legal			 & EC@somewhere.com & 518-834-3101 \\
-				700 & Richard & Bandalone & Legal			 & RB@somewhere.com & 518-834-3102 \\
+				CustomerName \\
 				\hline
-		\end{tabularx}
+				Street \\
+				\hline
+				City \\
+				\hline
+				State \\
+				\hline
+				ZIP \\
+				\hline
+				ContactName \\
+				\hline
+				EmailAddress \\
+				\hline
+			\end{tabularx}
+		\end{NxLightBox}
+	};
+	\node[below=of customerA, yshift=9mm] {\nxLnBox{Two CUSTOMER Instances}};
+	\node[above=of customerA, yshift=-9mm] {\nxLnBox{CUSTOMER Entity}};
+	\node[below=of customerA.south west] {
+		\begin{NxLightBox}[%
+			width=0.4\linewidth%
+		]
+			\begin{tabularx}{\linewidth}{|X|}
+				\hline
+				1234 \\
+				\hline
+				Ajax Manufacturing \\
+				\hline
+				123 Elm Street \\
+				\hline
+				Memphis \\
+				\hline
+				TN \\
+				\hline
+				32455 \\
+				\hline
+				Peter Schwartz \\
+				\hline
+				Petter@ajax.com \\
+				\hline
+			\end{tabularx}
+		\end{NxLightBox}
+	};
+	\node[below=of customerA.south east] (instB) {
+		\begin{NxLightBox}[%
+			width=0.4\linewidth%
+		]
+			\begin{tabularx}{\linewidth}{|X|}
+				\hline
+				99890 \\
+				\hline
+				Jones Brothers \\
+				\hline
+				434 10th Street \\
+				\hline
+				Boston \\
+				\hline
+				MA \\
+				\hline
+				01234 \\
+				\hline
+				Fritz Billingsley \\
+				\hline
+				Fritz@JB.com \\
+				\hline
+			\end{tabularx}
+		\end{NxLightBox}
+	};
+\end{tikzpicture}
+\end{center}
+
+\begin{NxLightBox}[title={Entities vs Relations}]
+	\begin{tabularx}{\linewidth}{|l|X|X|}
+		\hline
+		\textbf{Aspect} & \textbf{Entity} & \textbf{Relation} \\
+		\hline
+		Definition & A real-world object or concept represented as a table & A logical connection between two or more entities \\
+		\hline
+		Role in Schema & Stores data and attributes & Defines how entities interact or reference each other \\
+		\hline
+		Examples & Customer, Book, Pet, Employee & Purchase, AuthoredBy, Visit, Enrollment \\
+		\hline
+		Representation & Table with rows and columns & Foreign key, junction table, or relationship node \\
+		\hline
+		Key Requirement & Must have a primary key & Often uses foreign keys to link entities \\
+		\hline
+		Multiplicity & Not applicable directly & One-to-one, one-to-many, many-to-many \\
+		\hline
+		ER Diagram Symbol & Box (rectangle) & Line or diamond connecting entities \\
+		\hline
+		Purpose & Captures attributes and identity of things & Captures how things are connected or interact \\
+		\hline
+	\end{tabularx}
 \end{NxLightBox}
 
-\begin{NxCodeBox}{sql}{nxCol=dark,title={mariadb code example}}
-USE nexusDB
--- Create the Employee table
-CREATE TABLE IF NOT EXISTS Employees (
-		EmployeeNumber INT PRIMARY KEY,
-		FirstName			 VARCHAR(50) NOT NULL,
-		LastName			 VARCHAR(50) NOT NULL,
-		Department		 VARCHAR(50) NOT NULL,
-		EmailAddress	 VARCHAR(100) UNIQUE NOT NULL,
-		Phone					 VARCHAR(20)
-);
+\begin{NxLightListBox}[title={Degree of Relationship}]
+    \nxEachItem{ArrowDark}{
+        {The degree of a relationship refers to the number of entity classes involved in that relationship.},
+        {A binary relationship involves two entities—for example, a CUSTOMER placing an ORDER.},
+        {A ternary relationship involves three entities—for example, a STUDENT enrolling in a COURSE taught by a PROFESSOR.},
+        {Higher-degree relationships (quaternary and beyond) are rare and often decomposed into simpler binary relationships.},
+        {The degree determines the complexity of the relationship and how it is represented in ER diagrams.},
+        {Binary relationships are the most common and are represented with lines or crow’s foot glyphs.},
+        {Ternary relationships are shown with a diamond connected to three entity rectangles.},
+        {Understanding relationship degree helps in designing normalized, expressive schemas.}
+    }
+\end{NxLightListBox}
 
--- Insert employee records
-INSERT INTO Employees (EmployeeNumber, FirstName, LastName, Department, EmailAddress, Phone) VALUES
-(100, 'Jerry',	 'Johnson',		'Accounting', 'JJ@somewhere.com', '518-834-1101'),
-(200, 'Mary',		 'Abernathy', 'Finance',		'MA@somewhere.com', '518-834-2101'),
-(300, 'Liz',		 'Smathers',	'Finance',		'LS@somewhere.com', '518-834-3102'),
-(400, 'Tom',		 'Caruthers', 'Accounting', 'TC@somewhere.com', '518-834-1102'),
-(500, 'Ken',		 'Jackson',		'Production', 'KJ@somewhere.com', '518-834-2102'),
-(600, 'Eleanor', 'Caldera',		'Legal',			'EC@somewhere.com', '518-834-3101'),
-(700, 'Richard', 'Bandalone', 'Legal',			'RB@somewhere.com', '518-834-3102');
-\end{NxCodeBox}
-
-\begin{NxLightBox}[title={Employee Directory with Multiple Phone Entries}]
-		\begin{tabularx}{\textwidth}{|c|X|X|X|X|X|}
-				\hline
-				EmployeeNumber & FirstName & LastName & Department & EmailAddress & Phone \\
-				\hline
-				100 & Jerry			& Johnson		& Accounting & JJ@somewhere.com & 518-834-1101 \\
-				\hline
-				200 & Mary			& Abernathy & Finance		 & MA@somewhere.com & 518-834-2101 \\
-				\hline
-				300 & Liz				& Smathers	& Finance		 & LS@somewhere.com & 518-834-2102 \\
-				\hline
-				400 & Tom				& Caruthers & Accounting & TC@somewhere.com & Fax: 518-834-9711 \\ 
-						&						&						&						 &									& Home: 518-834-9915 \\
-				\hline
-				500 & Tom				& Jackson		& Production & TJ@somewhere.com & 518-834-3101 \\
-				\hline
-				600 & Eleanore	& Caldera		& Legal			 & EC@somewhere.com & Fax: 518-834-9711 \\
-						&						&						&						 &									& Home: 518-834-9915 \\
-				\hline
-				700 & Richard		& Bandalone & Legal			 & RB@somewhere.com & 518-834-3102 \\
-				\hline
-		\end{tabularx}
+\begin{NxLightBox}[title={Relationship Degree Comparison}]
+	\begin{tabularx}{\linewidth}{|l|X|X|}
+		\hline
+		\textbf{Degree} & \textbf{Description} & \textbf{Example} \\
+		\hline
+		Unary (1) & Relationship involving one entity class & EMPLOYEE manages EMPLOYEE \\
+		\hline
+		Binary (2) & Relationship involving two entity classes & CUSTOMER places ORDER \\
+		\hline
+		Ternary (3) & Relationship involving three entity classes & STUDENT enrolls in COURSE taught by PROFESSOR \\
+		\hline
+		Quaternary (4) & Relationship involving four entity classes (rare) & PATIENT receives TREATMENT from DOCTOR using DEVICE \\
+		\hline
+	\end{tabularx}
 \end{NxLightBox}
+\bigskip
 
-\begin{NxCodeBox}{sql}{nxCol=dark,title={mariadb code example}}
-USE nexusDB
-	-- Create Employees table if it does not exist
-	CREATE TABLE IF NOT EXISTS Employees (
-		EmployeeNumber INT PRIMARY KEY,
-		FirstName			 VARCHAR(50) NOT NULL,
-		LastName			 VARCHAR(50) NOT NULL,
-		Department		 VARCHAR(50) NOT NULL,
-		EmailAddress	 VARCHAR(100) UNIQUE NOT NULL
-	);
-
-	-- Create EmployeePhones table if it does not exist
-	CREATE TABLE IF NOT EXISTS EmployeePhones (
-		PhoneID				 INT AUTO_INCREMENT PRIMARY KEY,
-		EmployeeNumber INT NOT NULL,
-		PhoneType			 VARCHAR(20) NOT NULL,	 -- e.g. 'Work', 'Fax', 'Home'
-		PhoneNumber		 VARCHAR(30) NOT NULL,
-		FOREIGN KEY (EmployeeNumber) REFERENCES Employees(EmployeeNumber)
-	);
-
-	DELIMETER$$
-	CREATE PROCEDURE AddEmployeeWithPhone(
-		IN pEmployeeNumber INT,
-		IN pFirstName			 VARCHAR(50),
-		IN pLastName			 VARCHAR(50),
-		IN pDepartment		 VARCHAR(50),
-		IN pEmailAddress	 VARCHAR(100),
-		IN pPhoneType			 VARCHAR(20),
-		IN pPhoneNumber		 VARCHAR(30)
-	) BEGIN
-	-- If employee does not exist, insert them
-	IF NOT EXISTS (
-		SELECT 1 FROM Employees WHERE EmployeeNumber = pEmployeeNumber
-	) THEN
-		INSERT INTO Employees (EmployeeNumber, FirstName, LastName, Department, EmailAddress)
-		VALUES (pEmployeeNumber, pFirstName, pLastName, pDepartment, pEmailAddress);
-	END IF;
-
-		-- Insert the phone entry (can be multiple per employee)
-		INSERT INTO EmployeePhones (EmployeeNumber, PhoneType, PhoneNumber)
-		VALUES (pEmployeeNumber, pPhoneType, pPhoneNumber);
-	EN$$
-
-	DELIMITER ;
-
-	CALL AddEmployeeWithPhone(
-			800, 'Alice', 'Walker', 'HR', 'AW@somewhere.com',
-			'Work', '518-834-4101'
-	);
-
-\end{NxCodeBox}
-
+\nxSections{Binary Versus Ternary Relationships}{3}
+\begin{tikzpicture}
+	\node (nodeAa) [process] {CLIENT}
+		node (nodeBa) [decision, right=of nodeAa] {~}
+		node[above=of nodeBa] {\nxLnArcBox{(b) Example Tertiary Relationship}}
+		node (nodeCa) [process, right=of nodeBa] {ARCHITECT}
+		node (nodeDa) [process, below=of nodeBa] {PROJECT} 
+		node[above of=nodeBa] {Assignment};
+	\draw (nodeAa) -- (nodeBa) -- (nodeCa);
+	\draw (nodeBa) -- (nodeDa);
+	\node[right=of nodeCa] (nodeAb) [process] {EMPLOYEE}
+		node (nodeBb) [decision, right=of nodeAb] {~}
+		node[below of=nodeBb] {Qualification}
+		node[above of=nodeBb] {\nxLnArcBox{(a) Example Binary Relationship}}
+		node (nodeCb) [process, right of=nodeBb, xshift=2cm] {BADGE};
+	\draw (nodeAb) -- (nodeBb) -- (nodeCb);
+\end{tikzpicture}
 
 \nxSections{Cardinality}{2}
 
-%\begin{nxTertiaryListBox}
+\begin{NxLightListBox}[title={Cardinality in Relationships}]
+    \nxEachItem{ArrowDark}{
+        {Cardinality describes the number of instances of one entity that can be associated with instances of another entity.},
+        {It defines the multiplicity of a relationship—how many of A relate to how many of B.},
+        {The most common cardinalities are one-to-one, one-to-many, and many-to-many.},
+        {A one-to-one relationship means each instance of Entity A relates to exactly one instance of Entity B.},
+        {A one-to-many relationship means one instance of Entity A relates to multiple instances of Entity B.},
+        {A many-to-many relationship means multiple instances of Entity A relate to multiple instances of Entity B.},
+        {Cardinality is often expressed in ER diagrams using crow’s foot notation or numeric ranges (e.g., 0..*, 1..1).},
+        {It helps enforce referential integrity and guides foreign key placement.},
+        {Understanding cardinality is essential for designing normalized, expressive schemas.}
+    }
+\end{NxLightListBox}
 
-%\end{nxTertiaryListBox}
+\begin{NxLightBox}[title={Cardinality Types}]
+	\begin{tabularx}{\linewidth}{|l|X|X|}
+		\hline
+		\textbf{Cardinality Type} & \textbf{Description} & \textbf{Example} \\
+		\hline
+		One-to-One (1:1) & Each instance of Entity A relates to exactly one instance of Entity B & Each PERSON has one PASSPORT \\
+		\hline
+		One-to-Many (1:N) & One instance of Entity A relates to many instances of Entity B & One CUSTOMER places many ORDERS \\
+		\hline
+		Many-to-One (N:1) & Many instances of Entity A relate to one instance of Entity B & Many EMPLOYEES work in one DEPARTMENT \\
+		\hline
+		Many-to-Many (M:N) & Many instances of Entity A relate to many instances of Entity B & STUDENTS enroll in many COURSES; COURSES have many STUDENTS \\
+		\hline
+		Optional (0..1) & An instance may or may not participate in the relationship & A BOOK may have zero or one TRANSLATION \\
+		\hline
+		Mandatory (1..*) & An instance must participate in at least one relationship & Each ORDER must have at least one ITEM \\
+		\hline
+	\end{tabularx}
+\end{NxLightBox}
+
+\begin{NxLightListBox}[title={Cardinality and Relationship Roles}]
+    \nxEachItem{ArrowDark}{
+        {Maximum cardinality defines the maximum number of relationship instances an entity can participate in.},
+        {Minimum cardinality defines the minimum number of relationship instances an entity must participate in.},
+        {Cardinality governs multiplicity—how many of A relate to how many of B.},
+        {There are three types of maximum cardinality: One-to-One [1:1], One-to-Many [1:N], and Many-to-Many [N:M].},
+        {In a one-to-many relationship, the entity on the “one” side is called the parent.},
+        {The entity on the “many” side is called the child.},
+        {These are HAS-A relationships—each entity instance has a relationship with another.},
+        {Example: An EMPLOYEE has one or more COMPUTERs; each COMPUTER has one assigned EMPLOYEE.},
+        {Cardinality constraints are essential for enforcing referential integrity and guiding schema design.}
+    }
+\end{NxLightListBox}
+
+\begin{NxLightBox}[title={Cardinality and Relationship Roles}]
+	\begin{tabularx}{\linewidth}{|l|X|X|}
+		\hline
+		\textbf{Concept} & \textbf{Definition} & \textbf{Example} \\
+		\hline
+		Maximum Cardinality & Max number of relationship instances an entity can participate in & EMPLOYEE can have multiple COMPUTERs (1:N) \\
+		\hline
+		Minimum Cardinality & Min number of relationship instances an entity must participate in & ORDER must have at least one ITEM (1..*) \\
+		\hline
+		One-to-One (1:1) & Each instance of A relates to one instance of B & PERSON has one PASSPORT \\
+		\hline
+		One-to-Many (1:N) & One instance of A relates to many instances of B & EMPLOYEE has many COMPUTERs \\
+		\hline
+		Many-to-Many (N:M) & Many instances of A relate to many instances of B & STUDENTS enroll in many COURSES \\
+		\hline
+		Parent Entity & Entity on the “one” side of a 1:N relationship & EMPLOYEE in EMPLOYEE–COMPUTER \\
+		\hline
+		Child Entity & Entity on the “many” side of a 1:N relationship & COMPUTER in EMPLOYEE–COMPUTER \\
+		\hline
+		HAS-A Relationship & One entity instance has a relationship with another & EMPLOYEE has COMPUTER(s) \\
+		\hline
+	\end{tabularx}
+\end{NxLightBox}
 
 \nxSections{Three Types of Minimum Cardinality}{3}
 \begin{tikzpicture}
 	\node (nodeA) [process] {EMPLOYEE}
 		node (nodeB) [decision, right of=nodeA, xshift=2cm] {1:1}
 		node (labelA) [below of=nodeB] {Employee\_Identity}
-		node (labelB) [below of=labelA] {(a) Mandatory-to-Mandatory (M-M) Relaitonship}
+		node (labelB) [below of=labelA] {\nxLnArcBox{(a) Mandatory-to-Mandatory (M-M) Relaitonship}}
 		node (nodeC) [process, right of=nodeB, xshift=2cm] {BADGE};
 	\draw (nodeA) -- (nodeB) -- (nodeC);
 \end{tikzpicture}
@@ -195,7 +628,7 @@ USE nexusDB
 	\node (nodeA) [process] {EMPLOYEE}
 		node (nodeB) [decision, right of=nodeA, xshift=2cm] {1:N}
 		node (labelA) [below of=nodeB] {Computer\_Assignment}
-		node (labelB) [below of=labelA] {(b) Optional-to-Optional (O-O) Relaitonship}
+		node (labelB) [below of=labelA] {\nxLnArcBox{(b) Optional-to-Optional (O-O) Relaitonship}}
 		node (nodeC) [process, right of=nodeB, xshift=2cm] {COMPUTER};
 	\draw (nodeA) -- (nodeB) -- (nodeC);
 \end{tikzpicture}
@@ -205,10 +638,39 @@ USE nexusDB
 	\node (nodeA) [process] {EMPLOYEE}
 		node (nodeB) [decision, right of=nodeA, xshift=2cm] {N:M}
 		node (labelA) [below of=nodeB] {Qualification}
-		node (labelB) [below of=labelA] {(c) Optional-to-Mandatory (O-M) Relaitonship}
+		node (labelB) [below of=labelA] {\nxLnArcBox{(c) Optional-to-Mandatory (O-M) Relaitonship}}
 		node (nodeC) [process, right of=nodeB, xshift=2cm] {SKILL};
 	\draw (nodeA) -- (nodeB) -- (nodeC);
 \end{tikzpicture}
 \bigskip
 
+\nxSections{Database Integrity}{2}
+\begin{NxLightListBox}[title={Database Integrity Principles}]
+    \nxEachItem{ArrowDark}{
+        {Database integrity ensures that data remains accurate, consistent, and valid across all tables and relationships.},
+        {It is enforced through rules, constraints, and relational logic embedded in the schema.},
+        {Entity integrity ensures that each table has a unique, non-null primary key.},
+        {Referential integrity ensures that foreign keys correctly reference existing primary keys in related tables.},
+        {Domain integrity ensures that attribute values fall within valid ranges, types, and formats.},
+        {User-defined integrity includes custom business rules specific to the application or domain.},
+        {Integrity constraints prevent orphan records, duplicate keys, and invalid data entries.},
+        {Together, these principles form the ritual scaffolding that protects the database from corruption and chaos.}
+    }
+\end{NxLightListBox}
+
+\begin{NxLightBox}[title={Types of Database Integrity}]
+	\begin{tabularx}{\linewidth}{|l|X|X|}
+		\hline
+		\textbf{Integrity Type} & \textbf{Definition} & \textbf{Example} \\
+		\hline
+		Entity Integrity & Ensures each table has a unique, non-null primary key & EMPLOYEE.EmployeeNumber must be unique and not null \\
+		\hline
+		Referential Integrity & Ensures foreign keys reference valid primary keys in other tables & EMPLOYEE.Department must match DEPARTMENT.DepartmentName \\
+		\hline
+		Domain Integrity & Ensures attribute values are valid for their domain (type, range, format) & Salary must be a positive number; Birthdate must be a valid date \\
+		\hline
+		User-Defined Integrity & Enforces custom business rules beyond built-in constraints & A BOOK cannot be borrowed if its status is “Archived” \\
+		\hline
+	\end{tabularx}
+\end{NxLightBox}
 

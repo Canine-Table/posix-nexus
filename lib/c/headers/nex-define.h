@@ -196,9 +196,4 @@ nx_DM_signage_M(float, f)
 nx_DM_sign_M(long , l)
 nx_DM_signage_M(double, d)
 
-nx_dm_enum_M((NX_DB_CT, NX_DB_CUT, NX_DB_CST), db)
-
-//nx_dm_width_M(db, (NX_DB_CT, NX_DB_CUT, NX_DB_CST), (nx_d_ct NX_DB_CT; nx_d_cut NX_DB_CUT; nx_d_cst NX_DB_CST;), /**/, /**/)
-
-
 #endif

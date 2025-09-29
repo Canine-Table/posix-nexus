@@ -273,3 +273,38 @@ nx_sys_cgroups()
 	'
 }
 
+nx_sys_cpu()
+(
+        eval "$(nx_str_optarg ':r:n:' "$@")"
+	${AWK:-$(nx_cmd_awk)} -v num="$n" -v rt="$r" "
+		$(nx_data_include -i "${NEXUS_LIB}/awk/nex-json.awk")
+	"'
+		/[ \t]*processor[ \t]*/{
+			arr[++arr[0]] = ""
+		} {
+			i = index($0, ":")
+			k = substr($0, 1, i - 1)
+			v = substr($0, i + 1)
+			k = nx_trim_str(k)
+			v = nx_trim_str(v)
+			if (k ~ /^(flags|vmx flags|bugs)$/) {
+				gsub(/[ \t]/, "\x22,\x22", v)
+				v = "[\x22" v "\x22]"
+			} else {
+				v = "\x22" v "\x22"
+			}
+			arr[arr[0]] = nx_join_str(arr[arr[0]], "\x22" k "\x22:" v, ",")
+		} END {
+			for (i = 1; i <= arr[0]; ++i) {
+				if (i > 1)
+					s = s ","
+				s = s "{" arr[i] "}"
+			}
+			delete arr
+			nx_json("[" s "]", js, 2)
+			print nx_json_flatten(rt, js , num)
+			delete js
+		}
+	' /proc/cpuinfo
+)
+

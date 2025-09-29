@@ -24,3 +24,13 @@ nx_pod_exec()
 	"$G_NEX_CONTAINER" exec -it "$(nx_pod_id "$1")" sh
 }
 
+nx_pod_new()
+(
+	eval "$(nx_str_optarg ':c:d:' "$@")"
+	test -z "$d" && d="$HOME"
+	test -z "$c" && c="alpine"
+	tmpa="$(nx_io_noclobber -p "$d/$c")"
+	mkdir -p "$tmpa"
+	"$G_NEX_CONTAINER" export "$("$G_NEX_CONTAINER" create "$c")" | tar -x -C "$tmpa"
+)
+

@@ -1,22 +1,8 @@
-nx_ip_net()
+nx_hw_edid()
 {
-        ls --color=never -l '/sys/class/net/' | ${AWK:-$(nx_cmd_awk)} -v ex="$1" -F '/' '
-                BEGIN {
-                        if (ex == "-e")
-                                ex = "export "
-                        else
-                                ex = ""
-                        virt = ""
-                        phy = ""
-                }
-                /devices\/pci/{
-                        phy = phy " " $NF
-                }
-                /devices\/virtual/{
-                        virt = virt " " $NF
-                }
-                END {
-                        printf("%sG_NEX_NET_VIRT\x22=%s\x22\n%sG_NEX_NET_PHY=\x22%s\x22\n", ex, substr(virt, 2), ex, substr(phy, 2));
-                }
-        '
+	h_nx_cmd edid-decode || {
+		nx_io_printf -E "Cannot decode EDID: edid-decode not available or failed. Ensure it's installed and in PATH." 2>&1
+		return 1
+	}
+	cat /sys/class/drm/card*/edid | edid-decode
 }

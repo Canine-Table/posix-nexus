@@ -69,7 +69,6 @@ function! s:NxNeoVimInit()
 endfunction
 
 function! s:NxVimInit()
-
 	if empty(getenv('LOCALAPPDATA'))
 		let g:nx_data_path = g:nx_home_dir . '/.vim/'
 		let g:nx_config_path = g:nx_home_dir . '/.vim/'

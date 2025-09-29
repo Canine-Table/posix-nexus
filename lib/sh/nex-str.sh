@@ -69,34 +69,51 @@ nx_str_look()
 )
 
 nx_str_od()
-{
-	h_nx_cmd od && (
+(
+	h_nx_cmd od || {
+		nx_io_printf -E 'o no od was not found' 1>&2
+	}
+	tmpd=1
+	tmpe=1
+	test "$G_NEX_ASM_ENDIAN" -eq 1 && tmpa="big" || tmpa="little"
+	while test "$#" -gt 0; do
 		tmpb="$(nx_str_case -l "$1" | cut -d '-' -f 2)"
 		case "$tmpb" in
-			d|o|x) shift;;
-			*) tmpb="x";;
+			d|o|x) {
+				shift
+				h_nx_cmd wc && tmpc="$(printf '%s' "$1" | wc --bytes)" || tmpc=1024
+				printf '%s' "$1" | od \
+					--endian="$tmpa" \
+					--address-radix=none \
+					--format="${tmpb}1" \
+					--width="$tmpc" | ${AWK:-$(nx_cmd_awk)} \
+						-v num="$tmpd" \
+						-v fmt="$tmpb" \
+				"
+					$(nx_data_include -i "${NEXUS_LIB}/awk/nex-str.awk")
+				"'	BEGIN {
+						if (fmt == "o")
+							esc = "0"
+						else if (fmt == "x")
+							esc = "x"
+						esc = nx_append_str("\\\\", num, esc, 1)
+					} {
+						for (i = 1; i <= NF; ++i)
+							s = s esc $i
+					} END {
+						print s
+					}
+				'
+			};;
+			n) {
+				shift
+				tmpd=$(nx_int_natural "$1")
+				test "$tmpd" -gt 0 && tmpe="$tmpd" || tmpd="$tmpe"
+			};;
 		esac
-		h_nx_cmd wc && tmpc="$(printf '%s' "$@" | wc --bytes)" || tmpc=1024
-		test "$G_NEX_ASM_ENDIAN" -eq 1 && tmpa="big" || tmpa="little"
-		printf '%s' "$@" | od \
-			--endian="$tmpa" \
-			--address-radix=none \
-			--format="${tmpb}1" \
-			--width="$tmpc" | ${AWK:-$(nx_cmd_awk)} -v fmt="$tmpb" \
-		'	BEGIN {
-				if (fmt == "o")
-					esc = "\\0"
-				else if (fmt == "x")
-					esc = "\\x"
-			} {
-				for (i = 1; i <= NF; ++i)
-					s = s esc $i
-			} END {
-				print s
-			}
-		'
-	)
-}
+		shift
+	done
+)
 
 nx_str_optarg()
 {
@@ -240,4 +257,22 @@ nx_str_sfld()
 		}
 	'
 )
+
+nx_str_timestamp()
+{
+	while test "$#" -gt 0; do
+		case "$1" in
+			-a) date +"%Y-%m-%d %H:%M:%S %Z (%A)";;
+			-n) date +"%Y-%m-%d %H:%M:%S.%N";;
+			-u) date +"%Y-%m-%dT%H:%M:%SZ";;
+			-l) date +"%Y-%m-%dT%H:%M:%S%z";;
+			-s) date +"%b %d %H:%M:%S";;
+			-e) date +"%s";;
+			-f) date +"%Y%m%d_%H%M%S";;
+			-w) date +"%a_%Y%m%d_%H%M";;
+			-z) date +"%Y-%m-%d %H:%M:%S %Z";;
+		esac
+		shift
+	done
+}
 

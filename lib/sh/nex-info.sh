@@ -40,28 +40,44 @@ nx_info_os()
 	done
 }
 
+nx_info_file()
+(
+	while test "$#" -gt 0; do
+		tmpa="$(nx_info_path -p "$1")"
+		tmpb="$(nx_str_case -l "$(file "$tmpa")")"
+		printf '%s' "$tmpb" | ${AWK:-$(nx_cmd_awk)} '"^[ \t]*'"$tmpb"':[ \t]+(empty|ascii text|utf-8 unicode text|json|xml|script|source|text)" {exit 1}' || {
+		    printf '%s\n' "$tmpa"
+		}
+		shift
+	done
+)
+
 nx_info_list()
 (
 	eval "export $(nx_tty_all)"
-	trap "nx_io_fifo_mgr -r '$tmpc'" EXIT HUP TERM INT
 	tmpc="$(nx_io_fifo_mgr -c)"
+	trap "nx_io_fifo_mgr -r '$tmpc'" EXIT HUP TERM INT
 	while test "$#" -gt 0; do
-		tmpa="$(nx_info_path "$1")"
-		test -f "$tmpa" && {
-			nx_io_printf -I "$tmpa"
-			nx_io_printf -A "$(basename "$tmpa")"
-			nx_tty_div -s
-			cat "$tmpa" 2>/dev/null | tr -dc ' -~\n\t' | tee "$tmpc" &
-			file "$tmpa" | ${AWK:-$(nx_awk_cmd)} -F ':' '/[ \t]*empty[ \t]*$/{exit 1}' && {
-				nx_tty_div -d
-			} || printf '\n%s' "$(nx_tty_div -d)"
-		} | (test "$(($(cat "$tmpc" | wc -l) + 10))" -ge "$G_NEX_TTY_ROWS" && {
-			"$PAGER"
-			printf '%d' 1 > "$tmpc" &
-		} || {
-			tee
-			printf '%d' 0 > "$tmpc" &
-		})
+		tmpa="$(nx_info_file "$1")"
+		if test -f "$tmpa" -a -r "$tmpa" && ! ${AWK:-$(nx_cmd_awk)} '{if ($1 ~ /[ -~]+/ && $1 !~ /^[ \t]$/){exit 1}}' "$tmpa"; then
+			{
+				nx_io_printf -I "$tmpa"
+				nx_io_printf -A "$(basename "$tmpa")"
+				nx_tty_div -s
+				cat "$tmpa" 2>/dev/null | tr -dc ' -~\n\t' | tee "$tmpc" &
+				file "$tmpa" | ${AWK:-$(nx_awk_cmd)} -F ':' '/[ \t]*empty[ \t]*$/{exit 1}' && {
+					nx_tty_div -d
+				} || printf '\n%s' "$(nx_tty_div -d)"
+			} | (test "$(($(cat "$tmpc" | wc -l) + 10))" -ge "$G_NEX_TTY_ROWS" && {
+				"$PAGER"
+				printf '%d' 1 > "$tmpc" &
+			} || {
+				tee
+				printf '%d' 0 > "$tmpc" &
+			})
+		else
+			tmpa=""
+		fi
 		shift
 		test -f "$tmpa" && test "$(cat "$tmpc")" -eq 0 && nx_tty_hault
 	done

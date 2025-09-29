@@ -1,1 +1,349 @@
-\nxSections{Modelling}{1}
+\nxSections{Modeling}{1}
+
+\begin{NxLightListBox}[title={Data Modeling Principles}]
+    \nxEachItem{ArrowDark}{
+        {Data modeling is the method of documenting a software system using entity-relationship diagrams (ERDs).},
+        {ERDs represent data structures as tables, capturing the organization’s business requirements.},
+        {Data models serve as guides for database analysts and developers during system design and implementation.},
+        {They are used across multiple stages: conceptual, logical, and physical modeling.},
+        {A data model is a generalized, abstract blueprint for database design.},
+        {It is easier to modify a data model than a deployed database design.},
+        {Data models are ideal for resolving conceptual database problems before physical implementation.},
+        {The data model corresponds to the conceptual design phase of schema development.},
+        {Conceptual design defines entities, relationships, and constraints without concern for physical storage.},
+        {Logical and physical designs refine the model into schemas and actual database structures.}
+    }
+\end{NxLightListBox}
+
+\begin{NxLightBox}[title={Data Modeling Summary}]
+	\begin{tabularx}{\linewidth}{|l|X|}
+		\hline
+		\textbf{Aspect} & \textbf{Description} \\
+		\hline
+		Definition & Method for documenting a software system using ERDs to represent data structures \\
+		\hline
+		Purpose & Captures business requirements and guides database design and implementation \\
+		\hline
+		Stages & Conceptual, Logical, Physical \\
+		\hline
+		Conceptual Design & Abstract schema defining entities, relationships, and constraints \\
+		\hline
+		Logical Design & Refines conceptual model into database-specific schema (e.g., keys, types) \\
+		\hline
+		Physical Design & Implements schema in a DBMS with storage, indexing, and performance tuning \\
+		\hline
+		Flexibility & Easier to modify than physical database design \\
+		\hline
+		Tooling & Typically represented using ER diagrams (rectangles, diamonds, crow’s foot glyphs) \\
+		\hline
+		Role in Development & Used by analysts and developers to align schema with business logic \\
+		\hline
+	\end{tabularx}
+\end{NxLightBox}
+
+\nxSections{Diagrams}{2}
+\begin{NxLightListBox}[title={Conceptual, Logical, and Physical Diagrams}]
+    \nxEachItem{ArrowDark}{
+        {Conceptual diagrams define the high-level structure of the data—entities, relationships, and constraints—without concern for implementation.},
+        {They are abstract and business-focused, capturing what the data represents rather than how it is stored.},
+        {Logical diagrams refine the conceptual model into a schema with keys, data types, and normalization rules.},
+        {They are platform-independent and focus on relational structure, integrity constraints, and join logic.},
+        {Physical diagrams translate the logical schema into actual database structures—tables, indexes, partitions, and storage details.},
+        {They are platform-specific and include performance tuning, access paths, and physical storage formats.},
+        {Conceptual = What; Logical = How; Physical = Where and With What.},
+        {Together, these diagrams guide the full lifecycle of database design—from abstract glyph to deployed schema.}
+    }
+\end{NxLightListBox}
+
+\begin{NxLightBox}[title={Schema Design Comparison}]
+	\begin{tabularx}{\linewidth}{|l|X|X|X|}
+		\hline
+		\textbf{Aspect} & \textbf{Conceptual Diagram} & \textbf{Logical Diagram} & \textbf{Physical Diagram} \\
+		\hline
+		Purpose & Define entities and relationships abstractly & Refine structure with keys, types, and constraints & Implement schema with storage and performance details \\
+		\hline
+		Focus & Business rules and data meaning & Relational structure and normalization & Storage, indexing, and access paths \\
+		\hline
+		Audience & Business analysts, domain experts & Database designers, architects & DBAs, system engineers \\
+		\hline
+		Platform Dependency & Independent of technology & Independent of DBMS & Specific to DBMS (e.g., Oracle, PostgreSQL) \\
+		\hline
+		Includes & Entities, attributes, relationships, cardinality & Tables, keys, data types, constraints & Tablespaces, indexes, partitions, triggers \\
+		\hline
+		Notation & ER diagrams with rectangles and diamonds & Enhanced ER or relational schema diagrams & DBMS-specific diagrams or DDL scripts \\
+		\hline
+		Example Glyphs & \entity{Customer}, \relationship{Order}{Customer} & CUSTOMER(CustomerID PK, Name, Email) & CREATE TABLE CUSTOMER (...) WITH INDEX (...) \\
+		\hline
+		Modifiability & Easy to change and iterate & Moderately flexible & Harder to change once deployed \\
+		\hline
+	\end{tabularx}
+\end{NxLightBox}
+
+
+\begin{NxLightListBox}[title={From Conceptual to Physical: Schema Evolution}]
+    \nxEachItem{ArrowDark}{
+        {Conceptual diagrams define the abstract structure of the data—entities, relationships, and cardinality—without implementation details.},
+        {They may or may not include attributes; regular conceptual diagrams omit them, while extended conceptual diagrams include them.},
+        {Conceptual diagrams do not include primary keys, data types, or constraints—they are pure semantic glyphs.},
+        {Logical diagrams refine the conceptual model by adding attributes, keys, data types, and normalization rules.},
+        {Logical diagrams are platform-independent and focus on relational integrity and schema structure.},
+        {Physical diagrams translate the logical schema into DBMS-specific structures—tables, indexes, partitions, and storage formats.},
+        {Each stage builds upon the previous: Conceptual → Logical → Physical.},
+        {This progression allows designers to iterate abstractly before committing to implementation.},
+        {Conceptual diagrams are the mythic scrolls; logical diagrams are the registry emitters; physical diagrams are the deployed glyphs.}
+    }
+\end{NxLightListBox}
+
+\begin{NxLightBox}[title={Schema Design Stages}]
+	\begin{tabularx}{\linewidth}{|l|X|X|X|}
+		\hline
+		\textbf{Aspect} & \textbf{Conceptual Diagram} & \textbf{Logical Diagram} & \textbf{Physical Diagram} \\
+		\hline
+		Purpose & Abstract model of entities and relationships & Refined schema with keys, types, and constraints & Implemented schema with storage and performance details \\
+		\hline
+		Includes Attributes & Optional (only in extended conceptual) & Yes, with types and constraints & Yes, with storage formats and indexing \\
+		\hline
+		Includes Keys & No primary keys & Includes primary and foreign keys & Includes keys plus indexes and access paths \\
+		\hline
+		Platform Dependency & Independent of DBMS & Independent of DBMS & Specific to DBMS (e.g., Oracle, PostgreSQL) \\
+		\hline
+		Notation & ERD with rectangles and diamonds; optional ellipses for attributes & Enhanced ERD or relational schema diagrams & DBMS-specific diagrams or DDL scripts \\
+		\hline
+		Modifiability & Highly flexible and abstract & Moderately flexible & Harder to change once deployed \\
+		\hline
+		Design Phase & Conceptual design & Logical design & Physical design \\
+		\hline
+		Example Glyphs & \entity{Pet}, \relationship{Visit}{Pet} & PET(PetID PK, Species, Breed) & CREATE TABLE PET (...) WITH INDEX (...) \\
+		\hline
+	\end{tabularx}
+\end{NxLightBox}
+
+\nxSections{Entity-Relationship Model}{2}
+\begin{NxLightListBox}[title={Entity-Relationship (E-R) Model}]
+    \nxEachItem{ArrowDark}{
+        {The E-R model is a conceptual framework for designing and visualizing database schemas.},
+        {It uses graphical symbols—rectangles for entities, diamonds for relationships, ellipses for attributes—to represent data structures.},
+        {The original E-R model was introduced by Peter Chen in 1976.},
+        {Chen’s model focused on entities, relationships, and attributes, forming the foundation of conceptual schema design.},
+        {Later extensions introduced subtypes, inheritance, and specialization—forming the extended E-R model.},
+        {The extended E-R model includes additional constructs like generalization, aggregation, and category relationships.},
+        {In this course, the term “E-R model” refers to the extended version.},
+        {E-R diagrams are used to create conceptual schemas before logical and physical design.},
+        {They are ideal for capturing business rules, data meaning, and relational structure.}
+    }
+\end{NxLightListBox}
+
+\begin{NxLightBox}[title={E-R Model Versions}]
+	\begin{tabularx}{\linewidth}{|l|X|X|}
+		\hline
+		\textbf{Version} & \textbf{Features} & \textbf{Introduced By} \\
+		\hline
+		Original E-R Model & Entities, relationships, attributes; basic conceptual schema & \href{https://dspace.mit.edu/bitstream/handle/1721.1/47432/entityrelationshx00chen.pdf}{Peter Chen (1976)} \\
+		\hline
+		Extended E-R Model & Subtypes, inheritance, generalization, aggregation, categories & Later extensions to Chen’s model \\
+		\hline
+		Course Usage & Refers to the extended E-R model & Adopted in modern database design curricula \\
+		\hline
+	\end{tabularx}
+\end{NxLightBox}
+
+\begin{NxLightBox}[title={Crow’s Foot Notation}]
+	\begin{tabularx}{\linewidth}{|l|X|X|}
+		\hline
+		\textbf{Symbol} & \textbf{Meaning} & \textbf{Numeric Meaning} \\
+		\hline
+		\tikz\draw[/nx/crowsfoot={}{nn}] (0,0) -- (1,0); & Mandatory-One & Exactly-One \\
+		\hline
+		\tikz\draw[/nx/crowsfoot={}{pp}] (0,0) -- (1,0); & Optional-Many & Zero or more \\
+		\hline
+		\tikz\draw[/nx/crowsfoot={}{mm}] (0,0) -- (1,0); & Mandatory-Many & One or More \\
+		\hline
+		\tikz\draw[/nx/crowsfoot={}{oo}] (0,0) -- (1,0); & Optional-One & Zero or one \\
+		\hline
+	\end{tabularx}
+\end{NxLightBox}
+
+\nxSections{Two Versions of a 1:N O-M Relationship}{2}
+\begin{tikzpicture}
+	\node (nodeAb) [process] {DEPARTMENT}
+		node (nodeBb) [decision, right=of nodeAb] {1:N}
+		node[below of=nodeBb] {\nxLnArcBox{(a) Original E-R Model Version}}
+		node (nodeCb) [process, right=of nodeBb] {EMPLOYEE};
+		\draw[/nx/crowsfoot={oo}{}] (nodeAb) -- (nodeBb);
+		\draw[/nx/crowsfoot={}{nn}](nodeBb) -- (nodeCb);
+\end{tikzpicture}
+\bigskip
+
+\begin{tikzpicture}[>=Stealth]
+	\node[process] (nodeAa) {DEPARTMENT} node[right=of nodeAa, process, xshift=4cm] (nodeAb) {EMPLOYEE};
+
+	% Dashed line only (no decoration)
+	\draw[dashed, dash pattern=on 2pt off 1pt] (nodeAa) -- (nodeAb);
+
+	% Crow’s foot glyph only (invisible line, but decoration visible)
+	\draw[/nx/crowsfoot={oo}{nn}, draw=none] (nodeAa) -- (nodeAb);
+
+	% Node overlays (not affected by dashed)
+	\node[below, yshift=-1cm, process, fill=teal!20] (nodeAc) at ($(nodeAa)!0.5!(nodeAb)$) {Minimum cardinality (0-M)};
+	\node[process, fill=teal!20, above, yshift=1cm] (nodeAd) at ($(nodeAa)!0.5!(nodeAb)$) {Maximum cardinality (N:M)};
+	\node[below=of nodeAc] {\nxLnArcBox{(b) Crow's Foot Version}};
+
+	\draw ([xshift=-2.3mm, yshift=-2mm]nodeAb.west)[<-, bend left, shorten <= 2pt] to (nodeAc);
+	\draw ([xshift=3mm]nodeAa.east)[<-, shorten <= 4pt] to (nodeAc);
+	\draw ([xshift=0.1mm]nodeAa.east)[<-, bend right, shorten <= 7pt] to ([xshift=1mm]nodeAd.south west);
+	\draw(nodeAb.west) [<-, bend left, shorten <= 7pt] to ([xshift=-1mm]nodeAd.south east);
+\end{tikzpicture}
+
+\begin{comment}
+\begin{NxLightBox}[title={}]
+\end{NxLightBox}
+\begin{NxLightBox}[title={}]
+\end{NxLightBox}
+\begin{NxLightBox}[title={}]
+\end{NxLightBox}
+\begin{NxLightBox}[title={}]
+\end{NxLightBox}
+\begin{NxLightBox}[title={}]
+\end{NxLightBox}
+\begin{NxLightBox}[title={}]
+\end{NxLightBox}
+\begin{NxLightBox}[title={}]
+\end{NxLightBox}
+\begin{NxLightBox}[title={}]
+\end{NxLightBox}
+\begin{NxLightBox}[title={}]
+\end{NxLightBox}
+\begin{NxLightBox}[title={}]
+\end{NxLightBox}
+\begin{NxLightBox}[title={}]
+\end{NxLightBox}
+\begin{NxLightBox}[title={}]
+\end{NxLightBox}
+\begin{NxLightBox}[title={}]
+\end{NxLightBox}
+\begin{NxLightBox}[title={}]
+\end{NxLightBox}
+\begin{NxLightBox}[title={}]
+\end{NxLightBox}
+\begin{NxLightBox}[title={}]
+\end{NxLightBox}
+\begin{NxLightBox}[title={}]
+\end{NxLightBox}
+\begin{NxLightBox}[title={}]
+\end{NxLightBox}
+\begin{NxLightBox}[title={}]
+\end{NxLightBox}
+\begin{NxLightBox}[title={}]
+\end{NxLightBox}
+
+\nxSections{MySQL Datatypes}{2}
+
+\begin{NxLightBox}[title={Business Rules (3) - Characteristics}]
+	\begin{tabularx}{\textwidth}{|l|X|}
+		\hline
+		\textbf{Characteristic} & \textbf{Explanation} \\
+		\hline
+		Declarative & A business rule is a statement of policy and describes what a process validates but does not describe how a policy is enforced or conducted or its implementation. \\
+		Precise & A rule must have only one interpretation among all interested people, and its meaning must be clear. \\
+		Atomic & A rule is indivisible, yet sufficient. \\
+		Consistent & A business rule must be internally and externally consistent. \\
+		Expressible & A business rule must be able to be stated in natural language without misinterpretation. \\
+		Distinct & Business rules are not redundant, but a business rule may refer to other rules. \\
+		\hline
+	\end{tabularx}
+\end{NxLightBox}
+
+\begin{NxLightBox}[title={Numeric Data Types}]
+ 	\begin{tabularx}{\textwidth}{|l|X|}
+		\hline
+		\textbf{Data Type} & \textbf{Description} \\
+		\hline
+		BIT(M) & M = 1 to 64 bits. \\
+		TINYINT & Range: −128 to 127. \\
+		TINYINT UNSIGNED & Range: 0 to 255. \\
+		BOOLEAN & 0 = FALSE; 1 = TRUE. Synonym for TINYINT(1). \\
+		SMALLINT & Range: −32,768 to 32,767. \\
+		SMALLINT UNSIGNED & Range: 0 to 65,535. \\
+		MEDIUMINT & Range: −8,388,608 to 8,388,607. \\
+		MEDIUMINT UNSIGNED & Range: 0 to 16,777,215. \\
+		INT or INTEGER & Range: −2,147,483,648 to 2,147,483,647. \\
+		INT UNSIGNED & Range: 0 to 4,294,967,295. \\
+		BIGINT & Range: −9,223,372,036,854,775,808 to 9,223,372,036,854,775,807. \\
+		BIGINT UNSIGNED & Range: 0 to 1,844,674,073,709,551,615. \\
+		FLOAT(p) & Precision p = 0 to 53. \\
+		FLOAT or REAL(M,D) & Single-precision 4-byte float. M = display width, D = digits after decimal. \\
+		DOUBLE(M,D) & Double-precision 8-byte float. M = display width, D = digits after decimal. \\
+		\hline
+	\end{tabularx}
+\end{NxLightBox}
+
+\begin{NxLightBox}[title={MySQL Date and Time Data Types}]
+	\begin{tabularx}{\textwidth}{|l|X|}
+		\hline
+		\textbf{Data Type} & \textbf{Description} \\
+		\hline
+		DATE & Format: YYYY-MM-DD. Range: 1000-01-01 to 9999-12-31. \\
+		DATETIME & Format: YYYY-MM-DD HH:MM:SS. Full timestamp range. \\
+		TIMESTAMP & Range: 1970-01-01 00:00:01 to 2038-01-19 03:14:07. \\
+		TIME & Format: HH:MM:SS. Range: −838:59:59 to 838:59:59. \\
+		YEAR(M) & Range: 1901 to 2155. \\
+		\hline
+	\end{tabularx}
+\end{NxLightBox}
+
+\begin{NxLightBox}[title={MySQL String Data Types}]
+	\begin{tabularx}{\textwidth}{|l|X|}
+		\hline
+		\textbf{Data Type} & \textbf{Description} \\
+		\hline
+		CHAR(M) & Fixed-length string. M = 0 to 255 bytes. \\
+		VARCHAR(M) & Variable-length string. M = 0 to 65,535 bytes. \\
+		BLOB(M) & Binary Large Object. Max: 65,535 characters. \\
+		TEXT(M) & Text string. Max: 65,535 characters. \\
+		TINYBLOB / TINYTEXT & See documentation. \\
+		MEDIUMBLOB / MEDIUMTEXT & See documentation. \\
+		LONGBLOB / LONGTEXT & See documentation. \\
+		ENUM('v1', 'v2', ...) & One value chosen from list. \\
+		SET('v1', 'v2', ...) & Zero or more values chosen from list. \\
+		\hline
+	\end{tabularx}
+\end{NxLightBox}
+
+\begin{center}
+\begin{tikzpicture}
+	\node (memberA) at (0,0) {
+		\begin{NxLightListBox}[%
+				width=\linewidth/3,%
+				title={MemberNumber}%
+		]
+			\nxEachItem{ArrowDark}{
+				{MemberName},
+				{Phone},
+				{EmailAddress}
+			}
+		\end{NxLightListBox}
+	};
+	\node[right of=memberA, xshift=\linewidth/2] (uniformA) {
+		\begin{NxLightListBox}[%
+				width=\linewidth/3,%
+				title={MemberNumber}%
+		]
+			\nxEachItem{ArrowDark}{
+				{Sport},
+				{UniformType},
+				{UniformSize},
+				{UniformNumber},
+				{MemberNumber (FK)}
+			}
+		\end{NxLightListBox}
+	};
+
+	\node[above of=uniformA, yshift=2.5cm] {\nxLnArcBox{CLUB\_UNIFORM}};
+	\node[above of=memberA, yshift=1cm] {\nxLnArcBox{CLUB\_MEMBER}};
+\draw[/nx/crowsfoot={mo}{mo}] (memberA) -- (uniformA); %^node[midway, below, yshift=-3.5cm]{(b) Placing a primary Key of the Parent in the Child is a Foreign Key};
+	%\draw[optionalOne] (uniformA) -- (memberA);
+\end{tikzpicture}
+
+ds\end{center}
+\end{comment}
+

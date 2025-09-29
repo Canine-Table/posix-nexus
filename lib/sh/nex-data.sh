@@ -143,3 +143,35 @@ nx_data_entries()
 	'
 }
 
+nx_data_uniq()
+(
+	eval "$(nx_str_optarg ':f:i:' "$@")"
+	${AWK:-$(nx_cmd_awk)} -v fl="$f" -v inpt="$i" \
+	"
+		$(nx_data_include -i "${NEXUS_LIB}/awk/nex-struct.awk")
+	"'
+		BEGIN {
+			lns[0] = 0
+			if (i = split(fl, fls, "<nx:null/>")) {
+				do {
+					while ((getline fl < fls[i]) > 0) {
+						if (! (fl in lns))
+							nx_bijective(lns, ++lns[0], fl)
+					}
+				} while (--i > 0)
+			}
+			if (i = split(inpt, fls, "\n|<nx:null/>")) {
+				do {
+					if (! (fls[i] in lns))
+						nx_bijective(lns, ++lns[0], fls[i])
+				} while (--i > 0)
+			}
+			delete fls
+			do {
+				print lns[lns[0]]
+			} while (--lns[0] > 0)
+			delete lns
+		}
+	'
+)
+

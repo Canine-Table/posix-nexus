@@ -1,55 +1,71 @@
 \makeatletter
+
+\def\nx@optionalMany{pp}
+\def\nx@optionalOne{oo}
+\def\nx@mandatoryMany{mm}
+\def\nx@mandatoryOne{nn}
+\def\nx@true{1}
+\def\nx@false{0}
+\def\nx@default{ ~}%
+
+\def\nx@crowsfootmm#1#2{%
+	\ifx#1\nx@mandatoryMany%
+		\ifx#2\nx@true%
+			\draw[thick] (-0.3,0) -- (0.0,0.2)
+				(-0.3,0) -- (0.0,-0.2)
+				(-0.3,0.2) -- (-0.3,-0.2);
+		\else\ifx#2\nx@false%
+			\draw[thick]
+				(0.3,0) -- (0.0,0.2)
+				(0.3,0) -- (0.0,-0.2)
+				(0.3,0.2) -- (0.3,-0.2);
+		\fi\fi%
+	\fi%
+}
+
+\def\nx@crowsfootnn#1#2{%
+	\ifx#1\nx@mandatoryOne%
+		\ifx#2\nx@true%
+			\draw[thick] (-0.2,0.2) -- (-0.2,-0.2)
+				(-0.1,0.2) -- (-0.1,-0.2);
+		\else\ifx#2\nx@false%
+			\draw[thick] (0.2,0.2) -- (0.2,-0.2)
+				(0.1,0.2) -- (0.1,-0.2);
+		\fi\fi%
+	\fi%
+}
+
+\def\nx@crowsfootpp#1#2{%
+	\ifx#1\nx@optionalMany%
+		\ifx#2\nx@true%
+			\draw[thick, fill=white]
+				(-0.4,0) circle[radius=1mm]
+				(-0.3,0) -- (0.0,0.2)
+				(-0.3,0) -- (0.0,-0.2);
+		\else\ifx#2\nx@false%
+			\draw[thick, fill=white]
+				(0.4,0) circle[radius=1mm]
+				(0.3,0) -- (0.0,0.2)
+				(0.3,0) -- (0.0,-0.2);
+		\fi\fi%
+	\fi%
+}
+
+\def\nx@crowsfootoo#1#2{%
+	\ifx#1\nx@optionalOne%
+		\ifx#2\nx@true%
+			\draw[thick, fill=white]
+				(-0.3,0) circle[radius=1mm] (-0.3,-0.2)
+				(-0.1,0.2) -- (-0.1,-0.2);
+		\else\ifx#2\nx@false%
+			\draw[thick, fill=white]
+				(0.3,0) circle[radius=1mm] (0.3,-0.2)
+				(0.1,0.2) -- (0.1,-0.2);
+		\fi\fi%
+	\fi%
+}
+
 \tikzset{%
-	mandatoryMany/.style={
-		postaction={
-			decorate,
-			decoration={markings,
-				mark=at position 1 with {
-						\draw[thick] (-0.3,0) -- (0.0,0.2) (-0.3,0) -- (0.0,-0.2) (-0.3,0.2) -- (-0.3,-0.2);
-				}
-			}
-		}
-	},
-	mandatoryOne/.style={
-		postaction={
-			decorate,
-			decoration={markings,
-				mark=at position 1 with {
-						\draw[thick] (-0.2,0.2) -- (-0.2,-0.2)  (-0.1,0.2) -- (-0.1,-0.2);
-				}
-			}
-		}
-	},
-	optionalMany/.style={
-		postaction={
-			decorate,
-			decoration={markings,
-				mark=at position 1 with {
-					\draw[thick, fill=white] (-0.4,0) circle[radius=1mm] (-0.3,0) -- (0.0,0.2) (-0.3,0) -- (0.0,-0.2);
-				}
-			}
-		}
-	},
-	optionalOne/.style={
-		postaction={
-			decorate,
-			decoration={markings,
-				mark=at position 1 with {
-					\draw[thick, fill=white] (-0.3,0) circle[radius=1mm] (-0.3,-0.2) (-0.1,0.2) -- (-0.1,-0.2);
-				}
-			}
-		}
-	},
-	crowsfoot/.style={
-		postaction={
-			decorate, 
-			decoration={markings,
-				mark=at position 1 with {
-						\draw[thick] (-0.3,0) -- (0.0,0.2) (-0.3,0) -- (0.0,-0.2);
-				}
-			}
-		}
-	},
 	line/.style={%
 		draw,%
 		-{Latex}%
@@ -104,8 +120,24 @@
 		right,%
 		font=\scriptsize\bfseries%
 	},%
-	nx/.cd,%
-  logic gates/.cd,%
+	/nx/.cd,%
+	dash/.style={%
+		thick,%
+		dashed,%
+		dash pattern=on 2pt off 1pt%
+	},%
+	crowsfoot/.style n args={2}{%
+			postaction={%
+				decorate,%
+				decoration={%
+					markings,%
+					mark=at position 0 with {\pgfextra{\expandafter\csname nx@crowsfoot#1\endcsname{#1}{\nx@false}}},%
+					mark=at position 1 with {\pgfextra{\expandafter\csname nx@crowsfoot#2\endcsname{#2}{\nx@true}}}%
+			}
+		}
+	},
+	/nx/.cd
+	logic gates/.cd,%
 	and/.style={%
 			and port,%
 			logic gate inputs={#1},%
@@ -146,15 +178,6 @@
 		fill=red!10%
 	}%
 }
-
-\begin{comment}
-\ctikzset{%
-	logic ports/scale=1.2,%
-	logic ports/label/.style={font=\small\ttfamily},%
-	logic ports/input anchors=1,2,%
-	logic ports/output anchor=out%
-}
-\end{comment}
 
 \long\def\nxCoverPage[#1]{%
 	\pgfkeys{%
@@ -201,12 +224,14 @@
 		\node[below=of author, text=nex.primary.text] (link) {\nxSFont{24pt} \href{\nx@link}{\bf \nx@ref}};
 	\end{tikzpicture}
 	\newpage
-	\begin{tcolorbox}[nxCol=light, sdwA]
-		\begin{tcolorbox}[nxCol=light, title={\bf Abstract}, hdrD, sdwA]
-			\nx@abstract
+	\expandafter\ifx\nx@abstract\relax\else
+		\begin{tcolorbox}[nxCol=light, sdwA]
+			\begin{tcolorbox}[nxCol=light, title={\bf \nx@Abstract}, hdrD, sdwA]
+				\nx@abstract
+			\end{tcolorbox}
 		\end{tcolorbox}
-	\end{tcolorbox}
-	\bigskip
+		\bigskip
+	\fi
 }
 
 \def\nxSnowFade{%
@@ -223,6 +248,13 @@
 	}
 }
 
+\begin{comment}
+\ctikzset{%
+	logic ports/scale=1.2,%
+	logic ports/label/.style={font=\small\ttfamily},%
+	logic ports/input anchors=1,2,%
+	logic ports/output anchor=out%
+}
 \pgfarrowsdeclare{crowsfoot}{crowsfoot}
 {
 	\pgfarrowsleftextend{-2pt}
@@ -240,4 +272,6 @@
 	\pgfpathlineto{\pgfpoint{6pt}{-2pt}}
 	\pgfarrowsdrawline
 }
+\end{comment}
+
 \makeatother

@@ -1,5 +1,3 @@
-
-
 g_nx_ssl_ecparam()
 {
 	h_nx_cmd openssl && openssl ecparam -list_curves | ${AWK:-$(nx_cmd_awk)} '
