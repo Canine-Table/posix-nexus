@@ -352,6 +352,17 @@
 
 \newtcbox{\nxLnBox}[1][]{nxLn, #1}
 \newtcbox{\nxLnArcBox}[1][]{nxLn, nxLnArc, #1}
+\long\def\nxArcBox[#1]#2{%
+	\tcbox[%
+		leftright skip=1cm,%
+		boxrule=0.5pt,%
+		enhanced,%
+		breakable,%
+		halign=center,%
+		valign=center,%
+		IFBlankF{#1}{#1}%
+	]{\pbox[c]{\textwidth}{#2}}%
+}
 
 \makeatletter
 

@@ -6,19 +6,20 @@
 \def\nx@mandatoryOne{nn}
 \def\nx@true{1}
 \def\nx@false{0}
-\def\nx@default{ ~}%
 
 \def\nx@crowsfootmm#1#2{%
 	\ifx#1\nx@mandatoryMany%
 		\ifx#2\nx@true%
-			\draw[thick] (-0.3,0) -- (0.0,0.2)
-				(-0.3,0) -- (0.0,-0.2)
-				(-0.3,0.2) -- (-0.3,-0.2);
+			\draw[thick] (-0.2,0) -- (0.0,0.1)
+				(-0.2,0) -- (0.0,-0.1)
+				(-0.2,0.0) -- (0,0)
+				(-0.2,0.1) -- (-0.2,-0.1);
 		\else\ifx#2\nx@false%
 			\draw[thick]
-				(0.3,0) -- (0.0,0.2)
-				(0.3,0) -- (0.0,-0.2)
-				(0.3,0.2) -- (0.3,-0.2);
+				(0, -0.1) -- (0.2, -0)
+				(0, 0.1) -- (0.2, -0)
+				(0.2, 0) -- (0, 0)
+				(0.2, -0.1) -- (0.2, 0.1);
 		\fi\fi%
 	\fi%
 }
@@ -26,11 +27,13 @@
 \def\nx@crowsfootnn#1#2{%
 	\ifx#1\nx@mandatoryOne%
 		\ifx#2\nx@true%
-			\draw[thick] (-0.2,0.2) -- (-0.2,-0.2)
-				(-0.1,0.2) -- (-0.1,-0.2);
+			\draw[thick] (-0.15,0.1) -- (-0.15,-0.1)
+				(-0.14, 0) -- (0, 0)
+				(-0.1,0.1) -- (-0.1,-0.1);
 		\else\ifx#2\nx@false%
-			\draw[thick] (0.2,0.2) -- (0.2,-0.2)
-				(0.1,0.2) -- (0.1,-0.2);
+			\draw[thick] (0.15,0.1) -- (0.15,-0.1)
+				(0.14, 0) -- (0, 0)
+				(0.1,0.1) -- (0.1,-0.1);
 		\fi\fi%
 	\fi%
 }
@@ -39,14 +42,16 @@
 	\ifx#1\nx@optionalMany%
 		\ifx#2\nx@true%
 			\draw[thick, fill=white]
-				(-0.4,0) circle[radius=1mm]
-				(-0.3,0) -- (0.0,0.2)
-				(-0.3,0) -- (0.0,-0.2);
+				(0, 0.1) -- (-0.2, 0)
+				(-0.3, 0) circle[radius=0.8mm]
+				(0, -0.1) -- (-0.2, 0)
+				(-0.23, 0) -- (0, 0);
 		\else\ifx#2\nx@false%
 			\draw[thick, fill=white]
-				(0.4,0) circle[radius=1mm]
-				(0.3,0) -- (0.0,0.2)
-				(0.3,0) -- (0.0,-0.2);
+				(0, -0.1) -- (0.2, 0)
+				(0.3, 0) circle[radius=0.8mm]
+				(0, 0.1) -- (0.2, 0)
+				(0.23, 0) -- (0, 0);
 		\fi\fi%
 	\fi%
 }
@@ -55,12 +60,14 @@
 	\ifx#1\nx@optionalOne%
 		\ifx#2\nx@true%
 			\draw[thick, fill=white]
-				(-0.3,0) circle[radius=1mm] (-0.3,-0.2)
-				(-0.1,0.2) -- (-0.1,-0.2);
+				(-0.16, 0) -- (0, 0)
+				(-0.25,0) circle[radius=1mm] (-0.25,-0.2)
+				(-0.1,0.1) -- (-0.1,-0.1);
 		\else\ifx#2\nx@false%
 			\draw[thick, fill=white]
-				(0.3,0) circle[radius=1mm] (0.3,-0.2)
-				(0.1,0.2) -- (0.1,-0.2);
+				(0.16, 0) -- (0, 0)
+				(0.25, 0) circle[radius=1mm] (0.25, -0.2)
+				(0.1,0.1) -- (0.1, -0.1);
 		\fi\fi%
 	\fi%
 }
@@ -133,11 +140,14 @@
 					markings,%
 					mark=at position 0 with {\pgfextra{\expandafter\csname nx@crowsfoot#1\endcsname{#1}{\nx@false}}},%
 					mark=at position 1 with {\pgfextra{\expandafter\csname nx@crowsfoot#2\endcsname{#2}{\nx@true}}}%
-			}
-		}
-	},
-	/nx/.cd
-	logic gates/.cd,%
+			}%
+		}%
+	},%
+	/nx/lbl/.cd,%
+	above/.style={%
+		above left=-2mm of #1.north%
+	},%
+	/nx/logic gates/.cd,%
 	and/.style={%
 			and port,%
 			logic gate inputs={#1},%

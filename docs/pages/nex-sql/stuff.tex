@@ -1,0 +1,43 @@
+\begin{tikzpicture}[line width=1pt]
+	\begin{scope}[%
+		level distance=2cm%
+		] \node[process] (employeeA) at (0,0) {EMPLOYEE} child {
+			node[startstop, above=of employeeA.north] {Phone}
+		} child {
+			node[startstop, above right=of employeeA.south east] (nameA) {EmployeeName}
+		} child {
+			node[startstop, above left=of employeeA.south west] {EmailAddress}
+		} child {
+			node[startstop, below=of employeeA.south] (numberA) {EmployeeNumber}
+		} child {
+			node[startstop, below left=of employeeA.north west] {HireDate}
+		} child {
+			node[startstop, below right=of employeeA.north east] {ReviewDate}
+		};
+	\end{scope}
+	\node[right=1cm of nameA.east] (employeeB) {
+		\begin{NxLightBox}[%
+			width=0.3\linewidth,%
+			title={EmployeeNumber}%
+		]
+			\begin{tabularx}{\linewidth}{|X|}
+				\hline
+				EmployeeName \\
+				\hline
+				Phone \\
+				\hline
+				EmployeeAddress \\
+				\hline
+				HireDate \\
+				\hline
+				ReviewDate \\
+				\hline
+			\end{tabularx}
+		\end{NxLightBox}
+	};
+	\node[above left=-1mm of employeeB.north] {EMPLOYEE};
+	\node[below=5mm of employeeB.south] {\nxLnArcBox{(a) Attributes in Elipses}};
+	\node[below=5mm of numberA.south] {\nxLnArcBox{(b) Attributes in Rectangle}};
+\end{tikzpicture}
+
+

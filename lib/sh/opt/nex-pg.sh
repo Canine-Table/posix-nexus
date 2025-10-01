@@ -135,3 +135,19 @@ nx_pg_cf()
 	__nx_pg_exec "$@" -c "$(nx_str_od -x "COPY my_table FROM '/path/to/file.csv' WITH (FORMAT csv, HEADER);")"
 )
 
+s_nx_pg_fn()
+{
+	__nx_pg_exec "$@" -c "$(nx_str_od -x "
+		SELECT
+		  n.nspname AS schema,
+		  p.proname AS function_name,
+		  pg_catalog.pg_get_function_result(p.oid) AS return_type,
+		  pg_catalog.pg_get_function_arguments(p.oid) AS arguments,
+		  p.prokind AS kind, -- 'f' = function, 'p' = procedure, 'a' = aggregate
+		  p.prosrc AS source_code
+		FROM pg_catalog.pg_proc p
+		JOIN pg_catalog.pg_namespace n ON n.oid = p.pronamespace
+		WHERE pg_catalog.pg_function_is_visible(p.oid);
+	")"
+}
+

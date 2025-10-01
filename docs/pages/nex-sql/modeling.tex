@@ -193,8 +193,214 @@
 	\draw ([xshift=0.1mm]nodeAa.east)[<-, bend right, shorten <= 7pt] to ([xshift=1mm]nodeAd.south west);
 	\draw(nodeAb.west) [<-, bend left, shorten <= 7pt] to ([xshift=-1mm]nodeAd.south east);
 \end{tikzpicture}
+ 
+\nxSections{Example of ID-Dependent Entities}{3}
 
-\begin{comment}
+\begin{tikzpicture}[every node/.style={scale=0.9}]
+	\node (nodeAa) {
+		\begin{NxLightBox}[width=0.35\linewidth, title={BuildingName}]
+			\begin{tabularx}{\linewidth}{|X|}
+				\hline
+				Street \\
+				\hline
+				City \\
+				\hline
+			State/Province \\
+				\hline
+				ZIP/PostalCode \\
+				\hline
+			\end{tabularx}
+		\end{NxLightBox}
+	} node[below=of nodeAa, yshift=-2cm] (nodeAb) {
+		\begin{NxLightBox}[width=0.35\linewidth, title={
+			\begin{tabularx}{\linewidth}{|X|}
+				\hline
+				BuildingName \\
+				\hline
+				ApartmentNumber \\
+				\hline
+			\end{tabularx}
+		}]
+			\begin{tabularx}{\linewidth}{|X|}
+				\hline
+				NumberBedrooms \\
+				\hline
+				NumberBaths \\
+				\hline
+				MonthlyRent \\
+				\hline
+			\end{tabularx}
+		\end{NxLightBox}
+	};
+
+	\node[right=of nodeAa, xshift=-1cm] (nodeBa) {
+		\begin{NxLightBox}[width=0.35\linewidth, title={PaintingName}]
+			\begin{tabularx}{\linewidth}{|X|}
+				\hline
+				Description \\
+				\hline
+				Dimensions \\
+				\hline
+				Year \\
+				\hline
+				Artist \\
+				\hline
+			\end{tabularx}
+		\end{NxLightBox}
+	} node[below=of nodeBa, yshift=-2cm] (nodeBb) {
+		\begin{NxLightBox}[width=0.35\linewidth, title={
+			\begin{tabularx}{\linewidth}{|X|}
+				\hline
+				PaintingName \\
+				\hline
+				CopyNumber \\
+				\hline
+			\end{tabularx}
+		}]
+			\begin{tabularx}{\linewidth}{|X|}
+				\hline
+				Conditiion \\
+				\hline
+				PurchasePrice \\
+				\hline
+				DatePurchased \\
+				\hline
+			\end{tabularx}
+		\end{NxLightBox}
+	};
+
+	\node[right=of nodeBa, xshift=-1cm] (nodeCa) {
+		\begin{NxLightBox}[width=0.3\linewidth, title={PatientName}]
+			\begin{tabularx}{\linewidth}{|X|}
+				\hline
+				Phone \\
+				\hline
+				EmailAdress \\
+				\hline
+			\end{tabularx}
+		\end{NxLightBox}
+	} node[below=of nodeCa, yshift=-3cm] (nodeCb) {
+		\begin{NxLightBox}[width=0.3\linewidth, title={
+			\begin{tabularx}{\linewidth}{|X|}
+				\hline
+				PatientName \\
+				\hline
+				ExamDate \\
+				\hline
+			\end{tabularx}
+		}]
+			\begin{tabularx}{\linewidth}{|X|}
+				\hline
+				Weight \\
+				\hline
+				Height \\
+				\hline
+				BloodPressure \\
+				\hline
+			\end{tabularx}
+		\end{NxLightBox}
+	};
+
+	\node[/nx/lbl/above={nodeAa}] {BUILDING}
+		node[/nx/lbl/above={nodeBa}] {PAINTING}
+		node[/nx/lbl/above={nodeCa}] {PATIENT};
+
+	\node[/nx/lbl/above={nodeAb}] {APARTMENT}
+		node[below=-1mm of nodeAb] {\nxArcBox[]{(a) APARTMENT is\\ID-Dependent\\on BUILDING}}
+		node[/nx/lbl/above={nodeBb}] {PRINT}
+		node[below=-1mm of nodeBb] {\nxArcBox[]{(b) PRINT is\\ID-Dependent\\on PAINTING}}
+		node[/nx/lbl/above={nodeCb}] {EXAM}
+		node[below=-1mm of nodeCb] {\nxArcBox[]{(c) EXAM is\\ID-Dependent\\on PATIENT}};
+
+		\begin{scope}[shft/.style={xshift=-2cm}]
+			\draw[/nx/crowsfoot={nn}{pp}] ([shft]nodeAa.south east) -- ([shft]nodeAb.north east);
+			\draw[/nx/crowsfoot={nn}{pp}] ([shft]nodeBa.south east) -- ([shft]nodeBb.north east);
+			\draw[/nx/crowsfoot={nn}{mm}] ([shft]nodeCa.south east) -- ([shft]nodeCb.north east);
+	\end{scope}
+\end{tikzpicture}
+
+\nxSections{Non-ID-Dependent Weak Entities}{3}
+\begin{center}
+\begin{tikzpicture}[every node/.style={scale=0.9}]
+	\node (nodeAa) {
+		\begin{NxLightBox}[width=0.35\linewidth, title={
+			\begin{tabularx}{\linewidth}{|X|}
+				\hline
+				Manufacturor \\
+				\hline
+				Model \\
+				\hline
+			\end{tabularx}
+			}]
+			\begin{tabularx}{\linewidth}{|X|}
+				\hline
+				Descriotion \\
+				\hline
+				NumberOfPassengers \\
+				\hline
+				EngineType \\
+				\hline
+				RatedMPG \\
+				\hline
+			\end{tabularx}
+		\end{NxLightBox}
+	} node[below left=-1cm of nodeAa, yshift=-2cm] (nodeAb) {
+		\begin{NxLightBox}[width=0.35\linewidth, title={
+			\begin{tabularx}{\linewidth}{|X|}
+				\hline
+				BuildingName \\
+				\hline
+				ApartmentNumber \\
+				\hline
+			\end{tabularx}
+		}]
+			\begin{tabularx}{\linewidth}{|X|}
+				\hline
+				NumberBedrooms \\
+				\hline
+				NumberBaths \\
+				\hline
+				MonthlyRent \\
+				\hline
+			\end{tabularx}
+		\end{NxLightBox}
+	} node[below right=-1cm of nodeAa, yshift=-2cm] (nodeAc) {
+		\begin{NxLightBox}[width=0.35\linewidth, title={
+			\begin{tabularx}{\linewidth}{|X|}
+				\hline
+				BuildingName \\
+				\hline
+				ApartmentNumber \\
+				\hline
+			\end{tabularx}
+		}]
+			\begin{tabularx}{\linewidth}{|X|}
+				\hline
+				NumberBedrooms \\
+				\hline
+				NumberBaths \\
+				\hline
+				MonthlyRent \\
+				\hline
+			\end{tabularx}
+		\end{NxLightBox}
+	};
+
+	\node[/nx/lbl/above={nodeAa}] {AUTO\_MODEL};
+
+	\node[/nx/lbl/above={nodeAb}] {VEHICLE}
+		node[below=-1mm of nodeAb] {\nxArcBox[]{(a) ID-Dependent Entity}}
+		node[/nx/lbl/above={nodeAc}] {VEHICLE}
+		node[below=-1mm of nodeAc] {\nxArcBox[]{(b) Non-ID-Dependent\\Weak Entity}};
+
+		\begin{scope}[shft/.style={xshift=-2cm}]
+			\draw[/nx/crowsfoot={nn}{pp}] (nodeAa) -- ([shft]nodeAb.north east);
+			\draw[/nx/crowsfoot={nn}{pp}] (nodeAa) -- ([shft]nodeAc.north east);
+\end{scope}
+\end{tikzpicture}
+\end{center}
+
+\begin{comment}	
 \begin{NxLightBox}[title={}]
 \end{NxLightBox}
 \begin{NxLightBox}[title={}]
@@ -310,7 +516,7 @@
 \end{NxLightBox}
 
 \begin{center}
-\begin{tikzpicture}
+	\begin{tikzpicture}[scale=2]
 	\node (memberA) at (0,0) {
 		\begin{NxLightListBox}[%
 				width=\linewidth/3,%
@@ -340,10 +546,8 @@
 
 	\node[above of=uniformA, yshift=2.5cm] {\nxLnArcBox{CLUB\_UNIFORM}};
 	\node[above of=memberA, yshift=1cm] {\nxLnArcBox{CLUB\_MEMBER}};
-\draw[/nx/crowsfoot={mo}{mo}] (memberA) -- (uniformA); %^node[midway, below, yshift=-3.5cm]{(b) Placing a primary Key of the Parent in the Child is a Foreign Key};
-	%\draw[optionalOne] (uniformA) -- (memberA);
+	\draw[/nx/crowsfoot={mo}{mo}] (memberA) -- (uniformA); %^node[midway, below, yshift=-3.5cm]{(b) Placing a primary Key of the Parent in the Child is a Foreign Key};
 \end{tikzpicture}
-
-ds\end{center}
+\end{center}
 \end{comment}
 

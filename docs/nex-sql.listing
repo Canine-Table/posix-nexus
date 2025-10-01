@@ -1,49 +1,48 @@
-USE nexusDB
-	-- Create Employees table if it does not exist
-	CREATE TABLE IF NOT EXISTS Employees (
-		EmployeeNumber INT PRIMARY KEY,
-		FirstName			 VARCHAR(50) NOT NULL,
-		LastName			 VARCHAR(50) NOT NULL,
-		Department		 VARCHAR(50) NOT NULL,
-		EmailAddress	 VARCHAR(100) UNIQUE NOT NULL
-	);
+CREATE DATABASE IF NOT EXISTS Lab4A
+	CHARACTER SET utf8mb4
+	COLLATE utf8mb4_general_ci;
+USE Lab4A;
 
-	-- Create EmployeePhones table if it does not exist
-	CREATE TABLE IF NOT EXISTS EmployeePhones (
-		PhoneID				 INT AUTO_INCREMENT PRIMARY KEY,
-		EmployeeNumber INT NOT NULL,
-		PhoneType			 VARCHAR(20) NOT NULL,	 -- e.g. 'Work', 'Fax', 'Home'
-		PhoneNumber		 VARCHAR(30) NOT NULL,
-		FOREIGN KEY (EmployeeNumber) REFERENCES Employees(EmployeeNumber)
-	);
+-- Customers
+CREATE TABLE IF NOT EXISTS Customers (
+	CustomerNumber INT PRIMARY KEY AUTO_INCREMENT,
+	StreetAddress VARCHAR(50),
+	City VARCHAR(30),
+	Province CHAR(30),
+	PostalCode CHAR(7),
+	PhoneNumber VARCHAR(50),
+	EmailAddress VARCHAR(50),
+	Discount INT
+);
 
-	DELIMETER$$
-	CREATE PROCEDURE AddEmployeeWithPhone(
-		IN pEmployeeNumber INT,
-		IN pFirstName			 VARCHAR(50),
-		IN pLastName			 VARCHAR(50),
-		IN pDepartment		 VARCHAR(50),
-		IN pEmailAddress	 VARCHAR(100),
-		IN pPhoneType			 VARCHAR(20),
-		IN pPhoneNumber		 VARCHAR(30)
-	) BEGIN
-	-- If employee does not exist, insert them
-	IF NOT EXISTS (
-		SELECT 1 FROM Employees WHERE EmployeeNumber = pEmployeeNumber
-	) THEN
-		INSERT INTO Employees (EmployeeNumber, FirstName, LastName, Department, EmailAddress)
-		VALUES (pEmployeeNumber, pFirstName, pLastName, pDepartment, pEmailAddress);
-	END IF;
+-- Products
+CREATE TABLE IF NOT EXISTS Products (
+	ProductNumber INT PRIMARY KEY AUTO_INCREMENT,
+	Name VARCHAR(50),
+	Description VARCHAR(50),
+	Price FLOAT(2)
+);
 
-		-- Insert the phone entry (can be multiple per employee)
-		INSERT INTO EmployeePhones (EmployeeNumber, PhoneType, PhoneNumber)
-		VALUES (pEmployeeNumber, pPhoneType, pPhoneNumber);
-	EN$$
+-- Orders
+CREATE TABLE IF NOT EXISTS Orders (
+	OrderNumber INT PRIMARY KEY AUTO_INCREMENT,
+	ShippingMethod CHAR(30),
+	ShippingDate DATE,
+	OrderDate DATE,
+	Customers_CustomerNumber INT,
+	FOREIGN KEY (Customers_CustomerNumber) REFERENCES Customers(CustomerNumber)
+);
 
-	DELIMITER ;
+-- OrderLines
+CREATE TABLE IF NOT EXISTS OrderLines (
+	Quantity INT,
+	LineTotal INT,
+	TaxPercentage INT,
+	DiscountPrice FLOAT(2),
+	Orders_OrderNumber INT,
+	Products_ProductNumber INT,
+	FOREIGN KEY (Orders_OrderNumber) REFERENCES Orders(OrderNumber),
+	FOREIGN KEY (Products_ProductNumber) REFERENCES Products(ProductNumber)
+);
 
-	CALL AddEmployeeWithPhone(
-			800, 'Alice', 'Walker', 'HR', 'AW@somewhere.com',
-			'Work', '518-834-4101'
-	);
-
+SHOW TABLES;
