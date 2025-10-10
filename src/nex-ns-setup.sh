@@ -53,7 +53,11 @@ test -z "$(g_nx_ip_ifname 'nexus0' 'posix-nexus')" && {
 
 NX_IDX=3
 NX_IFACE=1
-for NX_NS in 'pgadmin4' 'phpmyadmin' 'bubble-wrap'; do
+for NX_NS in \
+	'pgadmin4' 'phpmyadmin' \
+	'phpldapadmin' 'grafana' \
+	'cups' 'papercut' 'cockpit'
+do
 	test -z "$(g_nx_ip_ifname "nexus$NX_IFACE" 'posix-nexus')" && {
 		s_nx_ip_veth -N 'posix-nexus' -p 'nexus' -n "nexus-$NX_NS"
 		s_nx_ip_master -m 'bridge0' -i "nexus$NX_IFACE" -n 'posix-nexus'

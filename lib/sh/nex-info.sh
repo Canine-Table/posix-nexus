@@ -21,7 +21,7 @@ nx_info_path()
 	done
 	test "$tmpa" = '-q' && return
 	case "$tmpa" in
-		-p) printf '%s/%s\n' "$tmpd" "$tmpc";;
+		-p) nx_info_canonize "$(printf '%s/%s\n' "$tmpd" "$tmpc")";;
 		-d) printf '%s\n' "$tmpd";;
 		-b) printf '%s\n' "$tmpc";;
 		-e) printf '%s\n' "${tmpc##*.}";;

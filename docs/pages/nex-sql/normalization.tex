@@ -1,0 +1,212 @@
+\nxSections{Normalization}{1}
+
+\begin{NxLightListBox}[title={Normalization Principles}]
+    \nxEachItem{ArrowDark}{
+        {Normalization organizes a database into tables and columns, each focused on a specific topic.},
+        {Each table should include only the columns that support its topic.},
+        {This reduces redundancy and improves clarity in data structure.},
+        {Example: A spreadsheet mixing salespeople and customers serves multiple roles—identifying staff, listing clients, and mapping relationships.},
+        {By separating these roles into distinct tables, normalization eliminates duplication and modification anomalies.},
+        {Normalization introduces formal rules for table organization.},
+        {These rules are staged as progressive levels called normal forms.}
+    }
+\end{NxLightListBox}
+
+\begin{NxLightBox}[title={Normalization Summary}]
+    \begin{tabularx}{\linewidth}{|l|X|}
+        \hline
+        \textbf{Aspect} & \textbf{Description} \\
+        \hline
+        Purpose & Organize data into topic-specific tables to reduce redundancy \\
+        \hline
+        Example & Split spreadsheet roles: salespeople, customers, and their relationships \\
+        \hline
+        Benefit & Minimizes duplicate data and modification anomalies \\
+        \hline
+        Method & Apply rules that define how tables should be structured \\
+        \hline
+        Output & A cleaner schema aligned with business logic and technical clarity \\
+        \hline
+        Stages & Normal forms: progressive levels of refinement in table design \\
+        \hline
+    \end{tabularx}
+\end{NxLightBox}
+
+\nxSections{Anomalies}{2}
+
+\begin{NxLightListBox}[title={Modification Anomaly Scenarios}]
+    \nxEachItem{ArrowDark}{
+        {Updating the Chicago office to Evanston requires modifying every SalesPerson entry tied to Chicago.},
+        {In large tables, this could mean hundreds of updates—introducing risk and inconsistency.},
+        {If John Hunt quits and his record is deleted, the New York office information may vanish with him.},
+        {These are examples of modification anomalies—schema weaknesses that arise from poor normalization.}
+    }
+\end{NxLightListBox}
+
+\begin{NxLightBox}[title={Types of Modification Anomalies}]
+    \begin{tabularx}{\linewidth}{|l|X|}
+        \hline
+        \textbf{Anomaly Type} & \textbf{Description} \\
+        \hline
+        Insertion Anomaly & Difficulty adding data due to missing related information (e.g., can't add a new office without a SalesPerson) \\
+        \hline
+        Update Anomaly & Inconsistent updates when redundant data must be changed in multiple places \\
+        \hline
+        Deletion Anomaly & Loss of critical data when deleting a record also removes related information (e.g., deleting a SalesPerson removes office info) \\
+        \hline
+    \end{tabularx}
+\end{NxLightBox}
+
+\nxSections{Functional Dependency}{2}
+
+\begin{NxLightListBox}[title={Functional Dependency Principles}]
+    \nxEachItem{ArrowDark}{
+        {A functional dependency (FD) exists when one attribute uniquely determines another within a relation.},
+        {Notation: \( A \rightarrow B \) means that for each value of \( A \), there is exactly one value of \( B \).},
+        {Functional dependencies are the foundation of normalization—they guide decomposition and anomaly resolution.},
+        {Candidate keys are determinants in functional dependencies that uniquely identify tuples.},
+        {Transitive dependencies (e.g., \( A \rightarrow B \rightarrow C \)) violate 3NF and must be resolved.},
+        {Partial dependencies (where only part of a composite key determines an attribute) violate 2NF.},
+        {BCNF requires that every determinant in a functional dependency be a candidate key.}
+    }
+\end{NxLightListBox}
+
+\begin{NxLightBox}[title={Functional Dependency Summary}]
+    \begin{tabularx}{\linewidth}{|l|X|}
+        \hline
+        \textbf{Aspect} & \textbf{Description} \\
+        \hline
+        Definition & Relationship where one attribute determines another (e.g., \( A \rightarrow B \)) \\
+        \hline
+        Determinant & The attribute(s) on the left side of the dependency (e.g., \( A \)) \\
+        \hline
+        Dependent & The attribute(s) on the right side (e.g., \( B \)) \\
+        \hline
+        Use in Normalization & Guides decomposition into normal forms (1NF to BCNF) \\
+        \hline
+        Partial Dependency & Non-key attribute depends on part of a composite key (violates 2NF) \\
+        \hline
+        Transitive Dependency & Non-key attribute depends indirectly via another non-key (violates 3NF) \\
+        \hline
+        BCNF Rule & Every determinant must be a candidate key \\
+        \hline
+    \end{tabularx}
+\end{NxLightBox}
+
+\nxSections{Determinant Value}{2}
+
+\begin{NxLightListBox}[title={Determinant Value Principles}]
+    \nxEachItem{ArrowDark}{
+        {A determinant is any attribute (or set of attributes) on which another attribute is fully functionally dependent.},
+        {In a relational table, if attribute A determines attribute B, then A is the determinant and B is the dependent.},
+        {Determinants are foundational to identifying candidate keys and enforcing normalization rules.},
+        {They help define functional dependencies, which are critical for decomposing tables into normal forms.},
+        {Every candidate key is a determinant, but not every determinant is a candidate key.},
+        {Determinants must be carefully chosen to avoid update, insertion, and deletion anomalies.},
+        {In higher normal forms (e.g., BCNF), every determinant must be a candidate key.}
+    }
+\end{NxLightListBox}
+
+\begin{NxLightBox}[title={Determinant Value Summary}]
+    \begin{tabularx}{\linewidth}{|l|X|}
+        \hline
+        \textbf{Aspect} & \textbf{Description} \\
+        \hline
+        Definition & An attribute (or set) that functionally determines another attribute \\
+        \hline
+        Role in Schema & Used to define functional dependencies and candidate keys \\
+        \hline
+        Example & EmployeeID → EmployeeName (EmployeeID is the determinant) \\
+        \hline
+        Importance & Guides normalization and helps eliminate redundancy and anomalies \\
+        \hline
+        In BCNF & Every determinant must be a candidate key \\
+        \hline
+    \end{tabularx}
+\end{NxLightBox}
+
+\begin{NxLightBox}[title={Determinant Uniqueness Summary}]
+    \begin{tabularx}{\linewidth}{|l|X|}
+        \hline
+        \textbf{Condition} & \textbf{Determinant Uniqueness} \\
+        \hline
+        Candidate Key & Always unique \\
+        \hline
+        Primary Key & Always unique \\
+        \hline
+        Composite Key & Unique if combination is a candidate key \\
+        \hline
+        Non-Key Attribute & May determine others, but not uniquely \\
+        \hline
+        Partial Dependency & Not unique across entire relation \\
+        \hline
+    \end{tabularx}
+\end{NxLightBox}
+
+\nxSections{Normalization Theory}{2}
+\begin{NxLightListBox}[title={Normalization Theory Principles}]
+    \nxEachItem{ArrowDark}{
+        {Normalization is the process of organizing relational data to reduce redundancy and improve integrity.},
+        {It relies on functional dependencies and determinant values to guide schema refinement.},
+        {Each stage of normalization is called a normal form, with stricter rules at higher levels.},
+        {Normalization eliminates modification anomalies: insertion, update, and deletion errors.},
+        {The theory is grounded in mathematical logic and set theory, ensuring predictable schema behavior.},
+        {Normalization is not just technical—it reflects business logic, semantic clarity, and containment purity.},
+        {Higher normal forms (e.g., BCNF, 4NF) enforce stricter dependency rules and multivalued containment.}
+    }
+\end{NxLightListBox}
+
+\begin{NxLightBox}[title={Normal Forms Summary}]
+    \begin{tabularx}{\linewidth}{|l|X|}
+        \hline
+        \textbf{Normal Form} & \textbf{Condition} \\
+        \hline
+        First Normal Form (1NF) & All attributes contain atomic (indivisible) values; no repeating groups \\
+        \hline
+        Second Normal Form (2NF) & 1NF + no partial dependency on a subset of a candidate key \\
+        \hline
+        Third Normal Form (3NF) & 2NF + no transitive dependency (non-key attributes depend only on keys) \\
+        \hline
+        Boyce-Codd Normal Form (BCNF) & Every determinant is a candidate key \\
+        \hline
+        Fourth Normal Form (4NF) & BCNF + no multivalued dependencies \\
+        \hline
+        Fifth Normal Form (5NF) & 4NF + no join dependency anomalies \\
+        \hline
+    \end{tabularx}
+\end{NxLightBox}
+
+\nxSections{Boyce-Codd Normal Form}{3}
+
+\begin{NxLightListBox}[title={Boyce-Codd Normal Form Principles}]
+    \nxEachItem{ArrowDark}{
+        {BCNF is a refinement of Third Normal Form (3NF) that resolves remaining anomalies caused by non-candidate key determinants.},
+        {A relation is in BCNF if, for every non-trivial functional dependency \( A \rightarrow B \), the determinant \( A \) is a candidate key.},
+        {BCNF eliminates update and deletion anomalies that persist in 3NF when non-key attributes determine other attributes.},
+        {It ensures that all dependencies are anchored in keys, preserving schema integrity and containment purity.},
+        {BCNF may require decomposing relations even when they satisfy 3NF, if hidden dependencies exist.},
+        {The form is named after Raymond Boyce and Edgar F. Codd, pioneers of relational theory.}
+    }
+\end{NxLightListBox}
+
+\begin{NxLightBox}[title={Boyce-Codd Normal Form Summary}]
+    \begin{tabularx}{\linewidth}{|l|X|}
+        \hline
+        \textbf{Aspect} & \textbf{Description} \\
+        \hline
+        Definition & A relation where every determinant is a candidate key \\
+        \hline
+        Dependency Rule & For all \( A \rightarrow B \), \( A \) must be a candidate key \\
+        \hline
+        Difference from 3NF & BCNF removes anomalies caused by non-key determinants still allowed in 3NF \\
+        \hline
+        Benefit & Stronger containment discipline, fewer anomalies, cleaner decomposition \\
+        \hline
+        Example Violation & If \( \text{Course} \rightarrow \text{Instructor} \) but Course is not a candidate key \\
+        \hline
+        Resolution & Decompose into smaller relations where all determinants are keys \\
+        \hline
+    \end{tabularx}
+\end{NxLightBox}
+
+

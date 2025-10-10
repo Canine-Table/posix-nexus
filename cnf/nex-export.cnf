@@ -40,12 +40,19 @@ test "$E_NEX_EDITOR" = true && nx_editor_export
 test "$E_NEX_LEMONADE" = true && nx_misc_lemonade
 test "$E_NEX_SOFFICE" = true && nx_misc_soffice
 
+tmpa=""
+tmpb=""
+#test -n "$G_NEX_MNT_CHROOT" && tmpb="chroot" || tmpb=""
+#tmpa="$(nx_data_append tmpa "$tmpb" ',' 1)"
+#test -n "$VIRTUAL_ENV" && tmpb="venv" || tmpb=""
+#tmpa="$(nx_data_append tmpa "$tmpb" ',' 1)"
+
 tty -s && case "${TERM}" in
 	screen*|Eterm*|alacritty*|aterm*|foot*|gnome*|konsole*|kterm*|putty*|rxvt*|tmux*|xterm*)
 		{
 			export PS1="$(
 				printf "\n\[\e[1;37m\]┌──\[\e[m\]%s%s%s%s%s%s\[\e[1;37m\]\n│\n└\[\e[m\]$ " \
-					"\[\e[4;1;37m\][$(whoami)]\[\e[m\]" \
+					"\[\e[4;1;37m\][$(whoami)]\[\e[m\]${tmpa:+\[\e[4;1;34m\]($tmpa)\[\e[m\]}" \
 					"\[\e[4;1;35m\]{@}\[\e[m\]" \
 					"\[\e[4;1;32m\][\H]\[\e[m\]" \
 					"\[\e[4;1;31m\](\@)\[\e[m\]" \
@@ -53,11 +60,9 @@ tty -s && case "${TERM}" in
 					"\[\e[4;1;36m\](\w)\[\e[m\]"
 			)"
 		};;
-	*)
-	{
-		export PS1='\[\e[4;1;32m\])(\w)\[\e[m\]'
-	};;
-esac
+	*) export PS1="\n┌──[$(whoami)]${tmpa:+($tmpa)}{@}[\H](\@)(\w)\n│\n└$ ";;
+esac 
+
 for tmpa in \
         "/bin" \
         "/sbin" \
@@ -73,7 +78,7 @@ do
         PATH="$(nx_data_append PATH "$tmpa" ':' 1)"
 done
 export PATH
-unset tmpa
+unset tmpa tmpb
 
 ##############################################################################################
 

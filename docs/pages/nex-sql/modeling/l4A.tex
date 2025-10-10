@@ -1,0 +1,238 @@
+\nxSections{Lab 4a}{1}
+
+\begin{center}
+	\begin{tikzpicture}[every node/.style={scale=0.5}]
+		\begin{scope}[%
+			grow=left,%
+			level distance=4cm%
+			] \node[process] (nodeAa) at (0,0) {Customer} child {
+				node[startstop, below right=of nodeAa] {CustomerNumber}
+			} child {
+				node[startstop, above left=of nodeAa] {SreetAddress}
+			} child {
+				node[startstop, above right=of nodeAa] {City}
+			} child {
+				node[startstop, above=of nodeAa] {Province}
+			} child {
+				node[startstop, left=of nodeAa] {PostalCode}
+			} child {
+				node[startstop, right=of nodeAa] {EmailAddress}
+			} child {
+				node[startstop, below left=of nodeAa] {Discount}
+			};
+		\end{scope}
+
+		\node[decision, below=2cm of nodeAa.south] (nodeAb) {Places};
+
+		\begin{scope}[%
+			level distance=4cm%
+			] \node[process, below=2cm of nodeAb.south] (nodeAc) {Orders} child {
+				node[startstop, below right=of nodeAc] {OrderNumber}
+			} child {
+				node[startstop, above left=of nodeAc] {ShippingMethod}
+			} child {
+				node[startstop, left=of nodeAc] {ShippingDate}
+			} child {
+				node[startstop, below=2cm of nodeAc] {OrderDate}
+			} child {
+				node[startstop, below left=of nodeAc] {Customers\_CustomerNumber}
+			};
+		\end{scope}
+
+		\node[decision, right=2cm of nodeAc.east] (nodeAd) {Contains};
+
+		\begin{scope}[%
+			level distance=4cm%
+			] \node[process, right=2cm of nodeAd.east] (nodeAe) {OrderLines} child {
+				node[startstop, below right=of nodeAe] {Quantity}
+			} child {
+				node[startstop, below left=of nodeAe] {LineTotal}
+			} child {
+				node[startstop, right=of nodeAe] {TaxPercentage}
+			} child {
+				node[startstop, below=2cm of nodeAe] {DiscountPrice}
+			} child {
+				node[startstop, above left=of nodeAe] {Orders\_OrderNumber}
+			} child {
+				node[startstop, above right=of nodeAe] {Products\_ProductNumber}
+			};
+		\end{scope}
+
+		\node[decision, above=2cm of nodeAe.north] (nodeAf) {Ordered};
+
+		\begin{scope}[%
+			grow=left,%
+			level distance=4cm%
+			] \node[process, above=2cm of nodeAf] (nodeAg) {Products} child {
+				node[startstop, above=of nodeAg] {ProductNumber}
+			} child {
+				node[startstop, above left=of nodeAg] {Name}
+			} child {
+				node[startstop, above right=of nodeAg] {City}
+			} child {
+				node[startstop, below right=of nodeAg] {Description}
+			} child {
+				node[startstop, right=of nodeAg] {Price}
+			};
+		\end{scope}
+
+	\node[below=4cm of nodeAd.south] {\nxLnArcBox{Lab4A - Conceptual Diagram used to Create the Physical Diagram}};
+	
+		\draw[/nx/dash] (nodeAa) -- (nodeAb) -- (nodeAc) -- (nodeAd) -- (nodeAe) -- (nodeAf) -- (nodeAg);
+
+		\draw[/nx/crowsfoot={}{nn}, draw=none] (nodeAb) -- (nodeAa);
+		\draw[/nx/crowsfoot={}{pp}, draw=none] (nodeAb) -- (nodeAc);
+
+		\draw[/nx/crowsfoot={}{nn}, draw=none] (nodeAd) -- (nodeAc);
+		\draw[/nx/crowsfoot={}{mm}, draw=none] (nodeAd) -- (nodeAe);
+
+		\draw[/nx/crowsfoot={}{mm}, draw=none] (nodeAf) -- (nodeAe);
+		\draw[/nx/crowsfoot={}{nn}, draw=none] (nodeAf) -- (nodeAg);
+	\end{tikzpicture}
+\end{center}
+\bigskip
+
+\begin{center}
+	\begin{tikzpicture}[every node/.style={scale=0.9}]
+		\node (nodeAa) {
+			\begin{NxLightBox}[width=0.5\linewidth, title={Customers}]
+				\begin{tabularx}{\linewidth}{|X|X|}
+					\hline
+					\rowcolor{yellow!20}
+					CustomerNumber & INT \\
+					\hline
+					SreetAddress & VARCHAR(50) \\
+					\hline
+					City & VARCHAR(30) \\
+					\hline
+					Province & CHAR(30) \\
+					\hline
+					PostalCode & CHAR(7) \\
+					\hline
+					PhoneNumber & VARCHAR(50) \\
+					\hline
+					EmailAddress & VARCHAR(50) \\
+					\hline
+					Discount & INT \\
+					\hline
+				\end{tabularx}
+			\end{NxLightBox}
+		} node[below=of nodeAa] (nodeAb) {
+			\begin{NxLightBox}[width=0.5\linewidth, title={Orders}]
+				\begin{tabularx}{\linewidth}{|X|X|}
+					\hline
+					\rowcolor{yellow!20}
+					OrderNumber & INT \\
+					\hline
+					ShippingMethod & CHAR(30) \\
+					\hline
+					ShippingDate & DATE \\
+					\hline
+					OrderDate & DATE \\
+					\hline
+					\rowcolor{brown!20}
+					Customers\_CustomerNumber & INT \\
+					\hline
+				\end{tabularx}
+			\end{NxLightBox}
+		} node[right=of nodeAb] (nodeAc) {
+			\begin{NxLightBox}[width=0.5\linewidth, title={OrderLines}]
+				\begin{tabularx}{\linewidth}{|X|X|}
+					\hline
+					\rowcolor{yellow!20}
+					Quantity & INT \\
+					\hline
+					LineTotal & INT \\
+					\hline
+					TaxPercentage & INT \\
+					\hline
+					DiscountPrice & FLOAT(2) \\
+					\hline
+					\rowcolor{brown!20}
+					Orders\_OrderNumber & INT \\
+					\hline
+					\rowcolor{brown!20}
+					Products\_ProductNumber & INT \\
+					\hline
+				\end{tabularx}
+			\end{NxLightBox}
+		} node[above=of nodeAc] (nodeAd) {
+			\begin{NxLightBox}[width=0.5\linewidth, title={Products}]
+				\begin{tabularx}{\linewidth}{|X|X|}
+					\hline
+					\rowcolor{yellow!20}
+					ProductNumber & INT \\
+					\hline
+					Name & VARCHAR(50) \\
+					\hline
+					Description & VAARCHAR(50) \\
+					\hline
+					Price & FLOAT(2) \\
+					\hline
+				\end{tabularx}
+			\end{NxLightBox}
+		};
+
+		\draw[/nx/dash] (nodeAa) -- (nodeAb);
+		\draw[/nx/crowsfoot={nn}{pp}, draw=none] (nodeAa) -- (nodeAb);
+		\draw[/nx/dash] (nodeAb) -- (nodeAc);
+		\draw[/nx/crowsfoot={mm}{nn}, draw=none] (nodeAb) -- (nodeAc);
+		\draw[/nx/dash] (nodeAc) -- (nodeAd);
+		\draw[/nx/crowsfoot={pp}{nn}, draw=none] (nodeAc) -- (nodeAd);
+
+	\end{tikzpicture}
+\end{center}
+
+\includegraphics[width=\linewidth]{img/.env/sql4-2025-09-29_14-43.png}
+
+\begin{NxCodeBox}{sql}{title={Code}}
+CREATE DATABASE IF NOT EXISTS Lab4A
+	CHARACTER SET utf8mb4
+	COLLATE utf8mb4_general_ci;
+USE Lab4A;
+
+-- Customers
+CREATE TABLE IF NOT EXISTS Customers (
+	CustomerNumber INT PRIMARY KEY AUTO_INCREMENT,
+	StreetAddress VARCHAR(50),
+	City VARCHAR(30),
+	Province CHAR(30),
+	PostalCode CHAR(7),
+	PhoneNumber VARCHAR(50),
+	EmailAddress VARCHAR(50),
+	Discount INT
+);
+
+-- Products
+CREATE TABLE IF NOT EXISTS Products (
+	ProductNumber INT PRIMARY KEY AUTO_INCREMENT,
+	Name VARCHAR(50),
+	Description VARCHAR(50),
+	Price FLOAT(2)
+);
+
+-- Orders
+CREATE TABLE IF NOT EXISTS Orders (
+	OrderNumber INT PRIMARY KEY AUTO_INCREMENT,
+	ShippingMethod CHAR(30),
+	ShippingDate DATE,
+	OrderDate DATE,
+	Customers_CustomerNumber INT,
+	FOREIGN KEY (Customers_CustomerNumber) REFERENCES Customers(CustomerNumber)
+);
+
+-- OrderLines
+CREATE TABLE IF NOT EXISTS OrderLines (
+	Quantity INT,
+	LineTotal INT,
+	TaxPercentage INT,
+	DiscountPrice FLOAT(2),
+	Orders_OrderNumber INT,
+	Products_ProductNumber INT,
+	FOREIGN KEY (Orders_OrderNumber) REFERENCES Orders(OrderNumber),
+	FOREIGN KEY (Products_ProductNumber) REFERENCES Products(ProductNumber)
+);
+
+SHOW TABLES;
+\end{NxCodeBox}
+

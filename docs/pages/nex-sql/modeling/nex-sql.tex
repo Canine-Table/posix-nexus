@@ -1,0 +1,32 @@
+\documentclass[a4paper,12pt]{article}
+\input{../lib/tex/nex-preamble.tex}
+\nxHyper[]%
+\nxSnowFade%
+\nxNoParIndent
+\def\nxInput#1{\input{./pages/nex-sql/#1.tex}}%
+\def\nxEnv#1{\input{./pages/nex-sql/.env/#1.tex}}%
+
+\begin{comment}
+%\nxSnowFlakeHeader{Lab 3A}
+%\nxEnv{l4a}
+	\nxCoverPage[%
+		title={Lab 3A},%
+		ref={Github},%
+		abstract={STUDENT NAME: \uline{Benjamin Stroobach-Wilson} - STUDENT ID: \uline{041048348} \\CLASS: \uline{CST8215}},%
+		Abstract={LAB SESSION: 303},%
+		author={Benjamin Stroobach-Wilson}%
+	]
+\end{comment}
+
+\begin{document}
+	\nxCoverPage[title={SQL Notes},abstract={}]
+	\nxRomanFooter
+	\nxToc{Contents}
+	\newpage
+	\nxSnowFlakeHeader{SQL Notes}
+	\nxInput{relationships}
+	\nxInput{modeling}
+	\nxInput{normalization}
+\end{document}
+
+

@@ -1,9 +1,35 @@
 #nx_include "nex-misc.awk"
 #nx_include "nex-str.awk"
 
+function nx_import(D1, D2, D3,		trk, mp)
+{
+    D3 = "#"
+    trk[0] = 0
+    for (trk["rt"] = ".0"; trk[0] > 0; trk["rt"] = trk[trk[0]]) {
+	    while ((getline D2 < D1) > 0) {
+		# If directive isnt end of a word && derective isnt start of a word
+		if (D2 ~ "([ \t]+|^)" D3 "nx_include" && match(D2, D3 "nx_include[ \t]+")) {
+			# store before the directive
+			trk["cr"] = substr(D2, 1, RSTART - 1)
+			# throw the stored prefix away
+			D2 = substr(D2, RSTART + RLENGTH)
+			# 
+			mp[trk["rt"] ".0"] = substr(D2, 1, RSTART - 1)
+			trk[++trk[0]] = "." trk["rt"] ".0"
+			print substr(D2, 1, RSTART - 1)
+		} else if (trk["cr"] != "") {
+			trk["." ++trk["rt"]] = trk["cr"]
+		} else {
+		    trk["." ++trk["rt"]] = D2
+		    print D2
+		}
+	}
+	    close(D1)
+	    D1 = mp[--trk[0]]
+    }
+}
 
 # B2	if B1 it look for the furthest match from the start of D1
-
 function nx_parser_machine(V1, V2, V3, V4, V5)
 {
 	if (match(V1["ln"], V1["sig"] "nx_")) {

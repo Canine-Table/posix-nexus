@@ -127,6 +127,18 @@
 		right,%
 		font=\scriptsize\bfseries%
 	},%
+	stealth/.style={
+		thick,%
+		->,%
+		>=Stealth%
+	},%
+	highlight/.style={draw=black, thick, fill=yellow!30},%
+	error/.style={draw=red, thick, fill=red!10},%
+	compute/.style={process, fill=cyan!20},%
+	ioin/.style={io, fill=orange!30},%
+	iout/.style={io, fill=lime!30},%
+	labelmid/.style={midway, font=\scriptsize\ttfamily},%
+	box/.style={draw, thick, rounded corners, fill=gray!10, inner sep=5pt},%
 	/nx/.cd,%
 	dash/.style={%
 		thick,%
@@ -194,8 +206,9 @@
 		nx cover page,%
 		title,%
 		author,%
-		ref,
+		ref,%
 		abstract,%
+		Abstract,%
 		image,%
 		#1%
 	}%
@@ -229,9 +242,9 @@
 			}
 		] (logo) at (current page.center) {};
 		\node at (current page.center) {\includegraphics[width=0.6\pagewidth]{\nx@image}};
-		\node[above=of logo, text=nex.danger.text, yshift=1cm] (title) {\nxSFont{36pt} \bf \nx@title};
-		\node[below=of logo, text=nex.danger.text, yshift=-1cm] (author) {\nxSFont{24pt} \bf \nx@author};
-		\node[below=of author, text=nex.primary.text] (link) {\nxSFont{24pt} \href{\nx@link}{\bf \nx@ref}};
+		\node[above=of logo, text=nex.danger.text, yshift=1cm, align=center, text width=\linewidth] (title) {\nxSFont{36pt} \bf \nx@title};
+		\node[below=of logo, text=nex.danger.text, yshift=-1cm, align=center, text width=\linewidth] (author) {\nxSFont{24pt} \bf \nx@author};
+		\node[below=of author, text=nex.primary.text, align=center, text width=\linewidth] (link) {\nxSFont{24pt} \href{\nx@link}{\bf \nx@ref}};
 	\end{tikzpicture}
 	\newpage
 	\expandafter\ifx\nx@abstract\relax\else

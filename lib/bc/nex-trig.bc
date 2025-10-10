@@ -1,0 +1,14 @@
+pi = 4 * a(1)
+
+define t(n) {
+	return s(n)/c(n)
+}
+
+define rad2deg(n) {
+	return s(n * pi / 180)
+}
+
+define rad2deg(n) {
+  return n * 180 / pi
+}
+

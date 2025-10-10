@@ -1,0 +1,51 @@
+\nxSections{Veterinary Hospital}{1}
+
+\begin{NxLightListBox}[title={Scenario 1 (Veterinary Hospital)}]
+	\nxEachItem{ArrowDark}{
+			{A local veterinary hospital is looking for a replacement for their patient tracking system. When asked to describe their data, they responded as follows.},
+			{Clients may have one or more pets.},
+			{Clients are identified by their phone number.},
+			{Clients are tracked by their name and address.},
+			{A pet is owned by a single client only.},
+			{A pet is identified by their owner's name and the pet name.},
+			{Pets are tracked by their species, breed, sex, and neutering status.},
+			{A pet can be treated by several different doctors and/or technicians (staff).},
+			{Each doctor and technician has an employee number and a name.},
+			{A pet may have multiple visits that are tracked by date and reason for visit.}
+		}
+\end{NxLightListBox}
+
+\begin{center}
+	\begin{tikzpicture}[thick, node distance=3cm and 4cm, every node/.style={process}]
+		% Entities
+		\node (clientA) at (0,0) {CLIENTS}
+			node[above right=of clientA.north east] (petA) {PET}
+			node[above left=of clientA.north west] (visitA) {VISIT}
+			node[below=of clientA.south east] (staffA) {STAFF};
+
+		% Relationships
+		\draw[/nx/dash] (clientA) -- (petA); 
+		\draw[/nx/crowsfoot={nn}{pp}, draw=none] (clientA) -- (petA); % Each client must have zero or more pets
+		\draw[/nx/dash] (petA) -- (staffA); 
+		\draw[/nx/crowsfoot={pp}{pp}, draw=none] (petA) -- (staffA);  % Many-to-many, both optional
+		\draw[/nx/dash] (petA) -- (visitA); 
+		\draw[/nx/crowsfoot={nn}{mm}, draw=none] (petA) -- (visitA);  % Each pet must have one or more visits
+
+		% Cardinality Labels
+		\begin{scope}[every node/.style={fill=teal!20}]
+			\node[above left=-1cm of $(clientA)!0.5!(petA)$] {Each client may own multiple pets};
+			\node[below=-1cm of $(petA)!0.5!(visitA)$] {Each pet may have multiple visits};
+			\node[right=1.5cm of $(petA)!0.5!(staffA)$] {Pets can be treated by multiple staff};
+		\end{scope}
+
+		% Attribute Notes
+		\node[below=of staffA, yshift=-1cm, align=left, text width=8cm] {
+			\nxLnArcBox{Attributes:}\\
+			CLIENT: Phone (ID), Name, Address\\
+			PET: Owner Name + Pet Name (ID), Species, Breed, Sex, Neutered\\
+			STAFF: Employee Number (ID), Name\\
+			VISIT: Date, Reason
+		};
+	\end{tikzpicture}
+\end{center}
+

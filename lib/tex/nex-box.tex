@@ -299,8 +299,6 @@
 	}
 }
 
-\makeatother
-
 \def\nxToc#1{%
 	\renewcommand{\contentsname}{}
 	\phantomsection{}\label{sec:topOfDocument}
@@ -363,8 +361,6 @@
 		IFBlankF{#1}{#1}%
 	]{\pbox[c]{\textwidth}{#2}}%
 }
-
-\makeatletter
 
 \def\nxList#1{%
 	\edef\nx@tmpa{Nx\nxTitle{#1}{ }{ }List}
@@ -444,6 +440,30 @@
 
 \nxThemed{nxBox}
 
+\def\nxBox#1{%
+	\edef\nx@tmpa{nx\nxTitle{#1}{ }{ }MathBox}
+  \expandafter\newtcbox\csname\nx@tmpa\endcsname[1][0]{%
+		nobeforeafter,%
+		tcbox raise base,%
+		enhanced,%
+		frame hidden,%
+		boxrule=0pt,%
+		coltext=nex.#1.text,%
+		interior style={%
+			top color=nex.#1.back!10!nex.#1.text!90!black,%
+			bottom color=nex.#1.back!10!nex.#1.text!90!black,%
+			middle color=nex.#1.back!50!nex.#1.back%
+		},%
+		fuzzy halo=1pt with nex.#1.back,%
+		##1%
+	}
+}
+
+		%math upper,%
+	%IFBlankF{##1}{##1}%
+
+\nxThemed{nxBox}
+
 \def\nxListBox#1{
 	\edef\nx@tmpa{Nx\nxTitle{#1}{ }{ }ListBox}
 	\newenvironment{\nx@tmpa}[1][]{%
@@ -457,7 +477,6 @@
 }
 
 \nxThemed{nxListBox}
-
 \def\nxNestedList#1#2#3#4{%
 	{\nxSFont{16pt}\bf #1}
 	\begin{NxLightList}
@@ -474,10 +493,31 @@
 	\end{NxLightList}
 }
 
+\long\def\nxBeamer#1{
+	\end{frame}
+		\begin{tcbitemize}[%
+			raster equal height=rows,%
+			enhanced,%
+			left=0mm,%
+			right=0mm,%
+			top=0mm,%
+			bottom=0mm,%
+			boxsep=0mm,%
+			nxBackOpacity,%
+			halign=flush center,%
+			valign=flush center%
+		]
+		\foreach \x/\y in {#1,\relax} {
+			\tcbitem[\x]
+			\begin{center}
+				\y
+			\end{center}
+		}
+	\end{frame}
+}
 
 \def\nxParameters#1{%
 	\nxNestedList{Parameters}{CodeDark}{ArrowDark}{#1}
 }
-
 \makeatother
 

@@ -35,7 +35,7 @@ nx_io_noclobber()
 	p="$(nx_info_canonize "$p")"
 	test -n "$p$s" || exit
 	test -n "$f" && f="$p$s" || f=""
-	mkdir -p "${p%/*}"
+	mkdir -p "${p%/*}" 2>/dev/null
 	test -e "$p$tmpa$s" && tmpb="_" || tmpb=""
 	while test -e "$p$tmpa$s"; do
 		tmpa="$tmpb$(nx_str_rand ${n:-8})"

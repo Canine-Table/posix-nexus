@@ -10,9 +10,24 @@ g_nx_ssl_ecparam()
 	'
 }
 
+__nx_ssl_path()
+{
+	test -n "$1" || {
+		nx_io_printf -E "${3:-"No file provided. The scroll cannot be read without its parchment."}" 1>&2
+		return 1
+	}
+	test -e "$1" && printf '%s' "$1" || {
+		test -e "$HOME/.nx-ssl/$1" && printf '%s' "$HOME/.nx-ssl/$1" || {
+			nx_io_printf -E "${2:-"Caesar rejects '$1'—not a certificate, but a cryptographic imposter."}" 1>&2
+			return 2
+		}
+	}
+}
+
+
 nx_ssl_ecparam()
 (
-	eval "$(nx_str_optarg ':k:o:c:b:s:t:' "$@")"
+	eval "$(nx_str_optarg ':k:o:c:b:s:t:C:E:R:' "$@")"
 	${AWK:-$(nx_cmd_awk)} -v inpt="$k" -v json="$(g_nx_ssl_ecparam)" "
 		$(nx_data_include -i "${NEXUS_LIB}/awk/nex-json.awk")
 	"'
@@ -42,50 +57,26 @@ nx_ssl_ecparam()
 	key="$(nx_io_noclobber -s ".key" -p "$o")"
 	openssl ecparam -name "$k" -genkey -out "$key"
 	csr="$(nx_io_noclobber -s ".csr" -p "$key")"
-	openssl req -new -key "$key" -out "$csr" ${s:+-subj "$s"}
+	openssl req -new -key "$key" -out "$csr" ${s:+-subj "$s"} ${R:+${C:+-config "$C" -extensions "$R"}}
 	crt="$(nx_io_noclobber -s ".crt" -p "$key")"
 	chn="$(nx_io_noclobber -s ".chn" -p "$key")"
 	test "$c" != "" && {
-		ca="$c.key.crt"
-		test -e "$ca" || {
-			ca="$HOME/.nx-ssl/$ca"
-			test -e "$ca" || {
-				nx_io_printf -E "CA certificate '$ca' not found. The gods cannot sign what they do not recognize. Place your offering in ~/.nx-ssl or specify the full path." 1>&2
-				exit 2
-			}
-		}
-		cakey="$c.key"
-		test -e "$cakey" || {
-			cakey="$HOME/.nx-ssl/$cakey"
-			test -e "$cakey" || {
-				nx_io_printf -E "CA key '$cakey' not found. The signing hand is missing. Consult your secrets and place the key in ~/.nx-ssl or specify its full path." 1>&2
-				exit 3
-			}
-		}
-		openssl x509 -req -in "$csr" -CA "$ca" -CAkey "$cakey" -CAcreateserial -days "$t" -out "$crt"
+		ca=$(__nx_ssl_path "$c.key.crt" "CA certificate '$ca' not found. The gods cannot sign what they do not recognize. Place your offering in ~/.nx-ssl or specify the full path.") || exit 2
+		cakey=$(__nx_ssl_path "$c.key" "CA key '$cakey' not found. The signing hand is missing. Consult your secrets and place the key in ~/.nx-ssl or specify its full path.") || exit 3
+		openssl x509 -req -in "$csr" -CA "$ca" -CAkey "$cakey" -CAcreateserial -days "$t" -out "$crt" ${s:+-subj "$s"} ${E:+${C:+-extfile "$C" -extensions "$E"}}
 		cat "$crt" "$cakey.chn" > "$chn"
 	} || {
-		openssl x509 -req -in "$csr" -signkey "$key" -days "$t" -out "$crt"
+		openssl x509 -req -in "$csr" -signkey "$key" -days "$t" -out "$crt" ${s:+-subj "$s"} ${E:+${C:+-extfile "$C" -extensions "$E"}}
 		cp "$crt" "$chn"
 	}
 )
 
 nx_ssl_disect()
 (
-	eval "$(nx_str_optarg ':f:' "$@")"
-	test -n "$f" || {
-		nx_io_printf -E "No file provided. The scroll cannot be read without its parchment." 1>&2
-		return 1
-	}
-	test -e "$f" || {
-		f="$HOME/.nx-ssl/$f"
-		test -e "$f" || {
-			nx_io_printf -E "File '$f' not found. The cryptographic gods demand a valid offering." 1>&2
-			return 2
-		}
-	}
-
-	openssl x509 -in "$f" -noout -subject -issuer -dates -serial -text |
+	eval "$(nx_str_optarg ':f:r' "$@")"
+	test -n "$r" && r='req' || r='x509'
+	f="$(__nx_ssl_path "$f" "File '$f' not found. The cryptographic gods demand a valid offering.")" || exit 2
+	openssl $r -in "$f" -noout -subject -issuer -dates -serial -text |
 	${AWK:-$(nx_cmd_awk)} -v file="$f" '
 		BEGIN { print " Dissecting certificate: " file }
 		/^subject=/ {
@@ -119,24 +110,38 @@ nx_ssl_disect()
 	'
 )
 
+nx_ssl_shake()
+(
+	eval "$(nx_str_optarg ':f:p:h:' "$@")"
+	f="$(__nx_ssl_path "$f" "Caesar rejects '$f'—not a certificate, but a cryptographic imposter.")" || exit 1
+	openssl s_server -cert "$f.crt" -key "$f" -CAfile "$f.chn" -accept "${h:-0.0.0.0}:$(nx_misc_port_bind "${p:-443}")"
+)
+
+nx_ssl_connect()
+(
+	eval "$(nx_str_optarg ':f:p:h:' "$@")"
+	f="$(__nx_ssl_path "$f" "Caesar rejects '$f'—not a certificate, but a cryptographic imposter.")" || exit 1
+	openssl s_client -connect "${h:-localhost}:$(nx_misc_port_bind "${p:-443}")" -CAfile "$f"
+)
 
 
 nx_ssl_suspect()
 (
 	eval "$(nx_str_optarg ':f:s' "$@")"
+	f="$(__nx_ssl_path "$f" "Caesar rejects '$f'—not a certificate, but a cryptographic imposter.")" || exit 1
 	test -z "$s" && s='/dev/stdout' || s='/dev/null'
-	test -e "$f" || {
-		f="$HOME/.nx-ssl/$f"
-		test -e "$f" || {
-			nx_io_printf -E "Caesar rejects '$f'—not a certificate, but a cryptographic imposter." 1>&2
-			exit 1
-		}
-	}
 	openssl x509 -in "$f" -noout -text >$s 2>&1  || {
 		nx_io_printf -E "Caesar rejects '$f'—not a certificate, but a cryptographic imposter." 1>&2
 		exit 2
 	}
 	test "$s" = '/dev/null' && printf '%s\n' "$f"
+)
+
+nx_ssl_verify()
+(
+	eval "$(nx_str_optarg ':f:' "$@")"
+	f="$(__nx_ssl_path "$f" "Caesar rejects '$f'—not a certificate, but a cryptographic imposter.")" || exit 1
+	openssl verify -CAfile '/etc/ssl/certs/ca-certificates.crt' "$f"
 )
 
 nx_ssl_trust()

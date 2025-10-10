@@ -1,3 +1,7 @@
+package main.io;
+
+import java.util.Arrays;
+
 public class NxPrintf
 {
 	private static int colorMap(char sty, char aply) {
@@ -107,48 +111,62 @@ public class NxPrintf
 			case 'A':
 				return '&';
 			default:
-				return '0';
+				return '\0';
 		}
 	}
 
-	public static void pretty(String ... opts) {
-		if (opts.length < 2)
-			return;
-		char[] stys = (">\0" + opts[0]).toCharArray();
-		int[] stk = new int[64];
-		int oidx = 1;
-		for (int sidx = 1; sidx < stys.length; ++sidx) {
-			switch (stys[sidx]) {
-				case '<': case '>': case '_':
-			    		stys[0] = stys[sidx];
-					break;
-				case '%':
-					if (stk[0] > 0) {
-						System.out.print("\u001b[");
-						for (int i = 1; i < stk[0]; ++i)
-							System.out.printf("%d;", stk[i]);
-						System.out.printf("%dm", stk[stk[0]]);
-						stk[0] = 0;
-					}
-					System.out.printf("%s%s", stys[1] == '\0' ? "" : "\n[" + stys[1] + "]: ", opts[oidx++]);
-					if (oidx >= opts.length)
-						break;
+	private static String label(char sym, char ste) {
+	    return (sym == '\0' || ste == '\0') ? "" : "[" + sym + "]: ";
+	}
+
+	private static String applied(boolean ap, boolean b) {
+		return b ? ap ? "m" : "" : ap ? ";" :  "\u001b[";
+	}
+
+	public static void pretty(String... args) {
+		int i = 1;
+		while (i + 1 < args.length) {
+			String[] lst = Arrays.copyOfRange(args, i, args.length);
+			String[] call = new String[lst.length + 1];
+			call[0] = args[0];
+			System.arraycopy(lst, 0, call, 1, lst.length);
+			i += format(call) - 1;
+		}
+	}
+
+	public static int format(String... args) {
+		if (args.length < 1)
+		    throw new IllegalArgumentException("Printing the void is not supported");
+		if (args.length < 2)
+		    throw new IllegalArgumentException("You supplied the formatting, where are the fields? char[] needs at least 2 indexes");
+		int i = 1, j = 2;
+		char[] fmt = (">\0" + args[0]).toCharArray();
+		boolean applied = false;
+		do {
+			switch (fmt[j]) {
+				case '<': case '>': case '_': case '\0':
+					fmt[0] = fmt[j];
 					break;
 				case '^':
-					stys[1] =  NxPrintf.symbolMap(stys[sidx]);
+					fmt[1] = symbolMap(fmt[++j]);
+					break;
+				case '%':
+					System.out.printf("%s%s%s", applied(applied, true), label(fmt[1], fmt[0]), args[i++]);
+					applied = false;
 					break;
 				default:
-					switch (stys[0]) {
-						case '<': case '>':
-							stk[++stk[0]] = NxPrintf.colorMap(stys[sidx], stys[0]);
+					switch (fmt[0]) {
+						case '<': case '>': case '_':
+							System.out.printf("%s%s", applied(applied, false), fmt[0] == '_' ? styleMap(fmt[j]) : colorMap(fmt[j], fmt[0]));
+							applied = true;
 							break;
-						case '_':
-							stk[++stk[0]] = NxPrintf.styleMap(stys[sidx]);
-							break;
+						default:
+							System.out.printf("%s%s\n", applied(applied, true),  fmt[j]);
+							applied = false;
 					}
 			}
-		}
+		} while (++j < fmt.length && i < args.length);
 		System.out.print("\u001b[0m");
+		return i;
 	}
 }
-

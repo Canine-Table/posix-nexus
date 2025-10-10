@@ -1,0 +1,75 @@
+\nxSections{Software Company}{1}
+
+\begin{NxLightListBox}[title={Scenario 2 (Software Company)}]
+    \nxEachItem{ArrowDark}{
+        {A software development company is seeking to model its organizational structure and project assignments. The following data elements have been identified.},
+        {The company has many employees.},
+        {Employees are identified by a unique employee ID and tracked by their name.},
+        {The company has several departments such as engineering, quality assurance, and tech support.},
+        {Each department has a name and a designated manager.},
+        {Managers are identified by a unique manager ID and tracked by their name.},
+        {Each department must have at least one employee.},
+        {Employees must be assigned to at least one department, but may belong to multiple departments.},
+        {Projects are tracked by a unique project number and a project name.},
+        {Each project must have at least one employee assigned.},
+        {Employees may or may not be assigned to projects depending on current workload.},
+        {All entities—departments, projects, managers, and employees—are tracked by their names.}
+    }
+\end{NxLightListBox}
+
+\begin{NxLightBox}[title={Entity Summary}]
+	\begin{tabularx}{\linewidth}{|l|X|X|}
+		\hline
+		\textbf{Entity} & \textbf{Identifier(s)} & \textbf{Attribute(s)} \\
+		\hline
+		EMPLOYEE & Employee ID & Name \\
+		\hline
+		DEPARTMENT & Department Name & Manager ID \\
+		\hline
+		MANAGER & Manager ID & Name \\
+		\hline
+		PROJECT & Project Number & Project Name \\
+		\hline
+		EMPLOYEE–DEPARTMENT & Employee ID, Department Name & (Associative entity for many-to-many) \\
+		\hline
+		EMPLOYEE–PROJECT & Employee ID, Project Number & (Associative entity for many-to-many) \\
+		\hline
+	\end{tabularx}
+\end{NxLightBox}
+
+\begin{center}
+\begin{tikzpicture}[thick, node distance=3cm and 4cm, every node/.style={process}]
+  % Entities
+  \node (employee) at (0,0) {EMPLOYEE};
+  \node[right=of employee] (department) {DEPARTMENT};
+  \node[below=of employee] (project) {PROJECT};
+  \node[below=of department] (manager) {MANAGER};
+
+  % Relationships
+  \draw[/nx/dash] (employee) -- (department);
+  \draw[/nx/crowsfoot={nn}{pp}, draw=none] (employee) -- (department); % EMPLOYEE–DEPARTMENT (mandatory to optional many)
+
+  \draw[/nx/dash] (employee) -- (project);
+  \draw[/nx/crowsfoot={oo}{pp}, draw=none] (employee) -- (project); % EMPLOYEE–PROJECT (optional to optional many)
+
+  \draw[/nx/dash] (manager) -- (department);
+  \draw[/nx/crowsfoot={nn}{nn}, draw=none] (manager) -- (department); % MANAGER–DEPARTMENT (mandatory one-to-one)
+
+  % Cardinality Labels
+  \begin{scope}[every node/.style={fill=teal!20}]
+    \node[above=1cm of $(employee)!0.5!(department)$] {Employees may belong to multiple departments};
+    \node[below=-5mm of $(employee)!0.5!(project)$] {Employees may work on multiple projects};
+    \node[right=-1.5cm of $(manager)!0.5!(department)$] {Each department has one manager};
+  \end{scope}
+
+  % Attribute Notes
+  \node[below=of project, yshift=-1cm, align=left, text width=9cm] {
+    \nxLnArcBox{Attributes:}\\
+    EMPLOYEE: Employee ID (ID), Name\\
+    DEPARTMENT: Department Name (ID), Manager ID\\
+    MANAGER: Manager ID (ID), Name\\
+    PROJECT: Project Number (ID), Project Name
+  };
+\end{tikzpicture}
+\end{center}
+

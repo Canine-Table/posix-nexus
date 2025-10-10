@@ -1,13 +1,20 @@
 
-g_nx_misc_port()
+nx_misc_locale()
+{
+	for tmpa in $(locale 2>/dev/null); do
+		export "$i"
+	done
+}
+
+nx_misc_port_listen()
 {
 	h_nx_cmd "$(nx_info_path -b "$G_NEX_SOCKETS")" || {
 		nx_io_printf -E "Without ss or netstat, we’re charting the seas without a compass." 1>&2
 		return 1
 	}
-	tmpa="$($G_NEX_SOCKETS -apn 2>/dev/null | ${AWK:-$(nx_cmd_awk)} -v port="$(nx_int_natural "$1")" '
+	tmpa="$($G_NEX_SOCKETS -apn 2>/dev/null | ${AWK:-$(nx_cmd_awk)} -v port="$1" '
 		BEGIN {
-			if (! port || port > 65535)
+			if ("a" int(port) != "a" port || port < 1 || port > 65535)
 				port = 1025
 			split("", pmap, "")
 		} {
@@ -38,6 +45,27 @@ g_nx_misc_port()
 	}
 }
 
+nx_misc_port_bind()
+{
+	h_nx_cmd "$(nx_info_path -b "$G_NEX_SOCKETS")" || {
+		nx_io_printf -E "Without ss or netstat, we’re charting the seas without a compass." 1>&2
+		return 1
+	}
+	$G_NEX_SOCKETS -lnput 2>/dev/null | ${AWK:-$(nx_cmd_awk)} -v port="$1" '
+		BEGIN {
+			if ("a" int(port) != "a" port || port < 1 || port > 65535)
+				port = 1025
+			split("", pmap, "")
+		}
+		{
+			if (sub(/^.*:/, "", $5) && $5 == port) {
+				print port
+				exit 0
+			}
+		}
+	'
+}
+
 nx_misc_pid()
 (
 	test -n "$1" && {
@@ -64,8 +92,8 @@ nx_misc_lemonade()
 	h_nx_cmd lemonade && test -z "$SSH_CLIENT" && (
 		tmpc="$(nx_misc_pid "lemonade")"
 		ps "$(cat "$tmpc")" 2>/dev/null | grep -q 'lemonade server' || {
-			g_nx_misc_port 2489 || return
-			nx_io_printf -i "starting the lemonade service on port $tmpa"
+			nx_misc_port_listen 2489 || return
+			nx_io_printf -i "starting the lemonade service on port $tmpa" 2>&1
 			nohup setsid lemonade server \
 				--allow=0.0.0.0/0 \
 				--host="localhost" \
@@ -81,8 +109,8 @@ nx_misc_soffice()
 	h_nx_cmd soffice && (
 		tmpc="$(nx_misc_pid "soffice")"
 		ps "$(cat "$tmpc")" 2> /dev/null | grep -q 'soffice' || {
-			g_nx_misc_port 2002 || return
-			nx_io_printf -i "starting the soffice service on port $tmpa"
+			nx_misc_port_listen 2002 || return
+			nx_io_printf -i "starting the soffice service on port $tmpa" 2>&1
 			nohup setsid soffice --headless --accept="socket,host=localhost,port=$tmpa;urp;" 1> /dev/null 2>&1 & printf '%d' $! > "$tmpc"
 		}
 	)
@@ -91,3 +119,4 @@ nx_misc_soffice()
 
 export E_NEX_SOFFICE=false
 export E_NEX_LEMONADE=true
+

@@ -1,0 +1,302 @@
+\nxSections{Veterinary Hospital}{1}
+
+\begin{NxLightListBox}[title={Scenario 1 (Veterinary Hospital)}]
+	\nxEachItem{ArrowDark}{
+			{A local veterinary hospital is looking for a replacement for their patient tracking system. When asked to describe their data, they responded as follows.},
+			{Clients may have one or more pets.},
+			{Clients are identified by their phone number.},
+			{Clients are tracked by their name and address.},
+			{A pet is owned by a single client only.},
+			{A pet is identified by their owner's name and the pet name.},
+			{Pets are tracked by their species, breed, sex, and neutering status.},
+			{A pet can be treated by several different doctors and/or technicians (staff).},
+			{Each doctor and technician has an employee number and a name.},
+			{A pet may have multiple visits that are tracked by date and reason for visit.}
+		}
+\end{NxLightListBox}
+
+\begin{center}
+	\begin{tikzpicture}[thick, node distance=3cm and 4cm, every node/.style={process}]
+		% Entities
+		\node (clientA) at (0,0) {CLIENTS}
+			node[above right=of clientA.north east] (petA) {PET}
+			node[above left=of clientA.north west] (visitA) {VISIT}
+			node[below=of clientA.south east] (staffA) {STAFF};
+
+		% Relationships
+		\draw[/nx/dash] (clientA) -- (petA); 
+		\draw[/nx/crowsfoot={nn}{pp}, draw=none] (clientA) -- (petA); % Each client must have zero or more pets
+		\draw[/nx/dash] (petA) -- (staffA); 
+		\draw[/nx/crowsfoot={pp}{pp}, draw=none] (petA) -- (staffA);  % Many-to-many, both optional
+		\draw[/nx/dash] (petA) -- (visitA); 
+		\draw[/nx/crowsfoot={nn}{mm}, draw=none] (petA) -- (visitA);  % Each pet must have one or more visits
+
+		% Cardinality Labels
+		\begin{scope}[every node/.style={fill=teal!20}]
+			\node[above left=-1cm of $(clientA)!0.5!(petA)$] {Each client may own multiple pets};
+			\node[below=-1cm of $(petA)!0.5!(visitA)$] {Each pet may have multiple visits};
+			\node[right=1.5cm of $(petA)!0.5!(staffA)$] {Pets can be treated by multiple staff};
+		\end{scope}
+
+		% Attribute Notes
+		\node[below=of staffA, yshift=-1cm, align=left, text width=8cm] {
+			\nxLnArcBox{Attributes:}\\
+			CLIENT: Phone (ID), Name, Address\\
+			PET: Owner Name + Pet Name (ID), Species, Breed, Sex, Neutered\\
+			STAFF: Employee Number (ID), Name\\
+			VISIT: Date, Reason
+		};
+	\end{tikzpicture}
+\end{center}
+
+\nxSections{Software Company}{1}
+
+\begin{NxLightListBox}[title={Scenario 2 (Software Company)}]
+    \nxEachItem{ArrowDark}{
+        {A software development company is seeking to model its organizational structure and project assignments. The following data elements have been identified.},
+        {The company has many employees.},
+        {Employees are identified by a unique employee ID and tracked by their name.},
+        {The company has several departments such as engineering, quality assurance, and tech support.},
+        {Each department has a name and a designated manager.},
+        {Managers are identified by a unique manager ID and tracked by their name.},
+        {Each department must have at least one employee.},
+        {Employees must be assigned to at least one department, but may belong to multiple departments.},
+        {Projects are tracked by a unique project number and a project name.},
+        {Each project must have at least one employee assigned.},
+        {Employees may or may not be assigned to projects depending on current workload.},
+        {All entities—departments, projects, managers, and employees—are tracked by their names.}
+    }
+\end{NxLightListBox}
+
+\begin{NxLightBox}[title={Entity Summary}]
+	\begin{tabularx}{\linewidth}{|l|X|X|}
+		\hline
+		\textbf{Entity} & \textbf{Identifier(s)} & \textbf{Attribute(s)} \\
+		\hline
+		EMPLOYEE & Employee ID & Name \\
+		\hline
+		DEPARTMENT & Department Name & Manager ID \\
+		\hline
+		MANAGER & Manager ID & Name \\
+		\hline
+		PROJECT & Project Number & Project Name \\
+		\hline
+		EMPLOYEE–DEPARTMENT & Employee ID, Department Name & (Associative entity for many-to-many) \\
+		\hline
+		EMPLOYEE–PROJECT & Employee ID, Project Number & (Associative entity for many-to-many) \\
+		\hline
+	\end{tabularx}
+\end{NxLightBox}
+
+\begin{center}
+\begin{tikzpicture}[thick, node distance=3cm and 4cm, every node/.style={process}]
+  % Entities
+  \node (employee) at (0,0) {EMPLOYEE};
+  \node[right=of employee] (department) {DEPARTMENT};
+  \node[below=of employee] (project) {PROJECT};
+  \node[below=of department] (manager) {MANAGER};
+
+  % Relationships
+  \draw[/nx/dash] (employee) -- (department);
+  \draw[/nx/crowsfoot={nn}{pp}, draw=none] (employee) -- (department); % EMPLOYEE–DEPARTMENT (mandatory to optional many)
+
+  \draw[/nx/dash] (employee) -- (project);
+  \draw[/nx/crowsfoot={oo}{pp}, draw=none] (employee) -- (project); % EMPLOYEE–PROJECT (optional to optional many)
+
+  \draw[/nx/dash] (manager) -- (department);
+  \draw[/nx/crowsfoot={nn}{nn}, draw=none] (manager) -- (department); % MANAGER–DEPARTMENT (mandatory one-to-one)
+
+  % Cardinality Labels
+  \begin{scope}[every node/.style={fill=teal!20}]
+    \node[above=1cm of $(employee)!0.5!(department)$] {Employees may belong to multiple departments};
+    \node[below=-5mm of $(employee)!0.5!(project)$] {Employees may work on multiple projects};
+    \node[right=-1.5cm of $(manager)!0.5!(department)$] {Each department has one manager};
+  \end{scope}
+
+  % Attribute Notes
+  \node[below=of project, yshift=-1cm, align=left, text width=9cm] {
+    \nxLnArcBox{Attributes:}\\
+    EMPLOYEE: Employee ID (ID), Name\\
+    DEPARTMENT: Department Name (ID), Manager ID\\
+    MANAGER: Manager ID (ID), Name\\
+    PROJECT: Project Number (ID), Project Name
+  };
+\end{tikzpicture}
+\end{center}
+
+
+\nxSections{Scenario 1 (Book Store System)}{1}
+
+\begin{NxLightListBox}[title={Scenario 1 (Book Store System)}]
+	\nxEachItem{ArrowDark}{
+        {A book store is designing a database system to manage its inventory, customers, authors, and purchase records. The following describes the structure of their data.},
+        {Customers are tracked by their name, email, address, phone number, and the date of their purchases.},
+        {Each customer has a unique CustomerID.},
+        {Books are tracked by their title, genre, price, and publication year.},
+        {Each book has a unique BookID.},
+        {Authors are tracked by their name, email, and biography.},
+        {Each author has a unique AuthorID.},
+        {Customers can purchase multiple books, and each purchase records the quantity and date.},
+        {Each purchase links a CustomerID and a BookID, forming a many-to-many relationship between customers and books.},
+        {Books may be authored by multiple authors, and authors may write multiple books.},
+        {The AuthoredBy relationship tracks which author wrote which book, along with the royalty percentage, year of publication, and a unique AuthorshipID.},
+        {Books and authors are also directly linked through a many-to-many relationship, separate from AuthoredBy.},
+        {The system uses relationship nodes to clarify cardinalities, such as mandatory or optional participation and one-to-many or many-to-many connections.}
+    }
+\end{NxLightListBox}
+
+\begin{center}
+	\begin{tikzpicture}[line width=1pt]
+		\begin{scope}[%
+			grow=left,%
+			level distance=4cm%
+			] \node[process] (customer) at (0,0) {Customer} child {
+				node[startstop, xshift=3cm, yshift=-1cm] {CustomerId}
+			} child {
+				node[startstop] {Name}
+			} child {
+				node[startstop] {Email}
+			} child {
+				node[startstop] {Address}
+			} child {
+				node[startstop] {Phone}
+			};
+		\end{scope}
+		\begin{scope}[%
+			grow=right,%
+			level distance=2cm,%
+		] \node[process, right of=customer, xshift=6cm] (book) {Book} child {
+				node[startstop] {BookID}
+			} child {
+				node[startstop] {Title}
+			} child {
+				node[startstop] {Gendre}
+			} child {
+				node[startstop, xshift=-1cm] {Price}
+			} child {
+				node[startstop, xshift=-4cm, yshift=-1cm] {PubYear}
+			};
+		\end{scope}
+		\begin{scope}[%
+		grow=left,%
+		level distance=4cm,%
+	] \node[process, below of=customer, yshift=-6cm] (purchases) {Purchases} child {
+			node[startstop] {PurchaseID}
+		} child {
+			node[startstop] {PurchDate}
+		} child {
+			node[startstop] {Quantity}
+		} child {
+			node[startstop] {CustomerID (FK)}
+		} child {
+			node[startstop, xshift=2cm] {BookID (FK)}
+		};
+		\end{scope}
+
+		\begin{scope}[%
+		grow=right,%
+		level distance=2cm%
+	] \node[process, right of=purchases, xshift=6cm] (author) {Author} child {
+			node[startstop] {AuthorID}
+		} child {
+			node[startstop] {Email}
+		} child {
+			node[startstop] {Name}
+		} child {
+			node[startstop] {Biography}
+		};
+		\end{scope}
+
+		\begin{scope}[%
+			level distance=2cm,%
+			sibling distance=3cm%
+		] \node[process, below of=purchases, yshift=-2cm, xshift=2cm] (authored) {AuthoredBy} child {
+				node[startstop] {BookID (FK)}
+			} child {
+				node[startstop, yshift=-1cm] {AuthorID (FK)}
+			} child {
+				node[startstop] {Royalty\%}
+			} child {
+				node[startstop, yshift=-1cm] {YearPub}
+			} child {
+				node[startstop] {AuthorshipID}
+			};
+		\end{scope}
+
+		\node[decision, below of=customer, yshift=-2cm] (nodeA) {Relationship};
+		\node[decision, below of=book, xshift=-5mm, yshift=-2.7cm] (nodeB) {Relationship};
+		\node[decision, above of=authored, xshift=3cm, yshift=5mm] (nodeC) {Relationship};
+		\node[decision, below of=customer, yshift=1cm, xshift=4cm] (nodeD) {Relationship};
+		\node[decision, left of=book, yshift=-4.6cm, xshift=-2.3cm] (nodeE) {Relationship};
+
+		% nodeA relationships
+		\draw[/nx/dash] (nodeA) -- (customer);
+		\draw[/nx/crowsfoot={nn}{oo}, draw=none] (nodeA) -- (customer); % mandatory one to optional one
+
+		\draw[/nx/dash] (nodeA) -- (purchases);
+		\draw[/nx/crowsfoot={nn}{pp}, draw=none] (nodeA) -- (purchases); % mandatory one to optional many
+
+		% nodeB relationships
+		\draw[/nx/dash] (nodeB) -- (book);
+		\draw[/nx/crowsfoot={nn}{mm}, draw=none] (nodeB) -- (book); % mandatory one to mandatory many
+
+		\draw[/nx/dash] (nodeB) -- (author);
+		\draw[/nx/crowsfoot={nn}{mm}, draw=none] (nodeB) -- (author); % mandatory one to mandatory many
+
+		% nodeC relationships
+		\draw[/nx/dash] (nodeC) -- (authored);
+		\draw[/nx/crowsfoot={nn}{nn}, draw=none] (nodeC) -- (authored); % mandatory one to mandatory one
+
+		\draw[/nx/dash] (nodeC) -- (author);
+		\draw[/nx/crowsfoot={nn}{nn}, draw=none] (nodeC) -- (author); % mandatory one to mandatory one
+
+		% nodeD relationships
+		\draw[/nx/dash] (nodeD) -- (book);
+		\draw[/nx/crowsfoot={nn}{nn}, draw=none] (nodeD) -- (book); % mandatory one to mandatory one
+
+		\draw[/nx/dash] (nodeD) -- (purchases);
+		\draw[/nx/crowsfoot={nn}{pp}, draw=none] (nodeD) -- (purchases); % mandatory one to optional many
+
+		% nodeE relationships
+		\draw[/nx/dash] (nodeE) -- (authored);
+		\draw[/nx/crowsfoot={nn}{mm}, draw=none] (nodeE) -- (authored); % mandatory one to mandatory many
+
+		\draw[/nx/dash] (nodeE) -- (book);
+		\draw[/nx/crowsfoot={nn}{mm}, draw=none] (nodeE) -- (book); % mandatory one to mandatory many
+	\end{tikzpicture}
+\end{center}
+
+\begin{comment}
+\begin{NxLightListBox}[title={Scenario 1 (Veterinary Hospital)}]
+	\nxEachItem{ArrowDark}{
+			{A local veterinary hospital is looking for a replacement for their patient tracking system. When asked to describe their data, they responded as follows.},
+			{Clients may have one or more pets.},
+			{Clients are identified by their phone number.},
+			{Clients are tracked by their name and address.},
+			{A pet is owned by a single client only.},
+			{A pet is identified by their owner's name and the pet name.},
+			{Pets are tracked by their species, breed, sex, and neutering status.},
+			{A pet can be treated by several different doctors and/or technicians (staff).},
+			{Each doctor and technician has an employee number and a name.},
+			{A pet may have multiple visits that are tracked by date and reason for visit.},
+		}
+\end{NxLightListBox}
+
+\begin{NxLightListBox}[title={Scenario 2 (Software Company)}]
+	\nxEachItem{ArrowDark}{
+		{A software development company is modeling its internal structure and project assignments.},
+		{The company has many employees.},
+		{Employees are tracked by their name and a unique employee ID.},
+		{The company has several departments, such as engineering, quality assurance, and tech support.},
+		{Each department has a name and a manager.},
+		{Managers are also employees and have unique employee IDs.},
+		{Each department must have at least one employee assigned to it.},
+		{Employees must be assigned to at least one department, but may belong to multiple departments.},
+		{Projects are tracked by a unique project ID and a project name.},
+		{Each project must have at least one employee assigned to it.},
+		{An employee may be assigned to zero or more projects.},
+		{Departments, projects, managers, and employees are all tracked by their names.},
+	}
+\end{NxLightListBox}
+
+\end{comment}

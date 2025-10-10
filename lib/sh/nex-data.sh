@@ -1,21 +1,21 @@
 
 nx_data_ref()
 {
-	[ -n "$1" ] && eval "printf \$$1"
+	test -n "$1" && eval "printf \$$1"
 }
 
 nx_data_ref_append()
 {
 	tmpa="$(nx_data_ref "$1")"
-	[ -n "$tmpa" -a -n "$2" ] && v="${tmpa}${3:-,}"
-	echo "$v$2"
+	test -n "$tmpa" -a -n "$2" && v="${tmpa}${3:-,}"
+	printf '%s\n' "$v$2"
 }
 
 nx_data_include()
 (
 	eval "$(nx_str_optarg ':d:f:s:o:i:' "$@")"
-	[ -e "$o" -a -n "$f" ] && mv "$o" "${o}-$(date +"%s").bak"
-	[ -z "$o" ] && o='/dev/stdout'
+	test -e "$o" -a -n "$f" && mv "$o" "${o}-$(date +"%s").bak"
+	test -z "$o" && o='/dev/stdout'
 	i="$(nx_info_path -p "${i:-"$1"}")"
 	[ -f "$i" -a -r "$i" ] && {
 		cat "$i" | ${AWK:-$(nx_cmd_awk)} \
@@ -154,7 +154,7 @@ nx_data_uniq()
 			lns[0] = 0
 			if (i = split(fl, fls, "<nx:null/>")) {
 				do {
-					while ((getline fl < fls[i]) > 0) {
+while ((getline fl < fls[i]) > 0) {
 						if (! (fl in lns))
 							nx_bijective(lns, ++lns[0], fl)
 					}
@@ -174,4 +174,16 @@ nx_data_uniq()
 		}
 	'
 )
+
+nx_data_import()
+{
+	${AWK:-$(nx_cmd_awk)} -v fl="/tmp/fls/file7.txt" \
+	"
+		$(nx_data_include -i "${NEXUS_LIB}/awk/nex-todo.awk")
+	"'
+		BEGIN {
+			nx_import(fl)
+		}
+	'
+}
 
