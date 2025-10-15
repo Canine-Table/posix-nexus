@@ -49,7 +49,7 @@ nx_data_repeat()
 	${AWK:-$(nx_cmd_awk)} -v cmd="$1" -v repeat="$2" '
 		BEGIN {
 			for (i = split(repeat, arr, "<nx:null/>"); i > 0; --i)
-				printf("NX_ARG=\x22%s\x22; %s\n", arr[i], cmd)
+				printf("NEX_ARG=\x22%s\x22; %s\n", arr[i], cmd)
 			delete arr
 		}
 	'
@@ -154,7 +154,7 @@ nx_data_uniq()
 			lns[0] = 0
 			if (i = split(fl, fls, "<nx:null/>")) {
 				do {
-while ((getline fl < fls[i]) > 0) {
+					while ((getline fl < fls[i]) > 0) {
 						if (! (fl in lns))
 							nx_bijective(lns, ++lns[0], fl)
 					}

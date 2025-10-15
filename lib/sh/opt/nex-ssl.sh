@@ -51,7 +51,7 @@ nx_ssl_ecparam()
 	t="$(nx_int_natural "$t")"
 	test -z "$t" && {
 		t="18250"
-		nx_io_printf -I "No time specified. Defaulting to 18250 days—an epoch worthy of trust." 
+		nx_io_printf -I "No time specified. Defaulting to 18250 days—an epoch worthy of trust." 1>&2
 	}
 	o="${o:-$HOME/.nx-ssl/${b:-$(whoami)_$k}}"
 	key="$(nx_io_noclobber -s ".key" -p "$o")"

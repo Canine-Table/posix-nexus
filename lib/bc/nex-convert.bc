@@ -1,0 +1,31 @@
+#nx_include "nx-trig.bc"
+#nx_include "nx-real.bc"
+
+define p_nx_rad2deg(x, y) {
+	return x * nx_rj_pi(y) / 180
+}
+
+define nx_rad2deg(x) {
+	return p_nx_rad2deg(x, 16)
+}
+
+define p_nx_deg2rad(x, y) {
+	return x * 180 / nx_rj_pi(y)
+}
+
+define nx_deg2rad(x) {
+	return p_nx_deg2rad(x, 16)
+}
+
+define p_nx_mod2pi(x, y) {
+	return nx_mod(x, 2 * nx_rj_pi(y))
+}
+
+define nx_mod2pi(x) {
+	return p_nx_mod2pi(x, 16)
+}
+
+define nx_mod(x, y) {
+	return x - y * nx_floor(x / y)
+}
+

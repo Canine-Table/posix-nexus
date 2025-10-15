@@ -1,0 +1,17 @@
+\nxSections{Sine}{2}
+
+\begin{nxCodeBox}{bc}{title={}}
+define sine(x) {
+  auto a, b, c, s
+  a = x              # First term of sine series
+  b = x * x          # x² reused in each term
+  s = a              # Accumulator for the result
+  c = 1              # Initial coefficient (will be updated)
+  for (i = 1; i < scale; i++) {
+    c = c * (-1) * b / ((2*i)*(2*i+1))
+    s = s + c
+  }
+  return s
+}
+\end{nxCodeBox}
+

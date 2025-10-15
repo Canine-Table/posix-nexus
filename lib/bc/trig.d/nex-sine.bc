@@ -1,0 +1,22 @@
+#nx_include "trig.d/nex-radian.bc"
+#nx_include "trig.d/nex-trig.bc"
+#nx_include "nex-real.bc"
+#nx_include "nex-convert.bc"
+
+define pr_nx_ts_sin(x, p) {
+	x = nx_rad_sin(x)
+	return nx_ts(x, 3, p, 2, x)
+}
+
+define r_nx_ts_sin(x) {
+	return pr_nx_ts_sin(x, 100)
+}
+
+define pd_nx_ts_sin(x, y) {
+	return pr_nx_ts_sin(nx_rad2deg(x), y)
+}
+
+define d_nx_ts_sin(x) {
+	return pd_nx_ts_sin(x, 100)
+}
+

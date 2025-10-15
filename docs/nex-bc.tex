@@ -1,0 +1,26 @@
+\documentclass[a4paper,12pt]{article}
+\input{../lib/tex/nex-preamble.tex}
+\nxHyper[]%
+\nxSnowFade%
+\nxNoParIndent
+\def\nxInput#1{\input{./pages/nex-bc/#1.tex}}%
+
+\begin{document}
+\nxSnowFlakeHeader{Lab 3A}
+	\nxCoverPage[%
+		title={Basic Calculator},%
+		ref={Github},%
+	]
+	\nxRomanFooter
+	\nxToc{Contents}
+	\newpage
+	\nxSnowFlakeHeader{BC}
+	\nxInput{notation}
+	\nxInput{definitions}
+	\nxInput{functions}
+	\nxInput{story}
+	%\nxInput{trigonometry}
+	%\nxInput{formulas}
+	%\nxInput{series}
+\end{document}
+

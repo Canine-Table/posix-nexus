@@ -3,7 +3,7 @@ nx_io_fifo_mgr()
 (
 	h_nx_cmd mkfifo || {
 		nx_io_printf -W "mkfifo not found! The realm of named pipes is closed to us." 1>&2
-		return 1
+		return 192
 	}
 	while test ${#@} -gt 0; do
 		if test "$1" = '-r' -a -p "$2"; then
@@ -24,30 +24,68 @@ nx_io_fifo_mgr()
 
 nx_io_disown()
 {
-	nohup setsid exec $@ 1>/dev/null 2>&1 & printf '%d\n' "$!"
+	nohup exec $@ 1>/dev/null 2>&1 & printf '%d\n' "$!"
+}
+
+nx_io_backup()
+{
+	test -e "$1" || {
+		nx_io_printf -E "Backup failed—'$1' is imaginary. Perhaps you mistook a dream for a file." 1>&2
+		return 1
+	}
+	eval $(${AWK:-$(nx_cmd_awk)} \
+		-v fl="$(nx_info_path -p "$1")" \
+		-v ts="$(nx_str_timestamp -f)" \
+		-v ext="$2" \
+	"
+		$(nx_data_include -i "$NEXUS_LIB/awk/nex-str.awk")
+	"'
+		BEGIN {
+			fl = nx_trim_str(fl)
+			ext = nx_trim_str(ext)
+			sub(/^[.]*/, "", ext)
+			if (ext) {
+				if (index(fl, ".") > 0)
+					sub(/[^.]+$/, ext, fl)
+				else
+					fl = fl "." ext
+			}
+			sub(/^[^.]+/, "\\\\&" ts "\x22 -s \x22", fl)
+			sub(/^\\/, "", fl)
+			print "nx_io_noclobber -p \x22" fl "\x22"
+		}
+	')
 }
 
 nx_io_noclobber()
 (
-	eval "$(nx_str_optarg ':p:s:n:f' "$@")"
+	eval "$(nx_str_optarg ':m:p:s:n:f' "$@")"
 	tmpa=""
 	n="$(nx_int_natural "$n")"
 	p="$(nx_info_canonize "$p")"
 	test -n "$p$s" || exit
 	test -n "$f" && f="$p$s" || f=""
-	mkdir -p "${p%/*}" 2>/dev/null
+	case "$m" in
+		'<nx:true/>') mkdir -p "${p%/*}" 2>/dev/null;;
+		'<nx:false/>');;
+	esac
 	test -e "$p$tmpa$s" && tmpb="_" || tmpb=""
 	while test -e "$p$tmpa$s"; do
 		tmpa="$tmpb$(nx_str_rand ${n:-8})"
 	done
-	test -n "$f" && mv "$f" "$p$tmpa$s"
+	case "$f" in
+		'<nx:true/>') mv "$f" "$p$tmpa$s";;
+		'<nx:false/>') rm -rf "$p$tmpa$s";;
+	esac
 	printf '%s\n' "$p$tmpa$s"
 )
 
 nx_io_type()
 {
-	tmpa="$(${AWK:-$(nx_cmd_awk)} \
-		-v str="$(nx_str_chain "$@")" \
+	eval "$(nx_str_optarg 'v' "$@")"
+	test "$v" = '<nx:true/>' && v="printf '%s '" || v='eval'
+	eval "$v '$(${AWK:-$(nx_cmd_awk)} \
+		-v str="$(nx_str_chain "$NEX_OPT_RMDR")" \
 	"
 		$(nx_data_include -i "$NEXUS_LIB/awk/nex-shell.awk")
 	"'
@@ -57,8 +95,8 @@ nx_io_type()
 			else
 				exit 2
 		}
-	')"
-	printf '%s' "$tmpa"
+	')'"
+	return $?
 }
 
 nx_io_printf()

@@ -1,0 +1,279 @@
+
+define nx_esp(x, y) {
+	return nx_pow(x, y) / nx_fact(y)
+}
+
+define nx_ts(n, t, p, k, s) {
+	auto r
+	r = s
+	while (t < p) {
+		r = r - nx_esp(n, t) + nx_esp(n, t += k)
+		t += k
+	}
+	return r
+}
+
+define nx_int(x) {
+	auto lo, hi, mid
+	if (x >= 0) {
+		lo = 0
+		hi = x
+		while (lo < hi) {
+			mid = (lo + hi) / 2
+			if (mid + 1 <= x) {
+			lo = mid + 1
+			} else {
+				hi = mid
+			}
+		}
+		return lo
+	} else {
+		hi = 0
+		lo = x
+		while (lo < hi) {
+			mid = (lo + hi) / 2
+			if (mid <= x) {
+				lo = mid + 1
+			} else {
+				hi = mid
+			}
+		}
+		return hi - 1
+	}
+}
+
+define nx_fact(x) {
+	auto n
+	if (x < 0)
+		return -1
+	if (x < 2)
+		return 1
+	n = 1
+	while (x > 1) {
+		n = n * x--
+	}
+	return n
+}
+
+
+
+define nx_abs(x) {
+	if (x == -0 || x < 0)
+	return -x
+	return x
+}
+
+define nx_part(x, y) {
+	auto i, j
+	i = 0
+	if (nx_abs(x) == 0)
+	return x
+	if (x > 0) {
+	j = 1
+	while (x-- > 0.9)
+		i = i + 1
+	} else {
+	j = -1
+	while (x++ < -0.9)
+		i = i - 1
+	}
+
+	x = x + j
+	if (y == 2)
+	return x
+	if (nx_abs(x) == 0)
+	return i
+	if (y == 0 && x < 0 || y == 1 && x > 0)
+	return i + j
+	return i
+
+}
+
+define nx_pow(x, y) {
+	auto n
+	if (y == 0)
+		return 1
+	n = x
+	while (y-- > 1) {
+		n = n * x
+	}
+	return n
+}
+
+define nx_nr_sqrt(x) {
+	auto y, p
+	if (x < 0)
+		return -1
+	y = x / 2
+	p = 0
+	while (y != p) {
+		p = y
+		y = (y + x / y) / 2
+	}
+	return y
+}
+
+define nx_sum(x, y) {
+	auto i
+	if (y == 0)
+		return x
+	i = y
+	while (x > i)
+		y += x--
+	return y
+}
+
+define p_nx_er_exp(x, y) {
+	auto n, m
+	n = 0
+	m = 0
+	while (n < y)
+		m = m + nx_esp(x, n++)
+	return m
+}
+
+define nx_er_exp(x) {
+	return p_nx_er_exp(x, 100)
+}
+
+define nx_euc(x, y) {
+	auto n
+	while (x) {
+		n = x
+		x = y % x
+		y = n
+	}
+	return n
+}
+
+define nx_lcd(x, y) {
+	return x * y / nx_euc(x, y)
+}
+
+define nx_fib(x) {
+	auto n, o, p
+	if (x == 1)
+		return 0
+	n = 1
+	o = 0
+	while (--x > 0) {
+		p = o
+		o = n + p
+		n = p
+	}
+	return o
+}
+
+define nx_binom(x, y) {
+	auto n
+	if (y == 0 || x == y)
+		return 1
+	n = 1
+	for (i = 1; i <= y; ++i)
+		n = n * (x - i + 1) / i
+	return n
+}
+
+define nx_binom_fact(x, y) {
+	return nx_fact(x) / (nx_fact(y) * nx_fact(x - y))
+}
+
+define p_nx_ms_ln(x, y) {
+	auto n, t, r, s, d
+	if (x <= 0)
+		return -1
+	d = x - 1
+	r = 0
+	s = 1
+	for (n = 1; n <= y; ++n) {
+		t = nx_pow(d, n) / n
+		if (s) {
+			r = r + t
+		} else {
+			r = r - t
+		}
+		s = 1 - s
+	}
+	return r
+}
+
+define nx_ms_ln(x) {
+	return p_nx_ms_ln(x, 100)
+}
+
+define p_nx_ms_ln_lg(x, y) {
+	auto k, b
+	b = 2
+	k = 0
+	while (x >= b) {
+	x = x / b
+	k = k + 1
+	}
+	return k * p_nx_ms_ln(b, y) + p_nx_ms_ln(x, y)
+}
+
+define nx_ms_ln_lg(x) {
+	return p_nx_ms_ln_lg(x, 100)
+}
+
+define nx_bern(n) {
+	auto i, j, r
+	r = 1 / (n + 1)
+	for (j = n; j > 0; --j)
+		r = j * (r - 1 / (j + 1))
+	return r
+}
+
+define nx_scale() {
+	auto y, x
+	y = scale
+	x = 1
+	while (y-- > 0)
+		x = x * 0.1
+	return x
+}
+
+define nx_frac(x) {
+	return nx_part(x, 2)
+}
+
+define nx_ceil(x) {
+	return nx_part(x, 1)
+}
+
+define nx_floor(x) {
+	return nx_part(x, 0)
+}
+
+define nx_round(x) {
+	return nx_floor(x + 0.5)
+}
+
+define nx_trunc(x) {
+	if (x > 0)
+		return nx_floor(x)
+	return nx_ceil(x)
+}
+
+define nx_abs(x) {
+	if (x < 0)
+		return -x
+	return x
+}
+
+define nx_sign(x) {
+	if (x < 0 || x == -0)
+		return -1
+	if (x > 0)
+		return 1
+	return 0
+}
+
+define nx_pi_ra(x) {
+	return nx_rj_pi(16) * nx_pow(x, 2)
+}
+
+define nx_pi_da(x) {
+	return nx_rj_pi(16) * nx_pow(x / 2, 2)
+}
+

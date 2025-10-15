@@ -1,0 +1,21 @@
+#nx_include "trig.d/nex-radian.bc"
+#nx_include "trig.d/nex-trig.bc"
+#nx_include "nex-real.bc"
+#nx_include "nex-convert.bc"
+
+define pr_nx_tan(x, p) {
+	return pr_nx_ts_sin(x, p) / pr_nx_ts_cos(x, p)
+}
+
+define r_nx_tan(x) {
+	return pr_nx_tan(x, 100)
+}
+
+define pd_nx_tan(x, p) {
+	return pd_nx_ts_sin(x, p) / pd_nx_ts_cos(x, p)
+}
+
+define d_nx_tan(x) {
+	return pd_nx_tan(x, 100)
+}
+

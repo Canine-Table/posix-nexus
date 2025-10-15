@@ -1,0 +1,13 @@
+define nx_esp(x, y) {
+    return nx_pow(x, y) / nx_fact(y)
+}
+
+define nx_ts(n, t, p, k) {
+    auto r
+    r = n
+    while (t < p) {
+        r = r - nx_esp(n, t) + nx_esp(n, t += k)
+        t += k
+    }
+    return r
+}

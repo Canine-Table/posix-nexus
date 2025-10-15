@@ -1,0 +1,14 @@
+#nx_include "nex-real.bc"
+
+define nx_nr_sqrt_c(a, b) {
+    auto r, x, y
+    r = nx_nr_sqrt(a*a + b*b)
+    x = nx_nr_sqrt((r + a) / 2)
+    y = nx_nr_sqrt((r - a) / 2)
+    if (b < 1)
+        y = -y
+    print x, ",", y, ","
+    return x + y
+}
+
+

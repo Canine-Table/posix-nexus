@@ -1,9 +1,42 @@
+
 \makeatletter
+
+%\newcolumntype{Y}{>{\raggedleft\arraybackslash}X}
+
 \tcbset{%
 	enhanced,%
 	autoparskip,%
 	hyphenationfix,%
 	enhanced jigsaw,%
+	nxTitle/.style={%
+		toptitle=2mm,%
+		bottomtitle=2mm,%
+		fonttitle=\bfseries%
+	},%
+	nxHMath/.style={%
+		highlight math/.append style={%
+			left=0mm,%
+			right=0mm,%
+			top=0mm,%
+			bottom=0mm%
+		}%
+	},%
+	nxTBox/.style={%
+		clip upper,%
+		tabulars*={%
+			\arrayrulewidth0.5mm%
+			\renewcommand\arraystretch{1.4}%
+		}{@{\extracolsep{\fill}\hspace{20mm}}#1@{\hspace{20mm}}}
+	},%
+	nxTable/.style={%
+		before upper*=\begin{tabular}{#1},%
+		after upper*=\end{tabular}%
+	},%
+	nxTable/.default={|c|},%
+	nxSkip/.style={
+		before skip=0pt,%
+		after skip=24pt,%
+	},%
 	nxCol/.style={%
 		colframe=nex.#1.frame,%
 		colback=nex.#1.back,%
@@ -300,6 +333,9 @@
 }
 
 \def\nxToc#1{%
+	\setlength{\cftsecnumwidth}{2.5em}
+	\setlength{\cftsubsecnumwidth}{2.5em}
+	\setlength{\cftsubsubsecnumwidth}{2.5em}
 	\renewcommand{\contentsname}{}
 	\phantomsection{}\label{sec:topOfDocument}
 	\global\def\nxSec{topOfDocument}
@@ -310,10 +346,15 @@
 }%
 
 \newtcblisting{NxCodeBox}[2]{
-	listing engine=minted,
+	listing engine=minted,%
 	minted style=colorful,%
 	minted language=#1,%
 	skin=spartan,%
+	interior titled engine=spartan,%
+	interior engine=spartan,%
+	segmentation engine=spartan,%
+	title engine=spartan,%
+	nxSkip,%
 	left=14mm,%
 	hdrE,%
 	listing only,%
@@ -432,7 +473,7 @@
 \def\nxBox#1{
 	\edef\nx@tmpa{Nx\nxTitle{#1}{ }{ }Box}
 	\newenvironment{\nx@tmpa}[1][]{%
-		\begin{tcolorbox}[inrB, crnA, nxCol=#1, ##1]
+		\begin{tcolorbox}[nxTitle, nxSkip, inrB, crnA, nxCol=#1, ##1]
 	}{
 		\end{tcolorbox}
 	}
@@ -442,12 +483,16 @@
 
 \def\nxBox#1{%
 	\edef\nx@tmpa{nx\nxTitle{#1}{ }{ }MathBox}
-  \expandafter\newtcbox\csname\nx@tmpa\endcsname[1][0]{%
+  \expandafter\newtcbox\csname\nx@tmpa\endcsname[1][]{%
 		nobeforeafter,%
 		tcbox raise base,%
 		enhanced,%
 		frame hidden,%
+		math upper,%
+		math lower,%
 		boxrule=0pt,%
+		top=24pt,%
+		bottom=24pt,%
 		coltext=nex.#1.text,%
 		interior style={%
 			top color=nex.#1.back!10!nex.#1.text!90!black,%
@@ -459,16 +504,26 @@
 	}
 }
 
-		%math upper,%
-	%IFBlankF{##1}{##1}%
+\nxThemed{nxBox}
+
+\def\nxBox#1{%
+	\edef\nx@tmpa{nx\nxTitle{#1}{ }{ }Label}
+	\expandafter\def\csname\nx@tmpa\endcsname##1##2##3{{\textcolor{nex.#1.back}{\bf\nxEm{##1}{##3}~$\nxArw{##2}$~}}}
+}
 
 \nxThemed{nxBox}
 
-\def\nxListBox#1{
+\def\nxEachLabel#1#2#3#4{
+	\foreach \x/\y in {#4} {
+		\expandafter\csname nx#1Item\expandafter\endcsname\expandafter\csname nx#2Label\expandafter\endcsname#3{\x}\y
+	}
+}
+
+\def\nxBox#1{
 	\edef\nx@tmpa{Nx\nxTitle{#1}{ }{ }ListBox}
 	\newenvironment{\nx@tmpa}[1][]{%
 		\edef\nx@tmpa{Nx\nxTitle{#1}{ }{ }List}
-		\begin{tcolorbox}[inrB, crnA, nxCol=#1, ##1]
+		\begin{tcolorbox}[nxTitle, nxSkip, inrB, crnA, nxCol=#1, ##1]
 			\begin{\nx@tmpa}
 	}{
 			\end{\nx@tmpa}
@@ -476,7 +531,22 @@
 	}
 }
 
-\nxThemed{nxListBox}
+\nxThemed{nxBox}
+
+\def\nxBox#1{
+	\edef\nx@tmpa{Nx\nxTitle{#1}{ }{ }P}
+	\newenvironment{\nx@tmpa}{\begin{flushleft}}{\end{flushleft}}
+	\tcolorboxenvironment{\nx@tmpa}{%
+		blanker,%
+		breakable,%
+		left=5mm,%
+		nxSkip,%
+		borderline west={1mm}{0pt}{nex.#1.frame}%
+	}
+}
+
+\nxThemed{nxBox}
+
 \def\nxNestedList#1#2#3#4{%
 	{\nxSFont{16pt}\bf #1}
 	\begin{NxLightList}
@@ -493,10 +563,11 @@
 	\end{NxLightList}
 }
 
-\long\def\nxBeamer#1{
+\long\def\nxBeamer#1#2{
 	\end{frame}
 		\begin{tcbitemize}[%
 			raster equal height=rows,%
+			raster rows=#1
 			enhanced,%
 			left=0mm,%
 			right=0mm,%
@@ -507,7 +578,7 @@
 			halign=flush center,%
 			valign=flush center%
 		]
-		\foreach \x/\y in {#1,\relax} {
+		\foreach \x/\y in {#2,\relax} {
 			\tcbitem[\x]
 			\begin{center}
 				\y

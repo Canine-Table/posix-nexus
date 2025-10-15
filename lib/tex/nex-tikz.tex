@@ -159,6 +159,20 @@
 	above/.style={%
 		above left=-2mm of #1.north%
 	},%
+	/nx/er/.cd,%
+	rend/.style={
+			shorten <=#1%
+	},%
+	rend/.default=5mm,%
+	lend/.style={
+			shorten >=#1,%
+	},%
+	lend/.default=5mm,%
+	bend/.style args={#1,#2}{
+		/nx/er/lend=#1,%
+		/nx/er/rend=#2%
+	},%
+	bend/.default={5mm,5mm},%
 	/nx/logic gates/.cd,%
 	and/.style={%
 			and port,%
@@ -271,6 +285,21 @@
 	}
 }
 
+\def\nxTikzAxis#1{%
+	\colorlet{mcol}{green!50!black}
+	\colorlet{ycol}{red!50!black}
+	\colorlet{xcol}{blue!50!black}
+	\draw[help lines,step=5mm] (-#1,-#1) grid (#1,#1);
+	\begin{scope}[axes]
+		\draw[->, thick, color=xcol] (-#1,0) -- (#1,0) node[right] {$x$} coordinate(x axis);
+		\draw[->, thick, color=red] (0,-#1) -- (0,#1) node[above] {$y$} coordinate(y axis);
+		\foreach \x/\xtext in {-#1, #1} \draw[xshift=\x cm, color=mcol, thick] (0pt, 5pt)
+			-- (0pt,-5pt) node[below, color=xcol, ultra thick] {$\xtext$};
+		\foreach \y/\ytext in {-#1, #1} \draw[yshift=\y cm, color=mcol, thick] (5pt, 0pt)
+			-- (-5pt,0pt) node[left, color=ycol, ultra thick] {$\ytext$};
+	\end{scope}
+}
+
 \begin{comment}
 \ctikzset{%
 	logic ports/scale=1.2,%
@@ -278,23 +307,156 @@
 	logic ports/input anchors=1,2,%
 	logic ports/output anchor=out%
 }
-\pgfarrowsdeclare{crowsfoot}{crowsfoot}
-{
-	\pgfarrowsleftextend{-2pt}
-	\pgfarrowsrightextend{7pt}
-	\pgfarrowsuptextend{2.5pt}
-	\pgfarrowsdowntextend{-2.5pt}
-}
-{
-	\pgfsetlinewidth{0.6pt}
-	\pgfpathmoveto{\pgfpoint{0pt}{0pt}}
-	\pgfpathlineto{\pgfpoint{6pt}{0pt}}
-	\pgfpathmoveto{\pgfpoint{0pt}{0pt}}
-	\pgfpathlineto{\pgfpoint{6pt}{2pt}}
-	\pgfpathmoveto{\pgfpoint{0pt}{0pt}}
-	\pgfpathlineto{\pgfpoint{6pt}{-2pt}}
-	\pgfarrowsdrawline
-}
 \end{comment}
+
+\def\polartransformation{%
+	% \pgf@x will contain the radius
+	% \pgf@y will contain the distance
+	\pgfmathsincos@{\pgf@sys@tonumber\pgf@x}%
+	% pgfmathresultx is now the cosine of radius and
+	% pgfmathresulty is the sine of radius
+	\pgf@x=\pgfmathresultx\pgf@y%
+	\pgf@y=\pgfmathresulty\pgf@y%
+}
+
+\pgfdeclarearrow{
+	name = nxMM,
+	parameters = {
+		\the\pgfarrowlength
+	},
+	setup code = {
+		% The different end values:
+		\pgfarrowssettipend{.25\pgfarrowlength}
+		\pgfarrowssetlineend{-.25\pgfarrowlength}
+		\pgfarrowssetvisualbackend{-.5\pgfarrowlength}
+		\pgfarrowssetbackend{-.75\pgfarrowlength}
+		% The hull
+		\pgfarrowshullpoint{.25\pgfarrowlength}{0pt}
+		\pgfarrowshullpoint{-.75\pgfarrowlength}{.5\pgfarrowlength}
+		\pgfarrowshullpoint{-.75\pgfarrowlength}{-.5\pgfarrowlength}
+		% Saves: Only the length:
+		\pgfarrowssavethe\pgfarrowlength
+	},
+	drawing code = {
+		\pgfpathmoveto{\pgfqpoint{.35\pgfarrowlength}{0pt}}
+		\pgfpathlineto{\pgfqpoint{\pgfarrowlength}{.3\pgfarrowlength}}
+		\pgfpathmoveto{\pgfqpoint{.35\pgfarrowlength}{0pt}}
+		\pgfpathlineto{\pgfqpoint{\pgfarrowlength}{-.3\pgfarrowlength}}
+		\pgfpathmoveto{\pgfqpoint{-.25\pgfarrowlength}{0pt}}
+		\pgfpathlineto{\pgfqpoint{\pgfarrowlength}{0pt}}
+		\pgfpathmoveto{\pgfqpoint{.25\pgfarrowlength}{.3\pgfarrowlength}}
+		\pgfpathlineto{\pgfqpoint{.25\pgfarrowlength}{-.3\pgfarrowlength}}
+		\pgfpathclose
+		\pgfusepathqstroke
+		%\pgfpathclose
+		%\pgfusepathqfill
+	},
+	defaults = {
+		length = 5mm
+	}
+}
+
+\pgfdeclarearrow{
+	name = nxMO,
+	parameters = {
+		\the\pgfarrowlength
+	},
+	setup code = {
+		% The different end values:
+		\pgfarrowssettipend{.25\pgfarrowlength}
+		\pgfarrowssetlineend{-.25\pgfarrowlength}
+		\pgfarrowssetvisualbackend{-.5\pgfarrowlength}
+		\pgfarrowssetbackend{-.75\pgfarrowlength}
+		% The hull
+		\pgfarrowshullpoint{.25\pgfarrowlength}{0pt}
+		\pgfarrowshullpoint{-.75\pgfarrowlength}{.5\pgfarrowlength}
+		\pgfarrowshullpoint{-.75\pgfarrowlength}{-.5\pgfarrowlength}
+		% Saves: Only the length:
+		\pgfarrowssavethe\pgfarrowlength
+	},
+	drawing code = {
+		\pgfpathmoveto{\pgfqpoint{-.25\pgfarrowlength}{0pt}}
+		\pgfpathlineto{\pgfqpoint{\pgfarrowlength}{0pt}}
+		\pgfpathmoveto{\pgfqpoint{.6\pgfarrowlength}{-.3\pgfarrowlength}}
+		\pgfpathlineto{\pgfqpoint{.6\pgfarrowlength}{.3\pgfarrowlength}}
+		\pgfpathmoveto{\pgfqpoint{.3\pgfarrowlength}{-.3\pgfarrowlength}}
+		\pgfpathlineto{\pgfqpoint{.3\pgfarrowlength}{.3\pgfarrowlength}}
+		\pgfpathclose
+		\pgfusepathqstroke
+	},
+	defaults = {
+		length = 5mm
+	}
+}
+
+\pgfdeclarearrow{
+	name = nxOO,
+	parameters = {
+		\the\pgfarrowlength
+	},
+	setup code = {
+		% The different end values:
+		\pgfarrowssettipend{.25\pgfarrowlength}
+		\pgfarrowssetlineend{-.25\pgfarrowlength}
+		\pgfarrowssetvisualbackend{-.5\pgfarrowlength}
+		\pgfarrowssetbackend{-.75\pgfarrowlength}
+		% The hull
+		\pgfarrowshullpoint{.25\pgfarrowlength}{0pt}
+		\pgfarrowshullpoint{-.75\pgfarrowlength}{.5\pgfarrowlength}
+		\pgfarrowshullpoint{-.75\pgfarrowlength}{-.5\pgfarrowlength}
+		% Saves: Only the length:
+		\pgfarrowssavethe\pgfarrowlength
+	},
+	drawing code = {
+		\pgfpathmoveto{\pgfqpoint{.6\pgfarrowlength}{.3\pgfarrowlength}}
+		\pgfpathlineto{\pgfqpoint{.6\pgfarrowlength}{-.3\pgfarrowlength}}
+		\pgfpathmoveto{\pgfqpoint{-.25\pgfarrowlength}{0pt}}
+		\pgfpathlineto{\pgfqpoint{\pgfarrowlength}{0pt}}
+		\pgfpathclose
+		\pgfusepathqstroke
+		\pgfpathcircle{\pgfpoint{.03\pgfarrowlength}{0pt}}{.25\pgfarrowlength}
+		\pgfpathclose
+		\pgfusepathqfill
+	},
+	defaults = {
+		length = 5mm
+	}
+}
+
+\pgfdeclarearrow{
+	name = nxOM,
+	parameters = {
+		\the\pgfarrowlength
+	},
+	setup code = {
+		% The different end values:
+		\pgfarrowssettipend{.25\pgfarrowlength}
+		\pgfarrowssetlineend{-.25\pgfarrowlength}
+		\pgfarrowssetvisualbackend{-.5\pgfarrowlength}
+		\pgfarrowssetbackend{-.75\pgfarrowlength}
+		% The hull
+		\pgfarrowshullpoint{.25\pgfarrowlength}{0pt}
+		\pgfarrowshullpoint{-.75\pgfarrowlength}{.5\pgfarrowlength}
+		\pgfarrowshullpoint{-.75\pgfarrowlength}{-.5\pgfarrowlength}
+		% Saves: Only the length:
+		\pgfarrowssavethe\pgfarrowlength
+	},
+	drawing code = {
+		\pgfpathmoveto{\pgfqpoint{.35\pgfarrowlength}{0pt}}
+		\pgfpathlineto{\pgfqpoint{\pgfarrowlength}{.3\pgfarrowlength}}
+		\pgfpathmoveto{\pgfqpoint{.35\pgfarrowlength}{0pt}}
+		\pgfpathlineto{\pgfqpoint{\pgfarrowlength}{-.3\pgfarrowlength}}
+		\pgfpathmoveto{\pgfqpoint{-.25\pgfarrowlength}{0pt}}
+		\pgfpathlineto{\pgfqpoint{\pgfarrowlength}{0pt}}
+		\pgfpathclose
+		\pgfusepathqstroke
+		\pgfpathcircle{\pgfpoint{.03\pgfarrowlength}{0pt}}{.25\pgfarrowlength}
+		\pgfpathclose
+		\pgfusepathqfill
+	},
+	defaults = {
+		length = 5mm
+	}
+}
 
 \makeatother

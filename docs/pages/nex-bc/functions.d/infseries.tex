@@ -1,0 +1,170 @@
+\nxSections{Infinity Series}{2}
+
+{\bf An infinite series is written as:} 
+
+\begin{empheq}[box=\nxWarningMathBox]{align*}
+	\sum_{n=1}^{\infty} a_n = a_1 + a_2 + a_3 + \cdots
+\end{empheq}
+\bigskip
+
+\begin{NxLightBox}[title={Types of Infinite Series}]
+    \begingroup
+    \renewcommand{\arraystretch}{1.6}
+    \begin{tabularx}{\linewidth}{|c|X|}
+        \hline
+        \textbf{Type} & \textbf{Description} \\
+        \hline
+        Arithmetic Series & Constant difference between terms (usually diverges) \\
+        \hline
+        Geometric Series & Constant ratio between terms; converges if \( |r| < 1 \) \\
+        \hline
+        Harmonic Series & \( \sum \frac{1}{n} \); diverges slowly \\
+        \hline
+        Taylor Series & Approximates functions using derivatives at a point \\
+        \hline
+    \end{tabularx}
+    \endgroup
+\end{NxLightBox}
+\bigskip
+
+\begin{NxLightBox}[title={Convergence vs Divergence}]
+    \begingroup
+    \renewcommand{\arraystretch}{1.8}
+    \begin{tabularx}{\linewidth}{|c|X|}
+        \hline
+        \textbf{Convergent Series} & The sum of terms approaches a finite value as more terms are added \\
+        \hline
+        \textbf{Divergent Series} & The sum grows without bound or fails to settle on a single value \\
+        \hline
+        \textbf{Test Method} & Use the limit of partial sums: \( S_n = a_1 + a_2 + \dots + a_n \) \\
+        \hline
+        \textbf{Convergence Condition} & \( \lim_{n \to \infty} S_n \) exists and is finite \\
+        \hline
+        \textbf{Divergence Condition} & \( \lim_{n \to \infty} S_n \) does not exist or is infinite \\
+        \hline
+    \end{tabularx}
+    \endgroup
+\end{NxLightBox}
+
+\nxSections{Taylor and Maclaurin Series}{3}
+
+\begin{NxLightP}
+The Taylor series is a powerful tool in mathematical analysis that expresses functions as infinite polynomials based on their derivatives at a single point. Brook Taylor introduced this concept in 1715. Colin Maclaurin later developed a special case — the Maclaurin series — where the expansion is centered at zero. These series are foundational in calculus, physics, and numerical approximation.
+\end{NxLightP}
+
+\begin{NxCodeBox}{c}{title={Maclaurin-style emitter for sine/cosine}}
+define nx_esp(x, y) {
+    return nx_pow(x, y) / nx_fact(y)
+}
+
+define nx_ts(n, t, p, k) {
+    auto r
+    r = n
+    while (t < p) {
+        r = r - nx_esp(n, t) + nx_esp(n, t += k)
+        t += k
+    }
+    return r
+}
+\end{NxCodeBox}
+
+\begin{NxLightListBox}[title={Purpose of \texttt{nx\_esp(x, y)}}]
+    \nxEachLabel{ArrowDark}{Secondary}{{4}{5}}{%
+        {Function}/{Computes a single term of a Taylor (or Maclaurin) series},%
+        {Formula}/{Returns \( \frac{x^y}{y!} \)},%
+        {Inputs}/{\( x \): the value being evaluated, \( y \): the exponent and factorial index},%
+        {Use}/{Used inside a summation loop to build polynomial approximations of functions like \( e^x \), \( \sin(x) \), or \( \cos(x) \)}%
+    }
+\end{NxLightListBox}
+
+\begin{NxLightListBox}[title={Audit of \texttt{nx\_esp(x, y)}}]
+    \nxEachLabel{ArrowDark}{Secondary}{{4}{5}}{%
+        {Purpose}/{Emit a Taylor series term: \( \frac{x^y}{y!} \)},%
+        {Correctness}/{Yes — matches the canonical form for functions with constant derivatives},%
+        {Assumptions}/{Assumes \( f^{(y)}(0) = 1 \), which holds for \( e^x \), and alternates for sine/cosine},%
+        {Limitations}/{Does not handle functions with nontrivial derivative values (e.g., \( \ln(1+x) \), \( \tan(x) \))}%
+    }
+\end{NxLightListBox}
+
+\begin{NxLightListBox}[title={Audit of \texttt{nx\_ts(n, t, p, k)}}]
+    \nxEachLabel{ArrowDark}{Secondary}{{4}{5}}{%
+        {Purpose}/{Emit a partial Taylor series with alternating signs and stepwise powers},%
+        {Valid For}/{Functions like \( \sin(x) \), \( \cos(x) \), and \( e^x \) with predictable derivatives},%
+        {Limitations}/{Does not handle arbitrary derivatives — assumes all \( f^{(n)}(0) = 1 \)},%
+        {Use}/{Can approximate sine/cosine-like functions with controlled precision and step size}%
+    }
+\end{NxLightListBox}
+
+\begin{NxLightListBox}[title={Argument Reduction — Audit Summary}]
+    \nxEachLabel{ArrowDark}{Secondary}{{4}{5}}{%
+        {Purpose}/{Reduce a large input \( x \) to a smaller angle where the function converges faster},%
+        {Why}/{Taylor series converge slowly for large \( x \); reducing the angle improves precision},%
+        {How}/{Use periodicity: \( \sin(x) = \sin(x \mod 2\pi) \), \( \cos(x) = \cos(x \mod 2\pi) \)},%
+        {Example}/{Instead of computing \( \sin(54) \), compute \( \sin(54 \mod 2\pi) \approx \sin(3.77) \)}%
+    }
+\end{NxLightListBox}
+
+\begin{NxLightListBox}[title={Who Was Brook Taylor?}]
+    \nxEachLabel{ArrowDark}{Secondary}{{4}{5}}{%
+        {Born}/{1685 in England},
+        {Died}/{1731},
+        {Known for}/{Inventing the general Taylor series and contributing to calculus and geometry},
+        {Legacy}/{His 1715 work introduced the method of increments, laying the foundation for Taylor expansions}
+    }
+\end{NxLightListBox}
+
+\begin{NxLightListBox}[title={Who Was Colin Maclaurin?}]
+    \nxEachLabel{ArrowDark}{Secondary}{{4}{5}}{%
+        {Born}/{1698 in Scotland},
+        {Died}/{1746},
+        {Known for}/{Advancing calculus, geometry, and mathematical physics},
+        {Legacy}/{He formalized the Taylor series centered at zero, which became known as the Maclaurin series}
+    }
+\end{NxLightListBox}
+
+\begin{NxLightP}
+Maclaurin was a child prodigy — he entered university at age 11 and became a professor at 19. He worked closely with Newton’s ideas and helped defend calculus against critics who doubted its rigor.
+\end{NxLightP}
+
+\begin{NxLightListBox}[title={Taylor Series vs Maclaurin Series}]
+    \nxEachLabel{ArrowDark}{Secondary}{{4}{5}}{%
+        {Taylor Series}/{Centered at any point \( a \); uses derivatives at \( a \)},
+        {Maclaurin Series}/{Special case of Taylor series centered at \( a = 0 \)},
+        {Use Cases}/{Function approximation, solving differential equations, physics simulations},
+        {Common Functions}/{\( e^x \), \( \sin(x) \), \( \cos(x) \), \( \ln(1+x) \)}
+    }
+\end{NxLightListBox}
+
+{\bf What Is the Maclaurin Series?}
+
+It’s a Taylor series centered at $a = 0.$ That means all derivatives are evaluated at zero:
+
+\begin{empheq}[box=\nxWarningMathBox]{align*}
+	f(x) = \sum_{n=0}^{\infty} \frac{f^{(n)}(0)}{n!}x^n
+\end{empheq}
+\bigskip
+
+{\bf The Taylor series of a function $f(x)$ centered at a point $a$ is:}
+\begin{empheq}[box=\nxWarningMathBox]{align*}
+	f(x) = \sum_{n=0}^{\infty} \frac{f^{(n)}(a)}{n!}(x - a)^n
+\end{empheq}
+\bigskip
+
+\begin{NxLightListBox}[title={Bernoulli Numbers — Audit Summary}]
+    \nxEachLabel{ArrowDark}{Secondary}{{4}{5}}{%
+        {Definition}/{Rational numbers appearing in power series expansions and number theory},%
+        {Generating Function}/{\( \frac{x}{e^x - 1} = \sum_{n=0}^{\infty} \frac{B_n x^n}{n!} \)},%
+        {Odd Index Rule}/{All \( B_{2n+1} = 0 \) for \( n \geq 1 \)},%
+        {Applications}/{Used in tangent series, zeta function values, and Faulhaber’s formula}%
+    }
+\end{NxLightListBox}
+
+\begin{empheq}[box=\nxWarningMathBox]{align*}
+	\tan(x) = x + \frac{x^3}{3} + \frac{2x^5}{15} + \frac{17x^7}{315} + \cdots
+\end{empheq}
+\bigskip
+
+\begin{empheq}[box=\nxWarningMathBox]{align*}
+\tan(x) = \sum_{n=1}^{\infty} \frac{(-1)^{n-1} \cdot 2^{2n} \cdot (2^{2n} - 1) \cdot B_{2n}}{(2n)!} \cdot x^{2n - 1}
+\end{empheq}
+\bigskip

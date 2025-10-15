@@ -1,6 +1,6 @@
 nx_info_canonize()
 {
-	printf '%s' "$*" | sed 's|//*|/|g; s|/*$||g; s/ *$//g; s/^ *//g; s|^\./||g'
+	printf '%s' "$*" | sed 's/ *$//g; s/^ *//g; s|^\./||g; s|^[~]|'"$HOME"'|; s|^[-]|'"$OLDPWD"'|; s|//*|/|g; s|/*$||g'
 }
 
 nx_info_path()

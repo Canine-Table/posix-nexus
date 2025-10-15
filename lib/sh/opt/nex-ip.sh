@@ -45,9 +45,9 @@ nx_ip_name()
 {
 	tmpa="$(
 		eval "$(nx_str_optarg ':n:b:v' "$@")"
-		test -n "$NX_OPT_RMDR" || exit
+		test -n "$NEX_OPT_RMDR" || exit
 		test -n "$n" && tmpd="ip netns exec $n " || tmpd=""
-		tmpa="$(${AWK:-$(nx_cmd_awk)} -v name="$NX_OPTSTR_RMDR" -v base="$b" 'BEGIN {
+		tmpa="$(${AWK:-$(nx_cmd_awk)} -v name="$NEX_OPTSTR_RMDR" -v base="$b" 'BEGIN {
 			if (name !~ /^[0-9A-Za-z_-]{1,15}$/)
 				exit 1
 			if (match(name, /[0-9]+$/)) {
@@ -59,7 +59,7 @@ nx_ip_name()
 			}
 		}')" || {
 			test $? -eq 3 && exit 3
-			nx_io_printf -E "$NX_OPT_STR_RMDR is an invalid name, names must be 1 to 15 character of '0-9,a-z,A-Z,-._'" 1>&2
+			nx_io_printf -E "$NEX_OPT_STR_RMDR is an invalid name, names must be 1 to 15 character of '0-9,a-z,A-Z,-._'" 1>&2
 			unset tmpa
 			exit 1
 		}
@@ -84,23 +84,23 @@ nx_ip_netns()
 	eval "$(
 		test -n "$r" && {
 			nx_data_repeat '
-				ip netns | grep -q "$NX_ARG" && {
-					kill "$(cat /var/run/nex-$NX_ARG.pid)" 2> /dev/null
-					ip netns delete "$NX_ARG"
-					rm -f "/var/run/netns/nex-$NX_ARG.pid"
+				ip netns | grep -q "$NEX_ARG" && {
+					kill "$(cat /var/run/nex-$NEX_ARG.pid)" 2> /dev/null
+					ip netns delete "$NEX_ARG"
+					rm -f "/var/run/netns/nex-$NEX_ARG.pid"
 				}
-			' "$NX_OPT_RMDR"
+			' "$NEX_OPT_RMDR"
 		} || {
 			nx_data_repeat '
-					ip netns | grep -q "$NX_ARG" || {
-						ip netns add "$NX_ARG" && {
-							ip netns exec "$NX_ARG" sysctl --system 1> /dev/null 2>&1 
-							ip netns exec "$NX_ARG" ip link set lo up
-							nohup setsid nsenter --net="/var/run/netns/$NX_ARG" sleep infinity 1> /dev/null 2>&1 &
-							printf $! > "/var/run/nex-$NX_ARG.pid"
+					ip netns | grep -q "$NEX_ARG" || {
+						ip netns add "$NEX_ARG" && {
+							ip netns exec "$NEX_ARG" sysctl --system 1> /dev/null 2>&1 
+							ip netns exec "$NEX_ARG" ip link set lo up
+							nohup setsid nsenter --net="/var/run/netns/$NEX_ARG" sleep infinity 1> /dev/null 2>&1 &
+							printf $! > "/var/run/nex-$NEX_ARG.pid"
 						}
 					}
-			' "$NX_OPT_RMDR"
+			' "$NEX_OPT_RMDR"
 		}
 	)"
 )
@@ -124,7 +124,7 @@ g_nx_ip_l2()
 	eval "$(nx_str_optarg ':n:a' "$@")"
 	test -n "$n" && n="ip netns exec $n "
 	test -n "$a" && $n ip neighbor | ${AWK:-$(nx_cmd_awk)} '{ print $(NF - 1) }'
-	tmpa="$($n ip -json address show $NX_OPT_RMDR 2> /dev/null)" && nx_data_jdump "$tmpa" | ${AWK:-$(nx_cmd_awk)} '/\.nx\[[0-9]+\]\.address =/{print $NF}'
+	tmpa="$($n ip -json address show $NEX_OPT_RMDR 2> /dev/null)" && nx_data_jdump "$tmpa" | ${AWK:-$(nx_cmd_awk)} '/\.nx\[[0-9]+\]\.address =/{print $NF}'
 )
 
 g_nx_ip_ifname()

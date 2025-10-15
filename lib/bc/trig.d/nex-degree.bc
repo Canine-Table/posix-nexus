@@ -1,0 +1,29 @@
+define nx_ang_cos(x) {
+	x = nx_mod(x, 360)
+	if (x < 0)
+		x = x + 360
+	# reflect across 180°
+	if (x > 180)
+		x = 360 - x
+	# reflect across 90°
+	if (x > 90)
+		x = 180 - x
+	# final range: [0°, 90°]
+	return x
+}
+
+define nx_ang_sin(x) {
+	auto s
+	x = nx_mod(x, 360)
+	s = 1
+	if (x < 0)
+		x = x + 360
+	if (x > 180) {
+		x = x - 180
+		s = -1
+	}
+	if (x > 90)
+		x = 180 - x
+	return x * s
+}
+

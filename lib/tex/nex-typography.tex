@@ -1,25 +1,183 @@
-\begin{comment}
 \makeatletter
-\def\nxEm#1#2{%
-	\edef\nx@tmpb{\nxDigit{#2}}
+
+\def\nxEm#1{%
+	\edef\nx@tmpb{\nxDigit{#1}}%
 	\ifnum\nx@tmpb>-1
-		\csname
-		\ifcase#2
-			uuline
-		\or
-			uwave
-		\or
-			sout
-		\or
-			xout
-		\or
-			dashuline
-		\or
-			dotuline
-		\else
-			uline
-		\fi\endcsname{#1}
+		\expandafter\csname
+			\ifcase#1
+				uline% 0
+			\or
+				uwave% 1
+			\or
+				sout% 2
+			\or
+				xout% 3
+			\or
+				dashuline% 4
+			\else
+				dotuline% 5
+			\fi
+		\expandafter\endcsname
 	\fi
 }
+
+\def\nxArw#1{%
+	\edef\nx@tmpb{\nxDigit{#1}}%
+	\ifnum\nx@tmpb>-1
+		\expandafter\csname
+			\ifcase#1
+				downarrow% 0 ↓
+			\or%
+				leftarrow% 1 ←
+			\or%
+				rightarrow% 2 →
+			\or%
+				leftrightarrow% 3 ↔
+			\or%
+				Leftarrow% 4 ⇐
+			\or%
+				Rightarrow% 5 ⇒
+			\or%
+				Downarrow% 6 ⇓
+			\or%
+				Uparrow% 7 ⇑
+			\or%
+				Updownarrow% 8 ⇕
+			\or%
+				nearrow% 9 ⇗
+			\or%
+				searrow% 10 ⇘
+			\or%
+				swarrow% 11 ⇙
+			\or%
+				nwarrow% 12 ⇖
+			\or%
+				updownarrow% 13 ↕
+			\or%
+				leftharpoonup% 14 ↼
+			\or%
+				rightharpoonup% 15 ⇀
+			\or%
+				leftharpoondown% 16 ↽
+			\or%
+				rightharpoondown% 17 ⇁
+			\or%
+				mapsto% 18 ↦
+			\or%
+				hookleftarrow% 19 ↩
+			\or%
+				hookrightarrow% 20 ↪
+			\or%
+				rightleftharpoons% 21 ⇌
+			\or%
+				Leftrightarrow% 22 ⇔
+			\or%
+				longleftarrow% 23 ⟵
+			\or%
+				longrightarrow% 24 ⟶
+			\or%
+				Longleftarrow% 25 ⟸
+			\or%
+				Longrightarrow% 26 ⟹
+			\or%
+				leftleftarrows% 27 ⇇
+			\or%
+				rightrightarrows% 28 ⇉
+			\or%
+				upuparrows% 29 ⇈
+			\or%
+				downdownarrows% 30 ⇊
+			\or%
+				rightleftarrows% 31 ⇄
+			\or%
+				leftrightarrows% 32 ⇆
+			\or%
+				Lsh% 33 ↰
+			\or%
+				Rsh% 34 ↱
+			\or%
+				twoheadleftarrow% 35 ↞
+			\or%
+				twoheadrightarrow% 36 ↠
+			\or%
+				Lleftarrow% 37 ⇚
+			\or%
+				Rrightarrow% 38 ⇛
+			\or%
+				looparrowleft% 39 ↫
+			\or%
+				looparrowright% 40 ↬
+			\or%
+				circlearrowleft% 41 ↺
+			\or%
+				circlearrowright% 42 ↻
+			\or%
+				rightsquigarrow% 43 ⇝
+			\or%
+				leftrightsquigarrow% 44 ↭
+			\or%
+				leftarrowtail% 45 ↢
+			\or%
+				rightarrowtail% 46 ↣
+			\or%
+				curvearrowleft% 47 ↶
+			\or%
+				curvearrowright% 48 ↷
+			\or%
+				upharpoonleft% 49 ↿
+			\or%
+				upharpoonright% 50 ↾
+			\or%
+				downharpoonleft% 51 ⇃
+			\or%
+				downharpoonright% 52 ⇂
+			\or%
+				nleftarrow% 53 ↚
+			\or%
+				nrightarrow% 54 ↛
+			\or%
+				nLeftarrow% 55 ⇍
+			\or%
+				nRightarrow% 56 ⇏
+			\or%
+				nleftrightarrow% 57 ↮
+			\or%
+				nLeftrightarrow% 58 ⇎
+			\else%
+				uparrow% fallback ↑
+			\fi%
+		\endcsname
+	\fi
+}
+
+\def\nxSz#1{%
+	\edef\nx@tmpb{\nxDigit{#1}}%
+	\ifnum\nx@tmpb>-1
+		\expandafter\csname
+			\ifcase#1
+				tiny% 0
+			\or%
+				scriptsize% 1
+			\or%
+				footnotesize% 2
+			\or%
+				small% 3
+			\or%
+				normalsize% 4
+			\or%
+				large% 5
+			\or%
+				Large% 6
+			\or%
+				LARGE% 7
+			\or%
+				huge% 8
+		\else%
+				Huge% >= 9
+			\fi%
+		\endcsname
+	\fi
+}
+
 \makeatother
-\end{comment}
+
