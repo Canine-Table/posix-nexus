@@ -1,0 +1,61 @@
+
+##################################################################
+define pr_nx_ts_cos(x, p) {
+	return nx_sign_trig(x, 1) * nx_ts(nx_rad_cos(x), 2, p, 2, 1)
+}
+
+define r_nx_ts_cos(x) {
+	return pr_nx_ts_cos(x, 128)
+}
+
+##################################################################
+define pd_nx_ts_cos(x, y) {
+	return pr_nx_ts_cos(nx_rad2deg(x), y)
+}
+
+define d_nx_ts_cos(x) {
+	return pd_nx_ts_cos(x, 128)
+}
+
+##################################################################
+define pr_nx_ts_acos(x, y) {
+	if (x > 1 || x < -1) {
+		print "[IMPURITY]: acos(x) domain breach — |x| > 1"
+		return -1
+	}
+	return c_pi / 2 - pr_nx_ts_asin(x, y)
+}
+
+define r_nx_ts_acos(x) {
+	return pr_nx_ts_acos(x, 128)
+}
+
+##################################################################
+define r_nx_cos_law_sd(a, b, c) {
+	return a * a + b * b - 2 * a * b * r_nx_ts_cos(c)
+}
+
+##################################################################
+define nx_solve_sss(a, b, c) {
+	return r_nx_ts_acos((a*a + b*b - c*c) / (2 * a * b))
+}
+
+define nx_solved_sss(a, b, c) {
+	auto x, y, z
+	if (a + b <= c || b + c <= a || c + a <= b) {
+		print "[IMPURITY]: triangle inequality breach"
+		return -1
+	}
+	x = nx_solve_sss(b, c, a)
+	y = nx_solve_sss(c, a, b)
+	z = nx_solve_sss(a, b, c)
+	if (nx_abs(z) == 0)
+		z = nx_deg2rad(90)
+
+	print "Angle A (rad): ", x, " and in (deg): ", nx_rad2deg(x), "\n"
+	print "Angle B (rad): ", y,  " and in (deg): ", nx_rad2deg(y), "\n"
+	print "Angle C (rad): ", z,  " and in (deg): ", nx_rad2deg(z), "\n"
+	return	x + y + z
+}
+
+##################################################################

@@ -1,0 +1,40 @@
+#nx_include "./geometry.d/nex-trigonometry.bc"
+#nx_include "./geometry.d/nex-degree.bc"
+#nx_include "./geometry.d/nex-radian.bc"
+#nx_include "./nex-combinatorics.bc"
+#nx_include "./nex-calculus.bc"
+#nx_include "./nex-convert.bc"
+#nx_include "./nex-algebra.bc"
+
+# very slow
+define nx_lz_pi(x) {
+	auto k, r, s
+	r = 0
+	s = 1
+	for (k = 0; k < x; ++k) {
+		r = r + s * (1 / (2 * k + 1))
+		s = -s
+	}
+	return 4 * r
+}
+
+define nx_lz_tau(x) {
+	return nx_lz_pi(x)
+}
+
+define nx_rj_pi(x) {
+	auto k, r, n, d, t
+	r = 0
+	for (k = 0; k < x; ++k) {
+		n = nx_fact(4 * k) * (1103 + 26390 * k)
+		d = nx_pow(nx_fact(k), 4) * nx_pow(396, 4 * k)
+		t = n / d
+		r = r + t
+	}
+	return 9801 / (2 * nx_nr_sqrt(2) * r)
+}
+
+define nx_rj_tau(x) {
+	return 2 * nx_rj_pi(x)
+}
+

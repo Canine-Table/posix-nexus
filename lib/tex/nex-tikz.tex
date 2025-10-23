@@ -72,61 +72,11 @@
 	\fi%
 }
 
+
+%\tikzstyle{entity} = [rectangle, rounded corners, minimum width=3cm, minimum height=1cm,text centered, draw=black, fill=gray!10]
+%\tikzstyle{arrow} = [thick,->,>=Stealth]
+
 \tikzset{%
-	line/.style={%
-		draw,%
-		-{Latex}%
-	},%
-	startstop/.style={%
-		ellipse,%
-		draw,%
-		fill=red!20,%
-		text centered,%
-		minimum height=2em%
-	},%
-	process/.style={%
-		rectangle,%
-		draw,%
-		fill=blue!20,%
-		text centered,%
-		minimum height=2em%
-	},%
-	decision/.style={%
-		diamond,%
-		draw, fill=green!20,%
-		text centered,%
-		aspect=2%
-	},%
-	io/.style={%
-		trapezium,%
-		trapezium left angle=70,%
-		trapezium right angle=110,%
-		draw,%
-		fill=orange!20,%
-		text centered%
-	},%
-	terminator/.style={%
-		rounded rectangle,%
-		draw, fill=purple!20,%
-		text centered,%
-		minimum height=2em%
-	},%
-	labeltop/.style={%
-		above,%
-		font=\small\itshape%
-	},%
-	labelbottom/.style={%
-		below,%
-		font=\small\ttfamily%
-	},%
-	labelleft/.style={%
-		left,%
-		font=\scriptsize%
-	},%
-	labelright/.style={%
-		right,%
-		font=\scriptsize\bfseries%
-	},%
 	stealth/.style={
 		thick,%
 		->,%
@@ -212,6 +162,95 @@
 	not/.style={%
 		not port,%
 		fill=red!10%
+	},%
+	/nx/shapes/.cd,%
+	startstop/.style={%
+		ellipse,%
+		minimum width=3cm,%
+		minimum height=1cm,%
+		text centered,%
+		draw=black,%
+		fill=red!20%
+	},%
+	process/.style={%
+		rectangle,%
+		minimum width=3cm,%
+		minimum height=1cm,%
+		text centered,%
+		draw=black,%
+		fill=blue!20%
+	},%
+	decision/.style={%
+		diamond,%
+		aspect=2,%
+		text centered,%
+		draw=black,%
+		fill=green!20%
+	},%
+	inputoutput/.style={%
+		trapezium,%
+		trapezium left angle=70,%
+		trapezium right angle=110,%
+		minimum width=3cm,%
+		minimum height=1cm,%
+		text centered,%
+		draw=black,%
+		fill=orange!20%
+	},%
+	io/.style={%
+		trapezium,%
+		trapezium left angle=70,%
+		trapezium right angle=110,%
+		draw,%
+		fill=orange!20,%
+		text centered%
+	},%
+	terminator/.style={%
+		rounded rectangle,%
+		draw, fill=purple!20,%
+		text centered,%
+		minimum height=2em%
+	},%
+	entity/.style={%
+		rectangle,%
+		draw=black,%
+		fill=gray!10,%
+		minimum width=2.5cm,%
+		minimum height=1cm,%
+		text centered%
+	},%
+	attribute/.style={%
+		ellipse,%
+		draw=black,%
+		fill=yellow!20,%
+		minimum width=2.5cm,%
+		minimum height=1cm,%
+		text centered%
+	},%
+	relationship/.style={%
+		diamond,%
+		aspect=2,%
+		draw=black,%
+		fill=purple!20,%
+		text centered%
+	},%
+	multivalue/.style={%
+		ellipse,%
+		double,%
+		draw=black,%
+		fill=yellow!10,%
+		minimum width=2.5cm,%
+		minimum height=1cm,%
+		text centered%
+	},%
+	derived/.style={%
+		ellipse,%
+		dashed,%
+		draw=black,%
+		fill=yellow!10,%
+		minimum width=2.5cm,%
+		minimum height=1cm,%
+		text centered%
 	}%
 }
 
@@ -256,7 +295,14 @@
 			}
 		] (logo) at (current page.center) {};
 		\node at (current page.center) {\includegraphics[width=0.6\pagewidth]{\nx@image}};
-		\node[above=of logo, text=nex.danger.text, yshift=1cm, align=center, text width=\linewidth] (title) {\nxSFont{36pt} \bf \nx@title};
+		\nxShadowed[at={( 0,5 )},%
+			above=of logo,%
+			text=nex.danger.text,%
+			yshift=1cm,%
+			align=center,%
+			text width=\linewidth,%
+			yslant=0.1%
+		]{\nxSFont{24pt} \bf \nx@title};
 		\node[below=of logo, text=nex.danger.text, yshift=-1cm, align=center, text width=\linewidth] (author) {\nxSFont{24pt} \bf \nx@author};
 		\node[below=of author, text=nex.primary.text, align=center, text width=\linewidth] (link) {\nxSFont{24pt} \href{\nx@link}{\bf \nx@ref}};
 	\end{tikzpicture}
@@ -290,7 +336,7 @@
 	\colorlet{ycol}{red!50!black}
 	\colorlet{xcol}{blue!50!black}
 	\draw[help lines,step=5mm] (-#1,-#1) grid (#1,#1);
-	\begin{scope}[axes]
+	\begin{scope}
 		\draw[->, thick, color=xcol] (-#1,0) -- (#1,0) node[right] {$x$} coordinate(x axis);
 		\draw[->, thick, color=red] (0,-#1) -- (0,#1) node[above] {$y$} coordinate(y axis);
 		\foreach \x/\xtext in {-#1, #1} \draw[xshift=\x cm, color=mcol, thick] (0pt, 5pt)
@@ -300,23 +346,9 @@
 	\end{scope}
 }
 
-\begin{comment}
-\ctikzset{%
-	logic ports/scale=1.2,%
-	logic ports/label/.style={font=\small\ttfamily},%
-	logic ports/input anchors=1,2,%
-	logic ports/output anchor=out%
-}
-\end{comment}
-
-\def\polartransformation{%
-	% \pgf@x will contain the radius
-	% \pgf@y will contain the distance
-	\pgfmathsincos@{\pgf@sys@tonumber\pgf@x}%
-	% pgfmathresultx is now the cosine of radius and
-	% pgfmathresulty is the sine of radius
-	\pgf@x=\pgfmathresultx\pgf@y%
-	\pgf@y=\pgfmathresulty\pgf@y%
+\def\nxShadowed[#1]#2;{
+	\node[scale=2,above,#1]{\global\setbox\nx@boxa=\hbox{#2}\copy\nx@boxa};
+	\node[scale=2,above, #1, yscale=-1, scope fading=south, opacity=0.4]{\box\nx@boxa};
 }
 
 \pgfdeclarearrow{
@@ -458,5 +490,147 @@
 		length = 5mm
 	}
 }
+
+\def\nxPlaceLabel#1#2{%
+	\path (#1);%
+	\pgfgetlastxy{\xcoord}{\ycoord}%
+	\pgfmathsetmacro{\xsign}{\xcoord < 0 ? "left" : "right"}%
+	\pgfmathsetmacro{\ysign}{\ycoord < 0 ? "below" : "above"}%
+	\node[anchor=\ysign \xsign] at (#1) {#2};%
+}
+
+\def\nxPlotTri[#1]{%
+	\tikzset{/nx/triangle/.cd, al, bl, cl, as, bs, cs, #1}%
+	\coordinate (\nx@AL) at (\nx@AS);
+	\coordinate (\nx@BL) at (\nx@BS);
+	\coordinate (\nx@CL) at (\nx@CS);
+	\draw[thick] (\nx@AL) -- (\nx@BL) -- (\nx@CL) -- cycle;
+	\nxPlaceLabel{\nx@BL}{\nx@BL}
+	\nxPlaceLabel{\nx@AL}{\nx@AL}
+	\nxPlaceLabel{\nx@CL}{\nx@CL}
+}
+
+\pgfdeclareshape{document}{
+	\inheritsavedanchors[from=rectangle] % this is nearly a rectangle
+	\inheritanchorborder[from=rectangle]
+	\inheritanchor[from=rectangle]{center}
+	\inheritanchor[from=rectangle]{north}
+	\inheritanchor[from=rectangle]{south}
+	\inheritanchor[from=rectangle]{west}
+	\inheritanchor[from=rectangle]{east}
+	% ... and possibly more
+	\backgroundpath{% this is new
+		% store lower right in xa/ya and upper right in xb/yb
+		\southwest \pgf@xa=\pgf@x \pgf@ya=\pgf@y
+		\northeast \pgf@xb=\pgf@x \pgf@yb=\pgf@y
+		% compute corner of ``flipped page''
+		\pgf@xc=\pgf@xb \advance\pgf@xc by\pgfkeysvalueof{/nx/shapes/byX}% this should be a parameter
+		\pgf@yc=\pgf@yb \advance\pgf@yc by\pgfkeysvalueof{/nx/shapes/byY}
+		% construct main path
+		\pgfpathmoveto{\pgfpoint{\pgf@xa}{\pgf@ya}}% move to south west
+		\pgfpathlineto{\pgfpoint{\pgf@xa}{\pgf@yb}}% draw line from south west to north east (bottom left to top right)
+		\pgfpathlineto{\pgfpoint{\pgf@xc}{\pgf@yb}}% draw from top right 
+		\pgfpathlineto{\pgfpoint{\pgf@xb}{\pgf@yc}}
+		\pgfpathlineto{\pgfpoint{\pgf@xb}{\pgf@ya}}
+		\pgfpathclose
+		% add little corner
+		\pgfpathmoveto{\pgfpoint{\pgf@xc}{\pgf@yb}}
+		\pgfpathlineto{\pgfpoint{\pgf@xc}{\pgf@yc}}
+		\pgfpathlineto{\pgfpoint{\pgf@xb}{\pgf@yc}}
+		\pgfpathlineto{\pgfpoint{\pgf@xc}{\pgf@yc}}
+ }
+}
+
+\begin{comment}
+
+\pgfdeclareshape{scrollwave}{
+	\inheritsavedanchors[from=rectangle]
+	\inheritanchorborder[from=rectangle]
+	\inheritanchor[from=rectangle]{center}
+
+	\backgroundpath{
+		\pgfmathsetlengthmacro{\w}{\pgfshapeinnerx}
+		\pgfmathsetlengthmacro{\h}{\pgfshapeinnery}
+
+		\pgfpathmoveto{\pgfpoint{-\w}{\h}}			 % top-left
+		\pgfpathlineto{\pgfpoint{\w}{\h}}				 % top-right
+		\pgfpathlineto{\pgfpoint{\w}{-\h}}			 % bottom-right
+
+		% Bézier curve for bottom edge
+		\pgfpathcurveto
+			{\pgfpoint{0.5*\w}{-\h - 0.2*\h}}			 % control 1
+			{\pgfpoint{-0.5*\w}{-\h + 0.2*\h}}		 % control 2
+			{\pgfpoint{-\w}{-\h}}									% end point
+
+		\pgfpathclose
+	}
+}
+
+
+\pgfdeclareshape{simple shape}{%
+	\savedanchor{\center}{%
+		\pgfpointorigin}
+	\anchor{center}{\center}
+	\savedanchor{\anchorfoo}{%
+		\pgf@x=1cm
+		\pgf@y=0cm}
+	\deferredanchor{anchor \foo}{\anchorfoo}}
+
+\pgfdeclareshape{documentwave}{
+	\inheritsavedanchors[from=rectangle] % inherit anchors like center, north, etc.
+	\inheritanchorborder[from=rectangle]
+	\inheritanchor[from=rectangle]{center}
+	\inheritanchor[from=rectangle]{north}
+	\inheritanchor[from=rectangle]{south}
+	\inheritanchor[from=rectangle]{east}
+	\inheritanchor[from=rectangle]{west}
+	\inheritanchor[from=rectangle]{north east}
+	\inheritanchor[from=rectangle]{north west}
+	\inheritanchor[from=rectangle]{south east}
+	\inheritanchor[from=rectangle]{south west}
+
+	\backgroundpath{
+		% Get corners
+		\pgfpointdiff{\southwest}{\northeast}
+		\pgf@xa=\pgf@x
+		\pgf@ya=\pgf@y
+
+		% Define corners
+		\pgfmathsetlengthmacro{\w}{abs(\pgf@xa)}
+		\pgfmathsetlengthmacro{\h}{abs(\pgf@ya)}
+
+		\pgfpathmoveto{\pgfpoint{-\w/2}{\h/2}} % top-left
+		\pgfpathlineto{\pgfpoint{\w/2}{\h/2}}  % top-right
+		\pgfpathlineto{\pgfpoint{\w/2}{-\h/2}} % bottom-right
+
+		% Wavy bottom edge
+		\pgfpathmoveto{\pgfpoint{\w/2}{-\h/2}}
+		\pgfpathcurveto
+			{\pgfpoint{0.75*\w}{-\h/2 - 0.1*\h}}
+			{\pgfpoint{0.25*\w}{-\h/2 + 0.1*\h}}
+			{\pgfpoint{-\w/2}{-\h/2}}
+
+		\pgfpathlineto{\pgfpoint{-\w/2}{\h/2}} % close shape
+		\pgfpathclose
+	}
+}
+\def\polartransformation{%
+	% \pgf@x will contain the radius
+	% \pgf@y will contain the distance
+	\pgfmathsincos@{\pgf@sys@tonumber\pgf@x}%
+	% pgfmathresultx is now the cosine of radius and
+	% pgfmathresulty is the sine of radius
+	\pgf@x=\pgfmathresultx\pgf@y%
+	\pgf@y=\pgfmathresulty\pgf@y%
+}
+
+\ctikzset{%
+	logic ports/scale=1.2,%
+	logic ports/label/.style={font=\small\ttfamily},%
+	logic ports/input anchors=1,2,%
+	logic ports/output anchor=out%
+}
+\end{comment}
+
 
 \makeatother

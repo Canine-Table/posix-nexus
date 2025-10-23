@@ -1,0 +1,56 @@
+#nx_include "./nex-constant.bc"
+
+
+##################################################################
+define nx_fact(x) {
+	auto n
+	if (x < 0) {
+		print "[IMPURITY]: factoral input < 0 detected!!!"
+		return -1
+	}
+	if (x < 2)
+		return 1
+	n = 1
+	while (x > 1) {
+		n = n * x--
+	}
+	return n
+}
+
+##################################################################
+define nx_fib(x) {
+	auto n, o, p
+	if (x == 1)
+		return 0
+	n = 1
+	o = 0
+	while (--x > 0) {
+		p = o
+		o = n + p
+		n = p
+	}
+	return o
+}
+##################################################################
+define nx_de_ln(x) {
+	if (x <= 0) {
+		print "[IMPURITY]: ln(x) domain breach — x ≤ 0"
+		return -1
+	}
+	if (x == 2)
+		return c_log2
+	# Reduce x into [0.6, 1.6] by scaling with powers of 2
+	while (x > 1.6) {
+		x = x / 2
+		n = n + 1
+	}
+	while (x < 0.6) {
+		x = x * 2
+		n = n - 1
+	}
+	# Apply Doerfler’s approximation
+	return (6 * (x - 1) / (x + 1 + 4 * nx_nr_sqrt(x))) + n * c_log2
+}
+
+##################################################################
+

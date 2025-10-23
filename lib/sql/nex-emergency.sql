@@ -1,0 +1,13 @@
+CREATE TABLE IF NOT EXISTS NxEmergencyNxPools (
+  Id INTEGER PRIMARY KEY,
+  Name TEXT NOT NULL,
+  Description TEXT
+);
+
+CREATE TABLE IF NOT EXISTS NxEmergencyNxGroups (
+  Id INTEGER PRIMARY KEY,
+  PoolId INTEGER NOT NULL,
+  Message TEXT NOT NULL,
+  FOREIGN KEY (PoolId) REFERENCES NxEmergencyNxPools(Id)
+);
+

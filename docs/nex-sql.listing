@@ -1,66 +1,7 @@
-DELIMITER //
-
-CREATE PROCEDURE AssignTeacherToCourses (
-    IN inFirstName     VARCHAR(50),
-    IN inLastName      VARCHAR(50),
-    IN inEmail         VARCHAR(100),
-    IN inHireDate      DATE,
-    IN inCourseCodes   TEXT -- comma-separated list e.g. 'MAT80111,MAT80112'
-)
-BEGIN
-    DECLARE tid INT;
-    DECLARE code VARCHAR(20);
-    DECLARE cid INT;
-    DECLARE done INT DEFAULT FALSE;
-
-    -- Insert teacher if not exists
-    SELECT TeacherID INTO tid
-    FROM Teachers
-    WHERE FirstName = inFirstName AND LastName = inLastName AND Email = inEmail;
-
-    IF tid IS NULL THEN
-        INSERT INTO Teachers (FirstName, LastName, Email, HireDate)
-        VALUES (inFirstName, inLastName, inEmail, inHireDate);
-        SET tid = LAST_INSERT_ID();
-    END IF;
-
-    -- Cursor to iterate course codes
-    DECLARE course_cursor CURSOR FOR
-        SELECT TRIM(SUBSTRING_INDEX(SUBSTRING_INDEX(inCourseCodes, ',', n.n), ',', -1)) AS code
-        FROM (
-            SELECT a.N + b.N * 10 + 1 AS n
-            FROM (SELECT 0 AS N UNION SELECT 1 UNION SELECT 2 UNION SELECT 3 UNION SELECT 4
-                  UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9) a,
-                 (SELECT 0 AS N UNION SELECT 1 UNION SELECT 2 UNION SELECT 3 UNION SELECT 4
-                  UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9) b
-            ORDER BY n
-        ) n
-        WHERE n.n <= LENGTH(inCourseCodes) - LENGTH(REPLACE(inCourseCodes, ',', '')) + 1;
-
-    DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
-
-    OPEN course_cursor;
-
-    read_loop: LOOP
-        FETCH course_cursor INTO code;
-        IF done THEN
-            LEAVE read_loop;
-        END IF;
-
-        -- Derive CourseID
-        SELECT CourseID INTO cid FROM Courses WHERE CourseCode = code;
-
-        IF cid IS NOT NULL THEN
-            -- Insert into junction only if not exists
-            IF NOT EXISTS (
-                SELECT 1 FROM CourseTeachers WHERE CourseID = cid AND TeacherID = tid
-            ) THEN
-                INSERT INTO CourseTeachers (CourseID, TeacherID) VALUES (cid, tid);
-            END IF;
-        END IF;
-    END LOOP;
-
-    CLOSE course_cursor;
-END //
-
-DELIMITER ;
+CREATE TABLE IF NOT EXISTS CourseTeachers (
+    CourseID   INT NOT NULL,
+    TeacherID  INT NOT NULL,
+    PRIMARY KEY (CourseID, TeacherID),
+    FOREIGN KEY (CourseID)  REFERENCES Courses(CourseID)  ON DELETE CASCADE,
+    FOREIGN KEY (TeacherID) REFERENCES Teachers(TeacherID) ON DELETE CASCADE
+);

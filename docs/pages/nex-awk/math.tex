@@ -1,0 +1,175 @@
+\nxSections{Math Module}{1}
+
+\nxSections{Signed Number Detection}{2}
+
+\begin{NxCodeBox}{awk}{title={\_\_nx\_is\_signed(N)}}
+function __nx_is_signed(N)
+{
+    return N ~ /^([-]|[+])/
+}
+\end{NxCodeBox}
+
+\begin{NxLightListBox}[title={Signed Number Detection — The Prefix Glyph}]
+\nxEachLabel{ArrowDark}{Secondary}{{4}{5}}{%
+    {Purpose}/{Detects if \(N\) begins with a sign prefix},%
+    {Regex}/{\Verb!^([-]|[+])! matches optional \texttt{+} or \texttt{-} at start},%
+    {Use Case}/{Pre-validation for signed numeric parsing or formatting}%
+}
+\end{NxLightListBox}
+
+\nxSections{Integer Format Validator}{2}
+
+\begin{NxCodeBox}{awk}{title={\_\_nx\_is\_integral(N, B)}}
+function __nx_is_integral(N, B)
+{
+    return __nx_if(B, N ~ /^([-]|[+])?[0-9]+$/, N ~ /^[0-9]+$/)
+}
+\end{NxCodeBox}
+
+\begin{NxLightListBox}[title={Integer Format Validator — The Whole Glyph}]
+\nxEachLabel{ArrowDark}{Secondary}{{4}{5}}{%
+    {Purpose}/{Validates whether \(N\) is an integer},%
+    {Regex}/{Signed: \Verb!^([-]|[+])?[0-9]+$!; Unsigned: \Verb!^[0-9]+$!},%
+    {Flag \(B\)}/{If \(B=1\), allows optional sign; else requires unsigned digits},%
+    {Use Case}/{Numeric input validation for whole numbers}%
+}
+\end{NxLightListBox}
+
+\nxSections{Float Format Validator}{2}
+
+\begin{NxCodeBox}{awk}{title={\_\_nx\_is\_float(N, B)}}
+function __nx_is_float(N, B)
+{
+    return __nx_if(B, N ~ /^([-]|[+])?[0-9]+[.][0-9]+$/, N ~ /^[0-9]+[.][0-9]+$/)
+}
+\end{NxCodeBox}
+
+\begin{NxLightListBox}[title={Float Format Validator — The Decimal Glyph}]
+\nxEachLabel{ArrowDark}{Secondary}{{4}{5}}{%
+    {Purpose}/{Validates whether \(N\) is a decimal number},%
+    {Regex}/{Signed: \Verb!^([-]|[+])?[0-9]+[.][0-9]+$!; Unsigned: \Verb!^[0-9]+[.][0-9]+$!},%
+    {Flag \(B\)}/{If \(B=1\), allows optional sign; else requires unsigned format},%
+    {Use Case}/{Numeric input validation for floating-point values}%
+}
+\end{NxLightListBox}
+
+\nxSections{Natural Number Filter}{2}
+
+\begin{NxCodeBox}{awk}{title={nx\_natural(N, B)}}
+function nx_natural(N, B)
+{
+    if (__nx_is_integral(N, B) && +N > 0)
+        return +N
+}
+\end{NxCodeBox}
+
+\begin{NxLightListBox}[title={Natural Number Filter — The Positive Glyph}]
+\nxEachLabel{ArrowDark}{Secondary}{{4}{5}}{%
+    {Purpose}/{Returns \(N\) if it’s a valid positive integer},%
+    {Validation}/{Delegates to \texttt{\_\_nx\_is\_integral(N, B)}},%
+    {Condition}/{Requires \(N > 0\)},%
+    {Use Case}/{Filtering for natural numbers in input streams}%
+}
+\end{NxLightListBox}
+
+\nxSections{Non-Zero Digit Filter}{2}
+
+\begin{NxCodeBox}{awk}{title={nx\_not\_zero(N, B)}}
+function nx_not_zero(N, B)
+{
+    if (nx_digit(N, B) && +N != 0)
+        return +N
+}
+\end{NxCodeBox}
+
+\begin{NxLightListBox}[title={Non-Zero Digit Filter — The Zero Guard Glyph}]
+\nxEachLabel{ArrowDark}{Secondary}{{4}{5}}{%
+    {Purpose}/{Returns \(N\) if it’s a valid digit and not zero},%
+    {Validation}/{Delegates to \texttt{nx\_digit(N, B)}},%
+    {Condition}/{Requires \(N \ne 0\)},%
+    {Use Case}/{Zero-guarded numeric filtering for input validation}%
+}
+\end{NxLightListBox}
+
+\nxSections{Numeric Format Validator}{2}
+
+\begin{NxCodeBox}{awk}{title={nx\_digit(N, B1, B2)}}
+function nx_digit(N, B1, B2)
+{
+    if (__nx_is_integral(N, B1) || __nx_is_float(N, __nx_else(B2, B1)))
+        return +N
+}
+\end{NxCodeBox}
+
+\begin{NxLightListBox}[title={Numeric Format Validator — The Composite Glyph}]
+\nxEachLabel{ArrowDark}{Secondary}{{4}{5}}{%
+    {Purpose}/{Returns \(N\) if it’s a valid integer or float based on flags},%
+    {Validation}/{Checks \_\_nx\_is\_integral(N, B1) or \_\_nx\_is\_float(N, \_\_nx\_else(B2, B1)))},%
+    {Flags}/{\(B1\) controls integer sign allowance; \(B2\) controls float policy, defaulting to \(B1\)},%
+    {Return}/{Casts string \(N\) to numeric with \texttt{+N}},%
+    {Use Case}/{Generic numeric input filtering where decimals may be permitted}%
+}
+\end{NxLightListBox}
+
+\nxSections{Precision Formatter}{2}
+
+\begin{NxCodeBox}{awk}{title={\_\_nx\_precision(N1, N2)}}
+function __nx_precision(N1, N2)
+{
+    if (nx_digit(N1, 1)) {
+        N1 = sprintf("%." __nx_if(__nx_is_integral(N2), N2, "") "f", N1)
+        if (__nx_is_float(N1, 1))
+            gsub(/(00+$)/, "", N1)
+        return N1
+    }
+}
+\end{NxCodeBox}
+
+\begin{NxLightListBox}[title={Precision Formatter — The Precision Glyph}]
+\nxEachLabel{ArrowDark}{Secondary}{{4}{5}}{%
+    {Purpose}/{Validates and formats numeric string \(N1\) with decimal precision \(N2\)},%
+    {Precision Parameter}/{Uses \_\_nx\_if(\_\_nx\_is\_integral(N2), N2, "") to set decimal digits},%
+    {Format Assembly}/{Builds format string "\%<precision>f" for \texttt{sprintf}},%
+    {Trailing Zero Removal}/{Strips redundant zeros via \texttt{gsub(/(00+\$)/, "", N1)}},%
+    {Return}/{Returns formatted string or undefined if \(N1\) fails \texttt{nx\_digit(N1,1)}}%
+}
+\end{NxLightListBox}
+
+\nxSections{Digit Guard Filter}{2}
+
+\begin{NxCodeBox}{awk}{title={nx\_digit\_guard(N, B1, B2, S, i, v)}}
+function nx_digit_guard(N, B1, B2, S,   i, v)
+{
+    nx_trim_split(N, v, S)
+    B2 = int(B2)
+    B1 = int(B1)
+    v["-1"] = __nx_if(B1, "optional signed", "required unsigned")
+    v["-2"] = __nx_if(B2, "optional signed", "required unsigned")
+    i = 0
+    do {
+        if (B2 == 2 && ! __nx_is_integral(v[v[0]], B1)) {
+            nx_log_stderr(nx_log_error(v[v[0]] " is not a valid " v["-1"] " integral!"))
+            i = -1
+        } else if (B2 == 3 && ! __nx_is_float(v[v[0]], B1)) {
+            nx_log_stderr(nx_log_error(v[v[0]] " is not a valid " v["-1"] " floating point digit!"))
+            i = -1
+        } else if (! nx_digit(v[v[0]], B1, B2)) {
+            nx_log_stderr(nx_log_error(v[v[0]] " is not a valid " v["-1"] " integral, nor is it a valid " v["-2"] " floating point digit!"))
+            i = -1
+        }
+    } while (--v[0] > 0)
+    delete v
+    return i
+}
+\end{NxCodeBox}
+
+\begin{NxLightListBox}[title={Digit Guard Filter — The Guardian Glyph}]
+\nxEachLabel{ArrowDark}{Secondary}{{4}{5}}{%
+    {Purpose}/{Validates a delimited list of numeric tokens in string \(N\) based on type policy},%
+    {Splitting}/{Trims and splits \(N\) by separator \(S\) into array \(v\) via \Verb!nx_trim_split(N, v, S)!},%
+    {Flags}/{\(B1\): sign allowance flag; \(B2\): numeric type (2=integral, 3=float, other=generic)},%
+    {Validation}/{Iterates tokens \(v[1\dots]\), enforces type via \_\_nx\_is\_integral, \_\_nx\_is\_float, or nx\_digit},%
+    {Error Handling}/{Logs first invalid token with \Verb!nx_log_stderr(nx_log_error(...))! and returns -1; else returns 0}%
+}
+\end{NxLightListBox}
+

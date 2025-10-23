@@ -1,4 +1,5 @@
 #nx_include "nex-misc.awk"
+#nx_include "nex-log.awk"
 #nx_include "nex-str.awk"
 
 # Difference = Minuend - Subtrahend
@@ -45,6 +46,34 @@ function nx_digit(N, B1, B2)
 		return +N
 }
 
+# N = number
+# S = sep
+# B1 = signage
+# B2 = type
+function nx_digit_guard(N, B1, B2, S,	i, v)
+{
+	nx_trim_split(N, v, S)
+	B2 = int(B2)
+	B1 = int(B1)
+	v["-1"] = __nx_if(B1, "optional signed", "required unsigned")
+	v["-2"] = __nx_if(B2, "optional signed", "required unsigned")
+	i = 0
+	do {
+		if (B2 == 2 && ! __nx_is_integral(v[v[0]], B1)) {
+			nx_log_stderr(nx_log_error(v[v[0]] " is not a valid " v["-1"] " integral!"))
+			i = -1
+		} else if (B2 == 3 && ! __nx_is_float(v[v[0]], B1)) {
+			nx_log_stderr(nx_log_error(v[v[0]] " is not a valid " v["-1"] " floating point digit!"))
+			i = -1
+		} else if (! nx_digit(v[v[0]], B1, B2)) {
+			nx_log_stderr(nx_log_error(v[v[0]] " is not a valid " v["-1"] "integral, nor is it a valid " v["-2"] " floating point digit!"))
+			i = -1
+		}
+	} while (--v[0] > 0)
+	delete v
+	return i
+}
+
 function __nx_precision(N1, N2)
 {
 	if (nx_digit(N1, 1)) {
@@ -55,98 +84,19 @@ function __nx_precision(N1, N2)
 	}
 }
 
-function nx_pi(N)
-{
-	return __nx_precision(__nx_if(__nx_is_integral(N), N, 10), atan2(0, -1))
-}
-
-function nx_tau(N)
-{
-	if (N = nx_pi(N))
-		return N * 2
-}
-
-function nx_square_root(N,	n1, n2)
-{
-	if ((N = nx_digit(N)) >= 0) {
-		n1 = N
-		while (n1 * n1 > N)
-			n1 = (n1 + N / n1) / 2
-		n2 = n1
-		while (n2 * n2 < n1)
-			n2 = (n2 + n1) / 2
-		return n2
-	}
-}
-
-function nx_summation(N1, N2,	i)
-{
-	if ((N1 = int(N1)) > (N2 = __nx_else(int(N2), 1)) && nx_natural(N1)) {
-		i = N2
-		while (N1 > i)
-			N2 += N1--
-		return N2
-	}
-}
-
-function nx_factoral(N,		n)
-{
-	if (__nx_is_integral(N = nx_digit(N))) {
-		if (N < 2)
-			return 1
-		n = 1
-		do {
-			n = n * N
-		} while (--N > 0)
-		return n
-	}
-}
-
-function nx_fibonacci(N,	n1, n2, n3)
-{
-	if (nx_natural(N = int(N))) {
-		while (--N > 0) {
-			n3 = n2
-			n2 = n1 + n2
-			if (n2)
-				n1 = n3
-			else
-				n2 = 1
-		}
-		return __nx_else(n2, "0")
-	}
-}
-
-function nx_euclidean(N1, N2,	n) {
-	if (nx_natural(N1 = int(N1)) && nx_natural(N2 = int(N2))) {
-		while (N1) {
-			n = N1
-			N1 = N2 % N1
-			N2 = n
-		}
-		return n
-	}
-}
-
-function nx_lcd(N1, N2,		n)
-{
-	if (n = nx_euclidean(N1, N2))
-		return N1 * N2 / n
-}
-
 function nx_absolute(N)
 {
-	if (nx_digit(N, 1)) {
+	if (nx_digit_guard(N, 1)) {
 		if (__nx_equality(N, "<0", 0))
-			return N * -1
-		return N
+			return -N
+		return +N
 	}
 }
 
 function nx_ceiling(N)
 {
-	if (N = nx_digit(N, 1)) {
-		if (N > int(N))
+	if (nx_digit_guard(N, 1) != -1) {
+		if (+N > int(N))
 			return int(N) + 1
 		return int(N)
 	}
@@ -154,23 +104,23 @@ function nx_ceiling(N)
 
 function nx_floor(N)
 {
-	if (N = nx_digit(N, 1)) {
-		if (N < int(N))
-			return int(N - 1)
+	if (nx_digit_guard(N, 1) != -1) {
+		if (+N < int(N))
+			return int(N) - 1
 		return int(N)
 	}
 }
 
 function nx_round(N)
 {
-	if (N = nx_digit(N, 1))
-		return nx_floor(N + 0.5)
+	if (nx_digit_guard(N, 1) != -1)
+		return nx_floor(+N + 0.5)
 }
 
 function nx_trunc(N)
 {
-	if (N = nx_digit(N, 1)) {
-		if (N > 0)
+	if (nx_digit_guard(N, 1) != -1) {
+		if (+N > 0)
 			return nx_floor(N)
 		return nx_ceiling(N)
 	}
@@ -178,17 +128,17 @@ function nx_trunc(N)
 
 function nx_divisible(N1, N2)
 {
-	if (nx_digit(N1, 1) && nx_digit(N2, 1))
+	if (nx_digit_guard(N1 "," N2, 1) != -1)
 		return ! __nx_is_float(N1 / N2, 1)
 }
 
 function nx_percent(N1, N2, B)
 {
-	if ((N1 = nx_digit(N1)) && (N2 = nx_digit(N2))) {
+	if (nx_digit_guard(N1 "," N2, 0) != -1) {
 		if (B)
-			return N2 / (N1 / 100)
+			return +N2 / (+N1 / 100)
 		else
-			return N1 / 100 * N2
+			return +N1 / 100 * +N2
 	}
 }
 

@@ -1,0 +1,22 @@
+define nx_rad_cos(x) {
+	x = nx_pt_mod2pi(x)
+	if (x > c_pi)
+		x = 2 * c_pi - x
+	if (x > c_pi / 2)
+		x = c_pi - x
+	return x
+}
+
+define nx_rad_sin(x) {
+	auto r
+	x = nx_pt_mod2pi(x)
+	r = 1
+	if (x > c_pi) {
+		x = x - c_pi
+		r = -1
+	}
+	if (x > c_pi / 2)
+		x = c_pi - x
+	return x * r
+}
+

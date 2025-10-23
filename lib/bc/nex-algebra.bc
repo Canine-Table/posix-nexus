@@ -1,0 +1,214 @@
+
+##################################################################
+define nx_reduce(z) {
+	if (z > 1 || z < -1)
+		return 1 / z
+	return z
+}
+
+##################################################################
+define nx_int(x) {
+	auto lo, hi, mid
+	if (x >= 0) {
+		lo = 0
+		hi = x
+		while (lo < hi) {
+			mid = (lo + hi) / 2
+			if (mid + 1 <= x) {
+			lo = mid + 1
+			} else {
+				hi = mid
+			}
+		}
+		return lo
+	} else {
+		hi = 0
+		lo = x
+		while (lo < hi) {
+			mid = (lo + hi) / 2
+			if (mid <= x) {
+				lo = mid + 1
+			} else {
+				hi = mid
+			}
+		}
+		return hi - 1
+	}
+}
+
+##################################################################
+define nx_abs(x) {
+	if (x == -0 || x < 0)
+	return -x
+	return x
+}
+
+##################################################################
+define nx_part(x, y) {
+	auto i, j
+	i = 0
+	if (nx_abs(x) == 0)
+	return x
+	if (x > 0) {
+		j = 1
+		while (x-- > 0.9)
+			i = i + 1
+	} else {
+		j = -1
+		while (x++ < -0.9)
+			i = i - 1
+	}
+	x = x + j
+	if (y == 2)
+		return x
+	if (nx_abs(x) == 0)
+		return i
+	if (y == 0 && x < 0 || y == 1 && x > 0)
+		return i + j
+	return i
+}
+
+define nx_pt_frac(x) {
+	return nx_part(x, 2)
+}
+
+define nx_pt_ceil(x) {
+	return nx_part(x, 1)
+}
+
+define nx_pt_floor(x) {
+	return nx_part(x, 0)
+}
+
+define nx_pt_round(x) {
+	return nx_floor(x + 0.5)
+}
+
+define nx_pt_trunc(x) {
+	if (x > 0)
+		return nx_pt_floor(x)
+	return nx_pt_ceil(x)
+}
+
+##################################################################
+
+define nx_pow(x, y) {
+	auto n
+	if (y == 0)
+		return 1
+	n = x
+	while (y-- > 1) {
+		n = n * x
+	}
+	return n
+}
+
+define nx_erde_pow(x, y) {
+	if (x <= 0) {
+		print "[IMPURITY]: pow(x, y) domain breach — x ≤ 0"
+		return -1
+	}
+	if (y != nx_pt_floor(y))
+		return nx_er_exp(y * nx_de_ln(x))
+	return nx_pow(x, y)
+}
+
+##################################################################
+define nx_nr_sqrt(x) {
+	auto y, p
+	if (x < 0)
+		return -1
+	y = x / 2
+	p = 0
+	while (y != p) {
+		p = y
+		y = (y + x / y) / 2
+	}
+	return y
+}
+
+##################################################################
+define nx_sum(x, y) {
+	auto i
+	if (y == 0)
+		return x
+	i = y
+	while (x > i)
+		y += x--
+	return y
+}
+
+##################################################################
+define nx_er_exp(x) {
+	auto n, m
+	n = 0
+	m = 0
+	while (n < c_prec)
+		m = m + nx_mc_esp(x, n++)
+	return m
+}
+
+##################################################################
+define nx_euc(x, y) {
+	auto n
+	while (x) {
+		n = x
+		x = y % x
+		y = n
+	}
+	return n
+}
+
+define nx_lcd(x, y) {
+	return x * y / nx_euc(x, y)
+}
+
+##################################################################
+define nx_binom(x, y) {
+	auto n
+	if (nx_abs(y) == 0 || x == y)
+		return 1
+	n = 1
+	for (i = 1; i <= y; ++i)
+		n = n * (x - i + 1) / i
+	return n
+}
+
+define nx_binom_fact(x, y) {
+	return nx_fact(x) / (nx_fact(y) * nx_fact(x - y))
+}
+
+##################################################################
+define nx_scale() {
+	auto y, x
+	y = scale
+	x = 1
+	while (y-- > 0)
+		x = x * 0.1
+	return x
+}
+
+##################################################################
+define nx_abs(x) {
+	if (x < 0)
+		return -x
+	return x
+}
+
+##################################################################
+define nx_pt_mod(x, y) {
+	return x - y * nx_pt_floor(x / y)
+}
+
+##################################################################
+define nx_sign(x) {
+	if (x < 0 || x == -0)
+		return -1
+	if (x > 0)
+		return 1
+	return 0
+}
+
+##################################################################
+
+

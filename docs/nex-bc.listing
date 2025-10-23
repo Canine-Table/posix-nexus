@@ -1,13 +1,10 @@
-define nx_esp(x, y) {
-    return nx_pow(x, y) / nx_fact(y)
+define pr_nx_sincos(x, y) {
+    auto a, b
+    a = pr_nx_ts_sin(x, y)
+    b = pr_nx_ts_cos(x, y)
+    return a*a + b*b
 }
 
-define nx_ts(n, t, p, k) {
-    auto r
-    r = n
-    while (t < p) {
-        r = r - nx_esp(n, t) + nx_esp(n, t += k)
-        t += k
-    }
-    return r
+define r_nx_sincos(x) {
+    return pr_nx_sincos(x, 128)
 }

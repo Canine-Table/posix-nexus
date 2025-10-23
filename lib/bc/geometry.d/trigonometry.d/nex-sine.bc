@@ -1,0 +1,48 @@
+
+##################################################################
+define r_nx_ts_sin(x) {
+	x = nx_rad_sin(x)
+	return nx_ts(x, 3, c_prec, 2, x)
+}
+
+##################################################################
+define r_nx_ts_csc(x) {
+	return 1 / r_nx_ts_sin(x)
+}
+
+##################################################################
+define r_nx_sincos(x) {
+	auto a, b
+	a = pr_nx_ts_sin(x)
+	b = pr_nx_ts_cos(x)
+	return a*a + b*b
+}
+
+##################################################################
+define r_nx_ts_asin(z) {
+	auto r, t, s, p
+	p = c_prec
+	if (z > 1 || z < -1) {
+		print "[IMPURITY]: asin(z) domain breach — |z| > 1"
+		return -1
+	}
+	if (nx_abs(z) == 1)
+		return (nx_sign(z) * c_pi) / 2
+	if (nx_abs(z) > 0.95 && p < 256) {
+		p = 256
+	} else if (nx_abs(z) > 0.9 && p < 192) {
+		p = 192
+	}
+	r = z
+	t = z
+	s = 1
+	for (i = 1; i < p; i++) {
+		t = t * z * z
+		s = s * (2 * i - 1) / (2 * i)
+		r = r + s * t / (2 * i + 1)
+	}
+	return r
+}
+
+##################################################################
+

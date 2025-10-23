@@ -1,0 +1,40 @@
+#nx_include "./nex-combinatorics.bc"
+#nx_include "./nex-algebra.bc"
+
+define nx_mc_esp(x, y) {
+	return nx_pow(x, y) / nx_fact(y)
+}
+
+define nx_ts(n, t, p, k, s) {
+	auto r
+	if (t < 1 || k <= 0 || p <= t) {
+		print "[IMPURITY]: invalid series parameters — check t, k, p"
+		return -1
+	}
+	r = s
+	while (t < p) {
+		r = r - nx_mc_esp(n, t) + nx_mc_esp(n, t += k)
+		t += k
+	}
+	return r
+}
+
+##################################################################
+define nx_ts_alt(z, i, p, k, s) {
+	auto r, t
+	if (nx_abs(z) > 1) {
+		print "[IMPURITY]: series domain breach — |z| > 1"
+		return -1
+	}
+	r = z
+	t = z
+	while (i < p) {
+		t = t * z * z
+		r = r + s * t / i
+		s = -s
+		i = i + k
+	}
+	return r
+}
+
+##################################################################

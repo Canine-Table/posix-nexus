@@ -1,6 +1,86 @@
 #nx_include "nex-misc.awk"
 #nx_include "nex-str.awk"
 
+function nx_pi(N)
+{
+	return __nx_precision(__nx_if(__nx_is_integral(N), N, 10), atan2(0, -1))
+}
+
+function nx_tau(N)
+{
+	if (N = nx_pi(N))
+		return N * 2
+}
+
+function nx_square_root(N,	n1, n2)
+{
+	if ((N = nx_digit(N)) >= 0) {
+		n1 = N
+		while (n1 * n1 > N)
+			n1 = (n1 + N / n1) / 2
+		n2 = n1
+		while (n2 * n2 < n1)
+			n2 = (n2 + n1) / 2
+		return n2
+	}
+}
+
+function nx_summation(N1, N2,	i)
+{
+	if ((N1 = int(N1)) > (N2 = __nx_else(int(N2), 1)) && nx_natural(N1)) {
+		i = N2
+		while (N1 > i)
+			N2 += N1--
+		return N2
+	}
+}
+
+function nx_factoral(N,		n)
+{
+	if (__nx_is_integral(N = nx_digit(N))) {
+		if (N < 2)
+			return 1
+		n = 1
+		do {
+			n = n * N
+		} while (--N > 0)
+		return n
+	}
+}
+
+function nx_fibonacci(N,	n1, n2, n3)
+{
+	if (nx_natural(N = int(N))) {
+		while (--N > 0) {
+			n3 = n2
+			n2 = n1 + n2
+			if (n2)
+				n1 = n3
+			else
+				n2 = 1
+		}
+		return __nx_else(n2, "0")
+	}
+}
+
+function nx_euclidean(N1, N2,	n) {
+	if (nx_natural(N1 = int(N1)) && nx_natural(N2 = int(N2))) {
+		while (N1) {
+			n = N1
+			N1 = N2 % N1
+			N2 = n
+		}
+		return n
+	}
+}
+
+function nx_lcd(N1, N2,		n)
+{
+	if (n = nx_euclidean(N1, N2))
+		return N1 * N2 / n
+}
+
+
 function nx_import(D1, D2, D3,		trk, mp)
 {
     D3 = "#"

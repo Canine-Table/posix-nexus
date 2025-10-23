@@ -1,85 +1,884 @@
+\def\nxInputTrig#1{\nxInput{trigonometry.d/#1}}
 \nxSections{Trigonometry}{1}
 
-\def\nxTikzTri{%
-	\draw[thick] (A) -- (B) -- (C) -- cycle;
+\nxInputTrig{cartesian}
+\nxInputTrig{angles}
+\nxInputTrig{functions}
 
+% Triangle Definition — The Ritual Glyph
+\begin{NxLightListBox}[title={Triangle Definition — The Ritual Glyph}]
+    \nxEachLabel{ArrowDark}{Secondary}{{5}{5}}{%
+        {Vertices}/{A,B,C},%
+        {Sides}/{a=BC=3,\; b=CA=4,\; c=AB=5},%
+        {Right Angle}/{At vertex C since \(3^2+4^2=5^2\)},%
+        {Goal}/{Find angles A,B; place in standard position; get coordinates; compute trig ratios}%
+    }
+\end{NxLightListBox}
+
+% Law of Cosines for Angles — The Audit Glyph
+\begin{NxLightListBox}[title={Law of Cosines for Angles — The Audit Glyph}]
+    \nxEachLabel{ArrowDark}{Secondary}{{4}{5}}{%
+        {Formula A}/{\(\displaystyle A = \arccos\!\bigl(\tfrac{b^2 + c^2 - a^2}{2bc}\bigr)
+                          = \arccos\!\bigl(\tfrac{4^2 + 5^2 - 3^2}{2\cdot4\cdot5}\bigr)\)},%
+        {Formula B}/{\(\displaystyle B = \arccos\!\bigl(\tfrac{a^2 + c^2 - b^2}{2ac}\bigr)
+                          = \arccos\!\bigl(\tfrac{3^2 + 5^2 - 4^2}{2\cdot3\cdot5}\bigr)\)},%
+        {Numeric A}/{\(A = \arccos(0.8) \approx 36.87^\circ\)},%
+        {Numeric B}/{\(B = \arccos(0.6) \approx 53.13^\circ\)},%
+        {Check}/{\(A+B+C=36.87+53.13+90=180^\circ\)}%
+    }
+\end{NxLightListBox}
+
+% Standard Position — The Containment Glyph
+\begin{NxLightListBox}[title={Standard Position — The Containment Glyph}]
+    \nxEachLabel{ArrowDark}{Secondary}{{4}{5}}{%
+        {Step 1}/{Translate A\(\to\)(0,0)},%
+        {Step 2}/{Rotate AB onto positive \(x\)-axis ⇒ B\(\to\)(5,0)},%
+        {Step 3}/{C becomes \((b\cos A,\; b\sin A) = (4\cos36.87^\circ,\;4\sin36.87^\circ)\)},%
+        {Result}/{A=(0,0),\;B=(5,0),\;C\approx(3.2,\;2.4)}%
+    }
+\end{NxLightListBox}
+
+% Trig Ratios — The Projection Glyph
+\begin{NxLightListBox}[title={Trig Ratios — The Projection Glyph}]
+    \nxEachLabel{ArrowDark}{Secondary}{{4}{5}}{%
+        {sin A}/{\(\frac{\text{opp}}{\text{hyp}}=\tfrac{3}{5}=0.6\)},%
+        {cos A}/{\(\frac{\text{adj}}{\text{hyp}}=\tfrac{4}{5}=0.8\)},%
+        {tan A}/{\(\frac{\text{opp}}{\text{adj}}=\tfrac{3}{4}=0.75\)},%
+        {sin B}/{\(\tfrac{4}{5}=0.8\)},%
+        {cos B}/{\(\tfrac{3}{5}=0.6\)},%
+        {tan B}/{\(\tfrac{4}{3}\approx1.3333\)}%
+    }
+\end{NxLightListBox}
+
+\nxSections{Pythagorean Helper}{2}
+% Pythagorean Helper — The Hypotenuse Glyph
+\begin{NxLightListBox}[title={Pythagorean Helper — The Hypotenuse Glyph}]
+    \nxEachLabel{ArrowDark}{Secondary}{{4}{5}}{%
+        {Function}/{\texttt{r\_nx\_pth(x,y)} returns \(\sqrt{x^2 + y^2}\)},%
+        {Inputs}/{x,y represent the two legs of a right triangle},%
+        {Output}/{Hypotenuse length \(c\)},%
+        {Role}/{Provides \(c\) for subsequent trig‐ratio calculations}%
+    }
+\end{NxLightListBox}
+
+\begin{NxCodeBox}{c}{title={r\_nx\_pth(x, y)}}
+define r_nx_pth(x, y) {
+    return nx_nr_sqrt(x*x + y*y)
+}
+\end{NxCodeBox}
+
+\nxSections{SOHCAHTOA Solver}{2}
+% SOHCAHTOA Solver — The Angle Extraction Glyph
+\begin{NxLightListBox}[title={SOHCAHTOA Solver — The Angle Extraction Glyph}]
+    \nxEachLabel{ArrowDark}{Secondary}{{4}{5}}{%
+        {Definition}/{\texttt{nx\_solved\_sohcahtoa(a,b)} solves for angle A},%
+        {Compute c}/{\(c = r\_nx\_pth(a,b)\)},%
+        {Build ratios}/{\(\sin A = \tfrac{b}{c};\;\cos A = \tfrac{a}{c};\;\tan A = \tfrac{b}{a}\)},%
+        {Inverse trig}/{Uses \texttt{r\_nx\_ts\_asin}, \texttt{r\_nx\_ts\_acos}, \texttt{r\_nx\_ts\_atan} then \texttt{nx\_rad2deg}},%
+        {Output}/{Prints angle \(A\) in degrees three times from each ratio}%
+    }
+\end{NxLightListBox}
+
+\begin{NxCodeBox}{c}{title={nx\_solved\_sohcahtoa(a, b)}}
+define nx_solved_sohcahtoa(a, b, c) {
+    auto x, y, z
+    if (nx_abs(c) == 0)
+        c = r_nx_pth(a, b) # compute hypotenuse via Pythagoras
+    x = b / c                        # sin A = opposite/hyp
+    y = a / c                        # cos A = adjacent/hyp
+    z = b / a                        # tan A = opposite/adj
+    print "sin A (ratio): ", x,
+          " → angle A (deg): ", nx_rad2deg(r_nx_ts_asin(x)), "\n"
+    print "cos A (ratio): ", y,
+          " → angle A (deg): ", nx_rad2deg(r_nx_ts_acos(y)), "\n"
+    print "tan A (ratio): ", z,
+          " → angle A (deg): ", nx_rad2deg(r_nx_ts_atan(z)), "\n"
+}
+\end{NxCodeBox}
+
+% Inverse Trig Conversion — The Angle Extraction Glyph
+\begin{NxLightListBox}[title={Inverse Trig Conversion — The Angle Extraction Glyph}]
+    \nxEachLabel{ArrowDark}{Secondary}{{4}{5}}{%
+        {Purpose}/{Convert a sine, cosine, or tangent ratio back into its corresponding angle},%
+        {asin}/{Arc-sine inverts \(\sin\): finds \(\theta\) such that \(\sin\theta=\text{ratio}\)},%
+        {acos}/{Arc-cosine inverts \(\cos\): finds \(\theta\) such that \(\cos\theta=\text{ratio}\)},%
+        {atan}/{Arc-tangent inverts \(\tan\): finds \(\theta\) such that \(\tan\theta=\text{ratio}\)},%
+        {rad2deg}/{Transforms the radian-output of the inverse function into degrees for readability}%
+    }
+\end{NxLightListBox}
+
+% Ratio Context — The Side‐Ratio Glyph
+\begin{NxLightListBox}[title={Ratio Context — The Side‐Ratio Glyph}]
+    \nxEachLabel{ArrowDark}{Secondary}{{4}{5}}{%
+        {x = b/c}/{Opposite side (BC=b) over hypotenuse (c=AB) for angle A},%
+        {y = a/c}/{Adjacent side (CA=a) over hypotenuse (c=AB) for angle A},%
+        {z = b/a}/{Opposite side (b) over adjacent side (a) for angle A},%
+        {SOHCAHTOA}/{These exactly match \(\sin A\), \(\cos A\), and \(\tan A\) respectively},%
+        {Inverse Trig Input}/{You feed each ratio into \(\arcsin\), \(\arccos\), or \(\arctan\) to recover angle A}%
+    }
+\end{NxLightListBox}
+
+% Ratio Domain & Range — The Dimensionless Glyph
+\begin{NxLightListBox}[title={Ratio Domain \& Range - The Dimensionless Glyph}]
+    \nxEachLabel{ArrowDark}{Secondary}{{4}{5}}{%
+        {What ``ratio'' means}/{A pure, dimensionless fraction of two side‐lengths in a triangle},%
+        {\(\sin\theta\)}/{Opposite side / hypotenuse => always between \(-1\) and \(+1\)},%
+        {\(\cos\theta\)}/{Adjacent side / hypotenuse => always between \(-1\) and \(+1\)},%
+        {\(\tan\theta\)}/{Opposite side / adjacent side => any real number (adjacent can approach zero)},%
+        {Not ``to \(\pi\)''}/{These ratios are not measured ``to \(\pi\)'' or any other unit—they are just length / length},%
+        {Inverse‐Trig Inputs}/{\texttt{arcsin}/\texttt{arccos} take inputs in \([-1,1]\); \texttt{arctan} accepts all real ratios}%
+    }
+\end{NxLightListBox}
+
+\nxSections{Arcsin Taylor Series}{2}
+\begin{NxCodeBox}{c}{title={pr\_nx\_ts\_asin(z, p)}}
+define pr_nx_ts_asin(z, p) {
+    auto r, t, s
+    if (z > 1 || z < -1) {
+        print "[IMPURITY]: asin(z) domain breach — |z| > 1"
+        return -1
+    }
+    if (nx_abs(z) == 1)
+        return (nx_sign(z) * c_pi) / 2
+
+    if (nx_abs(z) > 0.95 && p < 256) {
+        p = 256
+    } else if (nx_abs(z) > 0.9 && p < 192) {
+        p = 192
+    }
+
+    r = z
+    t = z
+    s = 1
+    for (i = 1; i < p; i++) {
+        t = t * z * z
+        s = s * (2 * i - 1) / (2 * i)
+        r = r + s * t / (2 * i + 1)
+    }
+    return r
+}
+\end{NxCodeBox}
+
+% Domain Checks & Edge Cases — The Purity Glyph
+\begin{NxLightListBox}[title={Domain Checks \& Edge Cases — The Purity Glyph}]
+    \nxEachLabel{ArrowDark}{Secondary}{{4}{5}}{%
+        {Domain Guard}/{Rejects |z|>1 since \(\asin\) is only valid on [-1,1]},%
+        {Impurity Notice}/{Prints an error if domain is breached},%
+        {Exact Ends}/{If |z|=1 returns \(\pm\,\tfrac{c\_pi}{2}\) exactly},%
+        {Sign Function}/{Uses \(nx\_sign(z)\) to pick + or -},%
+        {Setup p}/{Keeps ‘p’ as the series depth (initially 128)}%
+    }
+\end{NxLightListBox}
+
+% Taylor Series Expansion — The Recurrence Glyph
+\begin{NxLightListBox}[title={Taylor Series Expansion — The Recurrence Glyph}]
+    \nxEachLabel{ArrowDark}{Secondary}{{4}{5}}{%
+			{Goal}/{Compute \(\asin(z)=\sum_{n=0}^\infty \frac{(2n)!}{4^n\,(n!)^2\,(2n+1)}\,z^{2n+1}\)},%
+        {Accumulator r}/{Starts at r=z (n=0 term)},%
+        {Term t}/{Tracks \(z^{2n+1}\); updated via \(t\leftarrow t·z^2\)},%
+        {Coeff s}/{Tracks \(\frac{(2n)!}{4^n\,(n!)^2}\) via recurrence \(s\leftarrow s·\frac{2n-1}{2n}\)},%
+        {Series Add}/{Adds each term \(s·t/(2n+1)\) to r},%
+        {Loop Count}/{Runs from n=1 to p−1 terms for desired accuracy}%
+    }
+\end{NxLightListBox}
+
+% Final Return — The Resultant Glyph
+\begin{NxLightListBox}[title={Final Return — The Resultant Glyph}]
+    \nxEachLabel{ArrowDark}{Secondary}{{4}{5}}{%
+        {Output}/{Returns r as the approximate \(\asin(z)\) in radians},%
+        {Wrapper}/{r\_nx\_ts\_asin(z) calls pr\_nx\_ts\_asin(z,128) by default},%
+        {Convert to Degrees}/{Use nx\_rad2deg on the result if you need degrees}%
+    }
+\end{NxLightListBox}
+
+% Arcsin Taylor Series — The Coefficient Glyph
+\begin{NxLightListBox}[title={Arcsin Taylor Series — The Coefficient Glyph}]
+    \nxEachLabel{ArrowDark}{Secondary}{{4}{5}}{%
+        {Series Definition}/{\(\displaystyle \arcsin(z)=\sum_{n=0}^{\infty}\frac{(2n)!}{4^n\,(n!)^2\,(2n+1)}\,z^{2n+1}\)},%
+        {Coefficient}/{\(C_n=\frac{(2n)!}{4^n\,(n!)^2}\)},%
+        {Term}/{\(T_n=C_n\;\frac{z^{2n+1}}{2n+1}\)},%
+        {Goal}/{Compute \(C_n\) via recurrence, avoiding fresh factorials each time}%
+    }
+\end{NxLightListBox}
+
+% Recurrence Derivation — The Pure Ratio Glyph
+\begin{NxLightListBox}[title={Recurrence Derivation — The Pure Ratio Glyph}]
+    \nxEachLabel{ArrowDark}{Secondary}{{4}{5}}{%
+        {Definition}/{\(C_n=\dfrac{(2n)!}{4^n\,(n!)^2}\)},%
+        {Ratio \(C_n/C_{n-1}\)}/{%
+            \(\dfrac{C_n}{C_{n-1}}
+            =\dfrac{\,(2n)!/4^n\,(n!)^2\,}{\,(2n-2)!/4^{\,n-1}\,\bigl((n-1)!\bigr)^2\,}
+            =\dfrac{(2n)(2n-1)}{4\,n^2}\)
+        },%
+        {Simplify}/{\(\dfrac{(2n)(2n-1)}{4\,n^2}
+                       =\dfrac{2n-1}{2n}\)},%
+        {Recurrence}/{\(C_n=C_{n-1}\times\dfrac{2n-1}{2n}\)}%
+    }
+\end{NxLightListBox}
+
+% Code Mapping — The Implementation Glyph
+\begin{NxLightListBox}[title={Code Mapping — The Implementation Glyph}]
+    \nxEachLabel{ArrowDark}{Secondary}{{4}{5}}{%
+        {Loop Index}/{\(\texttt{i}\) corresponds to \(n\)},%
+        {Accumulator}/{\(\texttt{s}\) holds \(C_{n-1}\) at loop start},%
+        {Update}/{\(\texttt{s = s * (2*i - 1) / (2*i)}\) implements \(s\leftarrow s\cdot\frac{2n-1}{2n}\)},%
+        {Initialization}/{Before loop: \(\texttt{s}=C_0=1\)},%
+        {Result}/{After \(n\) iterations: \(\texttt{s}=C_n\)}%
+    }
+\end{NxLightListBox}
+
+\begin{NxCodeBox}{c}{title={Coefficient Recurrence in Code}}
+for (i = 1; i < p; i++) {
+    s = s * (2*i - 1) / (2*i);
+    # now s = (2*i)! / (4^i * (i!)^2)
+}
+\end{NxCodeBox}
+
+\nxSections{Arctan Taylor Series}{2}
+\begin{NxCodeBox}{c}{title={nx\_ts\_alt(z, i, p, k, s)}}
+define nx_ts_alt(z, i, p, k, s) {
+	auto r, t
+	if (nx_abs(z) > 1) {
+		print "[IMPURITY]: series domain breach — |z| > 1"
+		return -1
+	}
+	r = z
+	t = z
+	while (i < p) {
+		t = t * z * z
+		r = r + s * t / i
+		s = -s
+		i = i + k
+	}
+	return r
+}
+\end{NxCodeBox}
+
+% Arctan Taylor Series — The Alternating Glyph
+\begin{NxLightListBox}[title={Arctan Taylor Series — The Alternating Glyph}]
+    \nxEachLabel{ArrowDark}{Secondary}{{4}{5}}{%
+        {Series Definition}/{\(\displaystyle \arctan(z)
+           = \sum_{n=0}^\infty \frac{(-1)^n}{2n+1}\,z^{2n+1}\)},%
+        {Accumulator \(r\)}/{Starts at \(z\) for \(n=0\)},%
+        {Power \(t\)}/{Tracks \(z^{2n+1}\); updated via \(t\leftarrow t\cdot z^2\)},%
+        {Sign \(s\)}/{Alternates via \(s\leftarrow -s\) to implement \((-1)^n\)},%
+        {Odd Index \(i\)}/{Uses \(i=2n+1\); increments by \(k=2\) each loop}%
+    }
+\end{NxLightListBox}
+
+% Series Engine — The Loop Glyph
+\begin{NxLightListBox}[title={Series Engine — The Loop Glyph}]
+    \nxEachLabel{ArrowDark}{Secondary}{{4}{5}}{%
+        {Init Parameters}/{Called with \((z,\,3,\,p,\,2,\,-1)\)},%
+        {Start i=3}/{First loop adds term for \(n=1\): \(-\,z^3/3\)},%
+        {Step k=2}/{Moves from \(i=3\to5\to7\)\;…},%
+        {Term Update}/{\(r \mathrel{+}= s\,t/i\)},%
+        {Loop Count}/{Runs until \(i\ge p\) for desired precision}%
+    }
+\end{NxLightListBox}
+
+% Argument Reduction — The Reciprocal Glyph
+\begin{NxLightListBox}[title={Argument Reduction — The Reciprocal Glyph}]
+    \nxEachLabel{ArrowDark}{Secondary}{{4}{5}}{%
+        {Large |z|>1}/{Uses \(\arctan(z)=\tfrac\pi2-\arctan(1/z)\) if \(z>1\)},%
+        {Negative / Large}/{Uses \(\arctan(z)=-\tfrac\pi2-\arctan(1/z)\) if \(z< -1\)},%
+        {Reduce Magnitude}/{Calls \(\texttt{nx\_ts\_alt}(1/z,3,p,2,-1)\)},%
+        {Ensures Fast Convergence}/{Keeps series input \(|1/z|<1\)},%
+        {Assemble}/{Adds or subtracts \(\pm\tfrac\pi2\) to the reduced‐series result}%
+    }
+\end{NxLightListBox}
+
+% Domain Guard — The Purity Glyph
+\begin{NxLightListBox}[title={Domain Guard — The Purity Glyph}]
+    \nxEachLabel{ArrowDark}{Secondary}{{4}{5}}{%
+        {Check}/{if \(\lvert z\rvert>1\) → print impurity and return \(-1\)},%
+        {Purpose}/{Prevent divergence: the alternating series for \(\arctan(z)\) only converges for \(\lvert z\rvert\le1\)},%
+        {Signal}/{Returning \(-1\) flags an invalid input before any looping begins}%
+    }
+\end{NxLightListBox}
+
+% Alternating Series Engine — The Loop Glyph
+\begin{NxLightListBox}[title={Alternating Series Engine — The Loop Glyph}]
+    \nxEachLabel{ArrowDark}{Secondary}{{4}{5}}{%
+        {Accumulator \(r\)}/{Starts at \(z\) (the \(n=0\) term of \(\sum(-1)^n z^{2n+1}/(2n+1)\))},%
+        {Power \(t\)}/{Tracks \(z^{2n+1}\); updated via \(t\leftarrow t\cdot z^2\)},%
+        {Sign \(s\)}/{Implements \((-1)^n\); flips each iteration ( \(s\leftarrow -s\) )},%
+        {Index \(i\)}/{Denominator for each term; begins at first odd index passed in, increments by \(k\) (usually 2) },%
+        {Loop}/{While \(i<p\): add \(s\cdot t/i\) to \(r\), flip sign, step index},%
+        {Result}/{After \(i\) reaches \(p\), \(r\) approximates \(\arctan(z)\) in radians}%
+    }
+\end{NxLightListBox}
+
+\begin{NxCodeBox}{c}{title={pr\_nx\_ts\_atan(z, p)}}
+define pr_nx_ts_atan(z, p) {
+    if (nx_abs(z) == 1)
+        return (nx_sign(z) * c_pi) / 4
+    if (nx_abs(z) > 0.999 && p < 256)
+        p = 256
+    else if (nx_abs(z) > 0.95 && p < 192)
+        p = 192
+    else if (nx_abs(z) > 0.9 && p < 160)
+        p = 160
+
+    if (z > 1)
+        return c_pi/2  - nx_ts_alt(1/z, 3, p, 2, -1)
+    if (z < -1)
+        return -c_pi/2 - nx_ts_alt(1/z, 3, p, 2, -1)
+
+    return nx_ts_alt(z, 3, p, 2, -1)
+}
+\end{NxCodeBox}
+
+\nxSections{Generic Series Engine}{2}
+\begin{NxCodeBox}{c}{title={nx\_mc\_esp(x, y) \& nx\_ts(n, t, p, k, s)}}
+define nx_mc_esp(x, y) {
+    return nx_pow(x, y) / nx_fact(y)
 }
 
-\begin{tikzpicture}
-	\coordinate (A) at (-2.5,2.5);
-	\coordinate (B) at (2.5,2.5);
-	\coordinate (C) at (-2.5,-2.5);
-	\nxTikzAxis{8}
-	\nxTikzTri
-\end{tikzpicture}
+define nx_ts(n, t, p, k, s) {
+    auto r
+    if (nx_abs(n) > 1) {
+        print "[IMPURITY]: series domain breach — |n| > 1"
+        return -1
+    }
+    if (t < 1 || k <= 0 || p <= t) {
+        print "[IMPURITY]: invalid series parameters — check t, k, p"
+        return -1
+    }
+    r = s
+    while (t < p) {
+        r = r - nx_mc_esp(n, t) + nx_mc_esp(n, t += k)
+        t += k
+    }
+    return r
+}
+\end{NxCodeBox}
 
-\nxSections{Pythagorean theorem}{2}
+% Domain Guard — The Purity Glyph
+\begin{NxLightListBox}[title={Domain Guard — The Purity Glyph}]
+    \nxEachLabel{ArrowDark}{Secondary}{{4}{5}}{%
+        {Check}/{if \(\lvert n\rvert>1\) prints impurity \& returns \(-1\)},%
+        {Reason}/{Taylor‐type series converge only for \(\lvert n\rvert\le1\)},%
+        {Signal}/{Early exit prevents divergent summation}%
+    }
+\end{NxLightListBox}
 
-{\bf Hypotenuse Length}
+% Parameter Guard — The Integrity Glyph
+\begin{NxLightListBox}[title={Parameter Guard — The Integrity Glyph}]
+    \nxEachLabel{ArrowDark}{Secondary}{{4}{5}}{%
+        {Check}/{if \(t<1\), \(k\le0\), or \(p\le t\) prints impurity \& returns \(-1\)},%
+        {Reason}/{Ensures valid start index, positive step, and loop limit},%
+        {Signal}/{Prevents infinite loops or empty sums}%
+    }
+\end{NxLightListBox}
 
-Use the Pythagorean theorem:
+% Generic Series Engine — The Paired-Term Glyph
+\begin{NxLightListBox}[title={Generic Series Engine — The Paired-Term Glyph}]
+    \nxEachLabel{ArrowDark}{Secondary}{{4}{5}}{%
+        {Accumulator \(r\)}/{Initialized to \(s\) (first term)},%
+        {Loop}/{While \(t<p\): subtract term at \(t\), then add term at \(t+k\)},%
+        {Index Update}/{\(t\) increases by \(k\) twice per iteration},%
+        {Result}/{After loop, \(r\) holds paired‐term sum approximation}%
+    }
+\end{NxLightListBox}
 
-\begin{empheq}[box=\nxWarningMathBox]{align*}
-\text{Hypotenuse} = \sqrt{5^2 + 5^2} = \sqrt{50} = 5\sqrt{2} \approx 7.071
-\end{empheq}
-\bigskip
+% Term Generator — The Exponential Glyph
+\begin{NxLightListBox}[title={Term Generator — The Exponential Glyph}]
+    \nxEachLabel{ArrowDark}{Secondary}{{4}{5}}{%
+        {nx\_esp(x,y)}/{Computes \(\tfrac{x^y}{y!}\)},%
+        {Purpose}/{Yields the generic \(y\)-th Maclaurin term},%
+        {Flexibility}/{Used for e.g.\ \(\exp\), \(\sin\), \(\cos\) with appropriate \(k,s\)}%
+    }
+\end{NxLightListBox}
 
-\tikz\draw[-nxOM] (0,0) -- (5,0);
+% Series Pattern — The Alternation Glyph
+\begin{NxLightListBox}[title={Series Pattern — The Alternation Glyph}]
+    \nxEachLabel{ArrowDark}{Secondary}{{4}{5}}{%
+        {Sign \(s\)}/{Initial sign of first term; alternation emerges via subtraction/addition},%
+        {Pairing}/{Groups two successive terms per loop: \(-\tfrac{n^t}{t!}+\tfrac{n^{t+k}}{(t+k)!}\)},%
+        {Use Case}/{Efficient for expansions with only even/odd or paired exponents}%
+    }
+\end{NxLightListBox}
+
+% Flexibility & Efficiency — The Duality Glyph
+\begin{NxLightListBox}[title={Flexibility \& Efficiency — The Duality Glyph}]
+    \nxEachLabel{ArrowDark}{Secondary}{{4}{5}}{%
+        {Generic vs Specialized}/{nx\_ts is universal; nx\_ts\_alt optimizes a single alternating series},%
+        {Trade-off}/{nx\_ts calls nx\_mc\_esp each term (slower) but handles any factorial‐based series},%
+        {Parameterization}/{By choosing \((n,t,p,k,s)\) you tailor convergence rate, term pattern, \(\pm\) signs}%
+    }
+\end{NxLightListBox}
+
+\nxSections{Arccos Taylor Series}{2}
+\begin{NxCodeBox}{c}{title={pr\_nx\_ts\_acos(x, y)}}
+define pr_nx_ts_acos(x, y) {
+    if (x > 1 || x < -1) {
+        print "[IMPURITY]: acos(x) domain breach — |x| > 1"
+        return -1
+    }
+    return c_pi / 2 - pr_nx_ts_asin(x, y)
+}
+\end{NxCodeBox}
+
+% Domain Guard — The Purity Glyph
+\begin{NxLightListBox}[title={Domain Guard — The Purity Glyph}]
+    \nxEachLabel{ArrowDark}{Secondary}{{4}{5}}{%
+        {Check}/{if \(\lvert x\rvert>1\) prints impurity \& returns \(-1\)},%
+        {Reason}/{\(\acos(x)\) is only defined for \(\lvert x\rvert\le1\)},%
+        {Signal}/{Early exit prevents invalid series calls}%
+    }
+\end{NxLightListBox}
+
+% Complementary Identity — The Complementary Angle Glyph
+\begin{NxLightListBox}[title={Complementary Identity — The Complementary Angle Glyph}]
+    \nxEachLabel{ArrowDark}{Secondary}{{4}{5}}{%
+        {Mathematical Identity}/{\(\acos(x)=\tfrac{\pi}{2}-\asin(x)\)},%
+        {Implementation}/{Subtracts the output of \texttt{pr\_nx\_ts\_asin(x,y)} from \(\tfrac{\pi}{2}\)},%
+        {c\_pi}/{Constant representing \(\pi\) in the codebase}%
+    }
+\end{NxLightListBox}
+
+% Wrapper Behavior — The Resultant Glyph
+\begin{NxLightListBox}[title={Wrapper Behavior — The Resultant Glyph}]
+    \nxEachLabel{ArrowDark}{Secondary}{{4}{5}}{%
+        {Delegation}/{Reuses the Taylor‐series engine of \(\asin(x)\) instead of a new series for \(\acos(x)\)},%
+        {Efficiency}/{Avoids writing a separate expansion for \(\acos(x)\)},%
+        {Final Output}/{Returns \(\acos(x)\) in radians as \(c\_pi/2-\asin(x)\)}%
+    }
+\end{NxLightListBox}
 
 
+\nxSections{Side‐Side‐Side}{2}
+\begin{NxCodeBox}{c}{title={r\_nx\_solve\_sss(a, b, c)}}
+define nx_solve_sss(a, b, c) {
+    return r_nx_ts_acos((a*a + b*b - c*c) / (2 * a * b))
+}
+\end{NxCodeBox}
+
+% SSS Acronym — The Side‐Side‐Side Glyph
+\begin{NxLightListBox}[title={SSS Acronym — The Side‐Side‐Side Glyph}]
+    \nxEachLabel{ArrowDark}{Secondary}{{4}{5}}{%
+        {SSS}/{Side-Side-Side triangle: all three side lengths are given},%
+        {Function Meaning}/{\texttt{r\_nx\_solve\_sss} signals solving a triangle by SSS},%
+        {Return}/{Angle opposite side \(c\) (between sides \(a\) and \(b\))}%
+    }
+\end{NxLightListBox}
+
+% Law of Cosines Implementation — The Cosine-Angle Glyph
+\begin{NxLightListBox}[title={Law of Cosines Implementation — The Cosine-Angle Glyph}]
+    \nxEachLabel{ArrowDark}{Secondary}{{4}{5}}{%
+        {Cosine Rule}/{\(\displaystyle \cos(C)=\frac{a^2 + b^2 - c^2}{2ab}\)},%
+        {Ratio}/{Computes \((a^2 + b^2 - c^2)/(2ab)\)},%
+        {Inverse Cos}/{Calls \texttt{r\_nx\_ts\_acos} on that ratio},%
+        {Output}/{Angle \(C\) in radians as \(\arccos\bigl(\frac{a^2 + b^2 - c^2}{2ab}\bigr)\)}%
+    }
+\end{NxLightListBox}
+
+\begin{NxCodeBox}{c}{title={nx\_solved\_sss(a, b, c)}}
+define nx_solved_sss(a, b, c) {
+    auto x, y, z
+    if (a + b <= c || b + c <= a || c + a <= b) {
+        print "[IMPURITY]: triangle inequality breach"
+        return -1
+    }
+    x = r_nx_solve_sss(b, c, a)
+    y = r_nx_solve_sss(c, a, b)
+    z = r_nx_solve_sss(a, b, c)
+
+    print "Angle A (rad): ", x, " →  (deg): ", nx_rad2deg(x), "\n"
+    print "Angle B (rad): ", y, " → (deg): ", nx_rad2deg(y), "\n"
+    print "Angle C (rad): ", z, " → (deg): ", nx_rad2deg(z), "\n"
+    print "Sum A + B + C (rad): ", x + y + z,  " → (deg) ", nx_rad2deg(x + y + z), "\n"
+}
+\end{NxCodeBox}
+
+% SSS Triangle Solver — The Full Angle Glyph
+\begin{NxLightListBox}[title={SSS Triangle Solver — The Full Angle Glyph}]
+    \nxEachLabel{ArrowDark}{Secondary}{{4}{5}}{%
+        {SSS}/{Side-Side-Side: all three side lengths \(a,b,c\) are known},%
+        {Goal}/{Compute all three internal angles \(A,B,C\)},%
+        {Method}/{Uses Law of Cosines via \texttt{r\_nx\_solve\_sss}},%
+        {Angle A}/{Opposite side \(a\), computed from sides \(b,c\)},%
+        {Angle B}/{Opposite side \(b\), computed from sides \(c,a\)},%
+        {Angle C}/{Opposite side \(c\), computed from sides \(a,b\)}%
+    }
+\end{NxLightListBox}
+
+% Triangle Inequality Guard — The Purity Glyph
+\begin{NxLightListBox}[title={Triangle Inequality Guard — The Purity Glyph}]
+    \nxEachLabel{ArrowDark}{Secondary}{{4}{5}}{%
+        {Check}/{If any side sum \(\le\) third side, prints impurity and returns \(-1\)},%
+        {Purpose}/{Ensures the three sides can form a valid triangle},%
+        {Signal}/{Prevents degenerate or invalid geometry}%
+    }
+\end{NxLightListBox}
+
+% Angle Summation — The Closure Glyph
+\begin{NxLightListBox}[title={Angle Summation — The Closure Glyph}]
+    \nxEachLabel{ArrowDark}{Secondary}{{4}{5}}{%
+        {Sum}/{Adds angles \(x+y+z\) in radians and degrees},%
+        {Check}/{Verifies triangle closure: sum should equal \(\pi\) radians or \(180^\circ\)},%
+        {Debug}/{Useful for detecting numerical drift or impurity in series approximations}%
+    }
+\end{NxLightListBox}
+
+\nxSections{Side‐Angle‐Side}{2}
+\begin{NxCodeBox}{c}{title={r\_nx\_solve\_sas(a, b, c)}}
+define r_nx_solve_sas(a, b, c) {
+    auto x
+    if (a <= 0 || b <= 0) {
+        print "[IMPURITY]: side lengths must be positive"
+        return -1
+    }
+    if (c <= 0 || c >= c_pi) {
+        print "[IMPURITY]: angle must be in (0, pi) radians"
+        return -1
+    }
+    x = a*a + b*b - 2 * a * b * r_nx_ts_cos(c)
+    if (x < 0) {
+        print "[IMPURITY]: invalid SAS input — negative squared side"
+        return -1
+    }
+    return nx_nr_sqrt(x)
+}
+\end{NxCodeBox}
+
+% SAS Acronym — The Side‐Angle‐Side Glyph
+\begin{NxLightListBox}[title={SAS Acronym — The Side‐Angle‐Side Glyph}]
+    \nxEachLabel{ArrowDark}{Secondary}{{4}{5}}{%
+        {SAS}/{Side‐Angle‐Side: two sides a, b and included angle c define the triangle},%
+        {Uniqueness}/{Given a, b > 0 and 0 < c < pi, the third side is determined uniquely}%
+    }
+\end{NxLightListBox}
+
+% Domain Guards — The Purity Glyph
+\begin{NxLightListBox}[title={Domain Guards — The Purity Glyph}]
+    \nxEachLabel{ArrowDark}{Secondary}{{4}{5}}{%
+        {Positive Sides}/{Checks a, b > 0; prints impurity if violated},%
+        {Angle Range}/{Ensures 0 < c < c\_pi; prints impurity if violated},%
+        {Negative Square}/{Detects x < 0 after law of cosines to avoid sqrt of negative}%
+    }
+\end{NxLightListBox}
+
+% Law of Cosines — The Cosine‐Angle Glyph
+\begin{NxLightListBox}[title={Law of Cosines — The Cosine‐Angle Glyph}]
+    \nxEachLabel{ArrowDark}{Secondary}{{4}{5}}{%
+        {Formula}/{\(\displaystyle c^2 = a^2 + b^2 - 2\,a\,b\,\cos(c)\)},%
+        {Implementation}/{Computes x = $a^2 + b^2$ - 2ab·r\_nx\_ts\_cos(c)},%
+        {Inverse Cos}/{Calls the series‐based cosine via r\_nx\_ts\_cos}%
+    }
+\end{NxLightListBox}
+
+% Output & Usefulness — The Utility Glyph
+\begin{NxLightListBox}[title={Output \& Usefulness — The Utility Glyph}]
+    \nxEachLabel{ArrowDark}{Secondary}{{4}{5}}{%
+        {Result}/{Returns \(\sqrt{x}\) as the third side length},%
+        {Applications}/{Triangle solving in engineering, surveying, graphics, mechanics},%
+        {Efficiency}/{Reuses cosine series routine; single sqrt for final result}%
+    }
+\end{NxLightListBox}
+
+\nxSections{Trig Sign Resolver}{2}
+\begin{NxCodeBox}{c}{title={nx\_sign\_trig(x, id)}}
+# id: 0 = sin, 1 = cos, 2 = tan
+define nx_sign_trig(x, id) {
+    auto r, i, q
+    i = nx_rj_pi(16)                # i = π, scaled to match internal unit
+    r = nx_mod2pi(x)                # reduce x to [0, 2π)
+
+    # Determine quadrant
+    if (r < i / 2) {
+        q = 1
+    } else if (r < i) {
+        q = 2
+    } else if (r < 3 * i / 2) {
+        q = 3
+    } else {
+        q = 4
+    }
+
+    # Sign table
+    if (id == 0) { # sin
+        if (q == 1 || q == 2)
+            return 1
+        return -1
+    }
+    if (id == 1) { # cos
+        if (q == 1 || q == 4)
+            return 1
+        return -1
+    }
+    if (id == 2) { # tan
+        if (q == 1 || q == 3)
+            return 1
+        return -1
+    }
+    return 0 # fallback impurity
+}
+\end{NxCodeBox}
+
+% Trig Sign Resolver — The Quadrant Glyph
+\begin{NxLightListBox}[title={Trig Sign Resolver — The Quadrant Glyph}]
+    \nxEachLabel{ArrowDark}{Secondary}{{4}{5}}{%
+        {Purpose}/{Returns the sign (+/–) of \(\sin(x)\), \(\cos(x)\), or \(\tan(x)\) based on angle \(x\)},%
+        {Input}/{Angle \(x\) in radians; id = 0 for sin, 1 for cos, 2 for tan},%
+        {Reduction}/{Uses \texttt{nx\_mod2pi(x)} to fold angle into \([0,2\pi)\)},%
+        {Quadrant}/{Divides circle into 4 zones: Q1, Q2, Q3, Q4},%
+        {Sign Table}/{%
+            \(\sin(x)\): + in Q1/Q2, – in Q3/Q4;\\
+            \(\cos(x)\): + in Q1/Q4, – in Q2/Q3;\\
+            \(\tan(x)\): + in Q1/Q3, – in Q2/Q4
+        },%
+        {Use Case}/{Needed when computing signs of trig values without evaluating full series}%
+    }
+\end{NxLightListBox}
+
+\nxSections{Angle Reduction}{2}
+\begin{NxCodeBox}{c}{title={nx\_ang\_cos(x) \& nx\_ang\_sin(x) \& nx\_ang\_tan(x)}}
+define nx_ang_cos(x) {
+	x = nx_mod(x, 360)
+	if (x < 0)
+		x = x + 360
+	# reflect across 180°
+	if (x > 180)
+		x = 360 - x
+	# reflect across 90°
+	if (x > 90)
+		x = 180 - x
+	# final range: [0°, 90°]
+	return x
+}
+
+define nx_ang_sin(x) {
+	auto s
+	x = nx_mod(x, 360)
+	s = 1
+	if (x < 0)
+		x = x + 360
+	if (x > 180) {
+		x = x - 180
+		s = -1
+	}
+	if (x > 90)
+		x = 180 - x
+	return x * s
+}
+
+define nx_ang_tan(x) {
+	return nx_ang_sin(x)
+}
+\end{NxCodeBox}
+
+% Angle Reduction — The Tangent–Sine Glyph
+\begin{NxLightListBox}[title={Angle Reduction — The Tangent–Sine Glyph}]
+    \nxEachLabel{ArrowDark}{Secondary}{{4}{5}}{%
+        {nx\_ang\_sin(x)}/{Reduces angle \(x\) to signed acute form for sine: returns value in \([-90^\circ, +90^\circ]\)},%
+        {nx\_ang\_tan(x)}/{Delegates to \texttt{nx\_ang\_sin(x)} because tangent shares sine’s sign and symmetry},%
+        {Why?}/{\(\tan(x) = \sin(x)/\cos(x)\), so its sign matches sine when cosine is positive},%
+        {Quadrant Behavior}/{Tangent is positive in Q1/Q3, negative in Q2/Q4 — same as sine’s sign flip across 180°},%
+        {Use Case}/{This reduction is for sign-aware series or quadrant-aware approximations, not full evaluation}%
+    }
+\end{NxLightListBox}
+
+% Tangent Symmetry — The Identity Glyph
+\begin{NxLightListBox}[title={Tangent Symmetry — The Identity Glyph}]
+    \nxEachLabel{ArrowDark}{Secondary}{{4}{5}}{%
+        {Odd Function}/{\(\tan(-x) = -\tan(x)\)},%
+        {Periodicity}/{\(\tan(x + 180^\circ) = \tan(x)\)},%
+        {Reduction}/{Reflecting across 180° preserves tangent’s value and sign},%
+        {Acute Mapping}/{Mapping to \([-90^\circ, +90^\circ]\) is sufficient for sign and series convergence},%
+        {Efficiency}/{Avoids duplicating logic — sine’s reduction already handles quadrant sign flips}%
+    }
+\end{NxLightListBox}
+
+\nxSections{Cosine and Secant Series Wrappers}{2}
+\begin{NxCodeBox}{c}{title={Cosine \& Secant Series Wrappers}}
+define pr_nx_ts_cos(x, p) {
+    return nx_sign_trig(x, 1) * nx_ts(nx_rad_cos(x), 2, p, 2, 1)
+}
+
+define r_nx_ts_cos(x) {
+    return pr_nx_ts_cos(x, 128)
+}
+
+define pr_nx_ts_sec(x, y) {
+    return 1 / pr_nx_ts_cos(x, y)
+}
+
+define r_nx_ts_sec(x) {
+    return pr_nx_ts_sec(x, 128)
+}
+\end{NxCodeBox}
+
+\nxSections{Reciprocal Trig Solver}{2}
+\begin{NxCodeBox}{c}{title={nx\_solved\_shoahatao(a, b, c)}}
+# tan ↔ cot  sin ↔ csc  cos ↔ sec
+define nx_solved_shoahatao(a, b, c) {
+    auto x, y, z
+    if (nx_abs(c) == 0)
+        c = r_nx_pth(a, b) # compute hypotenuse via Pythagoras
+    x = c / b              # csc(A) = hyp / opp
+    y = c / a              # sec(A) = hyp / adj
+    z = a / b              # cot(A) = adj / opp
+
+    print "csc A (ratio): ", x, " → angle A (deg): ", nx_rad2deg(r_nx_ts_asin(1 / x)), "\n"
+    print "sec A (ratio): ", y, " → angle A (deg): ", nx_rad2deg(r_nx_ts_acos(1 / y)), "\n"
+    print "cot A (ratio): ", z, " → angle A (deg): ", nx_rad2deg(r_nx_ts_atan(1 / z)), "\n"
+}
+\end{NxCodeBox}
+
+% Reciprocal Trig Solver — The Inverse Glyph
+\begin{NxLightListBox}[title={Reciprocal Trig Solver — The Inverse Glyph}]
+    \nxEachLabel{ArrowDark}{Secondary}{{4}{5}}{%
+        {Input}/{Legs \(a\), \(b\); hypotenuse \(c\) (optional)},%
+        {Auto-Hypotenuse}/{If \(c=0\), computes \(c=\sqrt{a^2+b^2}\)},%
+        {csc(A)}/{\(\csc(A)=\frac{c}{b}\Rightarrow A=\arcsin\left(\frac{1}{\csc(A)}\right)\)},%
+        {sec(A)}/{\(\sec(A)=\frac{c}{a}\Rightarrow A=\arccos\left(\frac{1}{\sec(A)}\right)\)},%
+        {cot(A)}/{\(\cot(A)=\frac{a}{b}\Rightarrow A=\arctan\left(\frac{1}{\cot(A)}\right)\)}%
+    }
+\end{NxLightListBox}
+
+% Purpose — The Reciprocal Recovery Glyph
+\begin{NxLightListBox}[title={Purpose — The Reciprocal Recovery Glyph}]
+    \nxEachLabel{ArrowDark}{Secondary}{{4}{5}}{%
+        {Goal}/{Recover angle \(A\) from reciprocal trig ratios},%
+        {Use Case}/{When given triangle sides and needing angle via \(\csc,\sec,\cot\)},%
+        {Series Engines}/{Uses \texttt{r\_nx\_ts\_asin}, \texttt{r\_nx\_ts\_acos}, \texttt{r\_nx\_ts\_atan}},%
+        {Output}/{Prints each ratio and recovered angle in degrees}%
+    }
+\end{NxLightListBox}
+
+\nxSections{Core Tangent and Cotangent Wrappers}{2}
+\begin{NxCodeBox}{c}{title={Core Tangent \& Cotangent Wrappers}}
+
+define pr_nx_tan(x, p) {
+    return pr_nx_ts_sin(x, p) / pr_nx_ts_cos(x, p)
+}
+define r_nx_tan(x) {
+    return pr_nx_tan(x, 128)
+}
+define pr_nx_ts_cot(x, p) {
+    return 1 / pr_nx_tan(x, p)
+}
+define r_nx_ts_cot(x) {
+    return 1 / pr_nx_ts_cot(x, 128)
+}
+\end{NxCodeBox}
+
+\begin{NxLightListBox}[title={Tangent Series Wrapper — The Ratio Glyph}]
+  \nxEachLabel{ArrowDark}{Secondary}{{4}{5}}{%
+    {Definition}/{\(\tan(x) = \frac{\sin(x)}{\cos(x)}\)},%
+    {Implementation}/{\texttt{pr\_nx\_tan(x, p)} calls sine and cosine series engines},%
+    {Wrapper}/{\texttt{r\_nx\_tan(x)} uses default precision \(p = 128\)},%
+    {Quadrant Awareness}/{Sign logic inherited from sine/cosine wrappers},%
+    {Use Case}/{Direct tangent evaluation via series purity}%
+  }
+\end{NxLightListBox}
+
+\begin{NxLightListBox}[title={Cotangent Series Wrapper — The Reciprocal Glyph}]
+  \nxEachLabel{ArrowDark}{Secondary}{{4}{5}}{%
+    {Definition}/{\(\cot(x) = \frac{1}{\tan(x)}\)},%
+    {Implementation}/{\texttt{pr\_nx\_ts\_cot(x, p)} returns reciprocal of tangent},%
+    {Wrapper}/{\texttt{r\_nx\_ts\_cot(x)} uses default precision \(p = 128\)},%
+    {Impurity Risk}/{Caller must ensure \(\tan(x) \ne 0\)},%
+    {Use Case}/{Cotangent recovery without separate series engine}%
+  }
+\end{NxLightListBox}
+
+\nxSections{Tangent Identity Expansion}{2}
+\begin{NxCodeBox}{c}{title={Tangent Identity Expansion}}
+define pr_nx_tan_sec(x, p) {
+    auto y
+    y = pr_nx_ts_tan(x, p)
+    return 1 + y*y
+}
+define r_nx_tan_sec(x) {
+    return pr_nx_tan_sec(x, 128)
+}
+\end{NxCodeBox}
+
+\begin{NxLightListBox}[title={Secant Identity Wrapper — The Pythagorean Glyph}]
+  \nxEachLabel{ArrowDark}{Secondary}{{4}{5}}{%
+    {Identity}/{\(\sec^2(x) = 1 + \tan^2(x)\)},%
+    {Implementation}/{\texttt{pr\_nx\_tan\_sec(x, p)} computes \(\tan(x)\), squares it, adds 1},%
+    {Wrapper}/{\texttt{r\_nx\_tan\_sec(x)} uses default precision \(p = 128\)},%
+    {Use Case}/{Symbolic derivative of \(\tan(x)\), identity validation, secant recovery},%
+    {Efficiency}/{Avoids direct cosine evaluation near \(\frac{\pi}{2}\)}%
+  }
+\end{NxLightListBox}
+
+\nxSections{Sine Series Wrapper}{2}
+\begin{NxCodeBox}{c}{title={pr\_nx\_ts\_sin(x, p)}}
+define pr_nx_ts_sin(x, p) {
+    x = nx_rad_sin(x)
+    return nx_ts(x, 3, p, 2, x)
+}
+
+define r_nx_ts_sin(x) {
+    return pr_nx_ts_sin(x, 100)
+}
+\end{NxCodeBox}
+
+\begin{NxLightListBox}[title={Sine Series Wrapper — The Odd-Power Glyph}]
+  \nxEachLabel{ArrowDark}{Secondary}{{4}{5}}{%
+    {Function}/{\texttt{pr\_nx\_ts\_sin(x, p)}},%
+    {Reduction}/{\texttt{nx\_rad\_sin(x)} reduces angle to acute form},%
+    {Series}/{Calls \texttt{nx\_ts(x, 3, p, 2, x)} to sum odd powers},%
+    {Pattern}/{\(\sin(x) = x - \frac{x^3}{3!} + \frac{x^5}{5!} - \cdots\)},%
+    {Wrapper}/{\texttt{r\_nx\_ts\_sin(x)} uses default precision \(p = 100\)}%
+  }
+\end{NxLightListBox}
 
 
+\nxSections{Cosecant Wrapper}{2}
+\begin{NxCodeBox}{c}{title={pr\_nx\_ts\_csc(x, y)}}
+define pr_nx_ts_csc(x, y) {
+    return 1 / pr_nx_ts_sin(x, y)
+}
 
+define r_nx_ts_csc(x) {
+    return pd_nx_ts_csc(x, 128)
+}
+\end{NxCodeBox}
 
+\begin{NxLightListBox}[title={Cosecant Wrapper — The Reciprocal Glyph}]
+  \nxEachLabel{ArrowDark}{Secondary}{{4}{5}}{%
+    {Function}/{\texttt{pr\_nx\_ts\_csc(x, y)} = \(1/\sin(x)\)},%
+    {Series}/{Delegates to \texttt{pr\_nx\_ts\_sin(x, y)}},%
+    {Wrapper}/{\texttt{r\_nx\_ts\_csc(x)} uses default precision \(y = 128\)},%
+    {Impurity Risk}/{Caller must ensure \(\sin(x) \ne 0\)}%
+  }
+\end{NxLightListBox}
 
-\begin{comment}
+%\nxSections{Identity Audit $sin^2 + cos^2$}{2}
+\begin{NxCodeBox}{c}{title={pr\_nx\_sincos(x, y)}}
+define pr_nx_sincos(x, y) {
+    auto a, b
+    a = pr_nx_ts_sin(x, y)
+    b = pr_nx_ts_cos(x, y)
+    return a*a + b*b
+}
 
-	\begin{scope}[axes]
-		\draw[->, thick, color=blue] (-3.5,0) -- (3.5,0) node[right] {$x$} coordinate(x axis);
-		\draw[->, thick, color=red] (0,-3.5) -- (0,3.5) node[above] {$y$} coordinate(y axis);
-		\foreach \x/\xtext in {-3.5, 3.5} \draw[xshift=\x cm, color=green!50!black, thick] (0pt, 5pt)
-			-- (0pt,-5pt) node[below, color=blue!50!black] {$\xtext$};
-		\foreach \y/\ytext in {-3.5, 3.5} \draw[yshift=\y cm, color=green!50!black, thick] (5pt, 0pt)
-			-- (-5pt,0pt) node[left, color=red!50!black,ultra thick] {$\ytext$};
-	\end{scope}
+define r_nx_sincos(x) {
+    return pr_nx_sincos(x, 128)
+}
+\end{NxCodeBox}
 
+\begin{NxLightListBox}[title={Identity Audit — The Unit Circle Glyph}]
+  \nxEachLabel{ArrowDark}{Secondary}{{4}{5}}{%
+    {Function}/{\texttt{pr\_nx\_sincos(x, y)}},%
+    {Evaluation}/{Computes \(\sin^2(x) + \cos^2(x)\)},%
+    {Expected}/{Returns ≈ 1 for all valid \(x\)},%
+    {Use Case}/{Purity check, identity validation, numerical drift detection}%
+  }
+\end{NxLightListBox}
 
-\begin{tikzpicture}[
-	scale=3,line cap=round,
-	axes/.style=,
-	important line/.style={very thick},
-	information text/.style={
-		rounded corners,
-		fill=red!10,
-		inner sep=1ex
-	}]
-	\colorlet{anglecolor}{green!50!black}
-	\colorlet{sincolor}{red}
-	\colorlet{tancolor}{orange!80!black}
-	\colorlet{coscolor}{blue}
-% The graphic
-	\filldraw[fill=green!20,draw=anglecolor] (0,0) -- (3mm,0pt) arc [start angle=0, end angle=30, radius=3mm];
-	\draw (15:2mm) node[anglecolor] {$\alpha$};
-	\draw[important line,sincolor] (30:1cm) -- node[left=1pt,fill=white] {$\sin \alpha$} (30:1cm |- x axis);
-	\draw[important line,coscolor]
-	(30:1cm |- x axis) -- node[below=2pt,fill=white] {$\cos \alpha$} (0,0);
-	\path [name path=upward line] (1,0) -- (1,1);
-	\path [name path=sloped line] (0,0) -- (30:1.5cm);
-	\draw [name intersections={of=upward line and sloped line, by=t}] [very thick,orange] (1,0) -- node [right=1pt,fill=white]
-	{$\displaystyle \tan \alpha \color{black}=
-		\frac{{\color{red}\sin \alpha}}{\color{blue}\cos \alpha}$
-	} (t);
-	\draw (0,0) -- (t);
-	\draw[xshift=1.85cm] node[right,text width=6cm,information text] {
-		The {\color{anglecolor} angle $\alpha$} is $30^\circ$ in the
-		example ($\pi/6$ in radians). The {\color{sincolor}sine of
-		$\alpha$}, which is the height of the red line, is
-		\[
-			{\color{sincolor} \sin \alpha} = 1/2.
-		\]
-		By the Theorem of Pythagoras ...
-	};
-\end{tikzpicture}
+\begin{NxLightListBox}[title={Trig Identity Overlay — The Ratio Glyph}]
+  \nxEachLabel{ArrowDark}{Secondary}{{4}{5}}{%
+    {\(\tan(x)\)}/{\(\displaystyle \tan(x) = \frac{\sin(x)}{\cos(x)}\)},%
+    {\(\cot(x)\)}/{\(\displaystyle \cot(x) = \frac{1}{\tan(x)}\)},%
+    {\(\sec^2(x)\)}/{\(\displaystyle \sec^2(x) = 1 + \tan^2(x)\)},%
+    {\(\sin^2 + \cos^2\)}/{\(\displaystyle \sin^2(x) + \cos^2(x) = 1\)}%
+  }
+\end{NxLightListBox}
 
-\end{comment}
-\end{comment}

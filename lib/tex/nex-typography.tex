@@ -181,3 +181,17 @@
 
 \makeatother
 
+\def\nxEnumCnt#1{%
+	\renewcommand{\labelenumi}{\expandafter\csname#1\endcsname{enumi}}
+	\renewcommand{\labelenumii}{\expandafter\csname#1\endcsname{enumi}.\expandafter\csname#1\endcsname{enumii}}
+	\renewcommand{\labelenumiii}{\expandafter\csname#1\endcsname{enumi}.\expandafter\csname#1\endcsname{enumii}.\expandafter\csname#1\endcsname{enumiii}}
+	\renewcommand{\labelenumiv}{\expandafter\csname#1\endcsname{enumi}.\expandafter\csname#1\endcsname{enumii}.\expandafter\csname#1\endcsname{enumiii}.\expandafter\csname#1\endcsname{enumiv}}
+}
+
+\def\nxListCnt#1{%
+	\renewcommand{\labellisti}{\expandafter\csname#1\endcsname{listi}}
+	\renewcommand{\labellistii}{\expandafter\csname#1\endcsname{listi}.\expandafter\csname#1\endcsname{listii}}
+	\renewcommand{\labellistiii}{\expandafter\csname#1\endcsname{listi}.\expandafter\csname#1\endcsname{listii}.\expandafter\csname#1\endcsname{listiii}}
+	\renewcommand{\labellistiv}{\expandafter\csname#1\endcsname{listi}.\expandafter\csname#1\endcsname{listii}.\expandafter\csname#1\endcsname{listiii}.\expandafter\csname#1\endcsname{listiv}}
+}
+

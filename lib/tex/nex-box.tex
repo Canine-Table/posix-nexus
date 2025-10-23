@@ -425,6 +425,8 @@
 \def\nxItem#1#2#3{
 	\edef\nx@tmpa{nx#2\nxTitle{#1}{ }{ }Item}
 	\expandafter\def\csname\nx@tmpa\endcsname{\nx@Item{#1}{#3}}
+	\edef\nx@tmpa{nx#2\nxTitle{#1}{ }{ }}
+	\expandafter\def\csname\nx@tmpa\endcsname{\textcolor{nex.#1.back}{#3}}
 }
 
 \def\nxThemedItems#1#2{%
@@ -443,7 +445,7 @@
 \nxThemedItems{RCircle}{\faCircle[regular]}
 \nxThemedItems{RDot}{\faDotCircle[regular]}
 \nxThemedItems{ThumbTack}{\faThumbtack}
-\nxThemedItems{Code}{\faCode }
+\nxThemedItems{Code}{\faCode}
 \nxThemedItems{ChartLine}{\faChartLine}
 \nxThemedItems{Search}{\faSearch}
 \nxThemedItems{Link}{\faLink}
@@ -458,7 +460,33 @@
 \nxThemedItems{MapMarked}{\faMapMarked*}
 \nxThemedItems{MapMarker}{\faMapMarker*}
 \nxThemedItems{Boxes}{\faBoxes}
-\nxThemedItems{Code}{\faCode}
+\nxThemedItems{Diagram}{\faProjectDiagram}
+\nxThemedItems{Qr}{\faQrcode}
+\nxThemedItems{Discord}{\faDiscord}
+\nxThemedItems{Github}{\faGithub}
+\nxThemedItems{Otter}{\faOtter}
+\nxThemedItems{Paragraph}{\faParagraph}
+\nxThemedItems{Readme}{\faReadme}
+\nxThemedItems{Server}{\faServer}
+\nxThemedItems{ShieldVirus}{\faShieldVirus}
+\nxThemedItems{Shield}{\faShield*}
+\nxThemedItems{Signal}{\faSignal}
+\nxThemedItems{Tape}{\faTape}
+\nxThemedItems{Key}{\faKey}
+\nxThemedItems{Paperclip}{\faPaperclip}
+\nxThemedItems{Tasks}{\faTasks}
+\nxThemedItems{Viruses}{\faViruses}
+\nxThemedItems{Virus}{\faVirus}
+\nxThemedItems{LaptopCode}{\faLaptopCode}
+\nxThemedItems{Laptop}{\faLaptop}
+\nxThemedItems{Linkedin}{\faLinkedin}
+\nxThemedItems{LinkedinIn}{\faLinkedinIn}
+\nxThemedItems{Markdown}{\faMarkdown}
+\nxThemedItems{University}{\faUniversity}
+\nxThemedItems{UsersCog}{\faUsersCog}
+\nxThemedItems{UserSecret}{\faUserSecret}
+\nxThemedItems{VirusSlash}{\faVirusSlash}
+\nxThemedItems{Wifi}{\faWifi}
 
 \def\nxIconList[#1]{%
 	\pgfkeys{/nx/list box, #1}
@@ -483,7 +511,7 @@
 
 \def\nxBox#1{%
 	\edef\nx@tmpa{nx\nxTitle{#1}{ }{ }MathBox}
-  \expandafter\newtcbox\csname\nx@tmpa\endcsname[1][]{%
+	\expandafter\newtcbox\csname\nx@tmpa\endcsname[1][]{%
 		nobeforeafter,%
 		tcbox raise base,%
 		enhanced,%

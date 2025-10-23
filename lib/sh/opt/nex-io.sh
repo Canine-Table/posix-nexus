@@ -1,11 +1,10 @@
-
 nx_io_fifo_mgr()
 (
 	h_nx_cmd mkfifo || {
 		nx_io_printf -W "mkfifo not found! The realm of named pipes is closed to us." 1>&2
 		return 192
 	}
-	while test ${#@} -gt 0; do
+	while test "$#" -gt 0; do
 		if test "$1" = '-r' -a -p "$2"; then
 			rm "$2"
 			shift
@@ -79,6 +78,19 @@ nx_io_noclobber()
 	esac
 	printf '%s\n' "$p$tmpa$s"
 )
+
+nx_io_ansi()
+{
+	${AWK:-$(nx_cmd_awk)} \
+		-v str="$(nx_str_chain "$@")" \
+	"
+		$(nx_data_include -i "$NEXUS_LIB/awk/nex-color.awk")
+	"'
+		BEGIN {
+			nx_ansi_print(str)
+		}
+	' 1>&2
+}
 
 nx_io_type()
 {

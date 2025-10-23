@@ -1,0 +1,346 @@
+\nxSections{Cartesian (xy) Plane}{2}
+\includegraphics[width=\linewidth]{img/.env/axis-2025-10-16_13-5620251016_135736.png}
+
+% Cartesian Plane — The Rectangular Canvas
+\begin{NxLightListBox}[title={Cartesian Plane — The Rectangular Canvas}]
+\nxEachLabel{ArrowDark}{Secondary}{{4}{5}}{%
+        {Axes}/{Two perpendicular axes \(x\) and \(y\) defining horizontal and vertical directions},%
+        {Origin}/{The central point \((0,0)\) where axes intersect and measurements begin},%
+        {Grid}/{An infinite lattice of parallel lines marking unit intervals},%
+        {Quadrants}/{Four sign realms labeling positions of points relative to the origin}%
+    }
+\end{NxLightListBox}
+
+% Coordinate Systems Comparison
+\begin{NxLightBox}[title={Rectangular vs Polar Coordinate Systems}]
+\begingroup
+\renewcommand{\arraystretch}{1.6}
+\begin{tabularx}{\linewidth}{|l|X|X|}
+    \hline
+    \textbf{Feature} & \textbf{Rectangular} & \textbf{Polar} \\
+    \hline
+    Parameters & \((x,y)\) along orthogonal axes & \((r,\theta)\) as radius and angle \\
+    Basis & Linear displacement on two lines & Radial distance and angular measure \\
+    Conversion & \(x = r\cos\theta,\;y = r\sin\theta\) & \(r = \sqrt{x^2 + y^2},\;\theta = \atan2(y,x)\) \\
+    Use Cases & Cartesian graphs, analytic geometry & Circular motion, waves, radial fields \\
+    \hline
+\end{tabularx}
+\endgroup
+\end{NxLightBox}
+
+% Conversion Formulae
+\begin{empheq}[box=\nxWarningMathBox]{align*}
+x &= r \cos\theta, & y &= r \sin\theta, \\
+r &= \sqrt{x^2 + y^2}, & \theta &= \atan2(y, x)
+\end{empheq}
+\bigskip
+
+% Conceptual Paragraph
+\begin{NxLightP}
+The Cartesian Plane, conceived by René Descartes in the 17th century, is the foundational rectangular framework where points are given by ordered pairs \((x,y)\).  
+This plane underlies the rectangular coordinate system, mapping linear displacements along perpendicular axes.  
+Polar coordinates overlay this same plane with a circular measure, locating points by distance \(r\) from the origin and angle \(\theta\) from the positive \(x\)-axis.  
+Thus the Cartesian Plane serves as the common canvas for both rectangular and polar systems.
+\end{NxLightP}
+
+% Key Insights List
+\begin{NxLightListBox}[title={Key Insights}]
+    \nxEachItem{ArrowDark}{
+        {The Cartesian Plane is the rectangular grid defined by \(x\) and \(y\) axes},%
+        {Rectangular coordinates use \((x,y)\) directly on this grid},%
+        {Polar coordinates use \((r,\theta)\) over the same grid by circular mapping},%
+        {Conversion relies on sine, cosine, and the Pythagorean theorem},%
+        {Both systems coexist on the Cartesian Plane, each suited to different problems}%
+    }
+\end{NxLightListBox}
+
+% Final Font Invocation
+\begin{NxLightP}
+{\nxSFont{14pt} The Cartesian Plane is the shared canvas, rectangular at its core, circular in its polar overlay.}
+\end{NxLightP}
+
+% Standard Position — The Glyph of Zero
+\begin{NxLightListBox}[title={Standard Position — The Glyph of Zero}]
+    \nxEachLabel{ArrowDark}{Secondary}{{5}{6}}{%
+        {Vertex}/{The common endpoint of the angle, fixed at \((0,0)\)},%
+        {Initial Side}/{The ray on the positive \(x\)-axis from the origin},%
+        {Terminal Side}/{The rotating ray that sweeps from the initial side},%
+        {Rotation Direction}/{Counterclockwise for positive angles; clockwise for negative},%
+        {Quadrantal Angles}/{Angles whose terminal side lies on an axis (0°, 90°, 180°, 270°)}%
+    }
+\end{NxLightListBox}
+
+% Angle Anatomy — Standard Position
+\begin{NxLightBox}[title={Angle Anatomy — Standard Position}]
+\begingroup
+\renewcommand{\arraystretch}{1.6}
+\begin{tabularx}{\linewidth}{|l|X|}
+    \hline
+    \textbf{Component}     & \textbf{Description}                                                                     \\
+    \hline
+    Vertex                 & Located at the origin where the two sides meet                                           \\
+    Initial Side           & Fixed along the positive \(x\)-axis as the starting ray                                  \\
+    Terminal Side          & The ray rotated from the initial side to form the angle                                 \\
+    Positive Rotation      & Measured counterclockwise from the initial side                                         \\
+    Negative Rotation      & Measured clockwise from the initial side                                                \\
+    \hline
+\end{tabularx}
+\endgroup
+\end{NxLightBox}
+
+% Conceptual Paragraph
+\begin{NxLightP}
+An angle is in standard position when its vertex is at the origin and its initial side lies along the positive \(x\)-axis.  
+The terminal side rotates about the origin: counterclockwise for positive measures and clockwise for negative.  
+This convention provides a unified framework for defining trigonometric functions and angle measures, from quadrantal angles to arbitrary sweeps.
+\end{NxLightP}
+
+% Key Insights List
+\begin{NxLightListBox}[title={Key Insights on Standard Position}]
+    \nxEachItem{ArrowDark}{%
+        {Standard Position fixes the vertex at \((0,0)\) and the initial side on the positive \(x\)-axis},%
+        {Positive angles rotate counterclockwise; negative rotate clockwise},%
+        {Terminal sides on axes define quadrantal angles},%
+        {Essential for defining sine, cosine, tangent and more},%
+        {Forms the basis for rectangular and polar coordinate linkage}%
+    }
+\end{NxLightListBox}
+
+\begin{NxLightP}
+{\nxSFont{14pt} Standard Position is the cardinal glyph of angle measurement — the origin, the positive \(x\)-axis, and the sweep of rotation.}
+\end{NxLightP}
+
+% Endpoint — The Termination Glyph
+\begin{NxLightListBox}[title={Endpoint — The Termination Glyph}]
+    \nxEachLabel{ArrowDark}{Secondary}{{4}{5}}{%
+        {Definition}/{A point marking where a geometric object ends: one end of a segment or the single start of a ray},%
+        {Line Segment Context}/{Each segment has two endpoints determining its finite span and boundary},%
+        {Ray Context}/{A ray has exactly one endpoint from which it extends infinitely, defining its origin and direction},%
+        {Angle Context}/{In an angle, the shared endpoint of its two sides is the vertex, serving as the angle’s hinge},%
+        {Notation}/{Labeled by a capital letter (e.g., \(A\)); segments use \(\overline{AB}\), rays use \(\overrightarrow{AB}\)},%
+        {Applications}/{Determines segment length, constructs polygons, anchors vectors and network nodes}%
+    }
+\end{NxLightListBox}
+
+% Standard Position — Cardinal Angle Glyph
+\begin{NxLightListBox}[title={Standard Position — Cardinal Angle Glyph}]
+    \nxEachLabel{ArrowDark}{Secondary}{{4}{5}}{%
+        {Definition}/{An angle placed with its vertex at \((0,0)\) and its initial side along the positive \(x\)-axis},%
+        {Vertex}/{The origin \((0,0)\), the common endpoint of both rays},%
+        {Initial Side}/{The fixed ray on the positive \(x\)-axis serving as the zero‐angle reference},%
+        {Terminal Side}/{The rotating ray that sweeps from the initial side to form the angle},%
+        {Rotation Direction}/{Counterclockwise for positive measures; clockwise for negatives},%
+        {Purpose}/{Establishes a uniform reference for measuring angles in rectangular and polar systems}%
+    }
+\end{NxLightListBox}
+
+% Clarification — Initial Side Notation
+\begin{NxLightListBox}[title={Initial Side — The Positive Ray Notation}]
+    \nxEachLabel{ArrowDark}{Secondary}{{9}{1}}{%
+        {Definition}/{The set of points \((x,0)\) with \(x \ge 0\), i.e.\ the ray along the positive \(x\)-axis},%
+        {Common Notation}/{Often denoted \([0,\infty)\) on the real line but not a summation \(\sum\) or integral \(\int\)},%
+        {Role}/{Acts as the zero‐angle reference in standard position}%
+    }
+\end{NxLightListBox}
+
+% Clarification — Y-Axis Rigidity
+\begin{NxLightListBox}[title={Y-Axis — The Fixed Perpendicular Glyph}]
+    \nxEachLabel{ArrowDark}{Secondary}{{9}{2}}{%
+        {Definition}/{The line of all points \((0,y)\) for real \(y\), perpendicular to the \(x\)-axis},%
+        {Fixed Role}/{In the standard Cartesian frame it remains orthogonal to the initial side},%
+        {Variants}/{If you rotate the \(y\)-axis independently, you leave the standard rectangular system and enter a rotated or skewed frame}%
+    }
+\end{NxLightListBox}
+\begin{NxLightListBox}[title={Ordered Pair — Cartesian Glyph}]
+    \nxEachLabel{ArrowDark}{Secondary}{{4}{5}}{%
+        {Definition}/{An ordered pair \((x,y)\) designates a point with horizontal coordinate \(x\) and vertical coordinate \(y\)},%
+        {Parentheses}/{Here the parentheses simply group the two coordinates—they are not interval delimiters and do not imply exclusion},%
+        {Components}/{First component \(x\) is horizontal displacement; second component \(y\) is vertical displacement}%
+    }
+\end{NxLightListBox}
+
+% Point on the X-Axis
+\begin{NxLightListBox}[title={Point on the X-Axis}]
+    \nxEachLabel{ArrowDark}{Secondary}{{4}{5}}{%
+        {Definition}/{All points of the form \((x,0)\) lie exactly on the \(x\)-axis because \(y=0\)},%
+        {Range}/{In pure Cartesian form \(x\) may be any real number (including 0)},%
+        {Initial-Side Context}/{For the standard-position initial side we further require \(x \ge 0\)}%
+    }
+\end{NxLightListBox}
+
+% Interval Notation — Inclusive vs Exclusive
+\begin{NxLightListBox}[title={Interval Notation — Inclusive vs Exclusive}]
+    \nxEachLabel{ArrowDark}{Secondary}{{4}{5}}{%
+        {Definition}/{Square brackets \([\,]\) include endpoints; parentheses \((\,)\) exclude them in real-number intervals},%
+        {Clarification}/{In \((x,0)\) the parentheses are not interval notation but part of point notation},%
+        {Implication}/{To describe the ray you’d write \(\{(x,0)\mid x\ge0\}\) or \([0,\infty)\) for the \(x\)-values}%
+    }
+\end{NxLightListBox}
+
+% Reference Angle — The Acute Measuring Glyph
+\begin{NxLightListBox}[title={Reference Angle — The Acute Measuring Glyph}]
+    \nxEachLabel{ArrowDark}{Secondary}{{4}{5}}{%
+        {Definition}/{The acute angle between the terminal side of an angle in standard position and the \(x\)-axis},%
+        {Computation}/{Subtract the angle from the nearest multiple of \(90^\circ\) or \(\tfrac{\pi}{2}\) to yield \(0^\circ\le\theta_{\text{ref}}\le90^\circ\)},%
+        {Range}/{Always between \(0\) and \(90^\circ\) (or \(0\) and \(\tfrac{\pi}{2}\) radians) inclusive},%
+        {Use}/{Allows evaluation of trigonometric functions by referencing an acute angle with the same function value},%
+        {Notation}/{Denoted \(\theta_{\text{ref}}\)}%
+    }
+\end{NxLightListBox}
+
+% Coterminal Angle — The Rotational Glyph
+\begin{NxLightListBox}[title={Coterminal Angle — The Rotational Glyph}]
+    \nxEachLabel{ArrowDark}{Secondary}{{4}{5}}{%
+        {Definition}/{Angles that share the same initial and terminal sides when placed in standard position},%
+        {Formula}/{Given \(\theta\), coterminal angles are \(\theta + 360^\circ k\) or \(\theta + 2\pi k\) for any integer \(k\)},%
+        {Property}/{They have identical sine, cosine, and tangent values because they land on the same point of the unit circle},%
+        {Notation}/{Written as \(\theta \pm 360^\circ n\) or \(\theta \pm 2\pi n\)},%
+        {Application}/{Used to find equivalent angles within a chosen interval (e.g., \([0,360^\circ)\) or \([0,2\pi)\))}%
+    }
+\end{NxLightListBox}
+
+% Reference Angle — The Acute Angle Glyph
+\begin{NxLightListBox}[title={Reference Angle — The Acute Angle Glyph}]
+    \nxEachLabel{ArrowDark}{Secondary}{{4}{5}}{%
+        {Definition}/{The acute angle between an angle’s terminal side and the \(x\)-axis when in standard position},%
+        {Calculation}/{Take the absolute difference between the angle and the nearest multiple of \(180^\circ\) or \(\pi\)},%
+        {Range}/{Always satisfies \(0^\circ \le \theta_{\mathrm{ref}} \le 90^\circ\) (or \(0 \le \theta_{\mathrm{ref}} \le \tfrac{\pi}{2}\))},%
+        {Purpose}/{Allows evaluation of trig functions by referencing a corresponding acute angle},%
+        {Notation}/{Denoted \(\theta_{\mathrm{ref}}\)}%
+    }
+\end{NxLightListBox}
+
+% Coterminal Angle — The Rotational Equivalence Glyph
+\begin{NxLightListBox}[title={Coterminal Angle — The Rotational Equivalence Glyph}]
+    \nxEachLabel{ArrowDark}{Secondary}{{4}{5}}{%
+        {Definition}/{Angles sharing the same initial and terminal sides in standard position},%
+        {Formula}/{All coterminal angles are \(\theta + 360^\circ k\) or \(\theta + 2\pi k\) for integer \(k\)},%
+        {Property}/{They yield identical sine, cosine, and tangent values by landing on the same unit‐circle point},%
+        {Use Case}/{Finds an equivalent angle within a principal interval (e.g., \([0,360^\circ)\) or \([0,2\pi)\))},%
+        {Notation}/{Written as \(\theta \pm 360^\circ n\) or \(\theta \pm 2\pi n\)}%
+    }
+\end{NxLightListBox}
+
+% Translation — The Shifting Glyph
+\begin{NxLightListBox}[title={Translation — The Shifting Glyph}]
+    \nxEachLabel{ArrowDark}{Secondary}{{4}{5}}{%
+        {Definition}/{A Euclidean transformation that shifts every point of the triangle by the same vector},%
+        {Operation}/{Subtract the coordinates of the chosen vertex from all vertices so that vertex maps to \((0,0)\)},%
+        {Vector}/{If the vertex is \((x_0,y_0)\), translate by \((-x_0,-y_0)\)},%
+        {Notation}/{Denoted \(T_{(-x_0,-y_0)}\)},%
+        {Purpose}/{Places the triangle’s vertex at the origin for standard positioning}%
+    }
+\end{NxLightListBox}
+
+% Rotation — The Spinning Glyph
+\begin{NxLightListBox}[title={Rotation — The Spinning Glyph}]
+    \nxEachLabel{ArrowDark}{Secondary}{{4}{5}}{%
+        {Definition}/{A rigid transformation that rotates points about the origin by a fixed angle},%
+        {Operation}/{Compute the angle \(\theta\) between the chosen base side and the positive \(x\)-axis and rotate by \(-\theta\)},%
+        {Formula}/{\((x',y')=(x\cos(-\theta)-y\sin(-\theta),\,x\sin(-\theta)+y\cos(-\theta))\)},%
+        {Notation}/{Denoted \(R_{-\theta}\)},%
+        {Purpose}/{Aligns the chosen triangle side along the positive \(x\)-axis}%
+    }
+\end{NxLightListBox}
+
+% Procedure — Positioning a Triangle in Standard Position
+\begin{NxLightListBox}[title={Procedure — Positioning a Triangle in Standard Position}]
+    \nxEachLabel{ArrowDark}{Secondary}{{4}{5}}{%
+        {Step 1}/{Translate the triangle so the chosen vertex goes to \((0,0)\)},%
+        {Step 2}/{Compute the angle between the chosen base side and the positive \(x\)-axis},%
+        {Step 3}/{Rotate the triangle by the negative of that angle to align the side with \(x\ge0\)},%
+        {Result}/{The triangle sits with one vertex at the origin and one side on the positive \(x\)-axis, ready for trigonometric analysis}%
+    }
+\end{NxLightListBox}
+
+% Pythagorean Theorem — Right‐Triangle Side Calculation
+\begin{NxLightListBox}[title={Pythagorean Theorem — Right‐Triangle Side Calculation}]
+    \nxEachLabel{ArrowDark}{Secondary}{{4}{5}}{%
+        {Statement}/{In a right triangle with legs \(a,b\) and hypotenuse \(c\), \(a^2 + b^2 = c^2\)},%
+        {Solve for Hypotenuse}/{\(c = \sqrt{a^2 + b^2}\)},%
+        {Solve for a Leg}/{\(a = \sqrt{c^2 - b^2}\) or \(b = \sqrt{c^2 - a^2}\)},%
+        {Context}/{Applies only when one angle is exactly \(90^\circ\)}%
+    }
+\end{NxLightListBox}
+
+
+% Trigonometric Ratios — Right‐Triangle Angles and Sides
+\begin{NxLightListBox}[title={Trigonometric Ratios — Right‐Triangle Angles and Sides}]
+    \nxEachLabel{ArrowDark}{Secondary}{{4}{5}}{%
+        {Definitions}/{\(\sin\theta=\tfrac{\text{opp}}{\text{hyp}},\,\cos\theta=\tfrac{\text{adj}}{\text{hyp}},\,\tan\theta=\tfrac{\text{opp}}{\text{adj}}\)},%
+        {Find an Angle}/{\(\theta=\arcsin\frac{\text{opp}}{\text{hyp}}\), or \(\theta=\arccos\frac{\text{adj}}{\text{hyp}}\), or \(\theta=\arctan\frac{\text{opp}}{\text{adj}}\)},%
+        {Context}/{Requires one acute angle and one side known}%
+    }
+\end{NxLightListBox}
+
+% Law of Cosines — General Triangle Side or Angle
+\begin{NxLightListBox}[title={Law of Cosines — General Triangle Side or Angle}]
+    \nxEachLabel{ArrowDark}{Secondary}{{4}{5}}{%
+        {Side Formula}/{\(c^2 = a^2 + b^2 - 2ab\cos C\)},%
+        {Angle Formula}/{\(\cos C = \frac{a^2 + b^2 - c^2}{2ab}\)},%
+        {Solve for Side}/{\(c = \sqrt{a^2 + b^2 - 2ab\cos C}\)},%
+        {Solve for Angle}/{\(C = \arccos\!\bigl(\frac{a^2 + b^2 - c^2}{2ab}\bigr)\)},%
+        {Context}/{Works for any triangle when two sides and included angle are known (SAS) or three sides (SSS)}%
+    }
+\end{NxLightListBox}
+
+% Law of Sines — General Triangle Angle or Side
+\begin{NxLightListBox}[title={Law of Sines — General Triangle Angle or Side}]
+    \nxEachLabel{ArrowDark}{Secondary}{{4}{5}}{%
+        {Statement}/{\(\displaystyle\frac{a}{\sin A}=\frac{b}{\sin B}=\frac{c}{\sin C}\)},%
+        {Find a Side}/{\(a = b\frac{\sin A}{\sin B}\) or \(c = b\frac{\sin C}{\sin B}\)},%
+        {Find an Angle}/{\(A = \arcsin\!\bigl(\tfrac{a\sin B}{b}\bigr)\)},%
+        {Context}/{Valid when any side–angle opposite pair is known plus another side or angle (ASA, AAS, SSA)}%
+    }
+\end{NxLightListBox}
+
+% Law of Cosines Term — Interaction Glyph
+\begin{NxLightListBox}[title={Law of Cosines Term — Interaction Glyph}]
+    \nxEachLabel{ArrowDark}{Secondary}{{4}{5}}{%
+        {Interaction Term}/{\(2ab\cos C\) is twice the product of sides \(a\) and \(b\) multiplied by the cosine of the included angle \(C\)},%
+        {Role}/{It adjusts the sum \(a^2 + b^2\) to account for the tilt between those sides},%
+        {Sign}/{The minus sign in \(a^2 + b^2 - 2ab\cos C\) reduces the sum when \(0^\circ<C<90^\circ\) and increases it when \(90^\circ<C<180^\circ\)},%
+        {Full Formula}/{\(c^2 = a^2 + b^2 - 2ab\cos C\)},%
+        {Special Case}/{When \(C=90^\circ\), \(\cos C=0\) and it collapses to \(c^2 = a^2 + b^2\) (the Pythagorean theorem)}%
+    }
+\end{NxLightListBox}
+
+% Interaction Term — Angular Adjustment Glyph
+\begin{NxLightListBox}[title={Interaction Term — Angular Adjustment Glyph}]
+    \nxEachLabel{ArrowDark}{Secondary}{{4}{5}}{%
+        {Geometric Origin}/{Derived from the dot product of two sides of lengths \(a\) and \(b\)},%
+        {Adjustment Role}/{Modifies \(a^2 + b^2\) by the projection of one side onto the other},%
+        {Cosine Function}/{\(\cos C\) measures alignment of sides, not quadrant or 360° normalization},%
+        {Sign Impact}/{For \(0^\circ<C<90^\circ\), \(\cos C>0\) subtracts; for \(90^\circ<C<180^\circ\), \(\cos C<0\) subtracting a negative adds},%
+        {Purpose}/{Ensures the correct length of the third side for both acute and obtuse interior angles}%
+    }
+\end{NxLightListBox}
+
+% Alignment Context — The Vector Alignment Glyph
+\begin{NxLightListBox}[title={Alignment Context — The Vector Alignment Glyph}]
+    \nxEachLabel{ArrowDark}{Secondary}{{4}{5}}{%
+        {Definition}/{Refers to the angle between the two side‐vectors of lengths \(a\) and \(b\) at their common vertex},%
+        {Vertex as Origin}/{In the dot‐product derivation we translate that vertex to \((0,0)\) so both sides become vectors from the origin},%
+        {Cosine Measure}/{\(\cos C\) quantifies how much one side “leans” toward the other at that vertex},%
+        {Coordinate Independence}/{This alignment is intrinsic to the triangle and doesn’t depend on the global \(x\)–\(y\) axes unless you choose standard position},%
+        {Purpose}/{Ensures the third side’s length reflects the exact tilt between sides \(a\) and \(b\)}%
+    }
+\end{NxLightListBox}
+
+% Labeling Convention — Angle vs Side Glyph
+\begin{NxLightListBox}[title={Labeling Convention — Angle vs Side Glyph}]
+    \nxEachLabel{ArrowDark}{Secondary}{{4}{5}}{%
+        {Convention}/{Angles are denoted by uppercase letters (e.g., \(A,B,C\))},%
+        {Sides}/{Sides are denoted by lowercase letters (e.g., \(a,b,c\))},%
+        {Opposition}/{Side \(a\) is opposite angle \(A\); side \(b\) opposite \(B\); side \(c\) opposite \(C\)},%
+        {Triangle Context}/{In \(\triangle ABC\), vertices \(A,B,C\) label angles; sides \(BC\), \(CA\), \(AB\) label \(a,b,c\) respectively},%
+        {Usage}/{This convention ensures formulas like the Law of Sines and Law of Cosines remain consistent}%
+    }
+\end{NxLightListBox}
+
+Polar Axis
+Polar Angle
+
+
+coordinate system Rectangular and Polar
+

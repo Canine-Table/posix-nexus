@@ -62,6 +62,7 @@
 		\fi%
 	},%
 	%%% List Box Family %%%
+	/nx/.cd,%
 	/nx/list box/.is family,%
 	nx list box/.style={%
 		nx, list box/.cd%
@@ -79,8 +80,142 @@
 	reference/.code 2 args={\nxThumbTackDangerItem\nx@Topic{#1}{Reference}{#2}},%
 	availability/.code 2 args={\nxBrainExperimentalItem\nx@Topic{#1}{Availability}{#2}},%
 	true/.code 2 args={\nxCheckSuccessItem\nx@Topic{#1}{True}{#2}},%
-	false/.code 2 args={\nxTimesDangerItem\nx@Topic{#1}{False}{#2}}%
+	false/.code 2 args={\nxTimesDangerItem\nx@Topic{#1}{False}{#2}},%
+	/nx/shapes/.is family,%
+	nx shapes/.style={%
+		nx, shapes/.cd%
+	},%
+	/nx/shapes/.cd,%
+	byX/.initial=-9pt,%
+	byY/.initial=-9pt,%
+	/nx/triangle/.is family,%
+  nx triangle/.style={%
+		nx, triangle/.cd%
+	},%
+	/nx/triangle/.cd,%
+	al/.default=A,%
+	bl/.default=B,%
+	cl/.default=C,%
+	as/.default={-2.5,2.5},%
+	bs/.default={2.5,2.5},%
+	cs/.default={-2.5,-2.5},%
+	al/.store in=\nx@AL,%
+	bl/.store in=\nx@BL,%
+	cl/.store in=\nx@CL,%
+	as/.store in=\nx@AS,%
+	bs/.store in=\nx@BS,%
+	cs/.store in=\nx@CS,%
+  /nx/crowsfoot/.cd,%
+  /nx/crowsfoot/.is family,%
+  nx crowsfoot/.style={%
+		nx, crowsfoot/.cd%
+	},%
+  /nx/crowsfoot/.cd,%
+  shaftoffset/.initial=0.25,%
+  tipoffset/.initial=0.35,%
+  barA/.initial=0.6,%
+  barB/.initial=0.3,%
+  circleradius/.initial=0.25,%
+  circleoffset/.initial=0.03,%
+	circlestart/.initial=0pt,%
+  footFork/.initial=0.35,%
+  footSpread/.initial=0.3,%
+  backend/.initial=0.75,%
+  visualbackend/.initial=0.5,%
+  lineend/.initial=0.25,%
+  tipend/.initial=0.25,%
+  tipoffset/.initial=0pt%
 }
+
+\begin{comment}
+
+\long\def\nx@Crowsfoot@Saved@Macros@[#1]{%
+	\pgfkeys{
+%
+		nx crowsfoot,%
+		shaftoffset,%
+		tipoffset,%
+		barA,%
+		barB,%
+		footFork,%
+		footSpread,%
+		circleradius,%
+		circleoffset,%
+		circlestart,%
+		backend,%
+		visualbackend,%
+		lineend,%
+		tipend,%
+		#1%
+	}%
+  \savedmacro{\nx@shaftoffset}{\pgfkeysvalueof{shaftoffset}}%
+  \savedmacro{\nx@tipoffset}{\pgfkeysvalueof{tipoffset}}%
+  \savedmacro{\nx@barA}{\pgfkeysvalueof{barA}}%
+  \savedmacro{\nx@barB}{\pgfkeysvalueof{barB}}%
+  \savedmacro{\nx@tipend}{\pgfkeysvalueof{tipend}}%
+  \savedmacro{\nx@lineend}{\pgfkeysvalueof{lineend}}%
+  \savedmacro{\nx@backend}{\pgfkeysvalueof{backend}}%
+
+  \savedmacro{\nx@footFork}{\pgfkeysvalueof{footFork}}%
+  \savedmacro{\nx@footSpread}{\pgfkeysvalueof{footSpread}}%
+  \savedmacro{\nx@visualbackend}{\pgfkeysvalueof{visualbackend}}%
+  \savedmacro{\nx@circleradius}{\pgfkeysvalueof{circleradius}}%
+  \savedmacro{\nx@circleoffset}{\pgfkeysvalueof{circleoffset}}%
+  \savedmacro{\nx@circlestart}{\pgfkeysvalueof{circlestart}}%
+}
+\def\nx@Crowsfoot@Setup@{%
+    \pgfarrowssettipend{\nx@tipend\pgfarrowlength}
+    \pgfarrowssetlineend{-\nx@lineend\pgfarrowlength}
+    \pgfarrowssetvisualbackend{\nx@visualbackend\pgfarrowlength}
+    \pgfarrowssetbackend{-\nx@backend\pgfarrowlength}
+    \pgfarrowshullpoint{\nx@tipend\pgfarrowlength}{\nx@tipoffset}
+    \pgfarrowshullpoint{-\nx@backend\pgfarrowlength}{\nx@tipend\pgfarrowlength}
+    \pgfarrowshullpoint{-\nx@backend\pgfarrowlength}{-\nx@tipend\pgfarrowlength}
+    \pgfarrowssavethe\pgfarrowlength
+}
+\def\nx@Crowsfoot@Circle@Fill{%
+	\pgfpathcircle{\pgfpoint{\nx@circleoffset\pgfarrowlength}{\nx@circlestart}}{\nx@circleradius\pgfarrowlength}%
+	\pgfpathclose%
+	\pgfusepathqfill%
+}
+
+\def\nx@Crowsfoot@Circle@Fill{%
+	\pgfpathcircle{\pgfpoint{\nx@circleoffset\pgfarrowlength}{\nx@circlestart}}{\nx@circleradius\pgfarrowlength}%
+	\pgfpathclose%
+	\pgfusepathqfill%
+}
+\def\nx@Crowsfoot@Foot@Draw{%
+	\pgfpathmoveto{\pgfqpoint{\nx@footFork\pgfarrowlength}{\tipoffset}}%
+	\pgfpathlineto{\pgfqpoint{\pgfarrowlength}{\nx@footSpread\pgfarrowlength}}%
+	\pgfpathmoveto{\pgfqpoint{\nx@footFork\pgfarrowlength}{\nx@tipoffset}}%
+	\pgfpathlineto{\pgfqpoint{\pgfarrowlength}{-\nx@footSpread\pgfarrowlength}}%
+}
+
+\pgfdeclarearrow{
+	name = testaArw,
+	parameters = {
+    \nx@Crowsfoot@Saved@Macros@{#1}
+		\the\pgfarrowlength
+  },
+  setup code = {
+		\nx@Crowsfoot@Setup@
+  },
+	drawing code = {
+		\pgfpathmoveto{\pgfqpoint{\nx@footFork\pgfarrowlength}{\tipoffset}}
+		\pgfpathlineto{\pgfqpoint{\pgfarrowlength}{\nx@footSpread\pgfarrowlength}}
+		\pgfpathmoveto{\pgfqpoint{\nx@footFork\pgfarrowlength}{\nx@tipoffset}}
+		\pgfpathlineto{\pgfqpoint{\pgfarrowlength}{-\nx@footSpread\pgfarrowlength}}
+
+		\pgfpathclose
+		\pgfusepathqstroke
+		\nx@Crowsfoot@Circle@Fill
+	},
+	defaults = {
+		length = 5mm
+
+	}
+}
+\end{comment}
 \makeatother
 
 

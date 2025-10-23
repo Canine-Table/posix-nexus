@@ -27,3 +27,7 @@ define nx_ang_sin(x) {
 	return x * s
 }
 
+define nx_ang_tan(x) {
+	return nx_ang_sin(x)
+}
+

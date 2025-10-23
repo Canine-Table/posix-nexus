@@ -1,5 +1,119 @@
 M = {}
 
+M.index = function(t)
+	if type(t) == "table" then
+		if t[0] ~= nil then
+			t[0] = t[0] + 1
+		else
+			t[0] = 1
+		end
+		return t[0]
+	end
+	return nil
+end
+
+M.itable = {}
+
+--[=[
+	IF the input (t) is a table THEN
+		SET stem to of the new isntance to input (t)
+	ELSEIF the input is not empty THEN
+		add it as an entry to the new table
+	END
+	- groups types into tables storing indexes
+	- 0 is the top counter
+--]=]
+
+function M.itable:new(s, l)
+	local this = {
+		NIL = {[0] = 0},
+		NUMBER = {[0] = 0},
+		STRING = {[0] = 0},
+		BOOLEAN = {[0] = 0},
+		TABLE = {[0] = 0},
+		FUNCTION = {[0] = 0},
+		USERDATA = {[0] = 0},
+		THREAD = {[0] = 0},
+		stem = nil,
+		leaf = nil,
+		[0] = 0
+	}
+	self.__index = self
+	setmetatable(this, self)
+	local i = M.data.index(s)
+	if i ~= nil then
+		s[i] = this
+		i = M.data.index(s.TABLE)
+		if i ~= nil then
+			s.TABLE[i] = s[0]
+		end
+		this.stem = s
+	elseif s ~= nil then
+		this:add(s)
+	end
+	if l ~= nil then
+		this.leaf = l
+	end
+	return this
+end
+
+function M.itable:add(v)
+	local k = type(v):upper()
+	if k == "TABLE" then
+		return M.data.itable:new(self, v)
+	elseif v ~= nil then
+		local i = M.data.index(self)
+		self[i] = v
+		i = M.data.index(self[k])
+		if i ~= nil then
+			self[k][i] = self[0]
+		end
+		return self
+	end
+	return nil
+end
+
+function M.itable:apply(c)
+	local que = {[0] = 0}
+	local stem = self:add(c)
+	local cur = {}
+	repeat
+		if type(stem.leaf) == "table" then
+			for k, v in pairs(stem.leaf) do
+				stem:add(k)
+				cur = stem:add(v)
+				if cur ~= stem and cur ~= nil then
+					local i = M.data.index(que)
+					que[i] = cur
+				end
+			end
+			stem.leaf = nil
+		end
+		stem = que[que[0]]
+		que[0] = que[0] - 1
+	until que[0] < 0
+end
+
+function M.data.itable:trace(depth)
+	depth = depth or 0
+	print(string.rep("  ", depth) .. "itable @ " .. tostring(self))
+	print(string.rep("  ", depth) .. "NIL count:", self.NIL[0])
+	print(string.rep("  ", depth) .. "USERDATA count:", self.USERDATA[0])
+	print(string.rep("  ", depth) .. "FUNCTION count:", self.FUNCTION[0])
+	print(string.rep("  ", depth) .. "THREAD count:", self.THREAD[0])
+	print(string.rep("  ", depth) .. "BOOLEAN count:", self.BOOLEAN[0])
+	print(string.rep("  ", depth) .. "NUMBER count:", self.NUMBER[0])
+	print(string.rep("  ", depth) .. "STRING count:", self.STRING[0])
+	print(string.rep("  ", depth) .. "TABLE count:", self.TABLE[0])
+	print(string.rep("  ", depth) .. "Total entries:", self[0])
+	for i = 1, self[0] do
+	local v = self[i]
+		if type(v) == "table" and getmetatable(v) == M.data.itable then
+			v:trace(depth + 1)
+		end
+	end
+end
+
 M.stack = {}
 
 function M.stack:new()

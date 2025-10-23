@@ -1,0 +1,20 @@
+\nxSections{Scratch}{1}
+
+%\tikzstyle{process} = [rectangle, minimum width=3cm, minimum height=1cm, text centered, draw=black, fill=blue!20]
+%\tikzstyle{decision} = [diamond, aspect=2, text centered, draw=black, fill=green!20]
+%\tikzstyle{inputoutput} = [trapezium, trapezium left angle=70, trapezium right angle=110, minimum width=3cm, minimum height=1cm, text centered, draw=black, fill=orange!20]
+
+\begin{tikzpicture}
+	\node[draw, shape=scrollwave, fill=cyan!20, minimum width=4cm, minimum height=2cm] {Scalable Document};
+  \node[simple shape] (Test1) at (0,0) {};
+  \fill (Test1.anchor foo) circle (2pt) node[below] {anchor foo anchor};
+  %
+  \def\foo{bar}
+  \node[simple shape] (Test2) at (2,2) {};
+  \fill (Test2.anchor bar) circle (2pt) node[below] {anchor bar anchor};
+
+
+	%\node[documentwave]{hello};
+	%	\\draw (0,0) .. controls (6,-1) and (3,4) .. (10,2) -+(10,8) -+(0,8) -+(0,0);
+%draw (0,0) .. controls (6,-1) and (3,4) .. (10,2) -- (10,8) -| (0,0);
+\end{tikzpicture}

@@ -1,0 +1,12 @@
+CREATE TABLE IF NOT EXISTS NxImpurityNxPools (
+  Id INTEGER PRIMARY KEY,
+  Name TEXT NOT NULL,
+  Description TEXT
+);
+
+CREATE TABLE IF NOT EXISTS NxImpurityNxGroups (
+  Id INTEGER PRIMARY KEY,
+  PoolId INTEGER NOT NULL,
+  Message TEXT NOT NULL,
+  FOREIGN KEY (PoolId) REFERENCES NxImpurityNxPools(Id)
+);

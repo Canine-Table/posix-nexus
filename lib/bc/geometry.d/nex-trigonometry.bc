@@ -1,0 +1,74 @@
+#nx_include "./geometry.d/trigonometry.d/nex-sine.bc"
+#nx_include "./geometry.d/trigonometry.d/nex-cosine.bc"
+#nx_include "./geometry.d/trigonometry.d/nex-tangent.bc"
+
+##################################################################
+define r_nx_pt_quad(x) {
+	x = nx_pt_mod2pi(x)
+	if (x < c_pi / 2)
+		return 1
+	if (x < c_pi)
+		return 2
+	if (x < 3 * c_pi / 2)
+		return 3
+	return 4
+}
+
+define r_nx_pt_quad_s(x) {
+	x = r_nx_pt_quad(x)
+	if (x == 1 || x == 2)
+		return 1
+	return -1
+}
+
+define r_nx_pt_quad_c(x) {
+	x = r_nx_pt_quad(x)
+	if (x == 1 || x == 4)
+		return 1
+	return -1
+}
+
+define r_nx_pt_quad_t(x) {
+	x = r_nx_pt_quad(x)
+	if (x == 1 || x == 3)
+		return 1
+	return -1
+}
+
+##################################################################
+
+define r_nx_pth(x, y) {
+	return nx_nr_sqrt(x*x + y*y)
+}
+
+##################################################################
+
+define nx_solved_sohcahtoa(a, b, c) {
+	auto x, y, z
+	if (nx_abs(c) == 0)
+		c = r_nx_pth(a, b) # pythagorean
+	x = b / c # opp / hyp
+	y = a / c # adj / hyp
+	z = b / a # opp / adj
+	print "sin A (ratio): ", x, " → angle A (deg): ", nx_rad2deg(r_nx_ts_asin(x)), "\n"
+	print "cos A (ratio): ", y, " → angle A (deg): ", nx_rad2deg(r_nx_ts_acos(y)), "\n"
+	print "tan A (ratio): ", z, " → angle A (deg): ", nx_rad2deg(r_nx_ts_atan(z)), "\n"
+}
+
+##################################################################
+
+#	tan <-> cot
+#	sin <-> csc
+#	cos <-> sec
+define nx_solved_shoahatao(a, b, c) {
+	auto x, y, z
+	if (nx_abs(c) == 0)
+		c = r_nx_pth(a, b) # pythagorean
+	x = c / b # hyp / opp
+	y = c / a # hyp / adj
+	z = a / b # adj / opp
+	print "csc A (ratio): ", x, " → angle A (deg): ", nx_rad2deg(r_nx_ts_asin(1 / x)), "\n"
+	print "sec A (ratio): ", y, " → angle A (deg): ", nx_rad2deg(r_nx_ts_acos(1 / y)), "\n"
+	print "cot A (ratio): ", z, " → angle A (deg): ", nx_rad2deg(r_nx_ts_atan(1 / z)), "\n"
+}
+
