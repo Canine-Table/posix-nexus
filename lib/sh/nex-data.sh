@@ -95,7 +95,7 @@ nx_data_jdump()
 nx_data_jtree()
 (
 	eval "$(nx_str_optarg ':r:j:n:' "$@")"
-	test "$n" -eq 0 || n="$(nx_int_natural "$n")"
+	test "$n" = '0' || n="$(nx_int_natural "$n")"
 	${AWK:-$(nx_cmd_awk)} -v jdump="$j" -v root="${r:-}" -v indent="$n" \
 	"
 		$(nx_data_include -i "${NEXUS_LIB}/awk/nex-json.awk")
@@ -182,7 +182,7 @@ nx_data_import()
 		$(nx_data_include -i "${NEXUS_LIB}/awk/nex-todo.awk")
 	"'
 		BEGIN {
-			nx_import(fl)
+			nx_source(fl)
 		}
 	'
 }

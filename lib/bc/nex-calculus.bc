@@ -2,7 +2,7 @@
 #nx_include "./nex-algebra.bc"
 
 define nx_mc_esp(x, y) {
-	return nx_pow(x, y) / nx_fact(y)
+	return x ^ y / nx_fact(y)
 }
 
 define nx_ts(n, t, p, k, s) {

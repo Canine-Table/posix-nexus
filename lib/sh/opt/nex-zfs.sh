@@ -29,3 +29,19 @@ nx_zfs_mount()
 	}
 )
 
+nx_zfs_cache()
+{
+	h_nx_cmd zpool && zpool list "$1" 2>/dev/null 1>&2 && (
+		tmpa="$(test -f "$2" && printf "$2" || printf '/etc/zfs/zpool.cache')"
+		zpool import -c "$tmpa"
+		zpool set cachefile="$tmpa" "$1"
+	)
+}
+nx_zfs_list()
+{
+	nx_tty_div -d
+	h_nx_cmd zpool && zpool list -v
+	nx_tty_div -s
+	h_nx_cmd zfs && zfs list -H
+	nx_tty_div -d
+}

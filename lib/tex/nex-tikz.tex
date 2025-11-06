@@ -1,87 +1,5 @@
 \makeatletter
-
-\def\nx@optionalMany{pp}
-\def\nx@optionalOne{oo}
-\def\nx@mandatoryMany{mm}
-\def\nx@mandatoryOne{nn}
-\def\nx@true{1}
-\def\nx@false{0}
-
-\def\nx@crowsfootmm#1#2{%
-	\ifx#1\nx@mandatoryMany%
-		\ifx#2\nx@true%
-			\draw[thick] (-0.2,0) -- (0.0,0.1)
-				(-0.2,0) -- (0.0,-0.1)
-				(-0.2,0.0) -- (0,0)
-				(-0.2,0.1) -- (-0.2,-0.1);
-		\else\ifx#2\nx@false%
-			\draw[thick]
-				(0, -0.1) -- (0.2, -0)
-				(0, 0.1) -- (0.2, -0)
-				(0.2, 0) -- (0, 0)
-				(0.2, -0.1) -- (0.2, 0.1);
-		\fi\fi%
-	\fi%
-}
-
-\def\nx@crowsfootnn#1#2{%
-	\ifx#1\nx@mandatoryOne%
-		\ifx#2\nx@true%
-			\draw[thick] (-0.15,0.1) -- (-0.15,-0.1)
-				(-0.14, 0) -- (0, 0)
-				(-0.1,0.1) -- (-0.1,-0.1);
-		\else\ifx#2\nx@false%
-			\draw[thick] (0.15,0.1) -- (0.15,-0.1)
-				(0.14, 0) -- (0, 0)
-				(0.1,0.1) -- (0.1,-0.1);
-		\fi\fi%
-	\fi%
-}
-
-\def\nx@crowsfootpp#1#2{%
-	\ifx#1\nx@optionalMany%
-		\ifx#2\nx@true%
-			\draw[thick, fill=white]
-				(0, 0.1) -- (-0.2, 0)
-				(-0.3, 0) circle[radius=0.8mm]
-				(0, -0.1) -- (-0.2, 0)
-				(-0.23, 0) -- (0, 0);
-		\else\ifx#2\nx@false%
-			\draw[thick, fill=white]
-				(0, -0.1) -- (0.2, 0)
-				(0.3, 0) circle[radius=0.8mm]
-				(0, 0.1) -- (0.2, 0)
-				(0.23, 0) -- (0, 0);
-		\fi\fi%
-	\fi%
-}
-
-\def\nx@crowsfootoo#1#2{%
-	\ifx#1\nx@optionalOne%
-		\ifx#2\nx@true%
-			\draw[thick, fill=white]
-				(-0.16, 0) -- (0, 0)
-				(-0.25,0) circle[radius=1mm] (-0.25,-0.2)
-				(-0.1,0.1) -- (-0.1,-0.1);
-		\else\ifx#2\nx@false%
-			\draw[thick, fill=white]
-				(0.16, 0) -- (0, 0)
-				(0.25, 0) circle[radius=1mm] (0.25, -0.2)
-				(0.1,0.1) -- (0.1, -0.1);
-		\fi\fi%
-	\fi%
-}
-
-
-%\tikzstyle{entity} = [rectangle, rounded corners, minimum width=3cm, minimum height=1cm,text centered, draw=black, fill=gray!10]
-%\tikzstyle{arrow} = [thick,->,>=Stealth]
-
 \tikzset{%
-	stealth/.style={
-		thick,%
-		->,%
-		>=Stealth%
-	},%
 	highlight/.style={draw=black, thick, fill=yellow!30},%
 	error/.style={draw=red, thick, fill=red!10},%
 	compute/.style={process, fill=cyan!20},%
@@ -94,16 +12,6 @@
 		thick,%
 		dashed,%
 		dash pattern=on 2pt off 1pt%
-	},%
-	crowsfoot/.style n args={2}{%
-			postaction={%
-				decorate,%
-				decoration={%
-					markings,%
-					mark=at position 0 with {\pgfextra{\expandafter\csname nx@crowsfoot#1\endcsname{#1}{\nx@false}}},%
-					mark=at position 1 with {\pgfextra{\expandafter\csname nx@crowsfoot#2\endcsname{#2}{\nx@true}}}%
-			}%
-		}%
 	},%
 	/nx/lbl/.cd,%
 	above/.style={%
@@ -162,6 +70,12 @@
 	not/.style={%
 		not port,%
 		fill=red!10%
+	},%
+	/nx/arw/.cd,%
+	stealth/.style={
+		thick,%
+		->,%
+		>=Stealth%
 	},%
 	/nx/shapes/.cd,%
 	startstop/.style={%
@@ -380,8 +294,6 @@
 		\pgfpathlineto{\pgfqpoint{.25\pgfarrowlength}{-.3\pgfarrowlength}}
 		\pgfpathclose
 		\pgfusepathqstroke
-		%\pgfpathclose
-		%\pgfusepathqfill
 	},
 	defaults = {
 		length = 5mm
@@ -510,63 +422,6 @@
 	\nxPlaceLabel{\nx@CL}{\nx@CL}
 }
 
-\pgfdeclareshape{document}{
-	\inheritsavedanchors[from=rectangle] % this is nearly a rectangle
-	\inheritanchorborder[from=rectangle]
-	\inheritanchor[from=rectangle]{center}
-	\inheritanchor[from=rectangle]{north}
-	\inheritanchor[from=rectangle]{south}
-	\inheritanchor[from=rectangle]{west}
-	\inheritanchor[from=rectangle]{east}
-	% ... and possibly more
-	\backgroundpath{% this is new
-		% store lower right in xa/ya and upper right in xb/yb
-		\southwest \pgf@xa=\pgf@x \pgf@ya=\pgf@y
-		\northeast \pgf@xb=\pgf@x \pgf@yb=\pgf@y
-		% compute corner of ``flipped page''
-		\pgf@xc=\pgf@xb \advance\pgf@xc by\pgfkeysvalueof{/nx/shapes/byX}% this should be a parameter
-		\pgf@yc=\pgf@yb \advance\pgf@yc by\pgfkeysvalueof{/nx/shapes/byY}
-		% construct main path
-		\pgfpathmoveto{\pgfpoint{\pgf@xa}{\pgf@ya}}% move to south west
-		\pgfpathlineto{\pgfpoint{\pgf@xa}{\pgf@yb}}% draw line from south west to north east (bottom left to top right)
-		\pgfpathlineto{\pgfpoint{\pgf@xc}{\pgf@yb}}% draw from top right 
-		\pgfpathlineto{\pgfpoint{\pgf@xb}{\pgf@yc}}
-		\pgfpathlineto{\pgfpoint{\pgf@xb}{\pgf@ya}}
-		\pgfpathclose
-		% add little corner
-		\pgfpathmoveto{\pgfpoint{\pgf@xc}{\pgf@yb}}
-		\pgfpathlineto{\pgfpoint{\pgf@xc}{\pgf@yc}}
-		\pgfpathlineto{\pgfpoint{\pgf@xb}{\pgf@yc}}
-		\pgfpathlineto{\pgfpoint{\pgf@xc}{\pgf@yc}}
- }
-}
-
-\begin{comment}
-
-\pgfdeclareshape{scrollwave}{
-	\inheritsavedanchors[from=rectangle]
-	\inheritanchorborder[from=rectangle]
-	\inheritanchor[from=rectangle]{center}
-
-	\backgroundpath{
-		\pgfmathsetlengthmacro{\w}{\pgfshapeinnerx}
-		\pgfmathsetlengthmacro{\h}{\pgfshapeinnery}
-
-		\pgfpathmoveto{\pgfpoint{-\w}{\h}}			 % top-left
-		\pgfpathlineto{\pgfpoint{\w}{\h}}				 % top-right
-		\pgfpathlineto{\pgfpoint{\w}{-\h}}			 % bottom-right
-
-		% Bézier curve for bottom edge
-		\pgfpathcurveto
-			{\pgfpoint{0.5*\w}{-\h - 0.2*\h}}			 % control 1
-			{\pgfpoint{-0.5*\w}{-\h + 0.2*\h}}		 % control 2
-			{\pgfpoint{-\w}{-\h}}									% end point
-
-		\pgfpathclose
-	}
-}
-
-
 \pgfdeclareshape{simple shape}{%
 	\savedanchor{\center}{%
 		\pgfpointorigin}
@@ -576,44 +431,6 @@
 		\pgf@y=0cm}
 	\deferredanchor{anchor \foo}{\anchorfoo}}
 
-\pgfdeclareshape{documentwave}{
-	\inheritsavedanchors[from=rectangle] % inherit anchors like center, north, etc.
-	\inheritanchorborder[from=rectangle]
-	\inheritanchor[from=rectangle]{center}
-	\inheritanchor[from=rectangle]{north}
-	\inheritanchor[from=rectangle]{south}
-	\inheritanchor[from=rectangle]{east}
-	\inheritanchor[from=rectangle]{west}
-	\inheritanchor[from=rectangle]{north east}
-	\inheritanchor[from=rectangle]{north west}
-	\inheritanchor[from=rectangle]{south east}
-	\inheritanchor[from=rectangle]{south west}
-
-	\backgroundpath{
-		% Get corners
-		\pgfpointdiff{\southwest}{\northeast}
-		\pgf@xa=\pgf@x
-		\pgf@ya=\pgf@y
-
-		% Define corners
-		\pgfmathsetlengthmacro{\w}{abs(\pgf@xa)}
-		\pgfmathsetlengthmacro{\h}{abs(\pgf@ya)}
-
-		\pgfpathmoveto{\pgfpoint{-\w/2}{\h/2}} % top-left
-		\pgfpathlineto{\pgfpoint{\w/2}{\h/2}}  % top-right
-		\pgfpathlineto{\pgfpoint{\w/2}{-\h/2}} % bottom-right
-
-		% Wavy bottom edge
-		\pgfpathmoveto{\pgfpoint{\w/2}{-\h/2}}
-		\pgfpathcurveto
-			{\pgfpoint{0.75*\w}{-\h/2 - 0.1*\h}}
-			{\pgfpoint{0.25*\w}{-\h/2 + 0.1*\h}}
-			{\pgfpoint{-\w/2}{-\h/2}}
-
-		\pgfpathlineto{\pgfpoint{-\w/2}{\h/2}} % close shape
-		\pgfpathclose
-	}
-}
 \def\polartransformation{%
 	% \pgf@x will contain the radius
 	% \pgf@y will contain the distance
@@ -623,14 +440,5 @@
 	\pgf@x=\pgfmathresultx\pgf@y%
 	\pgf@y=\pgfmathresulty\pgf@y%
 }
-
-\ctikzset{%
-	logic ports/scale=1.2,%
-	logic ports/label/.style={font=\small\ttfamily},%
-	logic ports/input anchors=1,2,%
-	logic ports/output anchor=out%
-}
-\end{comment}
-
 
 \makeatother

@@ -1,0 +1,184 @@
+\nxSections{Tables}{2}
+
+\nxSections{CREATE TABLE}{3}
+
+\begin{NxCodeBox}{sql}{title={CREATE TABLE — Syntax Across Engines}}
+-- PostgreSQL
+CREATE TABLE IF NOT EXISTS users (
+		id SERIAL PRIMARY KEY,
+		name TEXT NOT NULL,
+		created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- MariaDB / MySQL
+CREATE TABLE IF NOT EXISTS users (
+		id INT AUTO_INCREMENT PRIMARY KEY,
+		name VARCHAR(255) NOT NULL,
+		created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+-- SQLite3
+CREATE TABLE IF NOT EXISTS users (
+		id INTEGER PRIMARY KEY AUTOINCREMENT,
+		name TEXT NOT NULL,
+		created_at TEXT DEFAULT CURRENT_TIMESTAMP
+);
+\end{NxCodeBox}
+
+\begin{NxLightListBox}[title={CREATE TABLE — The Ritual of Genesis}]
+		\nxEachLabel{ArrowDark}{Secondary}{{1}{43}}{%
+				{Purpose}/{Defines a new table and its columns},%
+				{Input}/{Table name, column definitions, optional constraints},%
+				{Fallback}/{IF NOT EXISTS prevents error if table already exists},%
+				{Rendering}/{Engine-specific type and default syntax},%
+				{Use Case}/{Initial schema creation, migration scripts, embedded table definitions}
+		}
+\end{NxLightListBox}
+
+\begin{NxLightBox}[title={CREATE TABLE — Syntax Glyph Map}]
+		\begin{tabularx}{\textwidth}{|l|X|}
+				\hline
+				\textbf{Engine} & \textbf{Auto-Increment Syntax} \\
+				\hline
+				PostgreSQL & \nxLnArcBox[]{SERIAL} or \nxLnArcBox[]{GENERATED AS IDENTITY} \\
+				MariaDB / MySQL & \nxLnArcBox[]{AUTO\_INCREMENT} \\
+				SQLite3 & \nxLnArcBox[]{INTEGER PRIMARY KEY AUTOINCREMENT} \\
+				\hline
+				\textbf{Engine} & \textbf{Default Timestamp Syntax} \\
+				\hline
+				PostgreSQL & \nxLnArcBox[]{DEFAULT CURRENT\_TIMESTAMP} \\
+				MariaDB / MySQL & \nxLnArcBox[]{DEFAULT CURRENT\_TIMESTAMP} \\
+				SQLite3 & \nxLnArcBox[]{DEFAULT CURRENT\_TIMESTAMP} (stored as TEXT) \\
+				\hline
+		\end{tabularx}
+\end{NxLightBox}
+
+\begin{NxLightListBox}[title={CREATE TABLE — Beginner Questions}]
+		\nxEachLabel{ArrowDark}{Secondary}{{1}{43}}{%
+			{Should I always use \textbf{IF NOT EXISTS}?}/{Recommended for safety, but not mandatory. It prevents errors if the table already exists.},%
+				{Is \texttt{IF NOT EXISTS} the only way to avoid duplicate creation errors?}/{Yes — for table creation, it's the standard conditional directive.},%
+				{Does \texttt{IF NOT EXISTS} work in all engines?}/{Yes — supported in PostgreSQL, MariaDB/MySQL, and SQLite3.},%
+				{What happens if I omit \texttt{IF NOT EXISTS} and the table exists?}/{An error is raised: “table already exists.” This stops execution unless handled.},%
+				{Can I use \texttt{IF NOT EXISTS} with temporary tables?}/{Yes — all three engines support conditional creation of temporary tables.},%
+				{Is \texttt{CREATE TABLE} reversible?}/{No — you must use \nxLnArcBox[]{DROP TABLE} to remove it.},%
+				{Can I define constraints inside \texttt{CREATE TABLE}?}/{Yes — you can define primary keys, foreign keys, defaults, and checks inline.},%
+				{Can I create multiple tables in one statement?}/{No — each \nxLnArcBox[]{CREATE TABLE} must be issued separately.}
+		}
+\end{NxLightListBox}
+
+\nxSections{DROP TABLE}{3}
+
+\begin{NxCodeBox}{sql}{title={DROP TABLE — Syntax Across Engines}}
+-- PostgreSQL
+DROP TABLE IF EXISTS users;
+
+-- MariaDB / MySQL
+DROP TABLE IF EXISTS users;
+
+-- SQLite3
+DROP TABLE IF EXISTS users;
+\end{NxCodeBox}
+
+\begin{NxLightListBox}[title={DROP TABLE — The Ritual of Erasure}]
+		\nxEachLabel{ArrowDark}{Secondary}{{1}{43}}{%
+				{Purpose}/{Removes a table and all its data from the database},%
+				{Input}/{Table name; optionally prefixed with \nxLnArcBox[]{IF EXISTS}},%
+				{Fallback}/{IF EXISTS prevents error if the table is missing},%
+				{Rendering}/{Immediate and irreversible deletion},%
+				{Use Case}/{Schema resets, cleanup scripts, migration rollbacks}
+		}
+\end{NxLightListBox}
+
+\begin{NxLightBox}[title={DROP TABLE — Syntax Glyph Map}]
+		\begin{tabularx}{\textwidth}{|X|X|}
+				\hline
+				\textbf{Engine} & \textbf{Supports \nxLnArcBox[]{IF EXISTS}} \\
+				\hline
+				PostgreSQL & \nxCheckSuccess \\
+				MariaDB / MySQL & \nxCheckSuccess \\
+				SQLite3 & \nxCheckSuccess \\
+				\hline
+				\textbf{Engine} & \textbf{Effect} \\
+				\hline
+				All & Deletes table and all data immediately \\
+				\hline
+		\end{tabularx}
+\end{NxLightBox}
+
+\begin{NxLightListBox}[title={DROP TABLE — Beginner Questions}]
+		\nxEachLabel{ArrowDark}{Secondary}{{1}{43}}{%
+				{Should I always use \nxLnArcBox[]{IF EXISTS}?}/{Yes — it prevents errors if the table is already gone.},%
+				{Is \texttt{DROP TABLE} reversible?}/{No — once dropped, the table and its data are lost unless backed up.},%
+				{Can I drop multiple tables at once?}/{Yes — separate them with commas: \nxLnArcBox[]{DROP TABLE IF EXISTS a, b, c;}.},%
+				{Does it affect related tables?}/{No — but foreign key constraints may block the drop unless handled.},%
+				{Can I drop temporary tables?}/{Yes — same syntax applies.},%
+				{Does \texttt{DROP TABLE} delete indexes and constraints?}/{Yes — all associated structures are removed.}
+		}
+\end{NxLightListBox}
+
+\nxSections{ALTER TABLE}{3}
+
+\begin{NxCodeBox}{sql}{title={ALTER TABLE — Syntax Across Engines}}
+-- PostgreSQL
+ALTER TABLE users ADD COLUMN email TEXT;
+ALTER TABLE users RENAME COLUMN name TO full_name;
+ALTER TABLE users DROP COLUMN email;
+
+-- MariaDB / MySQL
+ALTER TABLE users ADD COLUMN email VARCHAR(255);
+ALTER TABLE users CHANGE COLUMN name full_name VARCHAR(255);
+ALTER TABLE users DROP COLUMN email;
+
+-- SQLite3
+ALTER TABLE users ADD COLUMN email TEXT;
+-- Rename supported (v3.25+)
+ALTER TABLE users RENAME COLUMN name TO full_name;
+-- Drop column supported (v3.35+)
+ALTER TABLE users DROP COLUMN email;
+\end{NxCodeBox}
+
+\begin{NxLightListBox}[title={ALTER TABLE — The Ritual of Mutation}]
+		\nxEachLabel{ArrowDark}{Secondary}{{1}{43}}{%
+				{Purpose}/{Modifies an existing table's structure},%
+				{Input}/{Table name and alteration clause (ADD, DROP, RENAME)},%
+				{Fallback}/{No built-in rollback; changes are immediate},%
+				{Rendering}/{Engine-specific syntax for renaming and dropping columns},%
+				{Use Case}/{Schema evolution, adding features, correcting column names}
+		}
+\end{NxLightListBox}
+
+\begin{NxLightBox}[title={ALTER TABLE — Syntax Glyph Map}]
+		\begin{tabularx}{\textwidth}{|l|X|}
+				\hline
+				\textbf{Action} & \textbf{PostgreSQL} \\
+				\hline
+			Add Column & \nxLnArcBox[]{ADD COLUMN} \\
+		Rename Column & \nxLnArcBox[]{RENAME COLUMN old TO new} \\
+			Drop Column & \nxLnArcBox[]{DROP COLUMN} \\
+				\hline
+				\textbf{Action} & \textbf{MariaDB / MySQL} \\
+				\hline
+				Add Column & \nxLnArcBox[]{ADD COLUMN} \\
+				Rename Column & \nxLnArcBox[]{CHANGE COLUMN old new TYPE} \\
+				Drop Column & \nxLnArcBox[]{DROP COLUMN} \\
+				\hline
+				\textbf{Action} & \textbf{SQLite3} \\
+				\hline
+				Add Column & \nxLnArcBox[]{ADD COLUMN} (v3.25+) \\
+				Rename Column & \nxLnArcBox[]{RENAME COLUMN} \\
+				Drop Column & \nxLnArcBox[]{DROP COLUMN} (v3.35+)\\
+				\hline
+		\end{tabularx}
+\end{NxLightBox}
+
+\begin{NxLightListBox}[title={ALTER TABLE — Beginner Questions}]
+		\nxEachLabel{ArrowDark}{Secondary}{{1}{43}}{%
+				{Can I rename a column?}/{Yes — syntax varies by engine. SQLite supports it from v3.25 onward.},%
+				{Can I drop a column?}/{Yes — PostgreSQL and MariaDB/MySQL support it. SQLite supports it from v3.35 onward.},%
+				{Is \texttt{ALTER TABLE} safe?}/{Changes are immediate and irreversible unless wrapped in a transaction.},%
+				{Can I add multiple columns at once?}/{Yes — separate them with commas: \nxLnArcBox[]{ADD COLUMN a INT, ADD COLUMN b TEXT}.},%
+				{Can I change a column's type?}/{Yes — syntax varies. PostgreSQL uses \nxLnArcBox[]{ALTER COLUMN ... TYPE}.},%
+				{Does \texttt{ALTER TABLE} affect data?}/{Usually no — but dropping or changing types may cause data loss.}
+		}
+\end{NxLightListBox}
+

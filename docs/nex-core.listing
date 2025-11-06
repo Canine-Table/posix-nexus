@@ -1,8 +1,1 @@
-nx_hw_edid()
-{
-	h_nx_cmd edid-decode || {
-		nx_io_printf -E "Cannot decode EDID: edid-decode not available or failed. Ensure it's installed and in PATH." 2>&1
-		return 1
-	}
-	cat /sys/class/drm/card*/edid | edid-decode
-}
+01000000 01001001 00001110 10010101

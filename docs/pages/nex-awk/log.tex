@@ -1,8 +1,168 @@
 \nxSections{Logging Module}{1}
 
-\nxSections{ANSI Print Dispatcher}{2}
+\nxSections{Signed Number Detection}{2}
+\begin{NxCodeBox}{awk}{title={nx\_fd\_stderr(D)}}
+function nx_fd_stderr(D)
+{
+		if (D) {
+				gsub(/"/, "\\\"" D)
+				system("printf \"" D "\" 1>&2")
+		}
+}
+\end{NxCodeBox}
 
-\begin{NxCodeBox}{awk}{title={nx\_ansi\_print(D, B, stk, ansi, args)}}
+\begin{NxLightListBox}[title={}]
+	\nxEachLabel{ArrowDark}{Secondary}{{1}{43}}{%
+			{Purpose}/{Emit string \(D\) to standard error using shell printf},%
+			{Escaping}/{Double quotes in \(D\) are escaped via \texttt{gsub}},%
+			{Condition}/{Only executes if \(D\) is non-empty},%
+			{Shell Invocation}/{Uses \texttt{system("printf ...")} for stderr emission},%
+			{Edge Case}/{Newlines and shell metacharacters are passed verbatim—input must be trusted},%
+			{Compliance}/{POSIX AWK compatible; no refactor required},%
+			{Use Case}/{Diagnostic logging, error propagation, or stderr tracing in AWK scripts}
+	}
+\end{NxLightListBox}
+
+\nxSections{ANSI Style Mapper}{2}
+
+\begin{NxCodeBox}{awk}{title={\_\_nx\_ansi\_smap(D)}}
+function __nx_ansi_smap(D,  c)
+{
+    if (D == "o") # overline
+        return 53
+    if (D == "O") # not overline
+        return 55
+    if (D != (c = tolower(D))) {
+        D = c
+        c = 20
+    } else {
+        c = 0
+    }
+    if (D == "n") # normal
+        return "0"
+    if (D == "b") # bold
+        return c + 1
+    if (D == "d") # dim
+        return c + 2
+    if (D == "i") # italic
+        return c + 3
+    if (D == "u") # underline
+        return c + 4
+    if (D == "f") # flash
+        return c + 5
+    if (D == "r") # reverse video
+        return c + 7
+    if (D == "h") # hide
+        return c + 8
+    if (D == "s") # strike
+        return c + 9
+    return 0
+}
+\end{NxCodeBox}
+
+\begin{NxLightListBox}[title={ANSI Style Mapper — The Style Glyph}]
+    \nxEachLabel{ArrowDark}{Secondary}{{1}{43}}{%
+        {Purpose}/{Maps style code \(D\) to ANSI numeric value},%
+        {Input}/{Single-character code \(D\); case-sensitive for overline variants},%
+        {Brightness}/{Uppercase \(D\) triggers bright variant (adds 20)},%
+        {Special Codes}/{\texttt{o}=overline (53), \texttt{O}=not overline (55)},%
+        {Use Case}/{Style formatting for terminal output or ANSI escape generation}
+    }
+\end{NxLightListBox}
+
+\begin{NxLightBox}[title={ANSI Style Code Map}]
+    \begin{tabularx}{\textwidth}{|l|X|}
+        \hline
+        \textbf{Code} & \textbf{Mapped ANSI Value} \\
+        \hline
+        n & Normal (0) \\
+        b & Bold (1) / Bright Bold (21) \\
+        d & Dim (2) / Bright Dim (22) \\
+        i & Italic (3) / Bright Italic (23) \\
+        u & Underline (4) / Bright Underline (24) \\
+        f & Flash (5) / Bright Flash (25) \\
+        r & Reverse Video (7) / Bright Reverse (27) \\
+        h & Hide (8) / Bright Hide (28) \\
+        s & Strike (9) / Bright Strike (29) \\
+        o & Overline (53) \\
+        O & Not Overline (55) \\
+        \hline
+        \multicolumn{2}{|l|}{Add 20 for bright variant (uppercase \(D\))} \\
+        \hline
+    \end{tabularx}
+\end{NxLightBox}
+
+\nxSections{ANSI Color Mapper}{2}
+
+\begin{NxCodeBox}{awk}{title={\_\_nx\_ansi\_cmap(D1, D2)}}
+function __nx_ansi_cmap(D1, D2,     c)
+{
+    if (D2 == "<")
+        c = 10
+    else
+        c = 0
+    if ((D2 = tolower(D1)) == "c")
+        return c + 39
+    if (D2 == "r")
+        return c + 38
+    if (D1 != D2)
+        c += 60
+    if (D2 == "b")
+        return c + 30
+    if (D2 == "e")
+        return c + 31
+    if (D2 == "s")
+        return c + 32
+    if (D2 == "w")
+        return c + 33
+    if (D2 == "i")
+        return c + 34
+    if (D2 == "d")
+        return c + 35
+    if (D2 == "a")
+        return c + 36
+    if (D2 == "l")
+        return c + 37
+    return 0
+}
+\end{NxCodeBox}
+
+\begin{NxLightListBox}[title={ANSI Color Mapper — The Chromatic Glyph}]
+    \nxEachLabel{ArrowDark}{Secondary}{{1}{43}}{%
+        {Purpose}/{Maps color code \(D1\) to ANSI numeric value},%
+        {Foreground}/{Use \texttt{>} in \(D2\) to select foreground mode},%
+        {Background}/{Use \texttt{<} in \(D2\) to select background mode},%
+        {Brightness}/{Uppercase \(D1\) triggers bright variant (adds 60)},%
+        {Normalization}/{Lowercase \(D1\) yields normal intensity},%
+        {Special Codes}/{\texttt{c}=default (39), \texttt{r}=reset (38)},%
+        {Use Case}/{Color formatting for terminal output or ANSI escape generation}
+    }
+\end{NxLightListBox}
+
+\begin{NxLightBox}[title={ANSI Color Code Map}]
+    \begin{tabularx}{\textwidth}{|l|X|}
+        \hline
+        \textbf{Code} & \textbf{Base ANSI Value} \\
+        \hline
+        b & Black (30) / Bright Black (90) \\
+        e & Red (31) / Bright Red (91) \\
+        s & Green (32) / Bright Green (92) \\
+        w & Yellow (33) / Bright Yellow (93) \\
+        i & Blue (34) / Bright Blue (94) \\
+        d & Magenta (35) / Bright Magenta (95) \\
+        a & Cyan (36) / Bright Cyan (96) \\
+        l & Light gray (37) / Bright White (97) \\
+        c & Default color (39) \\
+        r & Reset foreground (38) \\
+        \hline
+        \multicolumn{2}{|l|}{Add 10 for background mode (\texttt{<})} \\
+        \multicolumn{2}{|l|}{Add 60 for bright variant (uppercase \(D1\))} \\
+        \hline
+    \end{tabularx}
+\end{NxLightBox}
+
+\nxSections{ANSI Print Emitter}{2}
+\begin{NxCodeBox}{awk}{title={nx\_ansi\_print(D, B)}}
 function nx_ansi_print(D, B,    stk, ansi, args)
 {
     # D has no more use, lets store the index counter in it
@@ -53,73 +213,20 @@ function nx_ansi_print(D, B,    stk, ansi, args)
 }
 \end{NxCodeBox}
 
-\begin{NxCodeBox}{awk}{title={\_\_nx\_ansi\_cmap(D1, D2)}}
-function __nx_ansi_cmap(D1, D2,     c)
-{
-    if (D2 == "<")
-        c = 10
-    else
-        c = 0
-    if ((D2 = tolower(D1)) == "c")
-        return c + 39
-    if (D2 == "r")
-        return c + 38
-    if (D1 != D2)
-        c += 60
-    if (D2 == "b")
-        return c + 30
-    if (D2 == "e")
-        return c + 31
-    if (D2 == "s")
-        return c + 32
-    if (D2 == "w")
-        return c + 33
-    if (D2 == "i")
-        return c + 34
-    if (D2 == "d")
-        return c + 35
-    if (D2 == "a")
-        return c + 36
-    if (D2 == "l")
-        return c + 37
-    return 0
-}
-\end{NxCodeBox}
-
-\begin{NxCodeBox}{awk}{title={\_\_nx\_ansi\_smap(D)}}
-function __nx_ansi_smap(D,  c)
-{
-    if (D == "o") # overline
-        return 53
-    if (D == "O") # not overline
-        return 55
-    if (D != (c = tolower(D))) {
-        D = c
-        c = 20
-    } else {
-        c = 0
+\begin{NxLightListBox}[title={ANSI Print Emitter — The Render Glyph}]
+    \nxEachLabel{ArrowDark}{Secondary}{{1}{43}}{%
+        {Purpose}/{Renders styled output using ANSI sequences and symbolic glyphs},%
+        {Input}/{\(D\): markup string with embedded style codes and placeholders; \(B\): optional suppress flag},%
+        {Markup}/{Uses \texttt{<nx:null/>} as delimiter for varargs; style codes include \texttt{<}, \texttt{>}, \texttt{\_}},%
+        {Glyphs}/{Symbolic glyphs injected via \texttt{\^} and mapped by \texttt{\_\_nx\_ansi\_pmap}},%
+        {Substitution}/{\texttt{\%} triggers vararg injection with optional prefix and style context},%
+        {Style Codes}/{Resolved via \texttt{\_\_nx\_ansi\_smap} or \texttt{\_\_nx\_ansi\_cmap} depending on mode},%
+        {Output}/{Emitted to stderr unless \(B = \texttt{<nx:true/>}\); resets with \texttt{\textbackslash x1b[0m}},%
+        {Use Case}/{Diagnostic rendering, styled logging, or symbolic output in AWK scripts}
     }
-    if (D == "n") # normal
-        return "0"
-    if (D == "b") # bold
-        return c + 1
-    if (D == "d") # dim
-        return c + 2
-    if (D == "i") # italic
-        return c + 3
-    if (D == "u") # underline
-        return c + 4
-    if (D == "f") # flash
-        return c + 5
-    if (D == "r") # reverse video
-        return c + 7
-    if (D == "h") # hide
-        return c + 8
-    if (D == "s") # strike
-        return c + 9
-    return 0
-}
-\end{NxCodeBox}
+\end{NxLightListBox}
+
+\nxSections{ANSI Pictographic Mapper}{2}
 
 \begin{NxCodeBox}{awk}{title={\_\_nx\_ansi\_pmap(D)}}
 function __nx_ansi_pmap(D)
@@ -163,23 +270,38 @@ function __nx_ansi_pmap(D)
 }
 \end{NxCodeBox}
 
-\begin{NxCodeBox}{awk}{title={nx\_fd\_stderr(D)}}
-function nx_fd_stderr(D)
-{
-    if (D) {
-        gsub(/"/, "\\\"" D)
-        system("printf \"" D "\" 1>&2")
+\begin{NxLightListBox}[title={ANSI Pictographic Mapper — The Symbol Glyph}]
+    \nxEachLabel{ArrowDark}{Secondary}{{1}{43}}{%
+        {Purpose}/{Maps symbolic code \(D\) to a printable glyph},%
+        {Input}/{Single-character code \(D\); case-sensitive},%
+        {Fallback}/{Returns \texttt{"\textbackslash0"} if code is unrecognized},%
+        {Rendering}/{Delegates to \texttt{nx\_ansi\_print(...)} for styled output},%
+        {Use Case}/{Diagnostic symbols, log annotations, or status glyphs}
     }
-}
-\end{NxCodeBox}
-
-\begin{NxLightListBox}[title={ANSI Print Dispatcher — The Formatter Glyph}]
-\nxEachLabel{ArrowDark}{Secondary}{{4}{5}}{%
-    {Purpose}/{Parses inline ANSI-style tokens and assembles formatted stderr output},%
-    {Input}/{String \(D\) containing tokens separated by \texttt{<nx:null/>}; second parameter \(B\) is a boolean passthrough},%
-    {Token Modes}/{\texttt{<}, \texttt{>}, \texttt{_}, \texttt{\^}, \texttt{\%} alter parsing state; \_\_nx\_ansi\_pmap maps symbolic tokens},%
-    {Color/Style Mapping}/{\_\_nx\_ansi\_cmap and \_\_nx\_ansi\_smap convert tokens to ANSI numeric codes},%
-    {Output}/{Writes assembled ANSI sequence to stderr via \texttt{nx\_fd\_stderr} and returns next arg index or -1 on parse failure}%
-}
 \end{NxLightListBox}
+
+\begin{NxLightBox}[title={ANSI Symbol Code Map}]
+    \begin{tabularx}{\textwidth}{|l|X|}
+        \hline
+        \textbf{Code} & \textbf{Mapped Glyph} \\
+        \hline
+        b & \# (emphasis) \\
+        B & \textbar{} (pipeline) \\
+        e & x (minor error) \\
+        E & X (critical error) \\
+        s & v (success) \\
+        S & V (great success) \\
+        w & ! (warning) \\
+        W & ? (uncertain warning) \\
+        d & * (debug) \\
+        D & > (trace) \\
+        i & i (info) \\
+        I & . (verbose) \\
+        l & \% (log) \\
+        L & \$ (detailed log) \\
+        a & @ (alert) \\
+        A & \& (info alert) \\
+        \hline
+    \end{tabularx}
+\end{NxLightBox}
 

@@ -1,3 +1,8 @@
-
 \def\nxTitle#1#2#3{\directlua{tex.print(nex.str.totitle('#1', '#2', '#3'))}}
+\def\nxZ#1{\directlua{tex.print(nex.str.isZ(#1))}}
+\def\nxQ#1{\directlua{tex.print(nex.str.isQ(#1))}}
+\def\nxE#1{\directlua{tex.print(nex.str.isR(#1))}}
+\def\nxZdn#1{\directlua{tex.print(nex.str.isZdn(#1))}}
+\def\nxQdn#1{\directlua{tex.print(nex.str.isQdn(#1))}}
+\def\nxRdn#1{\directlua{tex.print(nex.str.isRdn(#1))}}
 

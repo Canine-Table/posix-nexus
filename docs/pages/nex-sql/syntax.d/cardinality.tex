@@ -1,0 +1,547 @@
+\nxSections{Cardinality}{2}
+
+\nxSections{Optional One to Mandatory Many}{3}
+
+\begin{NxCodeBox}{sql}{title={\textbf{Optional One to Mandatory Many — Syntax Across Engines}
+	\begin{NxDarkList}
+			\nxEachLabel{DBSecondary}{Tertiary}{{1}{43}}{%
+					{order table}/{The order table is the mandatory many — it can contain many rows, and each row may optionally reference a user},%
+					{user table}/{optional side — meaning a child row in orders may or may not link to a user.}%
+			}
+	\end{NxDarkList}
+}}
+-- PostgreSQL
+CREATE TABLE users (
+    id SERIAL PRIMARY KEY,
+    name TEXT NOT NULL
+);
+
+CREATE TABLE orders (
+    user_id INT,
+    FOREIGN KEY (user_id) REFERENCES users(id)
+);
+
+-- MariaDB / MySQL
+CREATE TABLE users (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL
+);
+
+CREATE TABLE orders (
+    user_id INT,
+    FOREIGN KEY (user_id) REFERENCES users(id)
+);
+
+-- SQLite3
+PRAGMA foreign_keys = ON;
+
+CREATE TABLE users (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL
+);
+
+CREATE TABLE orders (
+    user_id INT,
+    FOREIGN KEY (user_id) REFERENCES users(id)
+);
+\end{NxCodeBox}
+
+\begin{NxLightListBox}[title={Optional One to Mandatory Many — The Ritual of Open Belonging}]
+    \nxEachLabel{ArrowDark}{Secondary}{{1}{43}}{%
+        {Purpose}/{Allows many child rows to reference one parent, but the link is optional},%
+        {Input}/{Foreign key column without \nxLnArcBox[]{NOT NULL}},%
+        {Fallback}/{Child rows may exist without a parent; no enforcement until value is present},%
+        {Rendering}/{Engine enforces referential integrity only when a value is supplied},%
+        {Use Case}/{Orders that may be anonymous, comments without authors, drafts without owners}
+    }
+\end{NxLightListBox}
+
+\begin{NxLightBox}[title={Optional One to Mandatory Many — Syntax Glyph Map}]
+    \begin{tabularx}{\textwidth}{|l|X|}
+        \hline
+        \textbf{Engine} & \textbf{Foreign Key Column Nullable} \\
+        \hline
+        PostgreSQL & {\nxCheckSuccess} omit \nxLnArcBox[]{NOT NULL} \\
+        MariaDB / MySQL & {\nxCheckSuccess} omit \nxLnArcBox[]{NOT NULL} \\
+        SQLite3 & {\nxCheckSuccess} omit \nxLnArcBox[]{NOT NULL} \\
+        \hline
+        \textbf{Engine} & \textbf{Parent Key Required} \\
+        \hline
+        PostgreSQL & {\nxCheckSuccess} must be \nxLnArcBox[]{PRIMARY KEY} or \nxLnArcBox[]{UNIQUE NOT NULL} \\
+        MariaDB / MySQL & {\nxCheckSuccess} must be \nxLnArcBox[]{PRIMARY KEY} or \nxLnArcBox[]{UNIQUE NOT NULL} \\
+        SQLite3 & {\nxCheckSuccess} must be \nxLnArcBox[]{PRIMARY KEY} or \nxLnArcBox[]{UNIQUE NOT NULL} \\
+        \hline
+    \end{tabularx}
+\end{NxLightBox}
+
+\begin{NxLightListBox}[title={Optional One to Mandatory Many — Beginner Questions}]
+    \nxEachLabel{ArrowDark}{Secondary}{{1}{43}}{%
+        {What makes the relationship optional?}/{The child foreign key column allows \nxLnArcBox[]{NULL}.},%
+        {What makes it many?}/{No \nxLnArcBox[]{UNIQUE} constraint — multiple children can link to the same parent.},%
+        {Can a child row exist without a parent?}/{Yes — the foreign key can be \nxLnArcBox[]{NULL}.},%
+        {What happens if I insert a value that doesn’t match a parent?}/{The insert fails — referential integrity is enforced when a value is present.},%
+        {Can I later enforce mandatory linkage?}/{Yes — add \nxLnArcBox[]{NOT NULL} to the foreign key column.},%
+        {Is this the default pattern?}/{Yes — most foreign keys are optional unless constrained.}
+    }
+\end{NxLightListBox}
+
+\nxSections{Optional One to Mandatory One}{3}
+\begin{NxCodeBox}{sql}{title={\textbf{Mandatory One to Optional One — Syntax Across Engines}
+    \begin{NxDarkList}
+        \nxEachLabel{DBSecondary}{Tertiary}{{1}{43}}{%
+            {passport table}/{The passport table is the mandatory one — every passport must link to a user},%
+            {user table}/{The user table is the optional one — a user may or may not have a passport}
+        }
+    \end{NxDarkList}
+}}
+-- PostgreSQL
+CREATE TABLE users (
+    id SERIAL PRIMARY KEY,
+    name TEXT NOT NULL
+);
+
+CREATE TABLE passports (
+    user_id INT UNIQUE NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES users(id)
+);
+
+-- MariaDB / MySQL
+CREATE TABLE users (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL
+);
+
+CREATE TABLE passports (
+    user_id INT UNIQUE NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES users(id)
+);
+
+-- SQLite3
+PRAGMA foreign_keys = ON;
+
+CREATE TABLE users (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL
+);
+
+CREATE TABLE passports (
+    user_id INT UNIQUE NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES users(id)
+);
+\end{NxCodeBox}
+
+\begin{NxLightListBox}[title={Mandatory One to Optional One — The Ritual of Singular Ownership}]
+    \nxEachLabel{ArrowDark}{Secondary}{{1}{43}}{%
+        {Purpose}/{Enforces that every child row must link to one and only one parent, while the parent may have zero or one child},%
+        {Input}/{Foreign key column with \nxLnArcBox[]{UNIQUE} and \nxLnArcBox[]{NOT NULL}},%
+        {Fallback}/{Parent may exist without a child; child cannot exist without a parent},%
+        {Rendering}/{Enforced uniqueness and mandatory linkage on the child’s foreign key column},%
+        {Use Case}/{Passports, licenses, or metadata that must belong to a person, but not all persons have one}
+    }
+\end{NxLightListBox}
+
+\begin{NxLightBox}[title={Mandatory One to Optional One — Syntax Glyph Map}]
+    \begin{tabularx}{\textwidth}{|l|X|}
+        \hline
+        \textbf{Engine} & \textbf{Foreign Key Column Mandatory} \\
+        \hline
+        PostgreSQL & {\nxCheckSuccess} use \nxLnArcBox[]{NOT NULL} \\
+        MariaDB / MySQL & {\nxCheckSuccess} use \nxLnArcBox[]{NOT NULL} \\
+        SQLite3 & {\nxCheckSuccess} use \nxLnArcBox[]{NOT NULL} \\
+        \hline
+        \textbf{Engine} & \textbf{Enforces One-to-One via UNIQUE} \\
+        \hline
+        PostgreSQL & {\nxCheckSuccess} use \nxLnArcBox[]{UNIQUE} on foreign key \\
+        MariaDB / MySQL & {\nxCheckSuccess} use \nxLnArcBox[]{UNIQUE} on foreign key \\
+        SQLite3 & {\nxCheckSuccess} use \nxLnArcBox[]{UNIQUE} on foreign key \\
+        \hline
+    \end{tabularx}
+\end{NxLightBox}
+
+\begin{NxLightListBox}[title={Mandatory One to Optional One — Beginner Questions}]
+    \nxEachLabel{ArrowDark}{Secondary}{{1}{43}}{%
+        {What makes the child mandatory?}/{The foreign key column is marked \nxLnArcBox[]{NOT NULL}},%
+        {What enforces one-to-one?}/{The foreign key column is marked \nxLnArcBox[]{UNIQUE}},%
+        {Can a passport exist without a user?}/{No — the foreign key must reference a valid user},%
+        {Can a user exist without a passport?}/{Yes — no constraints enforce ownership},%
+        {Can two passports link to the same user?}/{No — \nxLnArcBox[]{UNIQUE} prevents duplicate links},%
+        {Is this enforced by the engine?}/{Yes — all engines enforce \nxLnArcBox[]{UNIQUE} and \nxLnArcBox[]{NOT NULL} constraints}
+    }
+\end{NxLightListBox}
+
+\nxSections{Optional One to Optional One}{3}
+\begin{NxCodeBox}{sql}{title={\textbf{Optional One to Optional One — Syntax Across Engines}
+    \begin{NxDarkList}
+        \nxEachLabel{DBSecondary}{Tertiary}{{1}{43}}{%
+            {locker table}/{The locker table is the optional one — a locker may or may not be assigned},%
+            {student table}/{The student table is also optional — a student may or may not have a locker}
+        }
+    \end{NxDarkList}
+}}
+-- PostgreSQL
+CREATE TABLE students (
+    id SERIAL PRIMARY KEY,
+    name TEXT NOT NULL
+);
+
+CREATE TABLE lockers (
+    id SERIAL PRIMARY KEY,
+    student_id INT UNIQUE,
+    FOREIGN KEY (student_id) REFERENCES students(id)
+);
+
+-- MariaDB / MySQL
+CREATE TABLE students (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL
+);
+
+CREATE TABLE lockers (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    student_id INT UNIQUE,
+    FOREIGN KEY (student_id) REFERENCES students(id)
+);
+
+-- SQLite3
+PRAGMA foreign_keys = ON;
+
+CREATE TABLE students (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL
+);
+
+CREATE TABLE lockers (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    student_id INT UNIQUE,
+    FOREIGN KEY (student_id) REFERENCES students(id)
+);
+\end{NxCodeBox}
+
+\begin{NxLightListBox}[title={Optional One to Optional One — The Ritual of Loose Pairing}]
+    \nxEachLabel{ArrowDark}{Secondary}{{1}{43}}{%
+        {Purpose}/{Allows a child row to optionally link to one and only one parent, and the parent may have zero or one child},%
+        {Input}/{Foreign key column with \nxLnArcBox[]{UNIQUE} and nullable},%
+        {Fallback}/{Neither side is required; linkage is optional and singular},%
+        {Rendering}/{Enforced uniqueness on the child’s foreign key column; no mandatory linkage},%
+        {Use Case}/{Lockers that may be unassigned, and students who may or may not have a locker}
+    }
+\end{NxLightListBox}
+
+\begin{NxLightBox}[title={Optional One to Optional One — Syntax Glyph Map}]
+    \begin{tabularx}{\textwidth}{|l|X|}
+        \hline
+        \textbf{Engine} & \textbf{Foreign Key Column Nullable} \\
+        \hline
+        PostgreSQL & {\nxCheckSuccess} omit \nxLnArcBox[]{NOT NULL} \\
+        MariaDB / MySQL & {\nxCheckSuccess} omit \nxLnArcBox[]{NOT NULL} \\
+        SQLite3 & {\nxCheckSuccess} omit \nxLnArcBox[]{NOT NULL} \\
+        \hline
+        \textbf{Engine} & \textbf{Enforces One-to-One via UNIQUE} \\
+        \hline
+        PostgreSQL & {\nxCheckSuccess} use \nxLnArcBox[]{UNIQUE} on foreign key \\
+        MariaDB / MySQL & {\nxCheckSuccess} use \nxLnArcBox[]{UNIQUE} on foreign key \\
+        SQLite3 & {\nxCheckSuccess} use \nxLnArcBox[]{UNIQUE} on foreign key \\
+        \hline
+    \end{tabularx}
+\end{NxLightBox}
+
+\begin{NxLightListBox}[title={Optional One to Optional One — Beginner Questions}]
+    \nxEachLabel{ArrowDark}{Secondary}{{1}{43}}{%
+        {What makes both sides optional?}/{The foreign key column allows \nxLnArcBox[]{NULL}, and the parent has no constraints enforcing linkage},%
+        {What enforces one-to-one?}/{The foreign key column is marked \nxLnArcBox[]{UNIQUE}},%
+        {Can a locker exist without a student?}/{Yes — the foreign key may be \nxLnArcBox[]{NULL}},%
+        {Can a student exist without a locker?}/{Yes — no constraints enforce ownership},%
+        {Can two lockers link to the same student?}/{No — \nxLnArcBox[]{UNIQUE} prevents duplicate links},%
+        {Is this enforced by the engine?}/{Yes — all engines enforce \nxLnArcBox[]{UNIQUE} constraints}%
+    }
+\end{NxLightListBox}
+
+
+\nxSections{Mandatory One to Mandatory One}{3}
+\begin{NxCodeBox}{sql}{title={\textbf{Mandatory One to Mandatory One — Syntax Across Engines}
+    \begin{NxDarkList}
+        \nxEachLabel{DBSecondary}{Tertiary}{{1}{43}}{%
+            {account table}/{The account table is mandatory — every account must link to one settings row},%
+            {account\_settings table}/{The settings table is mandatory — every settings row must link to one account}%
+        }
+    \end{NxDarkList}
+}}
+-- PostgreSQL
+CREATE TABLE account_settings (
+    id SERIAL PRIMARY KEY,
+    theme TEXT NOT NULL
+);
+
+CREATE TABLE accounts (
+    id SERIAL PRIMARY KEY,
+    username TEXT NOT NULL,
+    settings_id INT UNIQUE NOT NULL,
+    FOREIGN KEY (settings_id) REFERENCES account_settings(id)
+);
+
+-- MariaDB / MySQL
+CREATE TABLE account_settings (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    theme VARCHAR(255) NOT NULL
+);
+
+CREATE TABLE accounts (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(255) NOT NULL,
+    settings_id INT UNIQUE NOT NULL,
+    FOREIGN KEY (settings_id) REFERENCES account_settings(id)
+);
+
+-- SQLite3
+PRAGMA foreign_keys = ON;
+
+CREATE TABLE account_settings (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    theme TEXT NOT NULL
+);
+
+CREATE TABLE accounts (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    username TEXT NOT NULL,
+    settings_id INT UNIQUE NOT NULL,
+    FOREIGN KEY (settings_id) REFERENCES account_settings(id)
+);
+\end{NxCodeBox}
+
+\begin{NxLightListBox}[title={Mandatory One to Mandatory One — The Ritual of Singular Binding}]
+    \nxEachLabel{ArrowDark}{Secondary}{{1}{43}}{%
+        {Purpose}/{Enforces that each row in both tables must be linked to exactly one row in the other},%
+        {Input}/{Foreign key column marked \nxLnArcBox[]{UNIQUE} and \nxLnArcBox[]{NOT NULL}},%
+        {Fallback}/{Neither side may exist without the other — linkage is mandatory and singular},%
+        {Rendering}/{One-to-one enforced by \nxLnArcBox[]{UNIQUE} and \nxLnArcBox[]{NOT NULL} on foreign key},%
+        {Use Case}/{Accounts and their settings in a system where both must exist together}
+    }
+\end{NxLightListBox}
+
+\begin{NxLightBox}[title={Mandatory One to Mandatory One — Syntax Glyph Map}]
+    \begin{tabularx}{\textwidth}{|l|X|}
+        \hline
+        \textbf{Engine} & \textbf{Foreign Key Column Mandatory} \\
+        \hline
+        PostgreSQL & {\nxCheckSuccess} use \nxLnArcBox[]{NOT NULL} \\
+        MariaDB / MySQL & {\nxCheckSuccess} use \nxLnArcBox[]{NOT NULL} \\
+        SQLite3 & {\nxCheckSuccess} use \nxLnArcBox[]{NOT NULL} \\
+        \hline
+        \textbf{Engine} & \textbf{Enforces One-to-One via UNIQUE} \\
+        \hline
+        PostgreSQL & {\nxCheckSuccess} use \nxLnArcBox[]{UNIQUE} on foreign key \\
+        MariaDB / MySQL & {\nxCheckSuccess} use \nxLnArcBox[]{UNIQUE} on foreign key \\
+        SQLite3 & {\nxCheckSuccess} use \nxLnArcBox[]{UNIQUE} on foreign key \\
+        \hline
+    \end{tabularx}
+\end{NxLightBox}
+
+\begin{NxLightListBox}[title={Mandatory One to Mandatory One — Beginner Questions}]
+    \nxEachLabel{ArrowDark}{Secondary}{{1}{43}}{%
+        {What makes both sides mandatory?}/{The foreign key column is marked \nxLnArcBox[]{NOT NULL}, and each row must be linked.},%
+        {What enforces one-to-one?}/{The foreign key column is marked \nxLnArcBox[]{UNIQUE}},%
+        {Can an account exist without settings?}/{No — the foreign key must reference a valid settings row.},%
+        {Can settings exist without an account?}/{No — every settings row must be linked to an account.},%
+        {Can two accounts share the same settings?}/{No — \nxLnArcBox[]{UNIQUE} prevents duplicate links.},%
+        {Is this enforced by the engine?}/{Yes — all engines enforce \nxLnArcBox[]{UNIQUE} and \nxLnArcBox[]{NOT NULL} constraints}%
+    }
+\end{NxLightListBox}
+
+\nxSections{Mandatory Many to Mandatory Many}{3}
+\begin{NxCodeBox}{sql}{title={\textbf{Mandatory Many to Mandatory Many — Syntax Across Engines}
+    \begin{NxDarkList}
+        \nxEachLabel{DBSecondary}{Tertiary}{{1}{43}}{%
+            {student table}/{Each student must be enrolled in at least one course},%
+            {course table}/{Each course must have at least one enrolled student},%
+            {junction table}/{Enforces many-to-many linkage with mandatory participation on both sides}
+        }
+    \end{NxDarkList}
+}}
+-- PostgreSQL
+CREATE TABLE students (
+    id SERIAL PRIMARY KEY,
+    name TEXT NOT NULL
+);
+
+CREATE TABLE courses (
+    id SERIAL PRIMARY KEY,
+    title TEXT NOT NULL
+);
+
+CREATE TABLE enrollments (
+    student_id INT NOT NULL,
+    course_id INT NOT NULL,
+    PRIMARY KEY (student_id, course_id),
+    FOREIGN KEY (student_id) REFERENCES students(id),
+    FOREIGN KEY (course_id) REFERENCES courses(id)
+);
+
+-- MariaDB / MySQL
+CREATE TABLE students (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL
+);
+
+CREATE TABLE courses (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    title VARCHAR(255) NOT NULL
+);
+
+CREATE TABLE enrollments (
+    student_id INT NOT NULL,
+    course_id INT NOT NULL,
+    PRIMARY KEY (student_id, course_id),
+    FOREIGN KEY (student_id) REFERENCES students(id),
+    FOREIGN KEY (course_id) REFERENCES courses(id)
+);
+
+-- SQLite3
+PRAGMA foreign_keys = ON;
+
+CREATE TABLE students (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL
+);
+
+CREATE TABLE courses (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    title TEXT NOT NULL
+);
+
+CREATE TABLE enrollments (
+    student_id INT NOT NULL,
+    course_id INT NOT NULL,
+    PRIMARY KEY (student_id, course_id),
+    FOREIGN KEY (student_id) REFERENCES students(id),
+    FOREIGN KEY (course_id) REFERENCES courses(id)
+);
+\end{NxCodeBox}
+
+\begin{NxLightListBox}[title={Mandatory Many to Mandatory Many — The Ritual of Mutual Participation}]
+    \nxEachLabel{ArrowDark}{Secondary}{{1}{43}}{%
+        {Purpose}/{Enforces that each row in both tables must participate in at least one relationship},%
+        {Input}/{Junction table with \nxLnArcBox[]{NOT NULL} foreign keys and composite \nxLnArcBox[]{PRIMARY KEY}},%
+        {Fallback}/{SQL cannot enforce that each student or course has at least one link — this must be handled in application logic},%
+        {Rendering}/{Many-to-many linkage with mandatory foreign keys; participation must be ensured externally},%
+        {Use Case}/{Students and courses where both must be linked — no unassigned students or empty courses}
+    }
+\end{NxLightListBox}
+
+\begin{NxLightBox}[title={Mandatory Many to Mandatory Many — Syntax Glyph Map}]
+    \begin{tabularx}{\textwidth}{|l|X|}
+        \hline
+        \textbf{Engine} & \textbf{Junction Foreign Keys Mandatory} \\
+        \hline
+        PostgreSQL & {\nxCheckSuccess} use \nxLnArcBox[]{NOT NULL} on both foreign keys \\
+        MariaDB / MySQL & {\nxCheckSuccess} use \nxLnArcBox[]{NOT NULL} on both foreign keys \\
+        SQLite3 & {\nxCheckSuccess} use \nxLnArcBox[]{NOT NULL} on both foreign keys \\
+        \hline
+        \textbf{Engine} & \textbf{Participation Enforced} \\
+        \hline
+        PostgreSQL & {\nxTimesDanger} not enforceable in SQL constraints \\
+        MariaDB / MySQL & {\nxTimesDanger} not enforceable in SQL constraints \\
+        SQLite3 & {\nxTimesDanger} not enforceable in SQL constraints \\
+        \hline
+    \end{tabularx}
+\end{NxLightBox}
+
+\begin{NxLightListBox}[title={Mandatory Many to Mandatory Many — Beginner Questions}]
+    \nxEachLabel{ArrowDark}{Secondary}{{1}{43}}{%
+        {What makes it many-to-many?}/{The junction table allows multiple students per course and multiple courses per student.},%
+        {What makes it mandatory?}/{The foreign keys are \nxLnArcBox[]{NOT NULL}, and business rules require participation.},%
+        {Can a student exist without a course?}/{SQL allows it — but application logic must prevent it.},%
+        {Can a course exist without students?}/{SQL allows it — but application logic must prevent it.},%
+        {Can SQL enforce mandatory participation?}/{No — this must be enforced by triggers or application logic.},%
+        {Is this a common pattern?}/{Yes — especially in enrollment, tagging, and assignment systems.}
+    }
+\end{NxLightListBox}
+
+\nxSections{Mandatory One to Mandatory Many}{3}
+\begin{NxCodeBox}{sql}{title={\textbf{Mandatory One to Mandatory Many — Syntax Across Engines}
+    \begin{NxDarkList}
+        \nxEachLabel{DBSecondary}{Tertiary}{{1}{43}}{%
+            {department table}/{The department table is mandatory — each department must have at least one employee},%
+            {employee table}/{The employee table is mandatory — each employee must belong to a department}
+        }
+    \end{NxDarkList}
+}}
+-- PostgreSQL
+CREATE TABLE departments (
+    id SERIAL PRIMARY KEY,
+    name TEXT NOT NULL
+);
+
+CREATE TABLE employees (
+    id SERIAL PRIMARY KEY,
+    name TEXT NOT NULL,
+    department_id INT NOT NULL,
+    FOREIGN KEY (department_id) REFERENCES departments(id)
+);
+
+-- MariaDB / MySQL
+CREATE TABLE departments (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL
+);
+
+CREATE TABLE employees (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    department_id INT NOT NULL,
+    FOREIGN KEY (department_id) REFERENCES departments(id)
+);
+
+-- SQLite3
+PRAGMA foreign_keys = ON;
+
+CREATE TABLE departments (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL
+);
+
+CREATE TABLE employees (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL,
+    department_id INT NOT NULL,
+    FOREIGN KEY (department_id) REFERENCES departments(id)
+);
+\end{NxCodeBox}
+
+\begin{NxLightListBox}[title={Mandatory One to Mandatory Many — The Ritual of Required Multiplicity}]
+    \nxEachLabel{ArrowDark}{Secondary}{{1}{43}}{%
+        {Purpose}/{Enforces that each child must link to a parent, and each parent must have at least one child},%
+        {Input}/{Foreign key column marked \nxLnArcBox[]{NOT NULL}},%
+        {Fallback}/{SQL cannot enforce that each department has employees — this must be handled in application logic},%
+        {Rendering}/{Each employee must belong to a department; each department must have employees},%
+        {Use Case}/{Departments and employees in a system where both must exist and be linked}
+    }
+\end{NxLightListBox}
+
+\begin{NxLightBox}[title={Mandatory One to Mandatory Many — Syntax Glyph Map}]
+    \begin{tabularx}{\textwidth}{|l|X|}
+        \hline
+        \textbf{Engine} & \textbf{Child Must Link to Parent} \\
+        \hline
+        PostgreSQL & {\nxCheckSuccess} use \nxLnArcBox[]{NOT NULL} on foreign key \\
+        MariaDB / MySQL & {\nxCheckSuccess} use \nxLnArcBox[]{NOT NULL} on foreign key \\
+        SQLite3 & {\nxCheckSuccess} use \nxLnArcBox[]{NOT NULL} on foreign key \\
+        \hline
+        \textbf{Engine} & \textbf{Parent Must Have Children} \\
+        \hline
+        PostgreSQL & {\nxTimesDanger} not enforceable in SQL constraints \\
+        MariaDB / MySQL & {\nxTimesDanger} not enforceable in SQL constraints \\
+        SQLite3 & {\nxTimesDanger} not enforceable in SQL constraints \\
+        \hline
+    \end{tabularx}
+\end{NxLightBox}
+
+\begin{NxLightListBox}[title={Mandatory One to Mandatory Many — Beginner Questions}]
+    \nxEachLabel{ArrowDark}{Secondary}{{1}{43}}{%
+        {What makes the relationship mandatory?}/{Each employee must link to a department, and each department must have employees.},%
+        {Can I insert an employee without a department?}/{No — the foreign key must reference a valid department.},%
+        {Can I insert a department without employees?}/{Yes — but SQL will not enforce that employees must follow.},%
+        {Can SQL enforce that every department has employees?}/{No — this must be enforced by application logic or triggers.},%
+        {Is this a common pattern?}/{Yes — especially in organizational systems where entities must be grouped.}
+    }
+\end{NxLightListBox}
+

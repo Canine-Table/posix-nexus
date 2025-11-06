@@ -10,11 +10,11 @@ function s:NxJavaSettings()
 		call NxCallFile('nex-java.lua')
 		echo "Java loaded"
 	endif
-	augroup NxJava
-		autocmd!
-		autocmd BufWritePost *.java call s:AutoCompileJava(expand('%:p'))
-	augroup END
-	nnoremap <buffer> <leader>ll :terminal java -cp %:p:h %:t:r<CR>
+	"augroup NxJava
+	"	autocmd!
+	"	autocmd BufWritePost *.java call s:AutoCompileJava(expand('%:p'))
+	"augroup END
+	"nnoremap <buffer> <leader>ll :terminal java -cp %:p:h %:t:r<CR>
 endfunction
 
 autocmd Filetype java call s:NxJavaSettings()

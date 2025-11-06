@@ -6,6 +6,73 @@
 #nx_include "./nex-convert.bc"
 #nx_include "./nex-algebra.bc"
 
+
+define nx_agm(x, y) {
+	auto a, b, p
+	a = x
+	b = y
+	p = 0
+	while (a != b && p++ < c_prec) {
+		x = (a + b) / 2
+		y = nx_nr_sqrt(a * b)
+		a = x
+		b = y
+	}
+	return a
+}
+
+define nx_agm_pi() {
+	auto l, a, b, t, p, an, bn, tn, pn, tmp
+	a = 1
+	b = nx_nr_sqrt(0.5)
+	t = 0.25
+	p = 1
+	l = nx_pt_ceil(nx_de_log2(scale))
+	for (i = 0; i < l; ++i) {
+		an = (a + b) / 2
+		bn = nx_nr_sqrt(a * b)
+		tmp = a - an
+		tn = t - p * tmp * tmp
+		pn = 2 * p
+		a = an
+		b = bn
+		t = tn
+		p = pn
+	}
+	a = a + b
+	return a * a / (4 * t)
+}
+
+define r_nx_sin_2x(x) {
+    return 2 * r_nx_ts_sin(x) * r_nx_ts_cos(x)
+}
+
+define r_nx_agm_jba(u) {
+    auto a, b, c, phi, i, d, tmp
+    a = 1
+    b = nx_nr_sqrt(0.5)
+    phi = u
+    d = 1
+
+    for (i = 0; i < c_scale; ++i) {
+        tmp = (a + b) / 2
+        b = nx_nr_sqrt(a * b)
+        a = tmp
+        c = (a - b) / 2
+        phi = phi + nx_sign(phi) * c * r_nx_sin_2x(2 * phi)
+        d = 2 * d
+    }
+
+    # Approximate sn(u) ≈ sin(phi), cn(u) ≈ cos(phi)
+    return phi
+}
+
+define r_nx_agm_tan(x) {
+    auto phi
+    phi = r_nx_agm_jba(x)
+    return r_nx_ts_sin(phi) / r_nx_ts_cos(phi)
+}
+
 # very slow
 define nx_lz_pi(x) {
 	auto k, r, s
@@ -22,12 +89,13 @@ define nx_lz_tau(x) {
 	return nx_lz_pi(x)
 }
 
-define nx_rj_pi(x) {
-	auto k, r, n, d, t
+define nx_rj_pi() {
+	auto k, r, n, d, t, x
+	x = nx_pt_ceil(scale / 8)
 	r = 0
 	for (k = 0; k < x; ++k) {
 		n = nx_fact(4 * k) * (1103 + 26390 * k)
-		d = nx_pow(nx_fact(k), 4) * nx_pow(396, 4 * k)
+		d = nx_erde_pow(nx_fact(k), 4) * nx_erde_pow(396, 4 * k)
 		t = n / d
 		r = r + t
 	}

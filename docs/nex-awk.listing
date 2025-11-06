@@ -1,23 +1,2 @@
-function nx_digit_guard(N, B1, B2, S,   i, v)
-{
-    nx_trim_split(N, v, S)
-    B2 = int(B2)
-    B1 = int(B1)
-    v["-1"] = __nx_if(B1, "optional signed", "required unsigned")
-    v["-2"] = __nx_if(B2, "optional signed", "required unsigned")
-    i = 0
-    do {
-        if (B2 == 2 && ! __nx_is_integral(v[v[0]], B1)) {
-            nx_log_stderr(nx_log_error(v[v[0]] " is not a valid " v["-1"] " integral!"))
-            i = -1
-        } else if (B2 == 3 && ! __nx_is_float(v[v[0]], B1)) {
-            nx_log_stderr(nx_log_error(v[v[0]] " is not a valid " v["-1"] " floating point digit!"))
-            i = -1
-        } else if (! nx_digit(v[v[0]], B1, B2)) {
-            nx_log_stderr(nx_log_error(v[v[0]] " is not a valid " v["-1"] " integral, nor is it a valid " v["-2"] " floating point digit!"))
-            i = -1
-        }
-    } while (--v[0] > 0)
-    delete v
-    return i
-}
+if (nx_json_split(".misc", V1, V2, "") == 0)
+    print "misc is null or undefined"

@@ -1,0 +1,89 @@
+\nxSections{Keys}{2}
+\begin{comment}
+\nxSections{PRIMARY KEY}{3}
+
+\begin{NxCodeBox}{sql}{title={PRIMARY KEY — Syntax Across Engines}}
+-- PostgreSQL
+CREATE TABLE users (
+		id SERIAL PRIMARY KEY,
+		username TEXT UNIQUE NOT NULL
+);
+
+-- MariaDB / MySQL
+CREATE TABLE users (
+		id INT AUTO_INCREMENT PRIMARY KEY,
+		username VARCHAR(255) UNIQUE NOT NULL
+);
+
+-- SQLite3
+CREATE TABLE users (
+		id INTEGER PRIMARY KEY AUTOINCREMENT,
+		username TEXT UNIQUE NOT NULL
+);
+\end{NxCodeBox}
+
+\nxSections{Named Foreign Key Constraint}{3}
+\begin{NxCodeBox}{sql}{title={CONSTRAINT fk\_name FOREIGN KEY — Syntax Across Engines}}
+-- PostgreSQL
+CREATE TABLE passports (
+		user_id INT UNIQUE NOT NULL,
+		CONSTRAINT fk_user FOREIGN KEY (user_id) REFERENCES users(id)
+);
+
+-- MariaDB / MySQL
+CREATE TABLE passports (
+		user_id INT UNIQUE NOT NULL,
+		CONSTRAINT fk_user FOREIGN KEY (user_id) REFERENCES users(id)
+);
+
+-- SQLite3
+PRAGMA foreign_keys = ON;
+
+CREATE TABLE passports (
+		user_id INT UNIQUE NOT NULL,
+		CONSTRAINT fk_user FOREIGN KEY (user_id) REFERENCES users(id)
+);
+\end{NxCodeBox}
+
+\begin{NxLightListBox}[title={Named Foreign Key Constraint — The Ritual of Identification}]
+		\nxEachLabel{ArrowDark}{Secondary}{{1}{43}}{%
+				{Purpose}/{Assigns a name to the foreign key constraint for clarity and future reference},%
+				{Input}/{\nxLnArcBox[]{CONSTRAINT name FOREIGN KEY (col) REFERENCES table(col)}},%
+				{Fallback}/{Unnamed constraints are valid but harder to manage or drop},%
+				{Rendering}/{Constraint name appears in error messages and schema inspection},%
+				{Use Case}/{Schema debugging, migrations, constraint deletion, documentation clarity}
+		}
+\end{NxLightListBox}
+
+\begin{NxLightBox}[title={Named Foreign Key Constraint — Syntax Glyph Map}]
+		\begin{tabularx}{\textwidth}{|l|X|}
+				\hline
+				\textbf{Engine} & \textbf{Supports Named Constraints} \\
+				\hline
+				PostgreSQL & {\nxCheckSuccess} fully supported \\
+				MariaDB / MySQL & {\nxCheckSuccess} fully supported \\
+				SQLite3 & {\nxCheckSuccess} supported in table-level syntax \\
+				\hline
+				\textbf{Engine} & \textbf{Can Drop by Name} \\
+				\hline
+				PostgreSQL & {\nxCheckSuccess} \nxLnArcBox[]{ALTER TABLE ... DROP CONSTRAINT name} \\
+				MariaDB / MySQL & {\nxCheckSuccess} \nxLnArcBox[]{ALTER TABLE ... DROP FOREIGN KEY name} \\
+				SQLite3 & {\nxTimesDanger} must recreate table to drop constraints \\
+				\hline
+		\end{tabularx}
+\end{NxLightBox}
+
+\begin{NxLightListBox}[title={Named Foreign Key Constraint — Beginner Questions}]
+		\nxEachLabel{ArrowDark}{Secondary}{{1}{43}}{%
+				{Why name a foreign key constraint?}/{It helps with debugging, dropping, and documenting relationships.},%
+				{Is naming required?}/{No — constraints can be anonymous, but naming is recommended.},%
+				{Can I drop a constraint by name?}/{Yes — in PostgreSQL and MariaDB/MySQL. SQLite requires table recreation.},%
+				{Can I use any name?}/{Yes — but it must be unique within the table.},%
+				{Does the name affect behavior?}/{No — it’s purely for identification.},%
+				{Can I name other constraints too?}/{Yes — \nxLnArcBox[]{UNIQUE}, \nxLnArcBox[]{CHECK}, and \nxLnArcBox[]{PRIMARY KEY} can also be named.}
+		}
+\end{NxLightListBox}
+
+
+\end{comment}
+

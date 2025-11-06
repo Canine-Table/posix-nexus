@@ -113,12 +113,12 @@ public class NxRead extends NxReadBase<NxRead>
 		Object res = null;
 		do {
 			try {
-				NxPrintf.format("_b^i_u>I%^0>L\0: \n", this.prompt == null ? "Enter a value" : this.prompt);
+				NxPrintf.format("I_bu%_n>L\0: ", this.prompt == null ? "Enter a value" : this.prompt);
 				inpt = this.scan.nextLine();
 				res = tryCast(cast, inpt, this.count);
 				pass = true;
 			} catch(Exception e) {
-				NxPrintf.format("_b^E_u>D%_n^0>L\0: \n", this.error == null ? e.getMessage() : this.error);
+				NxPrintf.format("E_b^e%^0\0 \n", this.error == null ? e.getMessage() : this.error);
 				res = null;
 				attempt++;
 			}

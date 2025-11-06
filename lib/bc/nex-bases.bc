@@ -1,3 +1,5 @@
+#nx_include "./nex-calculus.bc"
+#nx_include "./nex-algebra.bc"
 
 define nx_from_dec (n1, n2) {
 	auto a, r
@@ -18,5 +20,85 @@ define nx_reverse(n) {
 		n /= 10
 	}
 	return r
+}
+
+define nx_ieee754(n) {
+	auto s, i, f, e, p, eb, mb, pb, m, b, r, ib, j, v
+	s = nx_sign(n)
+	if (scale < 32) {
+		eb = 5
+		mb = 10
+	} else if (scale < 64) {
+		eb = 8
+		mb = 23
+	} else if (scale < 128) {
+		eb = 11
+		mb = 52
+	} else {
+		eb = 15
+		mb = 112
+	}
+	if (s == -1) {
+		n = -n
+		s = 0
+	}
+	i = nx_int(n)
+	f = n - i
+	e = nx_de_log2(i)
+	p = 0
+	pb = 0
+	m = 1
+	print "number: ", v, "\nsign: ", s, "\nintegral: ", i, "\nfloat: ", f, "\nexponent: ", e, "\n\n"
+	while (m > c_epsilon) {
+		m = nx_int(i / 2)
+		r = nx_int_mod(i, 2)
+		if (p == 0) {
+			if (r == 1) {
+				p = 1
+				ib = 1
+			} else {
+				pb = pb + 1
+			}
+		} else {
+			ib = ib * 10
+			if (r == 1)
+				ib = ib + 1
+		}
+		print "⌊", i ,"/2⌋ = ", m, " remainder ", r, "\n"
+		i = m
+	}
+	print ib, "\n"
+	i = ib
+	pb = 0
+	for (j = 1; j < mb; ++j) {
+		m = f * 2
+		r = nx_int(m)
+		m = m - r
+		if (p == 0) {
+			if (r == 1) {
+				p = 1
+				fb = 1
+			} else {
+				pb = pb + 1
+			}
+		} else {
+			fb = fb * 10
+			if (r == 1)
+				fb = fb + 1
+			p = p + 1
+		}
+		print "⌊", f ,"*2⌋ = ", m, " remainder ", r, "\n"
+		f = m
+	}
+
+	print "\n<nx:null/>",  s, "<nx:null/>", e, "<nx:null/>"
+	while (i-- > 0) { # padding
+		print "0"
+	}
+	print ib, "<nx:null/>"
+	while (pb-- > 0) { # padding
+		print "0"
+	}
+	print fb, "\n"
 }
 

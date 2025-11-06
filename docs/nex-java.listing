@@ -1,51 +1,5 @@
+		int count = 1;
+		do {
+			System.out.printf("%s ", count);
+		} while ((count *= 2) < 65);
 
-START
-
-Output: "Welcome to Benjamins's store"
-Output: "Please enter the current Tarriff percentage"
-   Input tariff1
-
-If tariff1 is not a number
-   Output: "Please enter a valid Tarriff percentage, (hint: its a number)"
-   Input tariff1
-
-Set principal to 10.00
-Set quantity to 10
-Set delivery to 6.99
-Set years to 2.0
-Set timesPerYear to 4
-
-Create investment item with above values and tariff1
-
-Call attr() to display item metadata
-Call info() to display item details
-
-Output: "Congrats on your credit card approval, please enter intrest rate"
-   Input rate1
-
-If rate1 is not a number
-   Output: "Please enter a valid number, I cannot read your intent"
-   Input rate1
-
-Set item rate to rate1
-Calculate compound interest
-Call compound() to display cost after interest
-
-Clone scanner
-Output: "Please enter updated Tarriff percentage"
-   Input tariff2
-
-Set item tariff to tariff2
-Call attr() to display item metadata
-Call info() to display item details
-
-Output: "Please enter updated intrest rate"
-   Input rate2
-
-Set item rate to rate2
-Calculate compound interest
-Call compound() to display updated cost
-
-Close scanner
-
-END

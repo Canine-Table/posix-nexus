@@ -105,7 +105,7 @@ define nx_pow(x, y) {
 
 define nx_erde_pow(x, y) {
 	if (x <= 0) {
-		print "[IMPURITY]: pow(x, y) domain breach — x ≤ 0"
+		print "[IMPURITY]: pow(x, y) domain breach — x ≤ 0\n"
 		return -1
 	}
 	if (y != nx_pt_floor(y))
@@ -188,6 +188,8 @@ define nx_scale() {
 	return x
 }
 
+c_scale = nx_scale()
+
 ##################################################################
 define nx_abs(x) {
 	if (x < 0)
@@ -198,6 +200,12 @@ define nx_abs(x) {
 ##################################################################
 define nx_pt_mod(x, y) {
 	return x - y * nx_pt_floor(x / y)
+}
+
+define nx_int_mod(x, y) {
+	x = nx_int(x)
+	y = nx_int(y)
+	return x - y * nx_int(x / y)
 }
 
 ##################################################################

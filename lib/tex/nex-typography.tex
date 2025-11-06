@@ -22,8 +22,8 @@
 }
 
 \def\nxArw#1{%
-	\edef\nx@tmpb{\nxDigit{#1}}%
-	\ifnum\nx@tmpb>-1
+	\edef\nx@tmpa{\nxZdn{#1,0,59}}
+	\ifx\nx@tmpa\nx@true
 		\expandafter\csname
 			\ifcase#1
 				downarrow% 0 ↓

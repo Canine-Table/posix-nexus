@@ -1,0 +1,436 @@
+\nxSections{Recovery}{2}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\nxSections{COMMIT — Syntax Across Engines}{3}
+\begin{NxCodeBox}{sql}{title={\textbf{Atomic Transfer Between Accounts}
+		\begin{NxDarkList}
+				\nxEachLabel{DBSecondary}{Tertiary}{{1}{43}}{%
+						{accounts table}/{Tracks user balances. Funds are debited from one account and credited to another.},%
+						{transaction block}/{Ensures both updates succeed or none are applied.}
+				}
+		\end{NxDarkList}
+}}
+
+-- PostgreSQL
+BEGIN;
+UPDATE accounts SET balance = balance - 100 WHERE id = 1;
+UPDATE accounts SET balance = balance + 100 WHERE id = 2;
+COMMIT;
+
+-- MariaDB / MySQL
+START TRANSACTION;
+UPDATE accounts SET balance = balance - 100 WHERE id = 1;
+UPDATE accounts SET balance = balance + 100 WHERE id = 2;
+COMMIT;
+
+-- SQLite3
+BEGIN TRANSACTION;
+UPDATE accounts SET balance = balance - 100 WHERE id = 1;
+UPDATE accounts SET balance = balance + 100 WHERE id = 2;
+COMMIT;
+\end{NxCodeBox}
+
+\begin{NxLightListBox}[title={COMMIT — The Ritual of Finalizing Changes}]
+		\nxEachLabel{ArrowDark}{Secondary}{{1}{43}}{%
+				{Purpose}/{Permanently applies all changes made since \nxLnArcBox[]{BEGIN} or \nxLnArcBox[]{START TRANSACTION}},%
+				{Input}/{\nxLnArcBox[]{COMMIT}},%
+				{Fallback}/{Without COMMIT, changes remain uncommitted and may be lost or rolled back},%
+				{Rendering}/{COMMIT ends the transaction and releases locks},%
+				{Use Case}/{Used when all operations succeed and consistency is confirmed}
+		}
+\end{NxLightListBox}
+
+\begin{NxLightBox}[title={COMMIT — Syntax Glyph Map}]
+		\begin{tabularx}{\textwidth}{|l|X|}
+				\hline
+				\textbf{Engine} & \textbf{COMMIT Support} \\
+				\hline
+				PostgreSQL & {\nxCheckSuccess} full support for \nxLnArcBox[]{COMMIT} and transactional control \\
+				MariaDB / MySQL & {\nxCheckSuccess} full support for \nxLnArcBox[]{COMMIT} and rollback logic \\
+				SQLite3 & {\nxCheckSuccess} supports \nxLnArcBox[]{COMMIT} and nested SAVEPOINTs \\
+				\hline
+				\textbf{Engine} & \textbf{COMMIT Behavior} \\
+				\hline
+				PostgreSQL & Applies all changes and ends transaction; locks released \\
+				MariaDB / MySQL & Same; triggers durability and indexing updates \\
+				SQLite3 & Same; ends transaction and finalizes WAL segment \\
+				\hline
+		\end{tabularx}
+\end{NxLightBox}
+
+\begin{NxLightListBox}[title={COMMIT — Beginner Questions}]
+		\nxEachLabel{ArrowDark}{Secondary}{{1}{43}}{%
+				{When should I use COMMIT?}/{After all operations succeed and the transaction is ready to be finalized.},%
+				{What happens after COMMIT?}/{All changes become permanent and visible to other sessions.},%
+				{Can I undo a COMMIT?}/{No — once committed, changes cannot be rolled back.},%
+				{Does COMMIT release locks?}/{Yes — it ends the transaction and frees associated locks.},%
+				{Is COMMIT automatic?}/{In autocommit mode, yes — otherwise it must be explicit.},%
+				{Can I commit part of a transaction?}/{No — COMMIT finalizes the entire transaction. Use \nxLnArcBox[]{SAVEPOINT} for partial control.}
+		}
+\end{NxLightListBox}
+
+\begin{NxCodeBox}{sql}{title={\textbf{Inventory Adjustment — Reverted on Failure}
+		\begin{NxDarkList}
+				\nxEachLabel{DBSecondary}{Tertiary}{{1}{43}}{%
+						{inventory table}/{Tracks item quantities. A failed update must be reverted to preserve consistency.},%
+						{transaction block}/{ROLLBACK ensures no partial changes persist if logic fails.}
+				}
+		\end{NxDarkList}
+}}
+
+-- PostgreSQL
+BEGIN;
+UPDATE inventory SET quantity = quantity - 1 WHERE item_id = 42;
+-- Something goes wrong
+ROLLBACK;
+
+-- MariaDB / MySQL
+START TRANSACTION;
+UPDATE inventory SET quantity = quantity - 1 WHERE item_id = 42;
+-- Error detected
+ROLLBACK;
+
+-- SQLite3
+BEGIN TRANSACTION;
+UPDATE inventory SET quantity = quantity - 1 WHERE item_id = 42;
+-- Abort transaction
+ROLLBACK;
+\end{NxCodeBox}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\nxSections{ROLLBACK — Syntax Across Engines}{3}
+\begin{NxCodeBox}{sql}{title={\textbf{Inventory Adjustment — Reverted on Failure}
+		\begin{NxDarkList}
+				\nxEachLabel{DBSecondary}{Tertiary}{{1}{43}}{%
+						{inventory table}/{Tracks item quantities. A failed update must be reverted to preserve consistency.},%
+						{transaction block}/{ROLLBACK ensures no partial changes persist if logic fails.}
+				}
+		\end{NxDarkList}
+}}
+
+-- PostgreSQL
+BEGIN;
+UPDATE inventory SET quantity = quantity - 1 WHERE item_id = 42;
+-- Something goes wrong
+ROLLBACK;
+
+-- MariaDB / MySQL
+START TRANSACTION;
+UPDATE inventory SET quantity = quantity - 1 WHERE item_id = 42;
+-- Error detected
+ROLLBACK;
+
+-- SQLite3
+BEGIN TRANSACTION;
+UPDATE inventory SET quantity = quantity - 1 WHERE item_id = 42;
+-- Abort transaction
+ROLLBACK;
+\end{NxCodeBox}
+
+\begin{NxLightListBox}[title={ROLLBACK — The Ritual of Undoing All Changes}]
+		\nxEachLabel{ArrowDark}{Secondary}{{1}{43}}{%
+				{Purpose}/{Cancels all changes made since \nxLnArcBox[]{BEGIN} or \nxLnArcBox[]{START TRANSACTION}},%
+				{Input}/{\nxLnArcBox[]{ROLLBACK}},%
+				{Fallback}/{Without ROLLBACK, failed transactions may leave partial or corrupt state},%
+				{Rendering}/{ROLLBACK discards all uncommitted changes and resets the transaction context},%
+				{Use Case}/{Used when an error, constraint violation, or logic failure is detected during a transaction}
+		}
+\end{NxLightListBox}
+
+\begin{NxLightBox}[title={ROLLBACK — Syntax Glyph Map}]
+		\begin{tabularx}{\textwidth}{|l|X|}
+				\hline
+				\textbf{Engine} & \textbf{ROLLBACK Support} \\
+				\hline
+				PostgreSQL & {\nxCheckSuccess} full support for \nxLnArcBox[]{ROLLBACK} and \nxLnArcBox[]{ROLLBACK TO SAVEPOINT} \\
+				MariaDB / MySQL & {\nxCheckSuccess} full support for \nxLnArcBox[]{ROLLBACK} and SAVEPOINT rollback \\
+				SQLite3 & {\nxCheckSuccess} supports \nxLnArcBox[]{ROLLBACK} and nested SAVEPOINT rollback \\
+				\hline
+				\textbf{Engine} & \textbf{ROLLBACK Behavior} \\
+				\hline
+				PostgreSQL & Discards all changes since \nxLnArcBox[]{BEGIN}; resets transaction state \\
+				MariaDB / MySQL & Same; also supports rollback to named SAVEPOINTs \\
+				SQLite3 & Same; supports full and partial rollback via SAVEPOINT \\
+				\hline
+		\end{tabularx}
+\end{NxLightBox}
+
+\begin{NxLightListBox}[title={ROLLBACK — Beginner Questions}]
+		\nxEachLabel{ArrowDark}{Secondary}{{1}{43}}{%
+				{When should I use ROLLBACK?}/{When any part of a transaction fails or violates constraints.},%
+				{What happens after ROLLBACK?}/{All uncommitted changes are discarded — the database reverts to its pre-transaction state.},%
+				{Can I rollback part of a transaction?}/{Yes — use \nxLnArcBox[]{SAVEPOINT} and \nxLnArcBox[]{ROLLBACK TO SAVEPOINT} for partial undo.},%
+				{Does ROLLBACK affect committed data?}/{No — only uncommitted changes are undone.},%
+				{Is ROLLBACK automatic on error?}/{In some engines, yes — others require explicit rollback or error handling.},%
+				{Can I rollback after COMMIT?}/{No — once committed, changes are permanent. Use  \nxLnArcBox[]{ROLLBACK} only before	\nxLnArcBox[]{COMMIT}.}
+		}
+\end{NxLightListBox}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\nxSections{SAVEPOINT — Syntax Across Engines}{3}
+\begin{NxCodeBox}{sql}{title={\textbf{Order Processing with Isolated Discount Logic}
+		\begin{NxDarkList}
+				\nxEachLabel{DBSecondary}{Tertiary}{{1}{43}}{%
+						{orders table}/{Tracks order status and discount. SAVEPOINT isolates discount logic from status update.},%
+						{savepoint}/{Allows partial rollback without discarding entire transaction.}
+				}
+		\end{NxDarkList}
+}}
+
+-- PostgreSQL
+BEGIN;
+UPDATE orders SET status = 'processing' WHERE id = 100;
+SAVEPOINT before_discount;
+UPDATE orders SET discount = 0.2 WHERE id = 100;
+-- Discount logic fails
+ROLLBACK TO SAVEPOINT before_discount;
+COMMIT;
+
+-- MariaDB / MySQL
+START TRANSACTION;
+UPDATE orders SET status = 'processing' WHERE id = 100;
+SAVEPOINT before_discount;
+UPDATE orders SET discount = 0.2 WHERE id = 100;
+-- Abort discount
+ROLLBACK TO SAVEPOINT before_discount;
+COMMIT;
+
+-- SQLite3
+BEGIN TRANSACTION;
+UPDATE orders SET status = 'processing' WHERE id = 100;
+SAVEPOINT before_discount;
+UPDATE orders SET discount = 0.2 WHERE id = 100;
+-- Undo discount
+ROLLBACK TO SAVEPOINT before_discount;
+COMMIT;
+\end{NxCodeBox}
+
+\begin{NxLightListBox}[title={SAVEPOINT — The Ritual of Partial Reversion}]
+		\nxEachLabel{ArrowDark}{Secondary}{{1}{43}}{%
+				{Purpose}/{Marks a named point within a transaction to allow partial rollback},%
+				{Input}/{\nxLnArcBox[]{SAVEPOINT name}, \nxLnArcBox[]{ROLLBACK TO SAVEPOINT name}},%
+				{Fallback}/{Without SAVEPOINT, partial rollback is impossible — entire transaction must be aborted},%
+				{Rendering}/{SAVEPOINT names are local to the current transaction and discarded on COMMIT or full ROLLBACK},%
+				{Use Case}/{Isolating risky operations (e.g., optional updates, conditional inserts) within a larger transaction}
+		}
+\end{NxLightListBox}
+
+\begin{NxLightBox}[title={SAVEPOINT — Syntax Glyph Map}]
+		\begin{tabularx}{\textwidth}{|l|X|}
+				\hline
+				\textbf{Engine} & \textbf{SAVEPOINT Support} \\
+				\hline
+				PostgreSQL & {\nxCheckSuccess} \nxLnArcBox[]{SAVEPOINT}, \nxLnArcBox[]{ROLLBACK TO SAVEPOINT}, \nxLnArcBox[]{RELEASE SAVEPOINT} supported \\
+				MariaDB / MySQL & {\nxCheckSuccess} full support for SAVEPOINT and partial rollback \\
+				SQLite3 & {\nxCheckSuccess} supports SAVEPOINT and nested transactions \\
+				\hline
+				\textbf{Engine} & \textbf{SAVEPOINT Scope and Behavior} \\
+				\hline
+				PostgreSQL & Local to transaction; released on COMMIT or full ROLLBACK \\
+				MariaDB / MySQL & Same; can explicitly \nxLnArcBox[]{RELEASE SAVEPOINT} \\
+				SQLite3 & Same; SAVEPOINTs can be nested \\
+				\hline
+		\end{tabularx}
+\end{NxLightBox}
+
+\begin{NxLightListBox}[title={SAVEPOINT — Beginner Questions}]
+		\nxEachLabel{ArrowDark}{Secondary}{{1}{43}}{%
+				{Why use a SAVEPOINT?}/{To isolate risky operations and allow partial rollback without discarding the full transaction.},%
+				{What happens after ROLLBACK TO SAVEPOINT?}/{All changes after the SAVEPOINT are undone; earlier changes remain.},%
+				{Can I name SAVEPOINTs anything?}/{Yes — names must be unique within the transaction scope.},%
+				{What is RELEASE SAVEPOINT?}/{It removes the SAVEPOINT marker without rolling back.},%
+				{Are SAVEPOINTs required?}/{No — they’re optional, but essential for fine-grained control in complex transactions.},%
+				{Do SAVEPOINTs work across transactions?}/{No — they exist only within the current transaction and vanish on COMMIT or full ROLLBACK.}
+		}
+\end{NxLightListBox}
+
+\nxSections{RELEASE SAVEPOINT — Syntax Glyph Map}{3}
+\begin{NxCodeBox}{sql}{title={\textbf{Order Processing — Discarding Discount SAVEPOINT After Success}
+		\begin{NxDarkList}
+				\nxEachLabel{DBSecondary}{Tertiary}{{1}{43}}{%
+						{orders table}/{Tracks order status and discount. SAVEPOINT isolates discount logic from status update.},%
+						{release}/{Removes SAVEPOINT marker after successful discount logic}
+				}
+		\end{NxDarkList}
+}}
+
+-- PostgreSQL
+BEGIN;
+UPDATE orders SET status = 'processing' WHERE id = 100;
+SAVEPOINT before_discount;
+UPDATE orders SET discount = 0.2 WHERE id = 100;
+RELEASE SAVEPOINT before_discount;
+COMMIT;
+
+-- MariaDB / MySQL
+START TRANSACTION;
+UPDATE orders SET status = 'processing' WHERE id = 100;
+SAVEPOINT before_discount;
+UPDATE orders SET discount = 0.2 WHERE id = 100;
+RELEASE SAVEPOINT before_discount;
+COMMIT;
+
+-- SQLite3
+BEGIN TRANSACTION;
+UPDATE orders SET status = 'processing' WHERE id = 100;
+SAVEPOINT before_discount;
+UPDATE orders SET discount = 0.2 WHERE id = 100;
+RELEASE SAVEPOINT before_discount;
+COMMIT;
+\end{NxCodeBox}
+
+\begin{NxLightListBox}[title={RELEASE SAVEPOINT — The Ritual of Discarding Partial Rollback Markers}]
+		\nxEachLabel{ArrowDark}{Secondary}{{1}{43}}{%
+				{Purpose}/{Removes a named \nxLnArcBox[]{SAVEPOINT} from the transaction context without rolling back},%
+				{Input}/{\nxLnArcBox[]{RELEASE SAVEPOINT name}},%
+				{Fallback}/{If not released, SAVEPOINTs persist until \nxLnArcBox[]{COMMIT} or full \nxLnArcBox[]{ROLLBACK}},%
+				{Rendering}/{Once released, the SAVEPOINT name cannot be reused unless re-declared},%
+				{Use Case}/{Used to clean up SAVEPOINTs after successful logic branches or to prevent accidental rollback}
+		}
+\end{NxLightListBox}
+
+\begin{NxLightBox}[title={RELEASE SAVEPOINT — Syntax Glyph Map}]
+		\begin{tabularx}{\textwidth}{|l|X|}
+				\hline
+				\textbf{Engine} & \textbf{RELEASE SAVEPOINT Support} \\
+				\hline
+				PostgreSQL & {\nxCheckSuccess} fully supported — removes SAVEPOINT without rollback \\
+				MariaDB / MySQL & {\nxCheckSuccess} fully supported — same behavior \\
+				SQLite3 & {\nxCheckSuccess} supported — removes SAVEPOINT and commits nested transaction \\
+				\hline
+				\textbf{Engine} & \textbf{Behavior After Release} \\
+				\hline
+				PostgreSQL & SAVEPOINT name discarded; cannot rollback to it unless re-declared \\
+				MariaDB / MySQL & Same; engine frees internal SAVEPOINT marker \\
+				SQLite3 & Same; nested transaction ends and SAVEPOINT is discarded \\
+				\hline
+		\end{tabularx}
+\end{NxLightBox}
+
+\begin{NxLightListBox}[title={RELEASE SAVEPOINT — Beginner Questions}]
+		\nxEachLabel{ArrowDark}{Secondary}{{1}{43}}{%
+				{Why use RELEASE SAVEPOINT?}/{To discard a SAVEPOINT after successful logic, preventing accidental rollback.},%
+				{Does it rollback anything?}/{No — it simply removes the SAVEPOINT marker.},%
+				{Can I rollback after release?}/{No — the SAVEPOINT is gone. You must declare a new one.},%
+				{Is it required?}/{No — SAVEPOINTs are auto-discarded on COMMIT or full ROLLBACK.},%
+				{Can I release multiple SAVEPOINTs?}/{Yes — each must be released individually.},%
+				{Does SQLite3 treat it differently?}/{Slightly — it ends the nested transaction associated with the SAVEPOINT.}
+		}
+\end{NxLightListBox}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\nxSections{ROLLFORWARD — Recovery Ritual Across Engines}{3}
+\begin{NxLightListBox}[title={ROLLFORWARD — The Ritual of Log Replay After Restore}]
+		\nxEachLabel{ArrowDark}{Secondary}{{1}{43}}{%
+				{Purpose}/{Reapplies committed transactions from archived logs after restoring a backup image},%
+				{Input}/{Engine-specific commands like \nxLnArcBox[]{ROLLFORWARD DATABASE TO \\END OF LOGS}},%
+				{Fallback}/{Without rollforward, restored databases remain in an incomplete or crash-consistent state},%
+				{Rendering}/{Reconstructs the database to a consistent state by replaying committed operations},%
+				{Use Case}/{Used after media failure, crash recovery, or point-in-time restore}
+		}
+\end{NxLightListBox}
+
+\begin{NxLightBox}[title={ROLLFORWARD — Syntax Glyph Map}]
+		\begin{tabularx}{\textwidth}{|l|X|}
+				\hline
+				\textbf{Engine} & \textbf{ROLLFORWARD Support and Behavior} \\
+				\hline
+				DB2 & {\nxCheckSuccess} \nxLnArcBox[]{ROLLFORWARD DATABASE dbname TO END OF LOGS} — applies logs after restore \\
+				Oracle & {\nxCheckSuccess} automatic log replay via redo logs during recovery \\
+				SQL Server & {\nxCheckSuccess} log replay during \nxLnArcBox[]{RESTORE WITH RECOVERY} \\
+				PostgreSQL & {\nxCheckSuccess} WAL segments replayed automatically during startup \\
+				MariaDB / MySQL & {\nxTimesDanger} no explicit rollforward — crash recovery is automatic \\
+				SQLite3 & {\nxTimesDanger} no rollforward — uses rollback journal or WAL for crash recovery only \\
+				\hline
+		\end{tabularx}
+\end{NxLightBox}
+
+\begin{NxLightListBox}[title={ROLLFORWARD — Beginner Questions}]
+		\nxEachLabel{ArrowDark}{Secondary}{{1}{43}}{%
+				{Is ROLLFORWARD a SQL command?}/{No — it’s a recovery utility or engine-level operation, not part of transactional SQL.},%
+				{When is ROLLFORWARD used?}/{After restoring a backup, to replay committed transactions from logs.},%
+				{Does it undo uncommitted changes?}/{No — only committed transactions are reapplied. Uncommitted changes are discarded.},%
+				{Is it automatic?}/{In many engines (e.g., PostgreSQL, Oracle), yes. In DB2, it must be invoked manually.},%
+				{Can I roll forward to a point in time?}/{Yes — engines like DB2 support \nxLnArcBox[]{TO TIMESTAMP} recovery.},%
+				{Is this the same as ROLLBACK?}/{No — \nxLnArcBox[]{ROLLBACK} undoes uncommitted changes in a transaction. \nxLnArcBox[]{ROLLFORWARD} replays committed changes after restore.}
+		}
+\end{NxLightListBox}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\nxSections{ISOLATION LEVEL — Concurrency Ritual Across Engines}{3}
+
+\begin{NxCodeBox}{sql}{title={\textbf{Customer Lookup — Ensuring Repeatable Reads During Transaction}
+		\begin{NxDarkList}
+				\nxEachLabel{DBSecondary}{Tertiary}{{1}{43}}{%
+						{customers table}/{Tracks customer records. Isolation level ensures consistent reads during lookup and update.},%
+						{repeatable read}/{Prevents non-repeatable reads — same query returns same result within transaction}
+				}
+		\end{NxDarkList}
+}}
+
+-- PostgreSQL
+BEGIN;
+SET TRANSACTION ISOLATION LEVEL REPEATABLE READ;
+SELECT * FROM customers WHERE region = 'east';
+-- Perform updates or checks
+COMMIT;
+
+-- MariaDB / MySQL
+START TRANSACTION;
+SET TRANSACTION ISOLATION LEVEL REPEATABLE READ;
+SELECT * FROM customers WHERE region = 'east';
+-- Perform updates or checks
+COMMIT;
+
+-- SQLite3
+-- No configurable isolation level
+-- Begins transaction with snapshot isolation
+BEGIN TRANSACTION;
+SELECT * FROM customers WHERE region = 'east';
+-- Perform updates or checks
+COMMIT;
+\end{NxCodeBox}
+
+\begin{NxLightListBox}[title={ISOLATION LEVEL — The Ritual of Transaction Visibility Control}]
+		\nxEachLabel{ArrowDark}{Secondary}{{1}{43}}{%
+				{Purpose}/{Defines how and when changes made by one transaction become visible to others},%
+				{Input}/{\nxLnArcBox[]{SET TRANSACTION ISOLATION LEVEL level}},%
+				{Fallback}/{Default isolation varies by engine — often \nxLnArcBox[]{READ COMMITTED}},%
+				{Rendering}/{Controls phenomena like dirty reads, non-repeatable reads, and phantom reads},%
+				{Use Case}/{Used to balance consistency and concurrency depending on workload and risk tolerance}
+		}
+\end{NxLightListBox}
+
+\begin{NxLightBox}[title={ISOLATION LEVEL — Syntax Glyph Map}]
+		\begin{tabularx}{\textwidth}{|l|X|}
+				\hline
+				\textbf{Engine} & \textbf{Supported Isolation Levels} \\
+				\hline
+				PostgreSQL & {\nxCheckSuccess} \nxLnArcBox[]{READ COMMITTED}, \nxLnArcBox[]{REPEATABLE READ}, \nxLnArcBox[]{SERIALIZABLE} \\
+				MariaDB / MySQL & {\nxCheckSuccess} \nxLnArcBox[]{READ UNCOMMITTED}, \nxLnArcBox[]{READ COMMITTED}, \nxLnArcBox[]{REPEATABLE READ}, \nxLnArcBox[]{SERIALIZABLE} \\
+				SQLite3 & {\nxTimesDanger} does not support configurable isolation levels — uses snapshot isolation via SERIALIZABLE mode \\
+				\hline
+				\textbf{Engine} & \textbf{Default Isolation Level} \\
+				\hline
+				PostgreSQL & \nxLnArcBox[]{READ COMMITTED} \\
+				MariaDB / MySQL & \nxLnArcBox[]{REPEATABLE READ} \\
+				SQLite3 & \nxLnArcBox[]{SERIALIZABLE} (snapshot isolation) \\
+				\hline
+		\end{tabularx}
+\end{NxLightBox}
+
+\begin{NxLightListBox}[title={ISOLATION LEVEL — Beginner Questions}]
+		\nxEachLabel{ArrowDark}{Secondary}{{1}{43}}{%
+				{What is an isolation level?}/{It defines how visible uncommitted changes are between concurrent transactions.},%
+				{Why change it?}/{To prevent anomalies like \cite{gfg_dirty_read} or phantom rows, or to improve concurrency.},%
+				{Can I change it mid-transaction?}/{No — it must be set before the transaction begins.},%
+				{What’s the safest level?}/{\nxLnArcBox[]{SERIALIZABLE} — but it may reduce performance.},%
+				{What’s the default?}/{Depends on engine — PostgreSQL uses \nxLnArcBox[]{READ COMMITTED}, MySQL uses \nxLnArcBox[]{REPEATABLE READ}.},%
+				{Does SQLite support isolation levels?}/{No — it uses snapshot isolation internally and does not expose configuration.}
+		}
+\end{NxLightListBox}
+%, \cite{dotnet2023phantom}, and \cite{gfg2025concurrency}
+

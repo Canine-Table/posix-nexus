@@ -6,7 +6,7 @@
 \def\nxRB{\char`\}}
 \def\nxLA{$\langle$}
 \def\nxRA{$\rangle$}
-
+\let\ex=\expandafter
 \long\def\nxComment#1{\iffalse#1\fi}
 \def\nxExpr#1#2{\the\csname#1expr\endcsname#2\relax}
 \def\nxNumExpr#1{\nxExpr{num}{#1}}
@@ -27,6 +27,9 @@
 
 \def\nx@empty{}%
 \def\nx@default{ ~}%
+\def\nx@NaN{NaN}%
+\def\nx@true{true}%
+\def\nx@false{false}%
 
 \def\nx@resa{}%
 \def\nx@resb{}%

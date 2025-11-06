@@ -71,6 +71,13 @@ nx_ssl_ecparam()
 	}
 )
 
+nx_ssl_pkcs8()
+(
+	eval "$(nx_str_optarg ':f:' "$@")"
+	f="$(__nx_ssl_path "$f" "Caesar rejects '$f'—not a private key, but a cryptographic imposter.")" || exit 1
+	openssl pskcs8 -topk8 -nocrypt -in "$f" -out "$f.pkcs8"
+)
+
 nx_ssl_disect()
 (
 	eval "$(nx_str_optarg ':f:r' "$@")"

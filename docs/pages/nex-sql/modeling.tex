@@ -153,48 +153,49 @@
 		\hline
 		\textbf{Symbol} & \textbf{Meaning} & \textbf{Numeric Meaning} \\
 		\hline
-		\tikz\draw[/nx/crowsfoot={}{nn}] (0,0) -- (1,0); & Mandatory-One & Exactly-One \\
+		\tikz\draw[->, >=nxMO] (0,0) -- (1,0); & Mandatory-One & Exactly-One \\
 		\hline
-		\tikz\draw[/nx/crowsfoot={}{pp}] (0,0) -- (1,0); & Optional-Many & Zero or more \\
+		\tikz\draw[->, >=nxOM] (0,0) -- (1,0); & Optional-Many & Zero or more \\
 		\hline
-		\tikz\draw[/nx/crowsfoot={}{mm}] (0,0) -- (1,0); & Mandatory-Many & One or More \\
+		\tikz\draw[->, >=nxMM] (0,0) -- (1,0); & Mandatory-Many & One or More \\
 		\hline
-		\tikz\draw[/nx/crowsfoot={}{oo}] (0,0) -- (1,0); & Optional-One & Zero or one \\
+		\tikz\draw[->, >=nxOO] (0,0) -- (1,0); & Optional-One & Zero or one \\
 		\hline
 	\end{tabularx}
 \end{NxLightBox}
 
+\begin{comment}
 \nxSections{Two Versions of a 1:N O-M Relationship}{2}
 \begin{tikzpicture}
-	\node (nodeAb) [process] {DEPARTMENT}
-		node (nodeBb) [decision, right=of nodeAb] {1:N}
-		node[below of=nodeBb] {\nxLnArcBox{(a) Original E-R Model Version}}
-		node (nodeCb) [process, right=of nodeBb] {EMPLOYEE};
-		\draw[/nx/crowsfoot={oo}{}] (nodeAb) -- (nodeBb);
-		\draw[/nx/crowsfoot={}{nn}](nodeBb) -- (nodeCb);
+	\node (nodeAb) [/nx/shapes/process] {DEPARTMENT}
+		node (nodeBb) [/nx/shapes/decision, right=of nodeAb] {1:N}
+		node[below of=nodeBb] {\nxLnArcBox[]{(a) Original E-R Model Version}}
+		node (nodeCb) [/nx/shapes/process, right=of nodeBb] {EMPLOYEE};
+		\draw[<-nxOM] (nodeAb) -- (nodeBb);
+		\draw[=>, >=nxMO](nodeBb) -- (nodeCb);
 \end{tikzpicture}
 \bigskip
 
 \begin{tikzpicture}[>=Stealth]
-	\node[process] (nodeAa) {DEPARTMENT} node[right=of nodeAa, process, xshift=4cm] (nodeAb) {EMPLOYEE};
+	\node[/nx/shapes/process] (nodeAa) {DEPARTMENT} node[right=of nodeAa, /nx/shapes/process, xshift=4cm] (nodeAb) {EMPLOYEE};
 
 	% Dashed line only (no decoration)
 	\draw[dashed, dash pattern=on 2pt off 1pt] (nodeAa) -- (nodeAb);
 
 	% Crow’s foot glyph only (invisible line, but decoration visible)
-	\draw[/nx/crowsfoot={oo}{nn}, draw=none] (nodeAa) -- (nodeAb);
+	\draw[<->, <-nxOO, >=nxMO, draw=none] (nodeAa) -- (nodeAb);
 
 	% Node overlays (not affected by dashed)
-	\node[below, yshift=-1cm, process, fill=teal!20] (nodeAc) at ($(nodeAa)!0.5!(nodeAb)$) {Minimum cardinality (0-M)};
-	\node[process, fill=teal!20, above, yshift=1cm] (nodeAd) at ($(nodeAa)!0.5!(nodeAb)$) {Maximum cardinality (N:M)};
-	\node[below=of nodeAc] {\nxLnArcBox{(b) Crow's Foot Version}};
+	\node[below, yshift=-1cm, /nx/shapes/process, fill=teal!20] (nodeAc) at ($(nodeAa)!0.5!(nodeAb)$) {Minimum cardinality (0-M)};
+	\node[/nx/shapes/process, fill=teal!20, above, yshift=1cm] (nodeAd) at ($(nodeAa)!0.5!(nodeAb)$) {Maximum cardinality (N:M)};
+	\node[below=of nodeAc] {\nxLnArcBox[]{(b) Crow's Foot Version}};
 
 	\draw ([xshift=-2.3mm, yshift=-2mm]nodeAb.west)[<-, bend left, shorten <= 2pt] to (nodeAc);
 	\draw ([xshift=3mm]nodeAa.east)[<-, shorten <= 4pt] to (nodeAc);
 	\draw ([xshift=0.1mm]nodeAa.east)[<-, bend right, shorten <= 7pt] to ([xshift=1mm]nodeAd.south west);
 	\draw(nodeAb.west) [<-, bend left, shorten <= 7pt] to ([xshift=-1mm]nodeAd.south east);
 \end{tikzpicture}
- 
+
 \nxSections{Example of ID-Dependent Entities}{3}
 
 \begin{tikzpicture}[every node/.style={scale=0.9}]
@@ -307,144 +308,103 @@
 		node[/nx/lbl/above={nodeCa}] {PATIENT};
 
 	\node[/nx/lbl/above={nodeAb}] {APARTMENT}
-		node[below=-1mm of nodeAb] {\nxArcBox[]{(a) APARTMENT is\\ID-Dependent\\on BUILDING}}
+		node[below=-1mm of nodeAb] {\nxLnArcBox[]{(a) APARTMENT is\\ID-Dependent\\on BUILDING}}
 		node[/nx/lbl/above={nodeBb}] {PRINT}
-		node[below=-1mm of nodeBb] {\nxArcBox[]{(b) PRINT is\\ID-Dependent\\on PAINTING}}
+		node[below=-1mm of nodeBb] {\nxLnArcBox[]{(b) PRINT is\\ID-Dependent\\on PAINTING}}
 		node[/nx/lbl/above={nodeCb}] {EXAM}
-		node[below=-1mm of nodeCb] {\nxArcBox[]{(c) EXAM is\\ID-Dependent\\on PATIENT}};
+		node[below=-1mm of nodeCb] {\nxLnArcBox[]{(c) EXAM is\\ID-Dependent\\on PATIENT}};
 
 		\begin{scope}[shft/.style={xshift=-2cm}]
-			\draw[/nx/crowsfoot={nn}{pp}] ([shft]nodeAa.south east) -- ([shft]nodeAb.north east);
-			\draw[/nx/crowsfoot={nn}{pp}] ([shft]nodeBa.south east) -- ([shft]nodeBb.north east);
-			\draw[/nx/crowsfoot={nn}{mm}] ([shft]nodeCa.south east) -- ([shft]nodeCb.north east);
+			\draw[<->, <-MO, >=OM] ([shft]nodeAa.south east) -- ([shft]nodeAb.north east);
+			\draw[<->, <-MO, >=OM] ([shft]nodeBa.south east) -- ([shft]nodeBb.north east);
+			\draw[<->, <-nxMO, >=nxMM] ([shft]nodeCa.south east) -- ([shft]nodeCb.north east);
 	\end{scope}
 \end{tikzpicture}
 
 \nxSections{Non-ID-Dependent Weak Entities}{3}
 \begin{center}
-\begin{tikzpicture}[every node/.style={scale=0.9}]
-	\node (nodeAa) {
-		\begin{NxLightBox}[width=0.35\linewidth, title={
-			\begin{tabularx}{\linewidth}{|X|}
-				\hline
-				Manufacturor \\
-				\hline
-				Model \\
-				\hline
-			\end{tabularx}
+	\begin{tikzpicture}[every node/.style={scale=0.9}]
+		\node (nodeAa) {
+			\begin{NxLightBox}[width=0.35\linewidth, title={
+				\begin{tabularx}{\linewidth}{|X|}
+					\hline
+					Manufacturor \\
+					\hline
+					Model \\
+					\hline
+				\end{tabularx}
+				}]
+				\begin{tabularx}{\linewidth}{|X|}
+					\hline
+					Descriotion \\
+					\hline
+					NumberOfPassengers \\
+					\hline
+					EngineType \\
+					\hline
+					RatedMPG \\
+					\hline
+				\end{tabularx}
+			\end{NxLightBox}
+		} node[below left=-1cm of nodeAa, yshift=-2cm] (nodeAb) {
+			\begin{NxLightBox}[width=0.35\linewidth, title={
+				\begin{tabularx}{\linewidth}{|X|}
+					\hline
+					BuildingName \\
+					\hline
+					ApartmentNumber \\
+					\hline
+				\end{tabularx}
 			}]
-			\begin{tabularx}{\linewidth}{|X|}
-				\hline
-				Descriotion \\
-				\hline
-				NumberOfPassengers \\
-				\hline
-				EngineType \\
-				\hline
-				RatedMPG \\
-				\hline
-			\end{tabularx}
-		\end{NxLightBox}
-	} node[below left=-1cm of nodeAa, yshift=-2cm] (nodeAb) {
-		\begin{NxLightBox}[width=0.35\linewidth, title={
-			\begin{tabularx}{\linewidth}{|X|}
-				\hline
-				BuildingName \\
-				\hline
-				ApartmentNumber \\
-				\hline
-			\end{tabularx}
-		}]
-			\begin{tabularx}{\linewidth}{|X|}
-				\hline
-				NumberBedrooms \\
-				\hline
-				NumberBaths \\
-				\hline
-				MonthlyRent \\
-				\hline
-			\end{tabularx}
-		\end{NxLightBox}
-	} node[below right=-1cm of nodeAa, yshift=-2cm] (nodeAc) {
-		\begin{NxLightBox}[width=0.35\linewidth, title={
-			\begin{tabularx}{\linewidth}{|X|}
-				\hline
-				BuildingName \\
-				\hline
-				ApartmentNumber \\
-				\hline
-			\end{tabularx}
-		}]
-			\begin{tabularx}{\linewidth}{|X|}
-				\hline
-				NumberBedrooms \\
-				\hline
-				NumberBaths \\
-				\hline
-				MonthlyRent \\
-				\hline
-			\end{tabularx}
-		\end{NxLightBox}
-	};
+				\begin{tabularx}{\linewidth}{|X|}
+					\hline
+					NumberBedrooms \\
+					\hline
+					NumberBaths \\
+					\hline
+					MonthlyRent \\
+					\hline
+				\end{tabularx}
+			\end{NxLightBox}
+		} node[below right=-1cm of nodeAa, yshift=-2cm] (nodeAc) {
+			\begin{NxLightBox}[width=0.35\linewidth, title={
+				\begin{tabularx}{\linewidth}{|X|}
+					\hline
+					BuildingName \\
+					\hline
+					ApartmentNumber \\
+					\hline
+				\end{tabularx}
+			}]
+				\begin{tabularx}{\linewidth}{|X|}
+					\hline
+					NumberBedrooms \\
+					\hline
+					NumberBaths \\
+					\hline
+					MonthlyRent \\
+					\hline
+				\end{tabularx}
+			\end{NxLightBox}
+		};
 
-	\node[/nx/lbl/above={nodeAa}] {AUTO\_MODEL};
+		\node[/nx/lbl/above={nodeAa}] {AUTO\_MODEL};
 
-	\node[/nx/lbl/above={nodeAb}] {VEHICLE}
-		node[below=-1mm of nodeAb] {\nxArcBox[]{(a) ID-Dependent Entity}}
-		node[/nx/lbl/above={nodeAc}] {VEHICLE}
-		node[below=-1mm of nodeAc] {\nxArcBox[]{(b) Non-ID-Dependent\\Weak Entity}};
+		\node[/nx/lbl/above={nodeAb}] {VEHICLE}
+			node[below=-1mm of nodeAb] {\nxLnArcBox[]{(a) ID-Dependent Entity}}
+			node[/nx/lbl/above={nodeAc}] {VEHICLE}
+			node[below=-1mm of nodeAc] {\nxLnArcBox[]{(b) Non-ID-Dependent\\Weak Entity}};
 
-		\begin{scope}[shft/.style={xshift=-2cm}]
-			\draw[/nx/crowsfoot={nn}{pp}] (nodeAa) -- ([shft]nodeAb.north east);
-			\draw[/nx/crowsfoot={nn}{pp}] (nodeAa) -- ([shft]nodeAc.north east);
-\end{scope}
-\end{tikzpicture}
+			\begin{scope}[shft/.style={xshift=-2cm}]
+				\draw[<-> <-nxOM, >=nxMO] (nodeAa) -- ([shft]nodeAb.north east);
+				\draw[<-> <-nxOM, >=nxMO] (nodeAa) -- ([shft]nodeAc.north east);
+			\end{scope}
+	\end{tikzpicture}
 \end{center}
 
-\begin{comment}	
-\begin{NxLightBox}[title={}]
-\end{NxLightBox}
-\begin{NxLightBox}[title={}]
-\end{NxLightBox}
-\begin{NxLightBox}[title={}]
-\end{NxLightBox}
-\begin{NxLightBox}[title={}]
-\end{NxLightBox}
-\begin{NxLightBox}[title={}]
-\end{NxLightBox}
-\begin{NxLightBox}[title={}]
-\end{NxLightBox}
-\begin{NxLightBox}[title={}]
-\end{NxLightBox}
-\begin{NxLightBox}[title={}]
-\end{NxLightBox}
-\begin{NxLightBox}[title={}]
-\end{NxLightBox}
-\begin{NxLightBox}[title={}]
-\end{NxLightBox}
-\begin{NxLightBox}[title={}]
-\end{NxLightBox}
-\begin{NxLightBox}[title={}]
-\end{NxLightBox}
-\begin{NxLightBox}[title={}]
-\end{NxLightBox}
-\begin{NxLightBox}[title={}]
-\end{NxLightBox}
-\begin{NxLightBox}[title={}]
-\end{NxLightBox}
-\begin{NxLightBox}[title={}]
-\end{NxLightBox}
-\begin{NxLightBox}[title={}]
-\end{NxLightBox}
-\begin{NxLightBox}[title={}]
-\end{NxLightBox}
-\begin{NxLightBox}[title={}]
-\end{NxLightBox}
-\begin{NxLightBox}[title={}]
-\end{NxLightBox}
+\end{comment}
 
-\nxSections{MySQL Datatypes}{2}
-
+\nxSections{Business Rules}{2}
 \begin{NxLightBox}[title={Business Rules (3) - Characteristics}]
 	\begin{tabularx}{\textwidth}{|l|X|}
 		\hline
@@ -460,6 +420,7 @@
 	\end{tabularx}
 \end{NxLightBox}
 
+\nxSections{MySQL Datatypes}{2}
 \begin{NxLightBox}[title={Numeric Data Types}]
  	\begin{tabularx}{\textwidth}{|l|X|}
 		\hline
@@ -516,39 +477,48 @@
 	\end{tabularx}
 \end{NxLightBox}
 
+\begin{comment}
 \begin{center}
 	\begin{tikzpicture}[scale=2]
 	\node (memberA) at (0,0) {
-		\begin{NxLightListBox}[%
+		\begin{NxLightBox}[%
 				width=\linewidth/3,%
 				title={MemberNumber}%
 		]
-			\nxEachItem{ArrowDark}{
-				{MemberName},
-				{Phone},
-				{EmailAddress}
-			}
-		\end{NxLightListBox}
+	\begin{tabularx}{\textwidth}{|X|}
+			\hline
+				{MemberName} \\
+			\hline
+				{Phone} \\
+			\hline
+				{EmailAddress} \\
+			\hline
+	\end{tabularx}
+\end{NxLightBox}
 	};
 	\node[right of=memberA, xshift=\linewidth/2] (uniformA) {
-		\begin{NxLightListBox}[%
+		\begin{NxLightBox}[%
 				width=\linewidth/3,%
 				title={MemberNumber}%
 		]
-			\nxEachItem{ArrowDark}{
-				{Sport},
-				{UniformType},
-				{UniformSize},
-				{UniformNumber},
-				{MemberNumber (FK)}
-			}
-		\end{NxLightListBox}
+		\begin{tabularx}{\textwidth}{|X|}
+			\hline
+				{Sport} \\
+			\hline
+				{UniformType} \\
+			\hline
+				{UniformSize} \\
+			\hline
+				{UniformNumber} \\
+			\hline
+				{MemberNumber (FK)} \\
+			\hline
+			\end{tabularx}
+		\end{NxLightBox}
 	};
-
-	\node[above of=uniformA, yshift=2.5cm] {\nxLnArcBox{CLUB\_UNIFORM}};
-	\node[above of=memberA, yshift=1cm] {\nxLnArcBox{CLUB\_MEMBER}};
-	\draw[/nx/crowsfoot={mo}{mo}] (memberA) -- (uniformA); %^node[midway, below, yshift=-3.5cm]{(b) Placing a primary Key of the Parent in the Child is a Foreign Key};
+	\node[above of=uniformA, yshift=2.5cm] {\nxLnArcBox[]{CLUB\_UNIFORM}};
+	\node[above of=memberA, yshift=1cm] {\nxLnArcBox[]{CLUB\_MEMBER}};
+	\draw[<->, >=nxMO] (memberA) -- (uniformA); %^node[midway, below, yshift=-3.5cm]{(b) Placing a primary Key of the Parent in the Child is a Foreign Key};
 \end{tikzpicture}
 \end{center}
 \end{comment}
-

@@ -1,0 +1,32 @@
+\def\nxInputSQL#1{\nxInput{syntax.d/#1}}
+\nxSections{Syntax}{1}
+\begin{tikzpicture}[%
+	node distance=1cm and 1cm,%
+	every node/.style={%
+		scale=0.8,%
+		font=\sffamily\footnotesize%
+	}%
+]
+	\node[/nx/shapes/process] (emp) {Emp} child {
+		node[/nx/shapes/startstop, above left=of emp] {ID}
+	} child {
+		node[/nx/shapes/startstop, left=of emp] {Name}
+	} child {
+		node[/nx/shapes/startstop, below left=of emp] {Salary (O)}
+	};
+	\node[/nx/shapes/decision, right=of emp] (rel) {Consists of Works for};
+	\node[/nx/shapes/process, right=of rel] (dep) {Dep} child {
+		node[/nx/shapes/startstop, above right=of dep] {ID}
+	} child {
+		node[/nx/shapes/startstop, right=of dep] {Name}
+	} child {
+		node[/nx/shapes/startstop, below right=of dep] {Loc}
+	};
+	\draw[->, >=nxMM, /nx/er/lend] (rel) -- (emp);
+	\draw[->, >=nxOM, /nx/er/lend] (rel) -- (dep);
+\end{tikzpicture}
+\nxInputSQL{tables}
+\nxInputSQL{constraints}
+\nxInputSQL{cardinality}
+\nxInputSQL{recovery}
+

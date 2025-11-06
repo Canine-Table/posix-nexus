@@ -1,0 +1,86 @@
+\nxSections{Json Module}{1}
+
+\nxSections{Using the JSON value splitter}{2}
+
+\begin{NxCodeBox}{json}{title={Json used in the following examples}}
+{
+  "user": {
+    "id": 42,
+    "name": "Alice",
+    "email": "alice@example.com",
+    "roles": [ "admin", "editor", "viewer" ]
+  },
+  "settings": {
+    "theme": "dark",
+    "notifications": true,
+    "languages": [ "en", "fr" ]
+  },
+  "projects": [
+    { "title": "Apollo", "status": "active" },
+    { "title": "Zephyr", "status": "archived" }
+  ],
+  "misc": null
+}
+\end{NxCodeBox}
+
+\begin{NxCodeBox}{awk}{title={\textbf{Extract keys from the \texttt{.user} object}
+        \begin{NxDarkList}
+            \nxEachLabel{CodePrimary}{Tertiary}{{1}{43}}{%
+                {Call}/{\texttt{nx\_json\_split(".user", V1, V2, "")}},%
+                {Return}/{\texttt{1} (object)},%
+                {Result}/{\texttt{V2[0]=4}, keys = \{"id","name","email","roles"\}}
+            }
+        \end{NxDarkList}
+}}
+if (nx_json_split(".user", V1, V2, "") == 1) {
+    for (i = 1; i <= V2[0]; i++) {
+        key = V2[i]
+        val = V1[".nx.user." key]
+        print key, "=", val
+    }
+}
+\end{NxCodeBox}
+
+\begin{NxCodeBox}{awk}{title={\textbf{Extract values from the \texttt{.user.roles} array}
+        \begin{NxDarkList}
+            \nxEachLabel{CodePrimary}{Tertiary}{{1}{43}}{%
+                {Call}/{\texttt{nx\_json\_split(".user.roles", V1, V2, "")}},%
+                {Return}/{\texttt{2} (array)},%
+                {Result}/{\texttt{V2[0]=3}, values = \{"admin","editor","viewer"\}}
+            }
+        \end{NxDarkList}
+}}
+if (nx_json_split(".user.roles", V1, V2, "") == 2) {
+    for (i = 1; i <= V2[0]; i++)
+        print V2[i]
+}
+\end{NxCodeBox}
+
+\begin{NxCodeBox}{awk}{title={\textbf{Extract project entries from the \texttt{.projects} array}
+        \begin{NxDarkList}
+            \nxEachLabel{CodePrimary}{Tertiary}{{1}{43}}{%
+                {Call}/{\texttt{nx\_json\_split(".projects", V1, V2, "")}},%
+                {Return}/{\texttt{2} (array)},%
+                {Result}/{\texttt{V2[0]=2}, entries = \{".nx.projects[1]",".nx.projects[2]"\}}
+            }
+        \end{NxDarkList}
+}}
+if (nx_json_split(".projects", V1, V2, "") == 2) {
+    for (i = 1; i <= V2[0]; i++)
+        print V2[i]
+}
+\end{NxCodeBox}
+
+\begin{NxCodeBox}{awk}{title={\textbf{Attempt to split the \texttt{.misc} field (null)}
+        \begin{NxDarkList}
+            \nxEachLabel{CodePrimary}{Tertiary}{{1}{43}}{%
+                {Call}/{\texttt{nx\_json\_split(".misc", V1, V2, "")}},%
+                {Return}/{\texttt{0} (no split)},%
+                {Result}/{\texttt{V2} untouched; safe to check return code before iterating}
+            }
+        \end{NxDarkList}
+}}
+if (nx_json_split(".misc", V1, V2, "") == 0)
+    print "misc is null or undefined"
+\end{NxCodeBox}
+

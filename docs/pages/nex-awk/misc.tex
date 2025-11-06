@@ -1,0 +1,512 @@
+\nxSections{Miscellaneous Module}{1}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\nxSections{Character Classifiers}{2}
+
+\begin{NxCodeBox}{awk}{title={nx\_is\_space(D)}}
+function nx_is_space(D) { return D ~ /[ \t\n\f\r\v\b]/ }
+\end{NxCodeBox}
+
+\begin{NxCodeBox}{awk}{title={nx\_is\_upper(D)}}
+function nx_is_upper(D) { return D ~ /[A-Z]/ }
+\end{NxCodeBox}
+
+\begin{NxCodeBox}{awk}{title={nx\_is\_lower(D)}}
+function nx_is_lower(D) { return D ~ /[a-z]/ }
+\end{NxCodeBox}
+
+\begin{NxCodeBox}{awk}{title={nx\_is\_alpha(D)}}
+function nx_is_alpha(D) { return nx_is_lower(D) || nx_is_upper(D) }
+\end{NxCodeBox}
+
+\begin{NxCodeBox}{awk}{title={nx\_is\_digit(D)}}
+function nx_is_digit(D) { return D ~ /[0-9]/ }
+\end{NxCodeBox}
+
+\begin{NxLightListBox}[title={Character Classifiers — The Glyph Filters}]
+		\nxEachLabel{ArrowDark}{Secondary}{{1}{43}}{%
+				{nx\_is\_space}/{Checks for whitespace characters},%
+				{nx\_is\_upper}/{Checks for uppercase letters},%
+				{nx\_is\_lower}/{Checks for lowercase letters},%
+				{nx\_is\_alpha}/{Checks for alphabetic characters},%
+				{nx\_is\_digit}/{Checks for numeric digits}
+		}
+\end{NxLightListBox}
+
+\nxSections{File Presence Checker}{2}
+
+\begin{NxCodeBox}{awk}{title={nx\_is\_file(D)}}
+function nx_is_file(D)
+{
+		if ((getline < D) > 0)
+				close(D)
+		else
+				return 0
+		return 1
+}
+\end{NxCodeBox}
+
+\begin{NxLightListBox}[title={File Presence Checker — The Path Glyph}]
+		\nxEachLabel{ArrowDark}{Secondary}{{1}{43}}{%
+				{Purpose}/{Check if file \(D\) exists and is readable},%
+				{Mechanism}/{Attempts \texttt{getline}; closes if successful},%
+				{Return}/{1 if file is readable, 0 otherwise},%
+				{Use Case}/{File validation, path probing, or conditional loading}
+		}
+\end{NxLightListBox}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\nxSections{Environment Variable Normalizer}{2}
+
+\begin{NxCodeBox}{awk}{title={nx\_to\_environ(D)}}
+function nx_to_environ(D,		m)
+{
+		D = toupper(nx_trim_str(D))
+		gsub(/[ \t]/, "_", D)
+		if (! (m = sub(/^[.]/, "L_", D)))
+		if (! (m = sub(/^[*]/, "G_", D)))
+		if (! (m = sub(/^[@]/, "NEXUS_", D)))
+		if (! (m = sub(/^[%]/, "P_", D)))
+				sub(/^[0-9]/, "_\\&", D)
+		gsub(/[^0-9A-Z_]/, "", D)
+		return D
+}
+\end{NxCodeBox}
+
+\begin{NxLightListBox}[title={Environment Variable Normalizer — The Uppercase Glyph}]
+		\nxEachLabel{ArrowDark}{Secondary}{{1}{43}}{%
+				{Purpose}/{Normalize string \(D\) into a valid environment variable name},%
+				{Trimming}/{Applies \texttt{nx\_trim\_str} and uppercases the result},%
+				{Prefix Rules}/{\texttt{.} → \texttt{L\_}, \texttt{*} → \texttt{G\_}, \texttt{@} → \texttt{NEXUS\_}, \texttt{\%} → \texttt{P\_}},%
+				{Digit Prefix}/{If \(D\) starts with digit, prepends underscore},%
+				{Sanitization}/{Removes all non-alphanumeric and non-underscore glyphs},%
+				{Use Case}/{Transforming symbolic identifiers into shell-safe environment keys}%
+		}
+\end{NxLightListBox}
+
+\nxSections{Presence Evaluator}{2}
+
+\begin{NxCodeBox}{awk}{title={\_\_nx\_defined(D, B)}}
+function __nx_defined(D, B)
+{
+				return (D || (length(D) && B))
+}
+\end{NxCodeBox}
+
+\begin{NxLightListBox}[title={Presence Evaluator — The Defined Glyph}]
+		\nxEachLabel{ArrowDark}{Secondary}{{1}{43}}{%
+				{Purpose}/{Determines whether value \(D\) is considered present or truthy},%
+				{Input}/{\(D\): value to check; \(B\): fallback flag},%
+				{Logic}/{Returns true if \(D\) is non-empty or if \(length(D)\) and \(B\) are both true},%
+				{Use Case}/{Used by conditional glyphs to evaluate presence, fallback, or symbolic truth}%
+		}
+\end{NxLightListBox}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\nxSections{Fallback Selector}{2}
+
+\begin{NxCodeBox}{awk}{title={\_\_nx\_else(D1, D2, B)}}
+function __nx_else(D1, D2, B)
+{
+		if (D1 || __nx_defined(D1, B))
+				return D1
+		return D2
+}
+\end{NxCodeBox}
+
+\begin{NxLightListBox}[title={Fallback Selector — The Else Glyph}]
+		\nxEachLabel{ArrowDark}{Secondary}{{1}{43}}{%
+				{Purpose}/{Returns \(D1\) if defined or truthy, otherwise returns fallback \(D2\)},%
+				{Input}/{\(D1\): primary value; \(D2\): fallback value; \(B\): optional presence flag},%
+				{Logic}/{Uses \texttt{\_\_nx\_defined(D1, B)} to determine presence},%
+				{Use Case}/{Used in conditional chains, defaulting logic, or symbolic substitution}
+		}
+\end{NxLightListBox}
+
+\nxSections{Conditional Selector}{2}
+
+\begin{NxCodeBox}{awk}{title={\_\_nx\_if(B1, D1, D2, B2)}}
+function __nx_if(B1, D1, D2, B2)
+{
+		if (B1 || __nx_defined(B1, B2))
+				return D1
+		return D2
+}
+\end{NxCodeBox}
+
+\begin{NxLightListBox}[title={Conditional Selector — The If Glyph}]
+		\nxEachLabel{ArrowDark}{Secondary}{{1}{43}}{%
+				{Purpose}/{Returns \(D1\) if condition \(B1\) is true or defined, otherwise returns fallback \(D2\)},%
+				{Input}/{\(B1\): primary condition; \(D1\): value if true; \(D2\): value if false; \(B2\): optional presence flag},%
+				{Logic}/{Uses \texttt{\_\_nx\_defined(B1, B2)} to evaluate symbolic truth},%
+				{Use Case}/{Conditional rendering, symbolic branching, or fallback substitution in AWK emitters}
+		}
+\end{NxLightListBox}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\nxSections{Ternary Divergence}{2}
+
+\begin{NxCodeBox}{awk}{title={\_\_nx\_elif(B1, B2, B3, B4, B5, B6)}}
+function __nx_elif(B1, B2, B3, B4, B5, B6)
+{
+    if (B4) {
+        B5 = __nx_else(B5, B4)
+        B6 = __nx_else(B6, B5)
+    }
+    return (__nx_defined(B1, B4) == __nx_defined(B2, B5) &&
+            __nx_defined(B3, B6) != __nx_defined(B1, B4))
+}
+\end{NxCodeBox}
+
+\begin{NxLightListBox}[title={Ternary Divergence — The Elif Glyph}]
+    \nxEachLabel{ArrowDark}{Secondary}{{1}{43}}{%
+        {Purpose}/{Evaluates a three-way conditional divergence based on symbolic presence and equality},%
+        {Input}/{\(B1, B2, B3\): primary conditions; \(B4, B5, B6\): optional fallback values},%
+        {Fallback}/{Each fallback is resolved via \texttt{\_\_nx\_else} to normalize symbolic presence},%
+        {Logic}/{Returns true if \(\texttt{defined}(B1) = \texttt{defined}(B2)\) and \(\texttt{defined}(B3) \ne \texttt{defined}(B1)\)},%
+        {Use Case}/{Used in chained conditional branches where symbolic presence and divergence must be tested}
+    }
+\end{NxLightListBox}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\nxSections{Conditional Union}{2}
+
+\begin{NxCodeBox}{awk}{title={\_\_nx\_or(B1, B2, B3, B4, B5, B6)}}
+function __nx_or(B1, B2, B3, B4, B5, B6)
+{
+    if (B4) {
+        B5 = __nx_else(B5, B4)
+        B6 = __nx_else(B6, B5)
+    }
+    return ((__nx_defined(B1, B4) && __nx_defined(B2, B5)) ||
+            (__nx_defined(B3, B6) && ! __nx_defined(B1, B4)))
+}
+\end{NxCodeBox}
+
+\begin{NxLightListBox}[title={Conditional Union — The Or Glyph}]
+    \nxEachLabel{ArrowDark}{Secondary}{{1}{43}}{%
+        {Purpose}/{Evaluates symbolic union of conditions with fallback normalization},%
+        {Input}/{\(B1, B2, B3\): primary conditions; \(B4, B5, B6\): optional fallback values},%
+        {Fallback}/{Each fallback is resolved via \texttt{\_\_nx\_else} to normalize symbolic presence},%
+        {Logic}/{Returns true if \texttt{defined(B1) and defined(B2)} or \texttt{defined(B3) and not defined(B1)}},%
+        {Use Case}/{Used in conditional branching, symbolic union, or fallback-aware logic overlays}
+    }
+\end{NxLightListBox}
+
+\begin{NxCodeBox}{awk}{title={\textbf{Logical OR with both primary values defined}
+        \begin{NxDarkList}
+            \nxEachLabel{CodePrimary}{Tertiary}{{1}{43}}{%
+                {Inputs}/{Left: \texttt{"yes"}, Right: \texttt{"ok"}},%
+                {Operation}/{Both values are defined},%
+                {Expected Result}/{Returns \texttt{true}}
+            }
+        \end{NxDarkList}
+}}
+
+__nx_or("yes", "ok", "", "", "", "")
+\end{NxCodeBox}
+
+\begin{NxCodeBox}{awk}{title={\textbf{Logical OR with only fallback defined}
+        \begin{NxDarkList}
+            \nxEachLabel{CodePrimary}{Tertiary}{{1}{43}}{%
+                {Inputs}/{Fallback: \texttt{"fallback"}, Primaries: \texttt{""}},%
+                {Operation}/{Evaluates fallback since primaries are undefined},%
+                {Expected Result}/{Returns \texttt{true}}
+            }
+        \end{NxDarkList}
+}}
+
+__nx_or("", "", "fallback", "", "", "")
+\end{NxCodeBox}
+
+\begin{NxCodeBox}{awk}{title={\textbf{Logical OR with all values undefined}
+        \begin{NxDarkList}
+            \nxEachLabel{CodePrimary}{Tertiary}{{1}{43}}{%
+                {Inputs}/{All arguments empty},%
+                {Operation}/{No defined values to satisfy OR condition},%
+                {Expected Result}/{Returns \texttt{false}}
+            }
+        \end{NxDarkList}
+}}
+
+__nx_or("", "", "", "", "", "")
+\end{NxCodeBox}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\nxSections{Exclusive Divergence}{2}
+
+\begin{NxCodeBox}{awk}{title={\_\_nx\_xor(B1, B2, B3, B4)}}
+function __nx_xor(B1, B2, B3, B4)
+{
+    if (B3)
+        B4 = __nx_else(B4, B3)
+    return ((! __nx_defined(B2, B4) && __nx_defined(B1, B3)) ||
+            (__nx_defined(B2, B4) && ! __nx_defined(B1, B3)))
+}
+\end{NxCodeBox}
+
+\begin{NxLightListBox}[title={Exclusive Divergence — The Xor Glyph}]
+    \nxEachLabel{ArrowDark}{Secondary}{{1}{43}}{%
+        {Purpose}/{Returns true if exactly one of the two symbolic conditions is defined or truthy},%
+        {Input}/{\(B1, B2\): primary conditions; \(B3, B4\): optional fallback values},%
+        {Fallback}/{\(B4\) is resolved via \texttt{\_\_nx\_else(B4, B3)}},%
+        {Logic}/{Returns true if one is defined and the other is not},%
+        {Use Case}/{Used in symbolic branching, exclusive logic, or markup divergence testing}
+    }
+\end{NxLightListBox}
+
+\begin{NxCodeBox}{awk}{title={\textbf{Exclusive-or with only the first value defined}
+        \begin{NxDarkList}
+            \nxEachLabel{CodePrimary}{Tertiary}{{1}{43}}{%
+                {Inputs}/{Left: \texttt{"yes"}, Right: \texttt{""}},%
+                {Operation}/{One side defined, the other undefined},%
+                {Expected Result}/{Returns \texttt{true}}
+            }
+        \end{NxDarkList}
+}}
+
+__nx_xor("yes", "", "", "")
+\end{NxCodeBox}
+
+\begin{NxCodeBox}{awk}{title={\textbf{Exclusive-or with both values defined}
+        \begin{NxDarkList}
+            \nxEachLabel{CodePrimary}{Tertiary}{{1}{43}}{%
+                {Inputs}/{Left: \texttt{"yes"}, Right: \texttt{"ok"}},%
+                {Operation}/{Both sides defined},%
+                {Expected Result}/{Returns \texttt{false}}
+            }
+        \end{NxDarkList}
+}}
+
+__nx_xor("yes", "ok", "", "")
+\end{NxCodeBox}
+
+\begin{NxCodeBox}{awk}{title={\textbf{Exclusive-or with only the fallback defined}
+        \begin{NxDarkList}
+            \nxEachLabel{CodePrimary}{Tertiary}{{1}{43}}{%
+                {Inputs}/{Fallback: \texttt{"fallback"}, Others: \texttt{""}},%
+                {Operation}/{One side defined via fallback, the other undefined},%
+                {Expected Result}/{Returns \texttt{true}}
+            }
+        \end{NxDarkList}
+}}
+
+__nx_xor("", "", "fallback", "")
+\end{NxCodeBox}
+
+\begin{NxCodeBox}{awk}{title={\textbf{Exclusive-or with only the first value defined}
+        \begin{NxDarkList}
+            \nxEachLabel{CodePrimary}{Tertiary}{{1}{43}}{%
+                {Inputs}/{Left: \texttt{"yes"}, Right: \texttt{""}},%
+                {Operation}/{One side defined, the other undefined},%
+                {Expected Result}/{Returns \texttt{true}}
+            }
+        \end{NxDarkList}
+}}
+
+__nx_xor("yes", "", "", "")
+\end{NxCodeBox}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\nxSections{Symbolic Comparator}{2}
+
+\begin{NxCodeBox}{awk}{title={\_\_nx\_compare(B1, B2, B3, B4)}}
+function __nx_compare(B1, B2, B3, B4)
+{
+    if (! B3) {
+        if (length(B3)) {
+            B1 = length(B1)
+            B2 = length(B2)
+        } else if (nx_digit(B1, 1) && nx_digit(B2, 1)) {
+            B1 = +B1
+            B2 = +B2
+        } else {
+            B1 = "a" B1
+            B2 = "a" B2
+        }
+        B3 = 1
+    }
+    if (B4)
+        return __nx_if(nx_digit(B4), B1 > B2, B1 < B2) ||
+               __nx_if(__nx_else(nx_digit(B4) == 1, tolower(B4) == "i"), B1 == B2, 0)
+    if (length(B4))
+        return B1 ~ B2
+    return B1 == B2
+}
+\end{NxCodeBox}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{NxLightListBox}[title={Symbolic Comparator — The Compare Glyph}]
+    \nxEachLabel{ArrowDark}{Secondary}{{1}{43}}{%
+        {Purpose}/{Compares two values \(B1\) and \(B2\) using symbolic or numeric logic},%
+        {Input}/{\(B1, B2\): values to compare; \(B3\): mode flag; \(B4\): comparison operator},%
+        {Mode}/{If \(B3\) is empty, auto-selects: length, numeric, or string coercion},%
+        {Operator}/{If \(B4\) is set: \texttt{digit} → numeric compare, \texttt{i} → equality, else regex match},%
+        {Use Case}/{Used in symbolic evaluation, numeric comparison, or pattern matching logic}
+    }
+\end{NxLightListBox}
+
+\begin{NxCodeBox}{awk}{title={\textbf{Compare two numeric strings using digit-based operator}
+        \begin{NxDarkList}
+            \nxEachLabel{CodePrimary}{Tertiary}{{1}{43}}{%
+                {Inputs}/{Left: \texttt{"5"}, Right: \texttt{"10"}, Mode: \texttt{""}, Operator: \texttt{"1"}},%
+                {Operation}/{Numeric comparison with coercion via digit detection},%
+                {Expected Result}/{Returns \texttt{true} since \texttt{5 < 10}}
+            }
+        \end{NxDarkList}
+}}
+
+__nx_compare("5", "10", "", "1")
+\end{NxCodeBox}
+
+\begin{NxCodeBox}{awk}{title={\textbf{Match string against pattern using regex operator}
+        \begin{NxDarkList}
+            \nxEachLabel{CodePrimary}{Tertiary}{{1}{43}}{%
+                {Inputs}/{Left: \texttt{"abc"}, Operator: \texttt{"~"}, Right: \texttt{"b"}},%
+                {Mode}/{Regex match against pattern \texttt{"b"}},%
+                {Expected Result}/{Returns \texttt{true} since \texttt{"abc"} contains \texttt{"b"}}
+            }
+        \end{NxDarkList}
+}}
+
+__nx_equality("abc", "~", "b")
+\end{NxCodeBox}
+
+\begin{NxCodeBox}{awk}{title={\textbf{Compare two strings using alphabetic equality operator}
+        \begin{NxDarkList}
+            \nxEachLabel{CodePrimary}{Tertiary}{{1}{43}}{%
+                {Inputs}/{Left: \texttt{"abc"}, Operator: \texttt{"=a"}, Right: \texttt{"abc"}},%
+                {Mode}/{Alphabetic equality check},%
+                {Expected Result}/{Returns \texttt{true} since both strings are equal}
+            }
+        \end{NxDarkList}
+}}
+
+__nx_equality("abc", "=a", "abc")
+\end{NxCodeBox}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\nxSections{Symbolic Equality Evaluator}{2}
+
+\begin{NxCodeBox}{awk}{title={\_\_nx\_equality(B1, B2, B3)}}
+function __nx_equality(B1, B2, B3,  b, e, g)
+{
+    b = substr(B2, 1, 1)
+    if (b == ">") {
+        e = 2
+        g = 1
+    } else if (b == "<") {
+        e = "a"
+        g = "i"
+    } else if (b == "=") {
+        e = ""
+    } else if (b == "~") {
+        e = 0
+    } else {
+        b = ""
+    }
+    if (b) {
+        if (__nx_compare(substr(B2, 2, 1), "=", 1)) {
+            b = g
+        } else {
+            b = e
+        }
+        e = substr(B2, length(B2), 1)
+        if (__nx_compare(e, "a", 1))
+            return __nx_compare(B1, B3, "", b)
+        else if (__nx_compare(e, "_", 1))
+            return __nx_compare(B1, B3, 0, b)
+        else
+            return __nx_compare(B1, B3, 1, b)
+    }
+    return __nx_compare(B1, B2)
+}
+\end{NxCodeBox}
+
+\begin{NxLightListBox}[title={Symbolic Equality Evaluator — The Equality Glyph}]
+    \nxEachLabel{ArrowDark}{Secondary}{{1}{43}}{%
+        {Purpose}/{Evaluates symbolic equality or comparison between \(B1\) and \(B3\) using operator \(B2\)},%
+        {Input}/{\(B1\): left value; \(B2\): operator string; \(B3\): right value},%
+        {Operators}/{Supports \texttt{>}, \texttt{<}, \texttt{=}, \texttt{~} with optional suffixes (\texttt{a}, \texttt{\_}, etc.)},%
+        {Logic}/{Delegates to \texttt{\_\_nx\_compare} with inferred mode and operator},%
+        {Use Case}/{Used in symbolic evaluation, conditional logic, or markup comparison overlays}
+    }
+\end{NxLightListBox}
+
+\begin{NxCodeBox}{awk}{title={\textbf{Compare two numeric strings using digit-based operator}
+        \begin{NxDarkList}
+            \nxEachLabel{CodePrimary}{Tertiary}{{1}{43}}{%
+                {Inputs}/{Left: \texttt{"5"}, Operator: \texttt{">0"}, Right: \texttt{"3"}},%
+                {Mode}/{Numeric comparison using digit coercion},%
+                {Expected Result}/{Returns \texttt{true} since \texttt{5 > 3}}
+            }
+        \end{NxDarkList}
+}}
+
+__nx_equality("5", ">0", "3")
+\end{NxCodeBox}
+
+\begin{NxCodeBox}{awk}{title={\textbf{Match string against pattern using regex operator}
+        \begin{NxDarkList}
+            \nxEachLabel{CodePrimary}{Tertiary}{{1}{43}}{%
+                {Inputs}/{Left: \texttt{"abc"}, Operator: \texttt{"\~"}, Right: \texttt{"b"}},%
+                {Mode}/{Regex match against pattern \texttt{"b"}},%
+                {Expected Result}/{Returns \texttt{true} since \texttt{"abc"} contains \texttt{"b"}}
+            }
+        \end{NxDarkList}
+}}
+
+__nx_equality("abc", "~", "b")
+\end{NxCodeBox}
+
+\begin{NxCodeBox}{awk}{title={\textbf{Compare two strings using alphabetic equality operator}
+        \begin{NxDarkList}
+            \nxEachLabel{CodePrimary}{Tertiary}{{1}{43}}{%
+                {Inputs}/{Left: \texttt{"abc"}, Operator: \texttt{"=a"}, Right: \texttt{"abc"}},%
+                {Mode}/{Alphabetic equality check},%
+                {Expected Result}/{Returns \texttt{true} since both strings are equal}
+            }
+        \end{NxDarkList}
+}}
+
+__nx_equality("abc", "=a", "abc")
+\end{NxCodeBox}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\nxSections{Associative Pair Swapper}{2}
+
+\begin{NxCodeBox}{awk}{title={\_\_nx\_swap(V, D1, D2, t)}}
+function __nx_swap(V, D1, D2,   t)
+{
+    t = V[D1]
+    V[D1] = V[D2]
+    V[D2] = t
+}
+\end{NxCodeBox}
+
+\begin{NxLightListBox}[title={Associative Pair Swapper — The Swap Glyph}]
+    \nxEachLabel{ArrowDark}{Secondary}{{1}{43}}{%
+        {Purpose}/{Swaps the values of keys \(D1\) and \(D2\) in associative array \(V\)},%
+        {Input}/{\(V\): associative array; \(D1, D2\): keys to swap},%
+        {Mechanism}/{Temporarily stores \(V[D1]\), then performs the exchange},%
+        {Use Case}/{Used in sorting, reordering, or symbolic mutation of key-value pairs}
+    }
+\end{NxLightListBox}
+
+\begin{NxCodeBox}{awk}{title={\textbf{Swapping values between two keys in an associative array}
+        \begin{NxDarkList}
+            \nxEachLabel{CodePrimary}{Tertiary}{{1}{43}}{%
+                {Initial State}/{\texttt{V["a"] = 1}, \texttt{V["b"] = 2}},%
+                {Operation}/{Swap the values of keys \texttt{"a"} and \texttt{"b"}},%
+                {Expected Result}/{\texttt{V["a"] = 2}, \texttt{V["b"] = 1}}
+            }
+        \end{NxDarkList}
+}}
+
+V["a"] = 1
+V["b"] = 2
+__nx_swap(V, "a", "b")
+\end{NxCodeBox}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+

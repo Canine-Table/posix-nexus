@@ -1,5 +1,4 @@
 package main.io;
-
 import java.util.Arrays;
 
 public class NxPrintf
@@ -8,7 +7,6 @@ public class NxPrintf
 		int c = 0;
 		if (aply == '<')
 			c = 10;
-		
 		aply = Character.toLowerCase(sty);
 		if (aply == 'c')
 			return c + 39;
@@ -16,7 +14,6 @@ public class NxPrintf
 			return c + 38;
 		if (sty != aply)
 			c += 60;
-
 		switch (aply) {
 			case 'b':
 				return c + 30;
@@ -151,6 +148,10 @@ public class NxPrintf
 					fmt[1] = symbolMap(fmt[++j]);
 					break;
 				case '%':
+					if (i >= args.length) {
+						System.out.print("\u001b[0m");
+						return i;
+					}
 					System.out.printf("%s%s%s", applied(applied, true), label(fmt[1], fmt[0]), args[i++]);
 					applied = false;
 					break;
@@ -161,11 +162,11 @@ public class NxPrintf
 							applied = true;
 							break;
 						default:
-							System.out.printf("%s%s\n", applied(applied, true),  fmt[j]);
+							System.out.printf("%s%s", applied(applied, true),  fmt[j]);
 							applied = false;
 					}
 			}
-		} while (++j < fmt.length && i < args.length);
+		} while (++j < fmt.length || i < args.length);
 		System.out.print("\u001b[0m");
 		return i;
 	}

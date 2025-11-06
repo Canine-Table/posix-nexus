@@ -1,0 +1,492 @@
+\nxSections{Constraints}{2}
+
+\nxSections{Named CHECK Constraint}{3}
+\begin{NxCodeBox}{sql}{title={\textbf{Named CHECK Constraint — Engine-Specific Examples}
+		\begin{NxDarkList}
+				\nxEachLabel{DBSecondary}{Tertiary}{{1}{43}}{%
+						{PostgreSQL}/{Full support for named \nxLnArcBox[]{CHECK} constraints with drop-by-name},%
+						{MariaDB / MySQL}/{Full support for named \nxLnArcBox[]{CHECK} constraints with drop-by-name (MySQL 8.0+)},%
+						{SQLite3}/{Supports named \nxLnArcBox[]{CHECK} constraints in table-level syntax only; cannot drop by name}
+				}
+		\end{NxDarkList}
+}}
+
+-- PostgreSQL: CHECK for numeric range
+CREATE TABLE products (
+		id SERIAL PRIMARY KEY,
+		price NUMERIC NOT NULL,
+		CONSTRAINT price_check CHECK (price > 0 AND price < 10000)
+);
+
+-- PostgreSQL: CHECK for set membership
+CREATE TABLE orders (
+		id SERIAL PRIMARY KEY,
+		status TEXT NOT NULL,
+		CONSTRAINT status_check CHECK (status IN ('pending', 'shipped', 'delivered', 'cancelled'))
+);
+
+-- PostgreSQL: CHECK for pattern match
+CREATE TABLE emails (
+		id SERIAL PRIMARY KEY,
+		address TEXT NOT NULL,
+		CONSTRAINT email_format CHECK (address LIKE '%@%')
+);
+
+-- MariaDB / MySQL: CHECK for numeric range
+CREATE TABLE products (
+		id INT AUTO_INCREMENT PRIMARY KEY,
+		price DECIMAL(10,2) NOT NULL,
+		CONSTRAINT price_check CHECK (price > 0 AND price < 10000)
+);
+
+-- MariaDB / MySQL: CHECK for set membership
+CREATE TABLE orders (
+		id INT AUTO_INCREMENT PRIMARY KEY,
+		status VARCHAR(20) NOT NULL,
+		CONSTRAINT status_check CHECK (status IN ('pending', 'shipped', 'delivered', 'cancelled'))
+);
+
+-- MariaDB / MySQL: CHECK for boolean flag
+CREATE TABLE users (
+		id INT AUTO_INCREMENT PRIMARY KEY,
+		is_active TINYINT(1) NOT NULL,
+		CONSTRAINT active_check CHECK (is_active IN (0, 1))
+);
+
+-- SQLite3: CHECK for numeric range (table-level syntax)
+CREATE TABLE products (
+		id INTEGER PRIMARY KEY AUTOINCREMENT,
+		price REAL NOT NULL,
+		CONSTRAINT price_check CHECK (price > 0 AND price < 10000)
+);
+
+-- SQLite3: CHECK for set membership (table-level syntax)
+CREATE TABLE orders (
+		id INTEGER PRIMARY KEY AUTOINCREMENT,
+		status TEXT NOT NULL,
+		CONSTRAINT status_check CHECK (status IN ('pending', 'shipped', 'delivered', 'cancelled'))
+);
+
+-- SQLite3: CHECK for cross-column logic (table-level syntax)
+CREATE TABLE bookings (
+		id INTEGER PRIMARY KEY AUTOINCREMENT,
+		start_date TEXT NOT NULL,
+		end_date TEXT NOT NULL,
+		CONSTRAINT date_order CHECK (start_date < end_date)
+);
+\end{NxCodeBox}
+
+\begin{NxLightListBox}[title={Named CHECK Constraint — The Ritual of Validation}]
+		\nxEachLabel{ArrowDark}{Secondary}{{1}{43}}{%
+				{Purpose}/{Assigns a name to a \nxLnArcBox[]{CHECK} constraint for clarity, debugging, and schema control},%
+				{Input}/{\nxLnArcBox[]{CONSTRAINT name CHECK (expression)}},%
+				{Fallback}/{Unnamed \nxLnArcBox[]{CHECK} constraints are valid but harder to reference or drop},%
+				{Rendering}/{Constraint name appears in error messages and schema inspection},%
+				{Use Case}/{Validating column ranges, formats, or logical conditions with named enforcement}
+		}
+\end{NxLightListBox}
+
+\begin{NxLightBox}[title={Named CHECK Constraint — Syntax Glyph Map}]
+		\begin{tabularx}{\textwidth}{|l|X|}
+				\hline
+				\textbf{Engine} & \textbf{Supports Named CHECK Constraints} \\
+				\hline
+				PostgreSQL & {\nxCheckSuccess} fully supported \\
+				MariaDB / MySQL & {\nxCheckSuccess} fully supported \\
+				SQLite3 & {\nxCheckSuccess} supported in table-level syntax \\
+				\hline
+				\textbf{Engine} & \textbf{Can Drop by Name} \\
+				\hline
+				PostgreSQL & {\nxCheckSuccess} \nxLnArcBox[]{ALTER TABLE ... DROP CONSTRAINT name} \\
+				MariaDB / MySQL & {\nxCheckSuccess} \nxLnArcBox[]{ALTER TABLE ... DROP CHECK name} \\
+				SQLite3 & {\nxTimesDanger} must recreate table to drop constraints \\
+				\hline
+		\end{tabularx}
+\end{NxLightBox}
+
+\begin{NxLightListBox}[title={Named CHECK Constraint — Beginner Questions}]
+		\nxEachLabel{ArrowDark}{Secondary}{{1}{43}}{%
+				{Why name a \nxLnArcBox[]{CHECK} constraint?}/{It helps with debugging, dropping, and documenting validation rules.},%
+				{Is naming required?}/{No — constraints can be anonymous, but naming is recommended.},%
+				{Can I drop a \nxLnArcBox[]{CHECK} constraint by name?}/{Yes — in PostgreSQL and MariaDB/MySQL. SQLite requires table recreation.},%
+				{Can I use any name?}/{Yes — but it must be unique within the table.},%
+				{Does the name affect behavior?}/{No — it’s purely for identification.},%
+				{Can I name other constraints too?}/{Yes — \nxLnArcBox[]{FOREIGN KEY}, \nxLnArcBox[]{UNIQUE}, and \nxLnArcBox[]{PRIMARY KEY} can also be named.}
+		}
+\end{NxLightListBox}
+
+
+\nxSections{Named DEFAULT Constraint}{3}
+\begin{NxCodeBox}{sql}{title={\textbf{Named DEFAULT Constraint — Syntax Across Engines}
+		\begin{NxDarkList}
+				\nxEachLabel{DBSecondary}{Tertiary}{{1}{43}}{%
+						{PostgreSQL}/{Supports named \nxLnArcBox[]{DEFAULT} constraints via \nxLnArcBox[]{ALTER TABLE ... ADD CONSTRAINT}},%
+						{MariaDB / MySQL}/{Does not support naming \nxLnArcBox[]{DEFAULT} constraints directly — defaults are column-level only},%
+						{SQLite3}/{Does not support naming \nxLnArcBox[]{DEFAULT} constraints — defaults are inline only}
+				}
+		\end{NxDarkList}
+}}
+
+-- PostgreSQL: Named DEFAULT constraint (table-level)
+CREATE TABLE users (
+		id SERIAL PRIMARY KEY,
+		is_active BOOLEAN NOT NULL,
+		CONSTRAINT default_active DEFAULT TRUE FOR is_active
+);
+
+-- PostgreSQL: Named DEFAULT constraint via ALTER TABLE
+ALTER TABLE users
+ADD CONSTRAINT default_active DEFAULT TRUE FOR is_active;
+
+-- MariaDB / MySQL: DEFAULT value (unnamed, column-level only)
+CREATE TABLE users (
+		id INT AUTO_INCREMENT PRIMARY KEY,
+		is_active BOOLEAN NOT NULL DEFAULT TRUE
+);
+
+-- SQLite3: DEFAULT value (unnamed, inline only)
+CREATE TABLE users (
+		id INTEGER PRIMARY KEY AUTOINCREMENT,
+		is_active BOOLEAN NOT NULL DEFAULT 1
+);
+\end{NxCodeBox}
+
+\begin{NxLightListBox}[title={Named DEFAULT Constraint — The Ritual of Prepopulation}]
+		\nxEachLabel{ArrowDark}{Secondary}{{1}{43}}{%
+				{Purpose}/{Assigns a default value to a column when no explicit value is provided during insertion},%
+				{Input}/{\nxLnArcBox[]{CONSTRAINT name DEFAULT value} (engine-dependent)},%
+				{Fallback}/{Unnamed defaults are valid but harder to reference or document},%
+				{Rendering}/{Default value is automatically inserted unless overridden},%
+				{Use Case}/{Prepopulating timestamps, flags, counters, or status fields with consistent defaults}
+		}
+\end{NxLightListBox}
+
+\begin{NxLightBox}[title={Named DEFAULT Constraint — Syntax Glyph Map}]
+		\begin{tabularx}{\textwidth}{|l|X|}
+				\hline
+				\textbf{Engine} & \textbf{Supports Named DEFAULT Constraints} \\
+				\hline
+				PostgreSQL & {\nxCheckSuccess} supported via \nxLnArcBox[]{ALTER TABLE ... ADD CONSTRAINT name \\DEFAULT value} \\
+				MariaDB / MySQL & {\nxTimesDanger} does not support naming DEFAULT constraints directly \\
+				SQLite3 & {\nxTimesDanger} does not support naming DEFAULT constraints directly \\
+				\hline
+				\textbf{Engine} & \textbf{Can Drop DEFAULT by Name} \\
+				\hline
+				PostgreSQL & {\nxCheckSuccess} \nxLnArcBox[]{ALTER TABLE ... DROP CONSTRAINT name} \\
+				MariaDB / MySQL & {\nxTimesDanger} must alter column directly \\
+				SQLite3 & {\nxTimesDanger} must recreate table to change default \\
+				\hline
+		\end{tabularx}
+\end{NxLightBox}
+
+\begin{NxLightListBox}[title={Named DEFAULT Constraint — Beginner Questions}]
+		\nxEachLabel{ArrowDark}{Secondary}{{1}{43}}{%
+				{Why use a DEFAULT constraint?}/{To automatically assign values when none are provided.},%
+				{Can I name a DEFAULT constraint?}/{Only in PostgreSQL — other engines do not support naming directly.},%
+				{Can I override the default?}/{Yes — any explicit value will replace the default.},%
+				{Can I drop a default by name?}/{Only in PostgreSQL — others require column alteration or table recreation.},%
+				{Is naming required?}/{No — defaults work without names, but naming improves clarity and control.},%
+				{Can I use expressions as defaults?}/{Yes — engines support literals, functions like \nxLnArcBox[]{CURRENT\_TIMESTAMP}, and booleans.}
+		}
+\end{NxLightListBox}
+
+\nxSections{Named FOREIGN KEY Constraint}{3}
+\begin{NxCodeBox}{sql}{title={\textbf{Named FOREIGN KEY Constraint — Syntax Across Engines}
+		\begin{NxDarkList}
+				\nxEachLabel{DBSecondary}{Tertiary}{{1}{43}}{%
+						{PostgreSQL}/{Supports named \nxLnArcBox[]{FOREIGN KEY} constraints with full syntax and drop-by-name},%
+						{MariaDB / MySQL}/{Supports named \nxLnArcBox[]{FOREIGN KEY} constraints with full syntax and drop-by-name},%
+						{SQLite3}/{Supports named \nxLnArcBox[]{FOREIGN KEY} constraints in table-level syntax only; cannot drop by name}
+				}
+		\end{NxDarkList}
+}}
+
+-- PostgreSQL: Named FOREIGN KEY constraint
+CREATE TABLE customers (
+		id SERIAL PRIMARY KEY,
+		name TEXT NOT NULL
+);
+
+CREATE TABLE orders (
+		id SERIAL PRIMARY KEY,
+		customer_id INT NOT NULL,
+		CONSTRAINT fk_customer FOREIGN KEY (customer_id) REFERENCES customers(id)
+);
+
+-- PostgreSQL: Drop named FOREIGN KEY constraint
+ALTER TABLE orders DROP CONSTRAINT fk_customer;
+
+-- MariaDB / MySQL: Named FOREIGN KEY constraint
+CREATE TABLE customers (
+		id INT AUTO_INCREMENT PRIMARY KEY,
+		name VARCHAR(255) NOT NULL
+);
+
+CREATE TABLE orders (
+		id INT AUTO_INCREMENT PRIMARY KEY,
+		customer_id INT NOT NULL,
+		CONSTRAINT fk_customer FOREIGN KEY (customer_id) REFERENCES customers(id)
+);
+
+-- MariaDB / MySQL: Drop named FOREIGN KEY constraint
+ALTER TABLE orders DROP FOREIGN KEY fk_customer;
+
+-- SQLite3: Named FOREIGN KEY constraint (table-level only)
+CREATE TABLE customers (
+		id INTEGER PRIMARY KEY AUTOINCREMENT,
+		name TEXT NOT NULL
+);
+
+CREATE TABLE orders (
+		id INTEGER PRIMARY KEY AUTOINCREMENT,
+		customer_id INT NOT NULL,
+		CONSTRAINT fk_customer FOREIGN KEY (customer_id) REFERENCES customers(id)
+);
+
+-- SQLite3: Drop FOREIGN KEY constraint — not supported by name
+-- Must recreate the table to remove or modify constraints
+\end{NxCodeBox}
+
+\begin{NxLightListBox}[title={Named FOREIGN KEY Constraint — The Ritual of Referential Binding}]
+		\nxEachLabel{ArrowDark}{Secondary}{{1}{43}}{%
+				{Purpose}/{Assigns a name to a \nxLnArcBox[]{FOREIGN KEY} constraint for clarity, debugging, and schema control},%
+				{Input}/{\nxLnArcBox[]{CONSTRAINT name FOREIGN KEY (col) REFERENCES table(col)}},%
+				{Fallback}/{Unnamed constraints are valid but harder to inspect, drop, or document},%
+				{Rendering}/{Constraint name appears in error messages, schema inspection, and migration tooling},%
+				{Use Case}/{Enforcing referential integrity with traceable lineage and drop-by-name support}
+		}
+\end{NxLightListBox}
+
+\begin{NxLightBox}[title={Named FOREIGN KEY Constraint — Syntax Glyph Map}]
+		\begin{tabularx}{\textwidth}{|l|X|}
+				\hline
+				\textbf{Engine} & \textbf{Supports Named FOREIGN KEY Constraints} \\
+				\hline
+				PostgreSQL & {\nxCheckSuccess} fully supported \\
+				MariaDB / MySQL & {\nxCheckSuccess} fully supported \\
+				SQLite3 & {\nxCheckSuccess} supported in table-level syntax only \\
+				\hline
+				\textbf{Engine} & \textbf{Can Drop by Name} \\
+				\hline
+				PostgreSQL & {\nxCheckSuccess} \nxLnArcBox[]{ALTER TABLE ... DROP CONSTRAINT name} \\
+				MariaDB / MySQL & {\nxCheckSuccess} \nxLnArcBox[]{ALTER TABLE ... DROP FOREIGN KEY name} \\
+				SQLite3 & {\nxTimesDanger} must recreate table to drop constraints \\
+				\hline
+		\end{tabularx}
+\end{NxLightBox}
+
+\begin{NxLightListBox}[title={Named FOREIGN KEY Constraint — Beginner Questions}]
+		\nxEachLabel{ArrowDark}{Secondary}{{1}{43}}{%
+				{Why name a FOREIGN KEY constraint?}/{It helps with debugging, dropping, and documenting relationships.},%
+				{Is naming required?}/{No — constraints can be anonymous, but naming is recommended.},%
+				{Can I drop a constraint by name?}/{Yes — in PostgreSQL and MariaDB/MySQL. SQLite requires table recreation.},%
+				{Can I use any name?}/{Yes — but it must be unique within the table.},%
+				{Does the name affect behavior?}/{No — it’s purely for identification.},%
+				{Can I name other constraints too?}/{Yes — \nxLnArcBox[]{CHECK}, \nxLnArcBox[]{UNIQUE}, and \nxLnArcBox[]{PRIMARY KEY} can also be named.}
+		}
+\end{NxLightListBox}
+
+\nxSections{PRIMARY KEY vs UNIQUE NOT NULL}{3}
+\begin{NxLightListBox}[title={PRIMARY KEY vs UNIQUE NOT NULL — The Ritual of Identity}]
+		\nxEachLabel{ArrowDark}{Secondary}{{1}{43}}{%
+				{Purpose}/{Both enforce uniqueness — but \nxLnArcBox[]{PRIMARY KEY} defines the row’s identity, while \nxLnArcBox[]{UNIQUE NOT NULL} enforces alternate uniqueness},%
+				{Input}/{\nxLnArcBox[]{PRIMARY KEY (col)} vs \nxLnArcBox[]{UNIQUE (col)} + \nxLnArcBox[]{NOT NULL}},%
+				{Fallback}/{\nxLnArcBox[]{UNIQUE} allows multiple per table; \nxLnArcBox[]{PRIMARY KEY} is singular and implicit \nxLnArcBox[]{NOT NULL}},%
+				{Rendering}/{\nxLnArcBox[]{PRIMARY KEY} is the default clustering/index key in many engines},%
+				{Use Case}/{Use \nxLnArcBox[]{PRIMARY KEY} for row identity; use \nxLnArcBox[]{UNIQUE NOT NULL} for alternate keys or constraints}
+		}
+\end{NxLightListBox}
+
+\begin{NxLightBox}[title={PRIMARY KEY vs UNIQUE NOT NULL — Syntax Glyph Map}]
+		\begin{tabularx}{\textwidth}{|l|X|X|}
+				\hline
+				\textbf{Aspect} & \textbf{PRIMARY KEY} & \textbf{UNIQUE + NOT NULL} \\
+				\hline
+				Uniqueness & Enforced & Enforced \\
+				Nullability & Implicitly \nxLnArcBox[]{NOT NULL} & Must be declared \nxLnArcBox[]{NOT NULL} explicitly \\
+				Multiplicity & Only one per table & Multiple allowed \\
+				Naming & Can be named & Can be named \\
+				Indexing & Often clustered index (engine-specific) & Usually non-clustered index \\
+				Identity Role & Defines row identity & Alternate candidate key \\
+				Composite Support & Yes & Yes \\
+				\hline
+		\end{tabularx}
+\end{NxLightBox}
+
+\begin{NxCodeBox}{sql}{title={\textbf{PRIMARY KEY vs UNIQUE NOT NULL — Syntax Across Engines}}}
+-- PostgreSQL / MySQL / SQLite: PRIMARY KEY
+CREATE TABLE users (
+		id SERIAL PRIMARY KEY,
+		username TEXT UNIQUE NOT NULL
+);
+
+-- PostgreSQL / MySQL / SQLite: UNIQUE + NOT NULL (alternate key)
+CREATE TABLE products (
+		sku TEXT NOT NULL,
+		name TEXT NOT NULL,
+		CONSTRAINT unique_sku UNIQUE (sku)
+);
+\end{NxCodeBox}
+
+\begin{NxLightListBox}[title={PRIMARY KEY vs UNIQUE NOT NULL — Beginner Questions}]
+		\nxEachLabel{ArrowDark}{Secondary}{{1}{43}}{%
+				{Can I have more than one PRIMARY KEY?}/{No — only one per table.},%
+				{Can I have multiple UNIQUE NOT NULL columns?}/{Yes — each defines a separate uniqueness rule.},%
+				{Is PRIMARY KEY always NOT NULL?}/{Yes — it is enforced implicitly.},%
+				{Do I need to write NOT NULL with PRIMARY KEY?}/{No — it’s automatic.},%
+				{Which one should I use for identity?}/{Always use \nxLnArcBox[]{PRIMARY KEY} for the main identifier.},%
+				{Can I name both constraints?}/{Yes — both can be named using \nxLnArcBox[]{CONSTRAINT name ...}},%
+				{Does a table need a PRIMARY KEY?}/{No — but it’s strongly recommended. Without it, rows lack guaranteed identity and indexing support.}
+		}
+\end{NxLightListBox}
+
+\nxSections{Key Types}{3}
+\begin{NxLightListBox}[title={Key Types — Identity Rituals in Relational Design}]
+    \nxEachLabel{ArrowDark}{Secondary}{{1}{43}}{%
+        {Composite Key}/{A \textbf{PRIMARY KEY} composed of multiple columns. Used when no single column guarantees uniqueness.},%
+        {Surrogate Key}/{An artificial identifier (e.g., \nxLnArcBox[]{id SERIAL}, \nxLnArcBox[]{UUID}) with no business meaning. Used for simplicity, indexing, and mutation safety.},%
+        {Natural Key}/{A real-world identifier with domain meaning (e.g., \nxLnArcBox[]{email}, \nxLnArcBox[]{SSN}). Used when uniqueness is guaranteed by business logic.}
+    }
+\end{NxLightListBox}
+
+\begin{NxLightBox}[title={Key Types — Syntax Glyph Map}]
+    \begin{tabularx}{\textwidth}{|l|X|X|X|}
+        \hline
+        \textbf{Aspect} & \textbf{Composite Key} & \textbf{Surrogate Key} & \textbf{Natural Key} \\
+        \hline
+        Definition & Multi-column \nxLnArcBox[]{PRIMARY KEY} & Engine-generated unique ID & Domain-derived unique value \\
+        Business Meaning & Yes (combined) & No & Yes \\
+        Portability & Schema-dependent & Engine-neutral & Domain-dependent \\
+        Indexing & Manual or implicit & Often clustered & Depends on usage \\
+        Mutation Risk & Low & Low & High (if business rules change) \\
+        Multiplicity & One per table & One per table & Often used with \nxLnArcBox[]{UNIQUE} \\
+        \hline
+    \end{tabularx}
+\end{NxLightBox}
+
+\begin{NxCodeBox}{sql}{title={\textbf{Natural Key — Syntax Across Engines}
+    \begin{NxDarkList}
+        \nxEachLabel{DBSecondary}{Tertiary}{{1}{43}}{%
+            {Natural Key}/{A real-world identifier with domain meaning (e.g., \nxLnArcBox[]{email}, \nxLnArcBox[]{SSN})},%
+            {Use Case}/{When business logic guarantees uniqueness and mutation risk is low}
+        }
+    \end{NxDarkList}
+}}
+
+-- PostgreSQL
+CREATE TABLE countries (
+    iso_code CHAR(2) PRIMARY KEY,
+    name TEXT NOT NULL
+);
+
+-- MariaDB / MySQL
+CREATE TABLE countries (
+    iso_code CHAR(2) PRIMARY KEY,
+    name VARCHAR(255) NOT NULL
+);
+
+-- SQLite3
+CREATE TABLE countries (
+    iso_code TEXT PRIMARY KEY,
+    name TEXT NOT NULL
+);
+\end{NxCodeBox}
+
+\begin{NxCodeBox}{sql}{title={\textbf{Surrogate Key — Syntax Across Engines}
+    \begin{NxDarkList}
+        \nxEachLabel{DBSecondary}{Tertiary}{{1}{43}}{%
+            {Surrogate Key}/{An artificial identifier with no business meaning (e.g., \nxLnArcBox[]{id SERIAL}, \nxLnArcBox[]{UUID})},%
+            {Use Case}/{When simplicity, indexing, and mutation safety are prioritized}
+        }
+    \end{NxDarkList}
+}}
+
+-- PostgreSQL
+CREATE TABLE users (
+    id SERIAL PRIMARY KEY,
+    email TEXT UNIQUE NOT NULL
+);
+
+-- MariaDB / MySQL
+CREATE TABLE users (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    email VARCHAR(255) UNIQUE NOT NULL
+);
+
+-- SQLite3
+CREATE TABLE users (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    email TEXT UNIQUE NOT NULL
+);
+\end{NxCodeBox}
+
+\begin{NxCodeBox}{sql}{title={\textbf{Composite Key — Syntax Across Engines}
+    \begin{NxDarkList}
+        \nxEachLabel{DBSecondary}{Tertiary}{{1}{43}}{%
+					{Composite Key}/{A \nxLnArcBox[]{PRIMARY KEY} composed of multiple columns},%
+            {Use Case}/{When no single column guarantees uniqueness — identity is defined by column combination}
+        }
+    \end{NxDarkList}
+}}
+
+-- PostgreSQL
+CREATE TABLE enrollments (
+    student_id INT NOT NULL,
+    course_id INT NOT NULL,
+    enrolled_on DATE NOT NULL,
+    CONSTRAINT pk_enrollment PRIMARY KEY (student_id, course_id)
+);
+
+-- MariaDB / MySQL
+CREATE TABLE enrollments (
+    student_id INT NOT NULL,
+    course_id INT NOT NULL,
+    enrolled_on DATE NOT NULL,
+    CONSTRAINT pk_enrollment PRIMARY KEY (student_id, course_id)
+);
+
+-- SQLite3
+CREATE TABLE enrollments (
+    student_id INT NOT NULL,
+    course_id INT NOT NULL,
+    enrolled_on TEXT NOT NULL,
+    CONSTRAINT pk_enrollment PRIMARY KEY (student_id, course_id)
+);
+\end{NxCodeBox}
+
+\begin{NxLightListBox}[title={Key Types — Identity Rituals in Relational Design}]
+    \nxEachLabel{ArrowDark}{Secondary}{{1}{43}}{%
+        {Composite Key}/{A \nxLnArcBox[]{PRIMARY KEY} composed of multiple columns. Used when no single column guarantees uniqueness.},%
+        {Surrogate Key}/{An artificial identifier (e.g., \nxLnArcBox[]{id SERIAL}, \nxLnArcBox[]{UUID}) with no business meaning. Used for simplicity, indexing, and mutation safety.},%
+        {Natural Key}/{A real-world identifier with domain meaning (e.g., \nxLnArcBox[]{email}, \nxLnArcBox[]{SSN}). Used when uniqueness is guaranteed by business logic.}
+    }
+\end{NxLightListBox}
+
+\begin{NxLightBox}[title={Key Types — Syntax Glyph Map}]
+    \begin{tabularx}{\textwidth}{|l|X|X|X|}
+        \hline
+        \textbf{Aspect} & \textbf{Composite Key} & \textbf{Surrogate Key} & \textbf{Natural Key} \\
+        \hline
+        Definition & Multi-column \nxLnArcBox[]{PRIMARY KEY} & Engine-generated unique ID & Domain-derived unique value \\
+        Business Meaning & Yes (combined) & No & Yes \\
+        Portability & Schema-dependent & Engine-neutral & Domain-dependent \\
+        Indexing & Manual or implicit & Often clustered & Depends on usage \\
+        Mutation Risk & Low & Low & High (if business rules change) \\
+        Multiplicity & One per table & One per table & Often used with \nxLnArcBox[]{UNIQUE} \\
+        Drop Complexity & Must drop all columns & Single column & Single column \\
+        Naming & Can be named & Can be named & Can be named \\
+        \hline
+    \end{tabularx}
+\end{NxLightBox}
+
+\begin{NxLightListBox}[title={Key Types — Beginner Questions}]
+    \nxEachLabel{ArrowDark}{Secondary}{{1}{43}}{%
+        {Which key type should I use?}/{Use \nxLnArcBox[]{Surrogate} for simplicity, \nxLnArcBox[]{Natural} for domain clarity, \nxLnArcBox[]{Composite} when identity spans multiple columns.},%
+        {Can I mix key types?}/{Yes — for example, a surrogate \nxLnArcBox[]{PRIMARY KEY} with a natural \nxLnArcBox[]{UNIQUE} constraint.},%
+        {Is a surrogate key always numeric?}/{No — it can be a UUID, hash, or any unique token.},%
+        {Can a composite key include a surrogate?}/{Yes — but it’s rare. Composite keys usually reflect domain logic.},%
+        {Can I change a natural key later?}/{Yes — but it risks breaking relationships and should be done cautiously.},%
+        {Does every table need a key?}/{Yes — a \nxLnArcBox[]{PRIMARY KEY} or equivalent is essential for row identity and indexing.}
+    }
+\end{NxLightListBox}
+

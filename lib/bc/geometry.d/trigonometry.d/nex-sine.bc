@@ -2,7 +2,7 @@
 ##################################################################
 define r_nx_ts_sin(x) {
 	x = nx_rad_sin(x)
-	return nx_ts(x, 3, c_prec, 2, x)
+	return nx_ts(x, 3, scale * 2, 2, x)
 }
 
 ##################################################################
@@ -23,7 +23,7 @@ define r_nx_ts_asin(z) {
 	auto r, t, s, p
 	p = c_prec
 	if (z > 1 || z < -1) {
-		print "[IMPURITY]: asin(z) domain breach — |z| > 1"
+		print "[IMPURITY]: asin(z) domain breach — |z| > 1\n"
 		return -1
 	}
 	if (nx_abs(z) == 1)

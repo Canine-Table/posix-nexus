@@ -1,7 +1,22 @@
-CREATE TABLE IF NOT EXISTS CourseTeachers (
-    CourseID   INT NOT NULL,
-    TeacherID  INT NOT NULL,
-    PRIMARY KEY (CourseID, TeacherID),
-    FOREIGN KEY (CourseID)  REFERENCES Courses(CourseID)  ON DELETE CASCADE,
-    FOREIGN KEY (TeacherID) REFERENCES Teachers(TeacherID) ON DELETE CASCADE
-);
+
+-- PostgreSQL
+BEGIN;
+SET TRANSACTION ISOLATION LEVEL REPEATABLE READ;
+SELECT * FROM customers WHERE region = 'east';
+-- Perform updates or checks
+COMMIT;
+
+-- MariaDB / MySQL
+START TRANSACTION;
+SET TRANSACTION ISOLATION LEVEL REPEATABLE READ;
+SELECT * FROM customers WHERE region = 'east';
+-- Perform updates or checks
+COMMIT;
+
+-- SQLite3
+-- No configurable isolation level
+-- Begins transaction with snapshot isolation
+BEGIN TRANSACTION;
+SELECT * FROM customers WHERE region = 'east';
+-- Perform updates or checks
+COMMIT;

@@ -63,48 +63,66 @@
 /* indirection single depth */
 #define nx_Dm_ptr_PM(D1, D2) \
 	typedef const D1 *nx_d_P##D2##T; \
+	typedef static const D1 *nx_sd_P##D2##T; \
 	typedef D1 *const nx_D_p##D2##T; \
-	typedef const D1 *const nx_D_P##D2##T;
-
+	typedef static D1 *const nx_sD_p##D2##T; \
+	typedef const D1 *const nx_D_P##D2##T; \
+	typedef static const D1 *const nx_sD_P##D2##T;
 #define nx_dm_ptr_pM(D1, D2) \
-	typedef D1 *nx_d_p##D2##T;
+	typedef D1 *nx_d_p##D2##T; \
+	typedef static D1 *nx_sd_p##D2##T;
 
 /* indirection double depth */
 #define nx_Dm_ptr_PPM(D1, D2) \
 	typedef const D1 **nx_d_Pp##D2##T; \
+	typedef static const D1 **nx_sd_Pp##D2##T; \
 	typedef D1 *const *nx_d_pP##D2##T; \
+	typedef static D1 *const *nx_sd_pP##D2##T; \
 	typedef D1 **const nx_D_pp##D2##T; \
+	typedef static D1 **const nx_D_pp##D2##T; \
 	typedef const D1 *const *nx_d_PP##D2##T; \
+	typedef static const D1 *const *nx_sd_PP##D2##T; \
 	typedef const D1 **const nx_D_Pp##D2##T; \
-	typedef const D1 *const *const nx_D_PP##D2##T;
-
+	typedef static const D1 **const nx_sD_Pp##D2##T; \
+	typedef const D1 *const *const nx_D_PP##D2##T; \
+	typedef static const D1 *const *const nx_D_PP##D2##T;
 #define nx_dm_ptr_ppM(D1, D2) \
-	typedef D1 **nx_d_pp##D2##T;
+	typedef D1 **nx_d_pp##D2##T; \
+	typedef static D1 **nx_sd_pp##D2##T;
 
 /* indirection triple depth */
 #define nx_Dm_ptr_PPPM(D1, D2) \
-    typedef D1 ***nx_d_ppp##D2##T; \
     typedef const D1 ***nx_d_Ppp##D2##T; \
+    typedef static const D1 ***nx_sd_Ppp##D2##T; \
     typedef D1 *const **nx_d_pPp##D2##T; \
+    typedef static D1 *const **nx_sd_pPp##D2##T; \
     typedef D1 **const *nx_d_ppP##D2##T; \
+    typedef static D1 **const *nx_sd_ppP##D2##T; \
     typedef D1 ***const nx_D_ppp##D2##T; \
+    typedef static D1 ***const nx_sD_ppp##D2##T; \
     typedef const D1 *const **nx_d_PPp##D2##T; \
+    typedef static const D1 *const **nx_sd_PPp##D2##T; \
     typedef const D1 **const *nx_d_PpP##D2##T; \
+    typedef static const D1 **const *nx_sd_PpP##D2##T; \
     typedef const D1 ***const nx_D_Ppp##D2##T; \
+    typedef static const D1 ***const nx_sD_Ppp##D2##T; \
     typedef D1 **const **nx_D_pPp##D2##T; \
+    typedef static D1 **const **nx_sD_pPp##D2##T; \
     typedef D1 *const *const *nx_D_pPP##D2##T; \
+    typedef static D1 *const *const *nx_sD_pPP##D2##T; \
     typedef D1 **const *const nx_D_ppP##D2##T; \
-    typedef const D1 *const *const *nx_D_PPP##D2##T;
-
+    typedef static D1 **const *const nx_sD_ppP##D2##T; \
+    typedef const D1 *const *const *nx_D_PPP##D2##T; \
+    typedef static const D1 *const *const *nx_sD_PPP##D2##T;
 #define nx_dm_ptr_pppM(D1, D2) \
-	typedef D1 ***nx_d_ppp##D2##T;
+	typedef D1 ***nx_d_ppp##D2##T; \
+	typedef static D1 ***nx_sd_ppp##D2##T;
 
 /* indirections */
 #define nx_DM_ptr_M(D1, D2) \
 	nx_Dm_ptr_PM(D1, D2) \
 	nx_Dm_ptr_PPM(D1, D2) \
 	nx_Dm_ptr_PPPM(D1, D2)
-
 #define nx_dM_ptr_M(D1, D2) \
 	nx_dm_ptr_pM(D1, D2) \
 	nx_dm_ptr_ppM(D1, D2) \
@@ -113,12 +131,12 @@
 /* signage */
 #define nx_dm_signage_M(D1, D2) \
 	typedef D1 nx_d_##D2##T; \
+	typedef static D1 nx_sd_##D2##T; \
 	nx_dM_ptr_M(D1, D2)
-
 #define nx_Dm_signage_M(D1, D2) \
 	typedef const D1 nx_D_##D2##T; \
+	typedef static const D1 nx_sD_##D2##T; \
 	nx_DM_ptr_M(D1, D2)
-
 #define nx_DM_signage_M(D1, D2) \
 	nx_Dm_signage_M(D1, D2) \
 	nx_dm_signage_M(D1, D2)
@@ -127,11 +145,9 @@
 #define nx_dm_sign_M(D1, D2) \
 	nx_dm_signage_M(signed D1, D2##s) \
 	nx_dm_signage_M(unsigned D1, D2##u)
-
 #define nx_Dm_sign_M(D1, D2) \
 	nx_Dm_signage_M(signed D1, D2##s) \
 	nx_Dm_signage_M(unsigned D1, D2##u)
-
 #define nx_DM_sign_M(D1, D2) \
 	nx_Dm_sign_M(D1, D2) \
 	nx_dm_sign_M(D1, D2)
@@ -140,15 +156,14 @@
 #define nx_dm_autosign_M(D1, D2) \
 	nx_dm_signage_M(D1, D2) \
 	nx_dm_sign_M(D1, D2)
-
 #define nx_Dm_autosign_M(D1, D2) \
 	nx_Dm_signage_M(D1, D2) \
 	nx_Dm_sign_M(D1, D2)
-
 #define nx_DM_autosign_M(D1, D2) \
 	nx_DM_signage_M(D1, D2) \
 	nx_DM_sign_M(D1, D2)
 
+/*
 #define Nx2_dm_param_M(D1, D2) (D1 D2)
 #define Nx4_dm_param_M(D1, D2, D3, D4) ((D1 D3), (D2 D4))
 #define Nx6_dm_param_M(D1, D2, D3, D4, D5, D6) ((D1 D4), (D2 D5), (D3 D6))
@@ -171,7 +186,6 @@
 		D2 \
 	} nx_##D1##_S;
 
-/*
 #define nx_dm_width_M(D1, D2, D3, D4, D5) \
 	typedef union { \
 		D2 \
@@ -189,6 +203,7 @@
 */
 
 nx_dm_signage_M(void, /**/)
+nx_dm_signage_M(t_pid, m)
 nx_DM_autosign_M(char, c)
 nx_DM_sign_M(short, s)
 nx_DM_sign_M(int, i)
@@ -197,3 +212,4 @@ nx_DM_sign_M(long , l)
 nx_DM_signage_M(double, d)
 
 #endif
+

@@ -33,6 +33,7 @@ define nx_fib(x) {
 }
 ##################################################################
 define nx_de_ln(x) {
+	auto n
 	if (x <= 0) {
 		print "[IMPURITY]: ln(x) domain breach — x ≤ 0"
 		return -1
@@ -50,6 +51,14 @@ define nx_de_ln(x) {
 	}
 	# Apply Doerfler’s approximation
 	return (6 * (x - 1) / (x + 1 + 4 * nx_nr_sqrt(x))) + n * c_log2
+}
+
+define nx_de_log2(x) {
+	if (x <= 0) {
+		print "[IMPURITY]: log2(x) domain breach — x ≤ 0\n"
+		return -1
+	}
+	return nx_de_ln(x) / c_log2
 }
 
 ##################################################################

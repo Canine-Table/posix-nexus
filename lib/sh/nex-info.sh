@@ -12,7 +12,7 @@ nx_info_path()
 	tmpb="$(nx_info_canonize "${1:-"$0"}")"
 	tmpc="$(basename "$tmpb")"
 	tmpd="$(cd -P "$(dirname "$tmpb")" && pwd)"
-	mkdir -p "$tmpd"
+	test ! -e "$tmpd" -a -n "$tmpd" && mkdir -p "$tmpd" 2>/dev/null
 	test -e "${tmpd}/${tmpc}" || return 1
 	while test -L "${tmpd}/${tmpc}"; do
 		tmpb="$tmpd/$(nx_str_sfld -n 10 -c "ls -lnA '${tmpd}/${tmpc}'")"

@@ -373,7 +373,7 @@
 		numberblanklines,%
 		rulecolor=\color{nex.dark.frame},%
 		framesep=3mm,%
-		style=solarized-dark,
+		style=nord,%
 		encoding=UTF-8,%
 		tabsize=4,%
 		fontsize=\footnotesize,%
@@ -386,24 +386,24 @@
 		breaksymbolindentright=0pt,%
 		escapeinside=@@%
 	},%
+	nxCol=dark,%
 	IfBlankF={#2}{#2}%
 }
 
 \newtcbox{\nxLnBox}[1][]{nxLn, #1}
-\newtcbox{\nxLnArcBox}[1][]{nxLn, nxLnArc, #1}
-\long\def\nxArcBox[#1]#2{%
+\long\def\nxLnArcBox[#1]#2{%
 	\tcbox[%
-		leftright skip=1cm,%
+		nxLn,
+		nxLnArc,
 		boxrule=0.5pt,%
 		enhanced,%
 		breakable,%
 		halign=center,%
-		valign=center,%
-		IFBlankF{#1}{#1}%
+		valign=center#1%
 	]{\pbox[c]{\textwidth}{#2}}%
 }
 
-\def\nxList#1{%
+\def\nxBox#1{%
 	\edef\nx@tmpa{Nx\nxTitle{#1}{ }{ }List}
 	\newenvironment{\nx@tmpa}{\begin{itemize}}{\end{itemize}}
 	\tcolorboxenvironment{\nx@tmpa}{%
@@ -415,7 +415,7 @@
 	}
 }
 
-\nxThemed{nxList}
+\nxThemed{nxBox}
 
 \def\nx@Item#1#2{\item[\textcolor{nex.#1.frame}{#2}] }
 
@@ -487,6 +487,7 @@
 \nxThemedItems{UserSecret}{\faUserSecret}
 \nxThemedItems{VirusSlash}{\faVirusSlash}
 \nxThemedItems{Wifi}{\faWifi}
+\nxThemedItems{DB}{\faDatabase}
 
 \def\nxIconList[#1]{%
 	\pgfkeys{/nx/list box, #1}

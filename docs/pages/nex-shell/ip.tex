@@ -1,0 +1,618 @@
+\nxSections{IP Module}{1}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\nxSections{Interface Classifier — The Net Glyph}{2}
+
+\begin{NxCodeBox}{sh}{title={nx\_ip\_net() — Classify Physical and Virtual Interfaces}}
+nx_ip_net()
+{
+    ls --color=never -l '/sys/class/net/' | ${AWK:-$(nx_cmd_awk)} -v ex="$1" -F '/' '
+        BEGIN {
+            if (ex == "-e")
+                ex = "export "
+            else
+                ex = ""
+            virt = ""
+            phy = ""
+        }
+        /devices\/pci/{
+            phy = phy " " $NF
+        }
+        /devices\/virtual/{
+            virt = virt " " $NF
+        }
+        END {
+            printf("%sG_NEX_NET_VIRT\x22=%s\x22\n%sG_NEX_NET_PHY=\x22%s\x22\n", ex, substr(virt, 2), ex, substr(phy, 2));
+        }
+    '
+}
+\end{NxCodeBox}
+
+\begin{NxLightListBox}[title={Interface Classifier — The Net Glyph}]
+    \nxEachLabel{ArrowDark}{Secondary}{{1}{43}}{%
+        {Purpose}/{Classifies network interfaces into virtual and physical sets using symlink lineage from \texttt{/sys/class/net}},%
+        {Input}/{Optional flag \texttt{-e} to prefix output with \texttt{export}},%
+        {Mechanism}/{AWK parses symlink targets for \texttt{/devices/pci} (physical) and \texttt{/devices/virtual} (virtual)},%
+        {Output}/{Defines \texttt{G\_NEX\_NET\_VIRT} and \texttt{G\_NEX\_NET\_PHY} with space-separated interface names},%
+        {Use Case}/{Used in overlay scripts, interface audits, routing logic, or symbolic network containment}
+    }
+\end{NxLightListBox}
+
+\begin{NxCodeBox}{sh}{title={\textbf{Classify interfaces and export results}
+        \begin{NxDarkList}
+            \nxEachLabel{CodePrimary}{Tertiary}{{1}{43}}{%
+                {Initial State}/{System has \texttt{lo}, \texttt{eth0}, and \texttt{virbr0}},%
+                {Operation}/{Run \texttt{nx\_ip\_net -e} to classify and export},%
+                {Expected Result}/{Outputs \texttt{export G\_NEX\_NET\_VIRT="lo virbr0"} and \texttt{export G\_NEX\_NET\_PHY="eth0"}}
+            }
+        \end{NxDarkList}
+}}
+
+nx_ip_net -e
+\end{NxCodeBox}
+
+\begin{NxCodeBox}{sh}{title={\textbf{Classify interfaces without export prefix}
+        \begin{NxDarkList}
+            \nxEachLabel{CodePrimary}{Tertiary}{{1}{43}}{%
+                {Initial State}/{System has \texttt{wlan0} and \texttt{docker0}},%
+                {Operation}/{Run \texttt{nx\_ip\_net} without arguments},%
+                {Expected Result}/{Outputs \texttt{G\_NEX\_NET\_VIRT="docker0"} and \texttt{G\_NEX\_NET\_PHY="wlan0"}}
+            }
+        \end{NxDarkList}
+}}
+
+nx_ip_net
+\end{NxCodeBox}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\nxSections{Layer 2 Address Generator — The L2 Glyph}{2}
+
+\begin{NxCodeBox}{sh}{title={nx\_ip\_l2() — Generate Unique MAC-like Address}}
+nx_ip_l2()
+(
+    eval "$(nx_str_optarg ':n:' "$@")"
+    test -n "$n" && n="-n $n"
+    while :; do
+        tmpa="$(${AWK:-$(nx_cmd_awk)} -v addr="$(nx_str_rand 12 xdigit)" '
+            BEGIN {
+                l = split(tolower(addr), hex, "")
+                do {
+                    s = s ":" hex[l] hex[l-1]
+                } while ((l-=2) > 0)
+                delete hex
+                print substr(s, 2)
+            }
+        ')"
+        g_nx_ip_l2 $n -a | grep -q "$tmpa" || break
+    done
+    printf '%s\n' "$tmpa"
+)
+\end{NxCodeBox}
+
+\begin{NxLightListBox}[title={Layer 2 Address Generator — The L2 Glyph}]
+    \nxEachLabel{ArrowDark}{Secondary}{{1}{43}}{%
+        {Purpose}/{Generates a unique MAC-like address not currently in use},%
+        {Input}/{Optional flag \texttt{-n} to namespace the lookup via \texttt{g\_nx\_ip\_l2}},%
+        {Mechanism}/{Generates 12 random hex digits, formats into colon-separated MAC form, checks for collision},%
+        {Collision Check}/{Uses \texttt{g\_nx\_ip\_l2 -a} to verify uniqueness before emitting},%
+        {Use Case}/{Used in virtual interface creation, container overlays, or symbolic L2 address staging}
+    }
+\end{NxLightListBox}
+
+\begin{NxCodeBox}{sh}{title={\textbf{Generate a unique MAC-like address}
+        \begin{NxDarkList}
+            \nxEachLabel{CodePrimary}{Tertiary}{{1}{43}}{%
+                {Initial State}/{No arguments passed; default namespace lookup},%
+                {Operation}/{Generates and emits a unique address like \texttt{fa:3c:9e:12:ab:77}},%
+                {Expected Result}/{Returns a MAC-like string not found in \texttt{g\_nx\_ip\_l2 -a}}
+            }
+        \end{NxDarkList}
+}}
+
+nx_ip_l2
+\end{NxCodeBox}
+
+\begin{NxCodeBox}{sh}{title={\textbf{Generate address with namespace constraint}
+        \begin{NxDarkList}
+            \nxEachLabel{CodePrimary}{Tertiary}{{1}{43}}{%
+                {Initial State}/{Namespace \texttt{veth} passed via \texttt{-n veth}},%
+                {Operation}/{Ensures uniqueness within \texttt{g\_nx\_ip\_l2 -n veth -a}},%
+                {Expected Result}/{Returns a MAC-like string not found in the \texttt{veth} namespace}
+            }
+        \end{NxDarkList}
+}}
+
+nx_ip_l2 -n veth
+\end{NxCodeBox}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\nxSections{Layer 2 Address Inspector — The L2 Audit Glyph}{2}
+
+\begin{NxCodeBox}{sh}{title={g\_nx\_ip\_l2() — Inspect MAC Addresses Across Namespaces}}
+g_nx_ip_l2()
+(
+    eval "$(nx_str_optarg ':n:a' "$@")"
+    test -n "$n" && n="ip netns exec $n "
+    test -n "$a" && $n ip neighbor | ${AWK:-$(nx_cmd_awk)} '{ print $(NF - 1) }'
+    tmpa="$($n ip -json address show $NEX_OPT_RMDR 2> /dev/null)" && nx_data_jdump "$tmpa" | ${AWK:-$(nx_cmd_awk)} '/\.nx
+
+\[[0-9]+\]
+
+\.address =/{print $NF}'
+)
+\end{NxCodeBox}
+
+\begin{NxLightListBox}[title={Layer 2 Address Inspector — The L2 Audit Glyph}]
+    \nxEachLabel{ArrowDark}{Secondary}{{1}{43}}{%
+        {Purpose}/{Inspects and emits MAC-like addresses from interfaces and neighbors, optionally scoped to a namespace},%
+        {Input}/{\texttt{-n} for namespace; \texttt{-a} to emit neighbor MACs},%
+        {Mechanism}/{Uses \texttt{ip -json address show} and \texttt{ip neighbor} to extract Layer 2 addresses},%
+        {Output}/{Emits one MAC per line from either interface JSON or neighbor table},%
+        {Use Case}/{Used in collision checks, symbolic L2 audits, or overlay address validation}
+    }
+\end{NxLightListBox}
+
+\begin{NxCodeBox}{sh}{title={\textbf{Emit MAC addresses from current namespace}
+        \begin{NxDarkList}
+            \nxEachLabel{CodePrimary}{Tertiary}{{1}{43}}{%
+                {Initial State}/{System has interfaces with MACs like \texttt{fa:3c:9e:12:ab:77}},%
+                {Operation}/{Run \texttt{g\_nx\_ip\_l2} with no arguments},%
+                {Expected Result}/{Emits MAC-like addresses from \texttt{ip -json address show}}
+            }
+        \end{NxDarkList}
+}}
+
+g_nx_ip_l2
+\end{NxCodeBox}
+
+\begin{NxCodeBox}{sh}{title={\textbf{Emit neighbor MACs from namespace}
+        \begin{NxDarkList}
+            \nxEachLabel{CodePrimary}{Tertiary}{{1}{43}}{%
+                {Initial State}/{Namespace \texttt{veth} has active neighbors},%
+                {Operation}/{Run \texttt{g\_nx\_ip\_l2 -n veth -a}},%
+                {Expected Result}/{Emits MACs from \texttt{ip netns exec veth ip neighbor}}
+            }
+        \end{NxDarkList}
+}}
+
+g_nx_ip_l2 -n veth -a
+\end{NxCodeBox}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\nxSections{ARP Table Parser — The ARP Glyph}{2}
+
+\begin{NxCodeBox}{sh}{title={nx\_ip\_arp() — Parse and Emit ARP Table as JSON}}
+nx_ip_arp()
+{
+        ${AWK:-$(nx_cmd_awk)} '
+                {
+                        if (! header) {
+                                header = 1
+                                next
+                        }
+                        iface[$NF] = iface[$NF] "{\x22ip\x22:\x22" $1 "\x22,\x22type\x22:\x22" $2 "\x22,\x22flags\x22:\x22" $3 "\x22,\x22hw\x22:\x22" $4 "\x22,\x22mask\x22:\x22" $5 "\x22},"
+                } END {
+                        for (face in iface) {
+                                sub(/,$/,"]},", iface[face])
+                                s = s "{\x22" face "\x22:[" iface[face]
+                        }
+                        sub(/,$/, "]", s)
+                        print "[" s
+                        delete iface
+                }
+        ' $(
+                test -z "$1" && printf '%s' '/proc/self/net/arp' || {
+                        test -f "$1" && printf '%s' "/proc/$1/net/arp" || printf '%s' '/proc/net/arp'
+                }
+        )
+}
+\end{NxCodeBox}
+
+\begin{NxLightListBox}[title={ARP Table Parser — The ARP Glyph}]
+    \nxEachLabel{ArrowDark}{Secondary}{{1}{43}}{%
+        {Purpose}/{Parses the system ARP table and emits structured JSON grouped by interface},%
+        {Input}/{Optional PID or file path to target a specific ARP table},%
+        {Mechanism}/{AWK parses fields from \texttt{/proc/*/net/arp} and groups entries by interface},%
+        {Output}/{Emits a JSON array of interface-keyed ARP entries with fields: \texttt{ip}, \texttt{type}, \texttt{flags}, \texttt{hw}, \texttt{mask}},%
+        {Use Case}/{Used in symbolic network audits, container overlays, or L2/L3 mapping rituals}
+    }
+\end{NxLightListBox}
+
+\begin{NxCodeBox}{sh}{title={\textbf{Parse current process ARP table}
+        \begin{NxDarkList}
+            \nxEachLabel{CodePrimary}{Tertiary}{{1}{43}}{%
+                {Initial State}/{System has ARP entries for \texttt{eth0} and \texttt{docker0}},%
+                {Operation}/{Run \texttt{nx\_ip\_arp} with no arguments},%
+                {Expected Result}/{Emits JSON with keys \texttt{"eth0"} and \texttt{"docker0"} containing ARP entries}
+            }
+        \end{NxDarkList}
+}}
+
+nx_ip_arp
+\end{NxCodeBox}
+
+\begin{NxCodeBox}{sh}{title={\textbf{Parse ARP table for specific PID}
+        \begin{NxDarkList}
+            \nxEachLabel{CodePrimary}{Tertiary}{{1}{43}}{%
+                {Initial State}/{PID \texttt{1234} has a net namespace with ARP entries},%
+                {Operation}/{Run \texttt{nx\_ip\_arp 1234}},%
+                {Expected Result}/{Emits JSON from \texttt{/proc/1234/net/arp} grouped by interface}
+            }
+        \end{NxDarkList}
+}}
+
+nx_ip_arp 1234
+\end{NxCodeBox}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\nxSections{Interface Name Resolver — The Name Glyph}{2}
+
+\begin{NxCodeBox}{sh}{title={nx\_ip\_name() — Resolve Unique Interface Name}}
+nx_ip_name()
+{
+        tmpa="$(
+                eval "$(nx_str_optarg ':n:b:v' "$@")"
+                test -n "$NEX_OPT_RMDR" || exit
+                test -n "$n" && tmpd="ip netns exec $n " || tmpd=""
+                tmpa="$(${AWK:-$(nx_cmd_awk)} -v name="$NEX_OPTSTR_RMDR" -v base="$b" 'BEGIN {
+                        if (name !~ /^[0-9A-Za-z_-]{1,15}$/)
+                                exit 1
+                        if (match(name, /[0-9]+$/)) {
+                                if ((cur = substr(name, 1, RSTART - 1)) == base)
+                                        exit 3
+                                printf("tmpa=%s tmpb=\x22%s\x22", substr(name, RSTART), cur)
+                        } else {
+                                printf("tmpa=0 tmpb=\x22%s\x22", name)
+                        }
+                }')" || {
+                        test $? -eq 3 && exit 3
+                        nx_io_printf -E "$NEX_OPT_STR_RMDR is an invalid name, names must be 1 to 15 character of '0-9,a-z,A-Z,-._'" 1>&2
+                        unset tmpa
+                        exit 1
+                }
+                eval "$tmpa"
+                while $tmpd ip link show "$tmpb$tmpa" 2>/dev/null 1>&2 || test "$tmpb$tmpa" = "$b"; do
+                        tmpa=$((tmpa+1))
+                        test "$(nx_str_len "$tmpb$tmpa")" -le 15 || {
+                                nx_io_printf -E "interface name '$tmpb$tmpa' is to[o] long, the maximum length is 15." 1>&2
+                                exit 2
+                        }
+                done
+                printf 'tmpa=\x22%s\x22 tmpc=\x22%s\x22\n' "$tmpb$tmpa" "$v"
+        )" || return
+        eval "$tmpa"
+        test -n "$tmpc" && printf '%s\n' "$tmpa"
+        unset tmpc
+}
+\end{NxCodeBox}
+
+\begin{NxLightListBox}[title={Interface Name Resolver — The Name Glyph}]
+    \nxEachLabel{ArrowDark}{Secondary}{{1}{43}}{%
+        {Purpose}/{Resolves a unique interface name by incrementing suffixes and validating namespace collisions},%
+        {Input}/{\texttt{-n} for namespace, \texttt{-b} for base prefix, \texttt{-v} for optional tag},%
+        {Validation}/{Rejects names longer than 15 characters or invalid characters outside \texttt{[0-9A-Za-z\_-]}},%
+        {Mechanism}/{Splits numeric suffix, checks for collisions via \texttt{ip link show}, increments until unique},%
+        {Output}/{Emits \texttt{tmpa} as resolved name and \texttt{tmpc} as optional tag},%
+        {Use Case}/{Used in veth pair creation, container overlays, or symbolic interface staging}
+    }
+\end{NxLightListBox}
+
+\begin{NxCodeBox}{sh}{title={\textbf{Resolve unique name with base prefix}
+        \begin{NxDarkList}
+            \nxEachLabel{CodePrimary}{Tertiary}{{1}{43}}{%
+                {Initial State}/{Base prefix \texttt{veth} and desired name \texttt{veth0}},%
+                {Operation}/{Run \texttt{nx\_ip\_name -b veth veth0}},%
+                {Expected Result}/{Emits \texttt{tmpa="veth1"} if \texttt{veth0} exists}
+            }
+        \end{NxDarkList}
+}}
+
+nx_ip_name -b veth veth0
+\end{NxCodeBox}
+
+\begin{NxCodeBox}{sh}{title={\textbf{Resolve name within namespace}
+        \begin{NxDarkList}
+            \nxEachLabel{CodePrimary}{Tertiary}{{1}{43}}{%
+                {Initial State}/{Namespace \texttt{ns1} contains \texttt{eth0}},%
+                {Operation}/{Run \texttt{nx\_ip\_name -n ns1 eth0}},%
+                {Expected Result}/{Emits \texttt{tmpa="eth1"} if \texttt{eth0} exists in \texttt{ns1}}
+            }
+        \end{NxDarkList}
+}}
+
+nx_ip_name -n ns1 eth0
+\end{NxCodeBox}
+
+\begin{NxCodeBox}{sh}{title={\textbf{Resolve name with optional tag via \texttt{-v}}
+        \begin{NxDarkList}
+            \nxEachLabel{CodePrimary}{Tertiary}{{1}{43}}{%
+                {Initial State}/{Base prefix \texttt{veth}, desired name \texttt{veth0}, and tag \texttt{uplink}},%
+                {Operation}/{Run \texttt{nx\_ip\_name -b veth -v uplink veth0}},%
+                {Expected Result}/{Emits \texttt{tmpa="veth1"} and \texttt{tmpc="uplink"} if \texttt{veth0} exists}%
+            }
+        \end{NxDarkList}
+}}
+
+nx_ip_name -b veth -v uplink veth0
+\end{NxCodeBox}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\nxSections{Namespace Lifecycle Manager — The Netns Glyph}{2}
+
+\begin{NxCodeBox}{sh}{title={nx\_ip\_netns() — Create or Remove Network Namespace}}
+nx_ip_netns()
+(
+        eval "$(nx_str_optarg 'r' "$@")"
+        eval "$(
+                test -n "$r" && {
+                        nx_data_repeat '
+                                ip netns | grep -q "$NEX_ARG" && {
+                                        kill "$(cat /var/run/nex-$NEX_ARG.pid)" 2> /dev/null
+                                        ip netns delete "$NEX_ARG"
+                                        rm -f "/var/run/netns/nex-$NEX_ARG.pid"
+                                }
+                        ' "$NEX_OPT_RMDR"
+                } || {
+                        nx_data_repeat '
+                                ip netns | grep -q "$NEX_ARG" || {
+                                        ip netns add "$NEX_ARG" && {
+                                                ip netns exec "$NEX_ARG" sysctl --system 1> /dev/null 2>&1 
+                                                ip netns exec "$NEX_ARG" ip link set lo up
+                                                nohup setsid nsenter --net="/var/run/netns/$NEX_ARG" sleep infinity 1> /dev/null 2>&1 &
+                                                printf $! > "/var/run/nex-$NEX_ARG.pid"
+                                        }
+                                }
+                        ' "$NEX_OPT_RMDR"
+                }
+        )"
+)
+\end{NxCodeBox}
+
+\begin{NxLightListBox}[title={Namespace Lifecycle Manager — The Netns Glyph}]
+    \nxEachLabel{ArrowDark}{Secondary}{{1}{43}}{%
+        {Purpose}/{Creates or removes a Linux network namespace with optional persistent process},%
+        {Input}/{Namespace name via trailing argument; \texttt{-r} flag triggers removal},%
+        {Mechanism}/{Uses \texttt{ip netns} to create/delete; spawns persistent \texttt{sleep} via \texttt{nsenter} and stores PID},%
+        {Output}/{Creates or removes \texttt{/var/run/nex-\$name.pid} and namespace entry in \texttt{/var/run/netns}},%
+        {Use Case}/{Used in container overlays, symbolic network isolation, or namespace lifecycle rituals}
+    }
+\end{NxLightListBox}
+
+\begin{NxCodeBox}{sh}{title={\textbf{Create a new network namespace}
+        \begin{NxDarkList}
+            \nxEachLabel{CodePrimary}{Tertiary}{{1}{43}}{%
+                {Initial State}/{No namespace named \texttt{ns1} exists},%
+                {Operation}/{Run \texttt{nx\_ip\_netns ns1}},%
+                {Expected Result}/{Creates \texttt{ns1}, brings up \texttt{lo}, spawns persistent \texttt{sleep}, stores PID}
+            }
+        \end{NxDarkList}
+}}
+
+nx_ip_netns ns1
+\end{NxCodeBox}
+
+\begin{NxCodeBox}{sh}{title={\textbf{Remove an existing network namespace}
+        \begin{NxDarkList}
+            \nxEachLabel{CodePrimary}{Tertiary}{{1}{43}}{%
+                {Initial State}/{Namespace \texttt{ns1} exists with PID file},%
+                {Operation}/{Run \texttt{nx\_ip\_netns -r ns1}},%
+                {Expected Result}/{Kills persistent process, deletes namespace, removes PID file}
+            }
+        \end{NxDarkList}
+}}
+
+nx_ip_netns -r ns1
+\end{NxCodeBox}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\nxSections{Namespace Executor — The Exec Glyph}{2}
+
+\begin{NxCodeBox}{sh}{title={\_\_nx\_ip\_exec() — Emit Namespace Execution Prefix}}
+__nx_ip_exec()
+{
+        test -n "$1" && {
+                nx_ip_netns "$1"
+                printf '%s ' "${1:+ip netns exec $1}"
+        }
+}
+\end{NxCodeBox}
+
+\begin{NxLightListBox}[title={Namespace Executor — The Exec Glyph}]
+    \nxEachLabel{ArrowDark}{Secondary}{{1}{43}}{%
+        {Purpose}/{Emits a namespace-prefixed command string for use in subshells or command substitution},%
+        {Input}/{Namespace name as first argument},%
+        {Mechanism}/{Ensures namespace exists via \texttt{nx\_ip\_netns}, then emits \texttt{ip netns exec \$name}},%
+        {Output}/{Prints \texttt{ip netns exec \$name} if namespace is provided; empty string otherwise},%
+        {Use Case}/{Used to prefix commands with namespace context in symbolic overlays or interface rituals}
+    }
+\end{NxLightListBox}
+
+\begin{NxCodeBox}{sh}{title={\textbf{Emit namespace exec prefix for a given namespace}
+        \begin{NxDarkList}
+            \nxEachLabel{CodePrimary}{Tertiary}{{1}{43}}{%
+                {Initial State}/{Namespace \texttt{ns1} may or may not exist},%
+                {Operation}/{Run \texttt{\_\_nx\_ip\_exec ns1}},%
+                {Expected Result}/{Ensures \texttt{ns1} exists, emits \texttt{ip netns exec ns1}}
+            }
+        \end{NxDarkList}
+}}
+
+__nx_ip_exec ns1
+\end{NxCodeBox}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\nxSections{Altname Remover — The Alt Glyph}{2}
+
+\begin{NxCodeBox}{sh}{title={d\_nx\_ip\_alt() — Remove Alternate Interface Name}}
+d_nx_ip_alt()
+{
+        g_nx_ip_alt $2 | grep -q '^'"$1"'$' || return 1
+        $(__nx_ip_exec "$2") ip link property del dev $(g_nx_ip_ifname "$1" "$2") altname "$1"
+}
+\end{NxCodeBox}
+
+\begin{NxLightListBox}[title={Altname Remover — The Alt Glyph}]
+    \nxEachLabel{ArrowDark}{Secondary}{{1}{43}}{%
+        {Purpose}/{Removes an alternate name from a network interface, scoped optionally to a namespace},%
+        {Input}/{\texttt{\$1}: altname to remove; \texttt{\$2}: optional namespace},%
+        {Validation}/{Checks if altname exists via \texttt{g\_nx\_ip\_alt}; aborts if not present},%
+        {Mechanism}/{Uses \texttt{ip link property del} to remove altname from resolved interface name},%
+        {Use Case}/{Used in symbolic interface cleanup, altname mutation, or namespace-scoped interface audits}
+    }
+\end{NxLightListBox}
+
+\begin{NxCodeBox}{sh}{title={\textbf{Remove altname from interface in namespace}
+        \begin{NxDarkList}
+            \nxEachLabel{CodePrimary}{Tertiary}{{1}{43}}{%
+                {Initial State}/{Interface \texttt{eth0} in namespace \texttt{ns1} has altname \texttt{uplink}},%
+                {Operation}/{Run \texttt{d\_nx\_ip\_alt uplink ns1}},%
+                {Expected Result}/{Removes altname \texttt{uplink} from \texttt{eth0} in \texttt{ns1}}
+            }
+        \end{NxDarkList}
+}}
+
+d_nx_ip_alt uplink ns1
+\end{NxCodeBox}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\nxSections{Layer 2 Address Inspector — The L2 Glyph}{2}
+
+\begin{NxCodeBox}{sh}{title={g\_nx\_ip\_l2() — Emit MAC-like Addresses from Namespace}}
+g_nx_ip_l2()
+(
+        eval "$(nx_str_optarg ':n:a' "$@")"
+        test -n "$n" && n="ip netns exec $n "
+        test -n "$a" && $n ip neighbor | ${AWK:-$(nx_cmd_awk)} '{ print $(NF - 1) }'
+        tmpa="$($n ip -json address show $NEX_OPT_RMDR 2> /dev/null)" && nx_data_jdump "$tmpa" | ${AWK:-$(nx_cmd_awk)} '/\.nx
+
+\[[0-9]+\]
+
+\.address =/{print $NF}'
+)
+\end{NxCodeBox}
+
+\begin{NxLightListBox}[title={Layer 2 Address Inspector — The L2 Glyph}]
+    \nxEachLabel{ArrowDark}{Secondary}{{1}{43}}{%
+        {Purpose}/{Emits MAC-like addresses from interfaces and neighbors, optionally scoped to a namespace},%
+        {Input}/{\texttt{-n} for namespace; \texttt{-a} to emit neighbor MACs},%
+        {Mechanism}/{Uses \texttt{ip -json address show} and \texttt{ip neighbor} to extract Layer 2 addresses},%
+        {Output}/{Emits one MAC per line from either interface JSON or neighbor table},%
+        {Use Case}/{Used in collision checks, symbolic L2 audits, or overlay address validation}
+    }
+\end{NxLightListBox}
+
+\begin{NxCodeBox}{sh}{title={\textbf{Emit MAC addresses from current namespace}
+        \begin{NxDarkList}
+            \nxEachLabel{CodePrimary}{Tertiary}{{1}{43}}{%
+                {Initial State}/{System has interfaces with MACs like \texttt{fa:3c:9e:12:ab:77}},%
+                {Operation}/{Run \texttt{g\_nx\_ip\_l2} with no arguments},%
+                {Expected Result}/{Emits MAC-like addresses from \texttt{ip -json address show}}
+            }
+        \end{NxDarkList}
+}}
+
+g_nx_ip_l2
+\end{NxCodeBox}
+
+\begin{NxCodeBox}{sh}{title={\textbf{Emit neighbor MACs from namespace}
+        \begin{NxDarkList}
+            \nxEachLabel{CodePrimary}{Tertiary}{{1}{43}}{%
+                {Initial State}/{Namespace \texttt{ns1} has active neighbors},%
+                {Operation}/{Run \texttt{g\_nx\_ip\_l2 -n ns1 -a}},%
+                {Expected Result}/{Emits MACs from \texttt{ip netns exec ns1 ip neighbor}}
+            }
+        \end{NxDarkList}
+}}
+
+g_nx_ip_l2 -n ns1 -a
+\end{NxCodeBox}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\nxSections{Interface Name Resolver — The Ifname Glyph}{2}
+
+\begin{NxCodeBox}{sh}{title={g\_nx\_ip\_ifname() — Resolve Kernel Interface Name}}
+g_nx_ip_ifname()
+(
+        tmpa="$($(__nx_ip_exec "$2") ip -json link show $1 2> /dev/null)" && nx_data_jdump "$tmpa" | ${AWK:-$(nx_cmd_awk)} '/.nx
+
+\[[0-9]+\]
+
+\.ifname/{print $NF}
+'
+)
+\end{NxCodeBox}
+
+\begin{NxLightListBox}[title={Interface Name Resolver — The Ifname Glyph}]
+    \nxEachLabel{ArrowDark}{Secondary}{{1}{43}}{%
+        {Purpose}/{Resolves the kernel-assigned interface name for a given link index or identifier},%
+        {Input}/{\texttt{\$1}: link index or name; \texttt{\$2}: optional namespace},%
+        {Mechanism}/{Uses \texttt{ip -json link show} and parses \texttt{ifname} field via \texttt{nx\_data\_jdump}},%
+        {Output}/{Emits the resolved interface name as seen by the kernel},%
+        {Use Case}/{Used in altname mutation, symbolic interface mapping, or namespace-scoped link audits}
+    }
+\end{NxLightListBox}
+
+\begin{NxCodeBox}{sh}{title={\textbf{Resolve interface name from link index in namespace}
+        \begin{NxDarkList}
+            \nxEachLabel{CodePrimary}{Tertiary}{{1}{43}}{%
+                {Initial State}/{Link index \texttt{3} exists in namespace \texttt{ns1}},%
+                {Operation}/{Run \texttt{g\_nx\_ip\_ifname 3 ns1}},%
+                {Expected Result}/{Emits interface name like \texttt{eth0} or \texttt{veth3}}
+            }
+        \end{NxDarkList}
+}}
+
+g_nx_ip_ifname 3 ns1
+\end{NxCodeBox}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\nxSections{Altname Auditor — The Alt Audit Glyph}{2}
+
+\begin{NxCodeBox}{sh}{title={g\_nx\_ip\_alt() — Emit Alternate Interface Names}}
+g_nx_ip_alt()
+(
+        eval "$(nx_str_optarg ':n:' "$@")"
+        test -n "$n" && n="ip netns exec $n "
+        $n ip -json link show $NEX_OPT_RMDR 2> /dev/null | nx_data_jdump | ${AWK:-$(nx_cmd_awk)} '/\.altname/{print $NF}'
+)
+\end{NxCodeBox}
+
+\begin{NxLightListBox}[title={Altname Auditor — The Alt Audit Glyph}]
+    \nxEachLabel{ArrowDark}{Secondary}{{1}{43}}{%
+        {Purpose}/{Emits alternate names assigned to a given interface, optionally scoped to a namespace},%
+        {Input}/{\texttt{-n} for namespace; trailing argument is interface name or index},%
+        {Mechanism}/{Uses \texttt{ip -json link show} and parses \texttt{altname} fields via \texttt{nx\_data\_jdump}},%
+        {Output}/{Emits one altname per line},%
+        {Use Case}/{Used in symbolic interface audits, altname mutation, or namespace-scoped link overlays}
+    }
+\end{NxLightListBox}
+
+\begin{NxCodeBox}{sh}{title={\textbf{Emit altnames from interface in current namespace}
+        \begin{NxDarkList}
+            \nxEachLabel{CodePrimary}{Tertiary}{{1}{43}}{%
+                {Initial State}/{Interface \texttt{eth0} has altnames \texttt{uplink} and \texttt{primary}},%
+                {Operation}/{Run \texttt{g\_nx\_ip\_alt eth0}},%
+                {Expected Result}/{Emits \texttt{uplink} and \texttt{primary} on separate lines}
+            }
+        \end{NxDarkList}
+}}
+
+g_nx_ip_alt eth0
+\end{NxCodeBox}
+
+\begin{NxCodeBox}{sh}{title={\textbf{Emit altnames from interface in namespace}
+        \begin{NxDarkList}
+            \nxEachLabel{CodePrimary}{Tertiary}{{1}{43}}{%
+                {Initial State}/{Interface \texttt{veth0} in namespace \texttt{ns1} has altname \texttt{peer}},%
+                {Operation}/{Run \texttt{g\_nx\_ip\_alt -n ns1 veth0}},%
+                {Expected Result}/{Emits \texttt{peer}}
+            }
+        \end{NxDarkList}
+}}
+
+g_nx_ip_alt -n ns1 veth0
+\end{NxCodeBox}
+

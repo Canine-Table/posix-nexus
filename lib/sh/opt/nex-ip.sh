@@ -21,6 +21,70 @@ nx_ip_net()
 	'
 }
 
+nx_ip_netnsid()
+{
+	(
+		for i in /proc/*/ns/net; do
+			ls --color=never -l $i 2>/dev/null
+		done
+	) | ${AWK:-$(nx_cmd_awk)} -v cnt="$1" -F "net:\\\[" '
+		{
+			#sub(/.?$/, "", $2);
+			split($1, path, "/")
+			#print path[3]
+			ids["net:[" $2]++;
+			procs[$2 "." ids[$2]++] = path[3];
+		} END {
+			delete path
+			if (cnt) {
+				for (i in ids) {
+					printf("%s=%s ", i, ids[i])
+				}
+			} else {
+				for (i in ids) {
+					for (j = 1; j <= procs[i ids[i]]; ++j) {
+						printf("%s=%s ", i)
+					}
+				}
+			}
+			delete ids
+			delete path[2]
+		}
+	'
+}
+
+nx_ip_arp()
+{
+	${AWK:-$(nx_cmd_awk)} '
+		{
+			if (! header) {
+				header = 1
+				next
+			}
+			iface[$NF] = iface[$NF] "{\x22ip\x22:\x22" $1 "\x22,\x22type\x22:\x22" $2 "\x22,\x22flags\x22:\x22" $3 "\x22,\x22hw\x22:\x22" $4 "\x22,\x22mask\x22:\x22" $5 "\x22},"
+		} END {
+			for (face in iface) {
+				sub(/,$/,"]},", iface[face])
+				s = s "{\x22" face "\x22:[" iface[face]
+			}
+			sub(/,$/, "]", s)
+			print "[" s
+			delete iface
+		}
+	' $(
+		test -z "$1" && printf '%s' '/proc/self/net/arp' || {
+			test -f "$1" && printf '%s' "/proc/$1/net/arp" || printf '%s' '/proc/net/arp'
+		}
+	)
+}
+
+nx_ip_lsns() {
+
+	for i in $(nx_ip_netnsid); do
+		ip netns exec "$i" -- ip -d a
+	done
+}
+
 nx_ip_l2()
 (
 	eval "$(nx_str_optarg ':n:' "$@")"
@@ -243,6 +307,17 @@ s_nx_ip_veth()
 	s_nx_ip_state "$Pnm" 'up' "$N"
 	s_nx_ip_state "$pnm" 'up' "$n"
 )
+
+nx_ip_vlan() {
+	ip link add link tap0 name tap0.10 type vlan id 10
+	eval "$(nx_str_optarg ':u:n:v:t:' "$@")"
+	b="${b:-bridge}"
+	u="${u:-${USER:-$LOGNAME}}"
+	t="tap-${t:+$t-}"
+	tmpa="$(__nx_ip_exec "$n")"
+
+	b="${b:-b}"
+}
 
 s_nx_ip_brtun()
 (
