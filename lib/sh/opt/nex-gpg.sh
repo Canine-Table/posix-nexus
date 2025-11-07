@@ -48,7 +48,7 @@ nx_gpg_armor_export()
 	tmpa="$(nx_gpg_id "$(nx_gpg_fetch "$u" "$h")")" && {
 		if test "$a" = '<nx:true/>'; then
 			nx_io_printf -I 'ssh mode active' 1>&2
-			gpg --armor --export "$tmpa"
+			gpg --armor --export-ssh-secret-key "$tmpa"
 		else
 			gpg --armor --export${s:+-secret-keys} "$tmpa" | (test -n "$d" && gpg --dearmor || tee)
 		fi
@@ -93,9 +93,9 @@ nx_gpg_ssh_agent()
 	} && {
 		gpg-connect-agent 'keyinfo --list' /bye | grep -q "$tmpa" || {
 			nx_io_printf -W "Keygrip '$tmpa' not bound to ssh-agent. The daemon awaits your offering—bind or be forgotten." 1>&2
-			grep -q "$tmpa" "$HOME/.gnupg/sshcontrol" || {
-				printf '\n%s\n' "$tmpa" >> "$HOME/.gnupg/.sshcontrol"
-			}
+		}
+		grep -q "$tmpa" "$HOME/.gnupg/sshcontrol" || {
+			printf '\n%s\n' "$tmpa" >> "$HOME/.gnupg/sshcontrol"
 		}
 		gpg --export-ssh-key $(nx_str_look \
 			-c 'gpg --list-secret-keys' \
@@ -104,6 +104,7 @@ nx_gpg_ssh_agent()
 			nx_io_printf -E "Failed to export SSH key! The scroll remains sealed—no public glyph, no transmission." 1>&2
 			return 3
 		}
+		gpg-connect-agent reloadagent /bye
 	}
 }
 
