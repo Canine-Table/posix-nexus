@@ -24,6 +24,14 @@ nx_gpg_keygrip()
 		-u -s 1 -b 1 -e 1 | ${AWK:-$(nx_cmd_awk)} '/Keygrip[ \t+]=[ \t]+/{print $NF}'
 }
 
+nx_gpg_id()
+{
+	nx_str_look \
+		-c 'gpg --list-keys' \
+		-r "$1" \
+		-u -s 1 -b 1 -e 1 | ${AWK:-$(nx_cmd_awk)} '{print $NF}'
+}
+
 nx_gpg_del()
 {
 	tmpc="$(nx_gpg_fetch "$1" "$2")"
@@ -34,38 +42,26 @@ nx_gpg_del()
 	}
 }
 
-nx_gpg_agent_list()
-{
+nx_gpg_armor_export()
+(
+	eval "$(nx_str_optarg ':u:h:sad' "$@")"
+	tmpa="$(nx_gpg_id "$(nx_gpg_fetch "$u" "$h")")" && {
+		if test "$a" = '<nx:true/>'; then
+			nx_io_printf -I 'ssh mode active' 1>&2
+			gpg --armor --export "$tmpa"
+		else
+			gpg --armor --export${s:+-secret-keys} "$tmpa" | (test -n "$d" && gpg --dearmor || tee)
+		fi
+	}
+)
 
-	h_nx_cmd gpg-connect-agent gpg || {
-		nx_io_printf -E "lol" 1>&2
+nx_gpg_list_keys()
+{
+	h_nx_cmd gpg tty || {
+		nx_io_printf -E "gpg not found! The cryptographic forge is sealed—no keys shall be conjured, no secrets bound." 1>&2
 		return 192
 	}
-	nx_tty_div -d
-	nx_io_printf -I 'connected agent keys'
-	nx_tty_div -l
-	gpg-connect-agent 'keyinfo --list' /bye
-	nx_tty_div -s
-	nx_io_printf -I 'list keys'
-	nx_tty_div -l
-	gpg \
-		--list-keys
-	nx_tty_div -s
-	nx_io_printf -I 'list secret keys'
-	nx_tty_div -l
-	gpg \
-		--list-secret-keys
-	nx_tty_div -s
-	nx_io_printf -I 'list signatures'
-	nx_tty_div -l
-	gpg \
-		--list-signatures
-	nx_tty_div -s
-	nx_io_printf -I 'check signatures'
-	nx_tty_div -l
-	gpg \
-		--check-signatures
-	nx_tty_div -d
+	gpg --list-${1:+secret-}keys --keyid-format LONG
 }
 
 nx_gpg_ssh_agent()
@@ -83,9 +79,8 @@ nx_gpg_ssh_agent()
 	grep -q 'enable-ssh-support' "$HOME/.gnupg/gpg-agent.conf" || {
 		printf '\n%s\n' 'enable-ssh-support' >> "$HOME/.gnupg/gpg-agent.conf"
 	}
-	test "${gnupg_SSH_AUTH_SOCK_by:-0}" = "$$" || {
-		export SSH_AUTH_SOCK="$(gpgconf --list-dirs agent-ssh-socket)"
-	}
+	export SSH_AUTH_SOCK="$(gpgconf --list-dirs agent-ssh-socket)"
+	export GPG_AGENT_SOCK="$(gpgconf --list-dirs agent-socket)"
 	export GPG_TTY="$(tty)"
 	gpg-connect-agent updatestartuptty /bye >/dev/null
 	tmpa="$(nx_str_look \

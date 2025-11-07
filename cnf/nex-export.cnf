@@ -9,6 +9,10 @@ export AWK="$(nx_cmd_awk)"
 export PAGER="$(nx_cmd_pager)"
 
 
+h_nx_cmd git && {
+	export GIT_SSH_COMMAND='ssh -v '
+}
+
 export G_NEX_CC="$(nx_cmd_cc)"
 export G_NEX_CLIPBOARD="$(nx_cmd_clipboard)"
 export G_NEX_WGET="$(nx_cmd_wget)"
