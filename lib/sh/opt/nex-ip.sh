@@ -21,38 +21,6 @@ nx_ip_net()
 	'
 }
 
-nx_ip_netnsid()
-{
-	(
-		for i in /proc/*/ns/net; do
-			ls --color=never -l $i 2>/dev/null
-		done
-	) | ${AWK:-$(nx_cmd_awk)} -v cnt="$1" -F "net:\\\[" '
-		{
-			#sub(/.?$/, "", $2);
-			split($1, path, "/")
-			#print path[3]
-			ids["net:[" $2]++;
-			procs[$2 "." ids[$2]++] = path[3];
-		} END {
-			delete path
-			if (cnt) {
-				for (i in ids) {
-					printf("%s=%s ", i, ids[i])
-				}
-			} else {
-				for (i in ids) {
-					for (j = 1; j <= procs[i ids[i]]; ++j) {
-						printf("%s=%s ", i)
-					}
-				}
-			}
-			delete ids
-			delete path[2]
-		}
-	'
-}
-
 nx_ip_arp()
 {
 	${AWK:-$(nx_cmd_awk)} '
@@ -76,13 +44,6 @@ nx_ip_arp()
 			test -f "$1" && printf '%s' "/proc/$1/net/arp" || printf '%s' '/proc/net/arp'
 		}
 	)
-}
-
-nx_ip_lsns() {
-
-	for i in $(nx_ip_netnsid); do
-		ip netns exec "$i" -- ip -d a
-	done
 }
 
 nx_ip_l2()
@@ -309,14 +270,9 @@ s_nx_ip_veth()
 )
 
 nx_ip_vlan() {
-	ip link add link tap0 name tap0.10 type vlan id 10
-	eval "$(nx_str_optarg ':u:n:v:t:' "$@")"
-	b="${b:-bridge}"
-	u="${u:-${USER:-$LOGNAME}}"
-	t="tap-${t:+$t-}"
-	tmpa="$(__nx_ip_exec "$n")"
-
-	b="${b:-b}"
+	eval "$(nx_str_optarg ':n:v:i:' "$@")"
+	v="${v:-vlan}"
+	ip link add link "$v" name "$v$n.$i" type vlan id "$i"
 }
 
 s_nx_ip_brtun()

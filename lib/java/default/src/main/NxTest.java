@@ -1,9 +1,16 @@
 package main;
-import main.io.NxPrintf;
-import main.io.NxRead;
-//import main.std.NxBits;
-import java.util.Scanner;
+//import main.io.NxPrintf;
+//import main.io.NxRead;
 
+//import main.math.NxTriangle;
+//import main.math.NxTrigonometry;
+
+
+import java.util.Scanner;
+import main.std.NxBits;
+import main.std.NxIEEE754;
+
+/*
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.io.File;
@@ -14,8 +21,62 @@ import java.util.stream.Stream;
 
 import java.util.ArrayList;
 import java.util.List;
+*/
 
 public class NxTest {
+	public static void main(String[] args) {
+		int i = 749382;
+		System.out.printf("%d in binary is %s\n", i, NxBits.toBinary(i));
+		System.out.printf("%d in binary is %s\n", i, NxBits.leading(i));
+
+
+		i = 1;
+		System.out.printf("%d in binary is %s\n", i, NxBits.toBinary(i));
+		System.out.printf("%d in binary is %s\n", i, NxBits.leading(i));
+
+		i = 749932382;
+		System.out.printf("%d in binary is %s\n", i, NxBits.toBinary(i));
+		System.out.printf("%d in binary is %s\n", i, NxBits.leading(i));
+		System.out.printf("%d in binary is %s\n", i, NxBits.trailing(i));
+		//System.out.println("sign: " + NxIEEE754.rawBitsToFraction(i));
+		//System.out.println("sign: " + NxIEEE754.sign(0));
+		//System.out.println("exponent: " + NxIEEE754.exponent(i));
+		//System.out.println("mantissa: " + NxIEEE754.mantissa(0));
+
+		//NxIEEE754.chain(i).toBinary(); //.bits;
+
+		//NxTrigonometry.sohcahtoa(3, 4);
+	//	NxTrigonometry.hoshacaot(3, 5);
+
+		//for (int i = 0; i <= 32; ++i) {
+		//}
+
+		//System.out.println(NxBits.parity(27));
+	}
+}
+	/*
+		NxTriangle tri1 = new NxTriangle()
+			.sideA(3)
+			.sideB(4)
+			.sideC(5);
+		tri1
+			.sohcahtoa()
+			.hoshacaot()
+			.heronsFormula()
+			.lawOfCosines();
+		System.out.printf("0 mod 3 = %d\n" +
+				"1 mod 3 = %d\n" +
+				"2 mod 3 = %d\n" +
+				"3 mod 3 = %d\n" +
+				"4 mod 3 = %d\n" +
+				"5 mod 3 = %d\n",
+				0%3,
+				1%3,
+				2%3,
+				3%3,
+				4%3,
+				5%3);
+	}
 
 	public static Path[] pathSeparator(String ... paths) {
 		String rpl = System.getProperty("file.separator");
@@ -51,8 +112,13 @@ public class NxTest {
 			System.out.println(p);
 		//return Paths.get(matchingPaths);
 	}
+*/
+/*        System,out.printf("Car's information:\n\tmodelYear: %d\n\tPurchase price; %d\nCurrent value %d",
+            44,
+            330,
+            -4924);
 
-	public static void main(String[] args) {
+*/
 		//NxBits bt = new NxBits.Build().end();
 		//System.out.println(bt.on(1).left(2).get());
 		/*
@@ -71,8 +137,7 @@ public class NxTest {
     }
 */
 
-
-		System.out.println(findDirectory(pathSeparator(System.getProperty("user.dir"))[0], "bin"));
+		//System.out.println(findDirectory(pathSeparator(System.getProperty("user.dir"))[0], "bin"));
 
 		/*
 		Scanner snr  = new Scanner(System.in);
@@ -141,6 +206,4 @@ public class NxTest {
 			NxPrinf();
 		}
 		*/
-	}
-}
 

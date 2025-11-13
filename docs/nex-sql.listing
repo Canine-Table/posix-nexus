@@ -1,22 +1,6 @@
-
--- PostgreSQL
-BEGIN;
-SET TRANSACTION ISOLATION LEVEL REPEATABLE READ;
-SELECT * FROM customers WHERE region = 'east';
--- Perform updates or checks
-COMMIT;
-
--- MariaDB / MySQL
-START TRANSACTION;
-SET TRANSACTION ISOLATION LEVEL REPEATABLE READ;
-SELECT * FROM customers WHERE region = 'east';
--- Perform updates or checks
-COMMIT;
-
--- SQLite3
--- No configurable isolation level
--- Begins transaction with snapshot isolation
-BEGIN TRANSACTION;
-SELECT * FROM customers WHERE region = 'east';
--- Perform updates or checks
-COMMIT;
+SELECT
+	name,
+	COUNT(DISTINCT wake_size) AS wake_sizes
+FROM aircrafts
+	WHERE name IN ('Boeing', 'Airbus')
+	GROUP BY name;

@@ -49,5 +49,7 @@ Plug 'nvim-lua/plenary.nvim'
 Plug 'github/copilot.vim'
 Plug 'nordtheme/vim'
 
+Plug 'tpope/vim-fugitive'
+
 call plug#end()
 

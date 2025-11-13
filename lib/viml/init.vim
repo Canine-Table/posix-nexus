@@ -19,13 +19,9 @@ function! s:NxInit()
 	call NxCallFile(
 		\ 'misc.vim',
 		\ 'types.vim',
-		\ 'TeX.vim',
-		\ 'java.vim',
 		\ 'str.vim',
-		\ 'xml.vim',
-		\ 'md.vim',
 		\ 'mappings.vim',
-		\ 'variables.vim',
+		\ 'variables.vim'
 	\)
 	let g:nx_home_dir = expand(getenv('HOME'))
 	if NxBaseName(getenv('G_NEX_WGET')) == 'curl'
@@ -49,6 +45,13 @@ function! s:NxInit()
 		endif
 		call s:NxVimInit()
 	endif
+	call NxCallFile(
+		\ 'ext/nex-xml.vim',
+		\ 'ext/nex-md.vim',
+		\ 'ext/nex-git.vim',
+		\ 'ext/nex-java.vim',
+		\ 'ext/nex-TeX.vim'
+	\)
 	call NxPath({
 		\ 'autoload/plug.vim': 'https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
 	\})
