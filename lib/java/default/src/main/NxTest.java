@@ -25,19 +25,24 @@ import java.util.List;
 
 public class NxTest {
 	public static void main(String[] args) {
-		int i = 749382;
+		int i = 1020434;
+
+		System.out.printf("%d in binary is %s\n", i, ~i);
+		/*
 		System.out.printf("%d in binary is %s\n", i, NxBits.toBinary(i));
 		System.out.printf("%d in binary is %s\n", i, NxBits.leading(i));
-
+		System.out.printf("%d in binary is %s\n", i, NxBits.trailing(i));
 
 		i = 1;
 		System.out.printf("%d in binary is %s\n", i, NxBits.toBinary(i));
 		System.out.printf("%d in binary is %s\n", i, NxBits.leading(i));
+		System.out.printf("%d in binary is %s\n", i, NxBits.trailing(i));
 
 		i = 749932382;
 		System.out.printf("%d in binary is %s\n", i, NxBits.toBinary(i));
 		System.out.printf("%d in binary is %s\n", i, NxBits.leading(i));
 		System.out.printf("%d in binary is %s\n", i, NxBits.trailing(i));
+		*/
 		//System.out.println("sign: " + NxIEEE754.rawBitsToFraction(i));
 		//System.out.println("sign: " + NxIEEE754.sign(0));
 		//System.out.println("exponent: " + NxIEEE754.exponent(i));

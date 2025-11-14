@@ -1,4 +1,6 @@
 package main.std;
+import java.util.ArrayList;
+import java.util.List;
 
 public class NxBits
 {
@@ -49,6 +51,35 @@ public class NxBits
 
 	public static boolean is(long b, long s) {
 		return (Math.abs(b) & (1L << target(s))) != 0;
+	}
+
+	public static int move(int b, int s, int m) {
+		return is(b, s) ? off(on(b, m), s) : b;
+	}
+
+	public static long move(long b, int s, int m) {
+		return is(b, s) ? off(on(b, m), s) : b;
+	}
+
+	public static int twos(int b) {
+		int s = signed(b);
+		b = ~Math.abs(b) + 1;
+		return s == 0 ? b : s * b;
+	}
+
+	public static long twos(long b) {
+		long s = signed(b);
+		b = ~Math.abs(b) + 1;
+		return s == 0 ? b : s * b;
+	}
+
+
+	public static int only(int b, int s, int m) {
+		return is(b, s) ? b : on(b, m);
+	}
+
+	public static long only(long b, int s, int m) {
+		return is(b, s) ? b : on(b, m);
 	}
 
 
@@ -149,17 +180,21 @@ public class NxBits
 		while (((b >> i) & 1) == 0) {
 			l++;
 			i += s;
+			if (i > 63 || i < 0)
+				break;
 		}
 		return l;
 	}
 
-	public static int zeros(long b, int i, int s) {
+	public static int zeros(long b, long i, long s) {
 		if ((b = Math.abs(b)) == 0)
 			return 64;
 		int l = 0;
 		while (((b >> i) & 1L) == 0) {
 			l++;
 			i += s;
+			if (i > 63 || i < 0)
+				break;
 		}
 		return l;
 	}
@@ -240,8 +275,25 @@ public class NxBits
 		return String.format("%64s", Long.toBinaryString(b)).replace(' ', '0');
 	}
 
-	////////////////////////////////////////////////////////////////////////////////////////////
 
+	public static int[] packBits(int b) {
+		List<Integer> indices = new ArrayList<>();
+		for (int i = 0; i < 32; i++) {
+			if (((b >> i) & 1) != 0) indices.add(i);
+		}
+		return indices.stream().mapToInt(i -> i).toArray();
+	}
+
+	public static long[] packBits(long b) {
+		List<Long> indices = new ArrayList<>();
+		for (long i = 0; i < 64; i++) {
+			if (((b >> i) & 1L) != 0) indices.add(i);
+		}
+		return indices.stream().mapToLong(i -> i).toArray();
+	}
+
+
+	////////////////////////////////////////////////////////////////////////////////////////////
 	public static class Chain32 {
 		public int bits;
 
@@ -254,12 +306,7 @@ public class NxBits
 		}
 
 		public Chain32 count() {
-			int s = 0;
-			while (bits != 0) {
-				bits &= bits - 1;
-				s++;
-			}
-			bits = s;
+			bits = NxBits.count(bits);
 			return this;
 		}
 
@@ -318,9 +365,30 @@ public class NxBits
 			 return this;
 		}
 
-		public	Chain32 toBinary(int b) {
+		public Chain32 only(int s, int m) {
+			 bits = NxBits.only(bits, s, m);
+			 return this;
+		}
+
+		public Chain32 move(int s, int m) {
+			 bits = NxBits.move(bits, s, m);
+			 return this;
+		}
+
+
+		public Chain32 twos() {
+			 bits = NxBits.twos(bits);
+			 return this;
+		}
+
+
+		public Chain32 toBinary(int b) {
 			System.out.printf("%d%-25s\n", bits, NxBits.toBinary(bits));
 			return this;
+		}
+
+		public int[] packBits() {
+			return NxBits.packBits(bits);
 		}
 
 		public boolean even() {

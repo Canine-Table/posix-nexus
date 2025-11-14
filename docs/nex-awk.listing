@@ -1,2 +1,5 @@
-if (nx_json_split(".misc", V1, V2, "") == 0)
-    print "misc is null or undefined"
+function nx_natural(N, B)
+{
+    if (__nx_is_integral(N, B) && +N > 0)
+        return +N
+}
