@@ -1,18 +1,6 @@
-
--- PostgreSQL
-BEGIN;
-UPDATE inventory SET quantity = quantity - 1 WHERE item_id = 42;
--- Something goes wrong
-ROLLBACK;
-
--- MariaDB / MySQL
-START TRANSACTION;
-UPDATE inventory SET quantity = quantity - 1 WHERE item_id = 42;
--- Error detected
-ROLLBACK;
-
--- SQLite3
-BEGIN TRANSACTION;
-UPDATE inventory SET quantity = quantity - 1 WHERE item_id = 42;
--- Abort transaction
-ROLLBACK;
+SELECT
+	name,
+	COUNT(DISTINCT wake_size) AS wake_sizes
+FROM aircrafts
+	WHERE name IN ('Boeing', 'Airbus')
+	GROUP BY name;

@@ -1,0 +1,161 @@
+\nxSections{FlightDB (Postgresql)}{2}
+
+\includegraphics[width=\linewidth]{pages/nex-sql/examples.d/data/flightdb.png}
+\textit{Note: To access the embedded file, please open this PDF in Adobe Acrobat Reader or another full-featured PDF viewer.}
+\attachfile{pages/nex-sql/examples.d/data/flightdb.backup}
+\bigskip
+
+\begin{NxCodeBox}{sql}{title={Select all columns from the airports table.}}
+	SELECT * FROM airports;
+\end{NxCodeBox}
+
+\begin{NxCodeBox}{sql}{title={Select the distinct "name" from the airports table. Alias the name to "Airport Name".}}
+	SELECT name AS "Airport Name" FROM airports;
+\end{NxCodeBox}
+
+\begin{NxCodeBox}{sql}{title={Select all columns from the country table that has id of 160.}}
+	SELECT * FROM countries WHERE id = 160;
+\end{NxCodeBox}
+
+\begin{NxCodeBox}{sql}{title={Select name, city and country id for all airports that are in the city of Hamilton.}}
+	SELECT name,city,country_id FROM airports WHERE city  = 'Hamilton';
+\end{NxCodeBox}
+
+\begin{NxCodeBox}{sql}{title={Select name, city and country id for all airports that are in the city of Hamilton.}}
+  SELECT name,city,country_id FROM airports WHERE city  = 'Hamilton' AND country_id = 160;
+\end{NxCodeBox}
+
+\begin{NxCodeBox}{sql}{title={Select name, city and country id for all airports that are in the city of Hamilton.}}
+  SELECT name,city,country_id FROM airports WHERE city  = 'Chicago' OR city = 'Boston';
+  SELECT name,city,country_id FROM airports WHERE city  IN ('Chicago', 'Boston');
+\end{NxCodeBox}
+
+\begin{NxCodeBox}{sql}{title={Select airports that have an elevation between 400 and 500.  You must make sure to include 400 and 500. Sort the results in decreasing order of elevation (i.e., higher to lower).}}
+SELECT * FROM airports WHERE elevation >= 400 AND elevation <= 500 ORDER BY elevation DESC
+\end{NxCodeBox}
+
+\begin{NxCodeBox}{sql}{title={Select all airlines that do not have a country id (i.e., country id has a null value.)}}
+	SELECT * FROM airlines where country_id IS NULL;
+\end{NxCodeBox}
+
+\begin{NxCodeBox}{sql}{title={Select all airlines that has a name starting with “Can”. Sort the results by country id.}}
+	SELECT * FROM airlines where name ILIKE 'Can%' ORDER BY country_id ASC;
+\end{NxCodeBox}
+
+\begin{NxCodeBox}{sql}{title={Select all airlines that have a name that contains "International".}}
+	SELECT * FROM airlines WHERE name ~* '\mInternational\M';
+\end{NxCodeBox}
+
+\begin{NxCodeBox}{sql}{title={Select all airlines that have a name that contains "International".}}
+	SELECT * FROM airlines WHERE name ~* '\mInternational\M';
+\end{NxCodeBox}
+
+\begin{NxCodeBox}{sql}{title={Select all airlines that have a name that ends in "Aviation".}}
+	SELECT * FROM airlines WHERE name LIKE '%Aviation';
+	SELECT * FROM airlines WHERE name ILIKE '%Aviation' ORDER BY name ASC;
+\end{NxCodeBox}
+
+\begin{NxCodeBox}{sql}{title={Select all airlines that have a name that ends in "Aviation".}}
+	SELECT * FROM airlines WHERE name LIKE '%Aviation';
+	SELECT * FROM airlines WHERE name ILIKE '%Aviation' ORDER BY name ASC;
+\end{NxCodeBox}
+
+\begin{NxCodeBox}{sql}{title={Select all airports in Canada that have an elevation of 0.}}
+SELECT * FROM airports
+WHERE country_id = (
+  SELECT id FROM countries WHERE name = 'Canada' LIMIT 1
+) AND elevation = 0;
+\end{NxCodeBox}
+
+\begin{NxCodeBox}{sql}{title={Select all airlines in France that have an active status of "Y".}}
+SELECT * FROM airlines
+WHERE country_id = (
+  SELECT id FROM countries WHERE name = 'France' LIMIT 1
+) AND active = 'Y';
+\end{NxCodeBox}
+
+\begin{NxCodeBox}{sql}{title={Count how many rows exist in the airports table.}}
+	SELECT COUNT(*) FROM airports;
+\end{NxCodeBox}
+
+\begin{NxCodeBox}{sql}{title={Calculate the average elevation in the airports table.}}
+	SELECT AVG(elevation) FROM airports;
+\end{NxCodeBox}
+
+\begin{NxCodeBox}{sql}{title={Calculate the maximum and minimum elevations in the airports table.}}
+	SELECT MIN(elevation), MAX(elevation) FROM airports;
+\end{NxCodeBox}
+
+\begin{NxCodeBox}{sql}{title={Calculate the average elevation, grouped by country id, in the airports table.}}
+SELECT
+  country_id,
+  AVG(elevation) AS avg_elevation
+FROM airports GROUP BY country_id;
+\end{NxCodeBox}
+
+\begin{NxCodeBox}{sql}{title={Calculate the average elevation, grouped by country id, in the airports table ordered by the average elevation in descending order for any country that has an average elevation of at least 300.}}
+SELECT
+  country_id,
+  COUNT(*) AS airport_count,
+  AVG(elevation) AS avg_elevation
+FROM airports
+WHERE elevation >= 300
+GROUP BY country_id
+ORDER BY country_id DESC;
+\end{NxCodeBox}
+
+\begin{NxCodeBox}{sql}{title={Calculate the number of airports in each country (i.e., grouped by country id), arrange the output in descending order of number of airports.}}
+-- Long hand
+SELECT 
+	c.name AS country_name,
+	AVG(a.elevation) AS avg_elevation
+FROM airports AS a
+	INNER JOIN countries AS c ON a.country_id = c.id
+	GROUP BY c.name
+	ORDER BY c.name ASC;
+
+-- short hand
+SELECT
+	c.name AS country_name,
+	AVG(a.elevation) AS avg_elevation
+FROM airports a
+	JOIN countries c ON a.country_id = c.id
+	GROUP BY c.name
+	ORDER BY c.name ASC;
+\end{NxCodeBox}
+
+\begin{NxCodeBox}{sql}{title={Calculate the number of airports in each city of country id 160 and arrange the output in descending order.}}
+SELECT 
+	city, 
+	COUNT(*) AS airport_count
+FROM airports
+	WHERE country_id = 160
+	GROUP BY city
+	ORDER BY airport_count DESC;
+\end{NxCodeBox}
+
+\begin{NxCodeBox}{sql}{title={Show only those cities where the number of airports is more then 5.}}
+SELECT 
+	city, 
+	COUNT(*) AS airport_count
+FROM airports
+	WHERE country_id = 160 AND airport_count > 5
+	GROUP BY city
+	ORDER BY airport_count DESC;
+\end{NxCodeBox}
+
+\begin{NxCodeBox}{sql}{title={Provide the query to determine how many aircrafts "Boeing" has that start with "74".}}
+SELECT COUNT(*) AS count_74s
+FROM aircrafts
+WHERE name = 'Boeing' AND code LIKE '74%';
+\end{NxCodeBox}
+
+\begin{NxCodeBox}{sql}{title={Provide the query to determine how many different wake sizes “Boeing” and “Airbus” have.}}
+SELECT
+	name,
+	COUNT(DISTINCT wake_size) AS wake_sizes
+FROM aircrafts
+	WHERE name IN ('Boeing', 'Airbus')
+	GROUP BY name;
+\end{NxCodeBox}
+
