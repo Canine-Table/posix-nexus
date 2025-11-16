@@ -177,12 +177,16 @@ nx_data_uniq()
 
 nx_data_import()
 {
-	${AWK:-$(nx_cmd_awk)} -v fl="/tmp/fls/file7.txt" \
+	${AWK:-$(nx_cmd_awk)} -v fl="NX_C:/file7.txt" \
 	"
-		$(nx_data_include -i "${NEXUS_LIB}/awk/nex-todo.awk")
+		$(nx_data_include -i "${NEXUS_LIB}/awk/nex-misc.awk")
 	"'
 		BEGIN {
-			nx_source(fl)
+			arr["h"] = " "
+			arr["t"] = ","
+			str = "\o\o\o\,bar\ baz,\ and\ was\ ,w"
+			#print nx_find_next(str, arr, 1)
+			print nx_file_merge("/opt/posix-nexus/env/file1.txt")
 		}
 	'
 }

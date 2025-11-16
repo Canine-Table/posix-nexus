@@ -1,2 +1,277 @@
 \nxSections{Struct Module}{1}
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\nxSections{Bijective Mapper}{2}
+\begin{NxCodeBox}{awk}{title={nx\_bijective(V, D1, D2, D3)}}
+function nx_bijective(V, D1, D2, D3)
+{
+    if (D1 == "")
+        return -1
+    if (D2) {
+        if (D3 != "") {
+            V[D1] = D2
+            V[D2] = D3
+            V[D3] = D1
+        } else {
+            V[D1] = D2
+            V[D2] = D1
+        }
+    } else if (D3 != "") {
+        V[V[D1]] = D3
+        if (D2 != "")
+            delete V[D1]
+    }
+}
+\end{NxCodeBox}
+
+\begin{NxLightListBox}[title={Bijective Mapper — The Mapping Glyph}]
+    \nxEachLabel{ArrowDark}{Secondary}{{1}{43}}{%
+        {Purpose}/{Creates or mutates bijective relationships between keys in associative array \(V\)},%
+        {Input}/{\(V\): associative array; \(D1, D2, D3\): keys/values to link},%
+        {Mechanism}/{If three arguments are given, forms a cycle \(D1 \to D2 \to D3 \to D1\). 
+        If two arguments, forms a symmetric pair \(D1 \leftrightarrow D2\). 
+        If only \(D3\) is provided, mutates the existing mapping of \(D1\) to point to \(D3\)},%
+        {Return}/{No explicit return; modifies array \(V\) in place},%
+        {Use Case}/{Used in overlay systems to guarantee reversible mappings and cyclic relationships between symbolic keys}
+    }
+\end{NxLightListBox}
+
+\begin{NxCodeBox}{awk}{title={\textbf{Create symmetric pair mapping}
+        \begin{NxDarkList}
+            \nxEachLabel{CodePrimary}{Tertiary}{{1}{43}}{%
+                {Input}/{\texttt{D1 = "a"}, \texttt{D2 = "b"}},%
+                {Operation}/{Sets \texttt{V["a"] = "b"} and \texttt{V["b"] = "a"}},%
+                {Expected Result}/{\texttt{a \nxArw{3} b} bijection established}
+            }
+        \end{NxDarkList}
+}}
+nx_bijective(V, "a", "b")
+\end{NxCodeBox}
+
+\begin{NxCodeBox}{awk}{title={\textbf{Create cyclic triple mapping}
+        \begin{NxDarkList}
+            \nxEachLabel{CodePrimary}{Tertiary}{{1}{43}}{%
+                {Input}/{\texttt{D1 = "x"}, \texttt{D2 = "y"}, \texttt{D3 = "z"}},%
+                {Operation}/{Sets \texttt{x \nxArw{2} y}, \texttt{y \nxArw{2} z}, \texttt{z \nxArw{2} x}},%
+                {Expected Result}/{Cycle established among three keys}
+            }
+        \end{NxDarkList}
+}}
+nx_bijective(V, "x", "y", "z")
+\end{NxCodeBox}
+
+\begin{NxCodeBox}{awk}{title={\textbf{Mutate existing mapping}
+        \begin{NxDarkList}
+            \nxEachLabel{CodePrimary}{Tertiary}{{1}{43}}{%
+                {Initial State}/{\texttt{V["a"] = "b"}, \texttt{V["b"] = "a"}},%
+                {Input}/{\texttt{D1 = "a"}, \texttt{D2 = ""}, \texttt{D3 = "c"}},%
+                {Operation}/{Reassigns \texttt{V["b"] = "c"}, optionally deletes \texttt{V["a"]}},%
+                {Expected Result}/{Mapping updated: \texttt{b \nxArw{2} c}}
+            }
+        \end{NxDarkList}
+}}
+nx_bijective(V, "a", "", "c")
+\end{NxCodeBox}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\nxSections{Grid Queue Conductor}{2}
+\begin{NxCodeBox}{awk}{title={nx\_grid(V, D, N)}}
+function nx_grid(V, D, N)
+{
+    if (D) {
+        if (! (0 in V && "|" in V && "-" in V)) {
+            V[0] = 1
+            V["|"] = 1
+            V["-"] = 1
+        }
+        if ((N = __nx_else(nx_natural(nx_digit(N, 1)), V[0])) < V["-"])
+            N = V["-"]
+        while (V[0] < N) {
+            if (! (++V[0] in V))
+                V[V[0]] = 0
+        }
+        V[N "," ++V[N]] = D
+    } else if (N) {
+        while (! V[V[0]] && V["-"] <= V[0])
+            delete V[V[0]--]
+        if (V["-"] <= V[0]) {
+            N = V[V[0] "," V[V[0]]]
+            if (D == "")
+                delete V[V[0] "," V[V[0]]--]
+            return N
+        }
+    } else {
+        while (V[V["-"]] < V["|"] && V["-"] <= V[0]) {
+            delete V[V["-"]++]
+            V["|"] = 1
+        }
+        if (V["-"] <= V[0]) {
+            N = V[V["-"] "," V["|"]]
+            if (D == "")
+                delete V[V["-"] "," V["|"]++]
+            return N
+        }
+    }
+}
+\end{NxCodeBox}
+
+\begin{NxLightListBox}[title={Grid Queue Conductor — The Grid Glyph}]
+    \nxEachLabel{ArrowDark}{Secondary}{{1}{43}}{%
+        {Purpose}/{Implements a grid/queue structure inside associative array \(V\)},%
+        {Input}/{\(V\): associative array; \(D\): data element; \(N\): index or control},%
+        {Mechanism}/{Initializes grid if empty, appends data into indexed slots, retrieves or deletes entries depending on arguments},%
+        {Indexes}/{\([0]\): highest row index; \(["-"]\): lowest active row; \(["|"]\): column pointer},%
+        {Return}/{When retrieving, returns the stored element at current grid position},%
+        {Use Case}/{Used for queueing, scheduling, or grid‑like storage overlays in IPC or config daemons}
+    }
+\end{NxLightListBox}
+
+\begin{NxCodeBox}{awk}{title={\textbf{Insert element into grid at next slot}
+        \begin{NxDarkList}
+            \nxEachLabel{CodePrimary}{Tertiary}{{1}{43}}{%
+                {Initial State}/{Empty grid},%
+                {Operation}/{Insert \texttt{"alpha"}},%
+                {Expected Result}/{Stored at \texttt{1,1}; grid initialized with \([0]=1, ["-"]=1, ["|"]=1\)}
+            }
+        \end{NxDarkList}
+}}
+nx_grid(V, "alpha")
+\end{NxCodeBox}
+
+\begin{NxCodeBox}{awk}{title={\textbf{Retrieve last inserted element}
+        \begin{NxDarkList}
+            \nxEachLabel{CodePrimary}{Tertiary}{{1}{43}}{%
+                {State}/{Grid contains \texttt{"alpha"} at \texttt{1,1}},%
+                {Operation}/{Call with \texttt{N=1}},%
+                {Expected Result}/{Returns \texttt{"alpha"}}
+            }
+        \end{NxDarkList}
+}}
+print nx_grid(V, "", 1)
+\end{NxCodeBox}
+
+\begin{NxCodeBox}{awk}{title={\textbf{Iterate forward through grid}
+        \begin{NxDarkList}
+            \nxEachLabel{CodePrimary}{Tertiary}{{1}{43}}{%
+                {State}/{Grid contains multiple entries},%
+                {Operation}/{Call with no \texttt{D}, no \texttt{N}},%
+                {Expected Result}/{Returns next element at current \(["-"], ["|"]\) position, advancing column pointer}
+            }
+        \end{NxDarkList}
+}}
+print nx_grid(V)
+\end{NxCodeBox}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\nxSections{Depth-First Traversal Conductor}{2}
+\begin{NxCodeBox}{awk}{title={nx\_dfs(V, B, trk, stk)}}
+function nx_dfs(V, B, trk, stk)
+{
+    if (! (".0" in V && int(V[".0"]) > 0))
+        return -1
+    stk[++stk[0]] = 1
+    stk[++stk[0]] = V[".0"]
+    if (B ~ /^[02]$/)
+        V[0] = 0
+    do {
+        for (; stk[1] <= stk[2]; ++stk[1]) {
+            trk["ky"] = trk["rt"] "." stk[1]
+            if (B ~ /^[12]$/)
+                trk["str"] = trk["str"] "<nx:null/>" V[trk["ky"]]
+            if (B ~ /^[02]$/)
+                nx_bijective(V, ++V[0], 0, trk["ky"])
+            if (trk["ky"] ".0" in V && int(V[trk["ky"] ".0"]) > 0) {
+                trk["rt"] = trk["ky"]
+                stk[++stk[0]] = stk[1]
+                stk[++stk[0]] = stk[2]
+                stk[1] = 0
+                stk[2] = V[trk["rt"] ".0"]
+            }
+        }
+        if (stk[1] > 0 && sub(/[^.]+$/, "", trk["rt"])) {
+            sub(/[.]$/, "", trk["rt"])
+            stk[2] = stk[stk[0]--]
+            stk[1] = stk[stk[0]--] + 1
+        }
+    } while (stk[0] > 2 || stk[1] <= stk[2])
+    if (B ~ /^[12]$/)
+        B = substr(trk["str"], 11)
+    else
+        B = ""
+    delete trk
+    delete stk
+    return B
+}
+\end{NxCodeBox}
+
+\begin{NxLightListBox}[title={Depth-First Traversal Conductor — The DFS Glyph}]
+    \nxEachLabel{ArrowDark}{Secondary}{{1}{43}}{%
+        {Purpose}/{Performs depth-first traversal over a nested structure encoded in associative array \(V\)},%
+        {Input}/{\(V\): tree-like associative array; \(B\): mode selector; \(trk\): traversal record; \(stk\): stack},%
+        {Mechanism}/{Initializes stack with root bounds, iterates children, records traversal string or bijective mapping depending on mode},%
+        {Modes}/{\texttt{B=0}: bijective mapping of traversal order; \texttt{B=1}: build traversal string; \texttt{B=2}: both},%
+        {Return}/{Traversal string if mode includes string building, else empty},%
+        {Use Case}/{Used in overlay systems to walk nested JSON-like structures, build linearized strings, or establish bijective index mappings}
+    }
+\end{NxLightListBox}
+
+\begin{NxCodeBox}{awk}{title={\textbf{Traverse tree and build string}
+        \begin{NxDarkList}
+            \nxEachLabel{CodePrimary}{Tertiary}{{1}{43}}{%
+                {State}/{\texttt{V[".0"]=2}, \texttt{V["1"]="alpha"}, \texttt{V["2"]="beta"}},%
+                {Mode}/{\texttt{B=1} \nxArw{2} string building},%
+                {Expected Result}/{Returns concatenated string \texttt{"alpha beta"} with \texttt{<nx:null/>} markers}
+            }
+        \end{NxDarkList}
+}}
+print nx_dfs(V, 1, trk, stk)
+\end{NxCodeBox}
+
+\begin{NxCodeBox}{awk}{title={\textbf{Traverse tree and build bijective mapping}
+        \begin{NxDarkList}
+            \nxEachLabel{CodePrimary}{Tertiary}{{1}{43}}{%
+                {State}/{Nested keys with \texttt{.0} counts},%
+                {Mode}/{\texttt{B=0} \nxArw{2} bijective mapping},%
+                {Expected Result}/{Populates \texttt{V} with bijective index \nxArw{3} key mappings for traversal order}
+            }
+        \end{NxDarkList}
+}}
+nx_dfs(V, 0, trk, stk)
+\end{NxCodeBox}
+
+\begin{NxCodeBox}{awk}{title={\textbf{Traverse tree with both string and mapping}
+        \begin{NxDarkList}
+            \nxEachLabel{CodePrimary}{Tertiary}{{1}{43}}{%
+                {State}/{Tree with multiple children},%
+                {Mode}/{\texttt{B=2} \nxArw{2} both string and mapping},%
+                {Expected Result}/{Returns traversal string and updates bijective mapping simultaneously}
+            }
+        \end{NxDarkList}
+}}
+print nx_dfs(V, 2, trk, stk)
+\end{NxCodeBox}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

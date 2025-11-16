@@ -1,4 +1,5 @@
 package main.std;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -382,8 +383,8 @@ public class NxBits
 		}
 
 
-		public Chain32 toBinary(int b) {
-			System.out.printf("%d%-25s\n", bits, NxBits.toBinary(bits));
+		public Chain32 toBinary() {
+			System.out.printf("%d\t%25s\n", bits, NxBits.toBinary(bits));
 			return this;
 		}
 

@@ -1,5 +1,1 @@
-function nx_natural(N, B)
-{
-    if (__nx_is_integral(N, B) && +N > 0)
-        return +N
-}
+print nx_dfs(V, 2, trk, stk)

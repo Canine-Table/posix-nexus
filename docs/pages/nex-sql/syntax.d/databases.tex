@@ -1,0 +1,75 @@
+\nxSections{Databases}{2}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\nxSections{CREATE DATABASE — Syntax Across Engines}{3}
+\begin{NxCodeBox}{sql}{title={\textbf{Creating a Customized Database}
+        \begin{NxDarkList}
+                \nxEachLabel{DBSecondary}{Tertiary}{{1}{43}}{%
+                        {custom_app_db}/{Tailored for multilingual support, user ownership, and connection limits.},%
+                        {database creation}/{Defines encoding, collation, owner, and other engine-specific options.}
+                }
+        \end{NxDarkList}
+}}
+
+-- PostgreSQL
+CREATE DATABASE custom_app_db
+WITH 
+    OWNER = app_admin,
+    ENCODING = 'UTF8',
+    LC_COLLATE = 'en_US.UTF-8',
+    LC_CTYPE = 'en_US.UTF-8',
+    TABLESPACE = pg_default,
+    CONNECTION LIMIT = 50;
+
+-- MariaDB / MySQL
+CREATE DATABASE IF NOT EXISTS custom_app_db
+DEFAULT CHARACTER SET = utf8mb4
+DEFAULT COLLATE = utf8mb4_unicode_ci
+COMMENT = 'Multilingual app database';
+
+-- SQLite3
+-- No CREATE DATABASE command; database is created by opening a new file
+-- Example (from client or script):
+.open custom_app_db.sqlite
+-- Collation and encoding are handled internally; no explicit options
+\end{NxCodeBox}
+
+\begin{NxLightListBox}[title={CREATE DATABASE — The Ritual of Customized Initialization}]
+        \nxEachLabel{ArrowDark}{Secondary}{{1}{43}}{%
+                {Purpose}/{Initializes a new database with specific encoding, collation, ownership, and connection rules},%
+                {Input}/{\nxLnArcBox[]{CREATE DATABASE name WITH options}},%
+                {Fallback}/{Defaults are applied if options are omitted; may affect performance or compatibility},%
+                {Rendering}/{Options influence storage behavior, character support, and access control},%
+                {Use Case}/{Used when deploying multilingual apps, enforcing quotas, or isolating schema ownership}
+        }
+\end{NxLightListBox}
+
+\begin{NxLightBox}[title={CREATE DATABASE — Syntax Glyph Map}]
+        \begin{tabularx}{\textwidth}{|l|X|}
+                \hline
+                \textbf{Engine} & \textbf{CREATE DATABASE Support} \\
+                \hline
+                PostgreSQL & {\nxCheckSuccess} supports OWNER, ENCODING, COLLATE, CONNECTION LIMIT, TABLESPACE, TEMPLATE, and more \\
+                MariaDB / MySQL & {\nxCheckSuccess} supports CHARACTER SET, COLLATE, COMMENT, and IF NOT EXISTS \\
+                SQLite3 & {\nxCheckSuccess} creates database by opening a file; no SQL options supported \\
+                \hline
+                \textbf{Engine} & \textbf{CREATE DATABASE Behavior} \\
+                \hline
+                PostgreSQL & Initializes catalog with locale and encoding; enforces ownership and connection limits \\
+                MariaDB / MySQL & Creates schema folder with charset and collation metadata; COMMENT stored in system tables \\
+                SQLite3 & Creates file-based database; encoding is UTF-8 by default; no schema-level customization \\
+                \hline
+        \end{tabularx}
+\end{NxLightBox}
+
+\begin{NxLightListBox}[title={CREATE DATABASE — Beginner Questions}]
+        \nxEachLabel{ArrowDark}{Secondary}{{1}{43}}{%
+                {What does ENCODING do?}/{It defines the character set used to store text — UTF8 is common for multilingual support.},%
+                {What is LC_COLLATE and LC_CTYPE?}/{They control sorting and character classification based on locale.},%
+                {Can I limit connections?}/{Yes — PostgreSQL supports \nxLnArcBox[]{CONNECTION LIMIT}.},%
+                {What does COMMENT do in MariaDB?}/{It adds a description to the database for documentation or metadata.},%
+                {Does SQLite support these options?}/{No — it uses defaults and does not expose database-level configuration.},%
+                {Is OWNER required?}/{No — but assigning ownership helps manage privileges and schema isolation.}
+        }
+\end{NxLightListBox}
+

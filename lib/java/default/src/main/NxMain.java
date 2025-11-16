@@ -1,4 +1,7 @@
 package main;
+import main.beta.NxTest;
+
+/*
 //import main.io.NxPrintf;
 //import main.io.NxRead;
 
@@ -10,7 +13,6 @@ import java.util.Scanner;
 import main.std.NxBits;
 import main.std.NxIEEE754;
 
-/*
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.io.File;
@@ -23,11 +25,16 @@ import java.util.ArrayList;
 import java.util.List;
 */
 
-public class NxTest {
-	public static void main(String[] args) {
-		int i = 1020434;
+public class NxMain {
+	public static void main(String[] args) throws Exception  {
+		//NxTest.bits(37).on(3).flip(7).off(7).cascade(4).toBinary();
+		NxTest.testCmdExec();
 
-		System.out.printf("%d in binary is %s\n", i, ~i);
+		//.toBinary();
+		int i = 1020434;
+		//System.out.printf("%d in binary is %s\n", i, ~i);
+	}
+}
 		/*
 		System.out.printf("%d in binary is %s\n", i, NxBits.toBinary(i));
 		System.out.printf("%d in binary is %s\n", i, NxBits.leading(i));
@@ -57,8 +64,6 @@ public class NxTest {
 		//}
 
 		//System.out.println(NxBits.parity(27));
-	}
-}
 	/*
 		NxTriangle tri1 = new NxTriangle()
 			.sideA(3)
@@ -83,40 +88,8 @@ public class NxTest {
 				5%3);
 	}
 
-	public static Path[] pathSeparator(String ... paths) {
-		String rpl = System.getProperty("file.separator");
-		String fnd = rpl == "\\\\" ? "/" : "\\\\";
-		int idx = 0;
-		Path currentPath;
-		for (String path : paths) {
-			if ((currentPath = Paths.get(path.replaceAll(fnd, rpl)).getParent()) != null)
-				paths[idx++] = currentPath.toAbsolutePath().toString();
-		}
-		if (idx >= -1) {
-			Path[] exists = new Path[idx];
-			while (--idx >= 0) {
-				exists[idx] = Paths.get(paths[idx]);
-			}
-			return exists;
-		}
-		return null;
-	}
 
-	public static void findDirectory(Path parentDir, String dirName) {
 
-		List<Path> matchingPaths = new ArrayList<>();
-
-		try (Stream<Path> paths = Files.walk(parentDir)) {
-			paths.filter(Files::isDirectory) // Filter to keep only directories
-			.filter(path -> path.getFileName().toString().equals(dirName)) // Match directory name
-			.forEach(matchingPaths::add);
-		} catch (IOException e) {
-			System.err.println("Error while searching for directories: " + e.getMessage());
-		}
-		for (Path p : matchingPaths)
-			System.out.println(p);
-		//return Paths.get(matchingPaths);
-	}
 */
 /*        System,out.printf("Car's information:\n\tmodelYear: %d\n\tPurchase price; %d\nCurrent value %d",
             44,

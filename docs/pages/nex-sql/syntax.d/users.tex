@@ -1,0 +1,71 @@
+\nxSections{Users}{2}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\nxSections{CREATE USER — Syntax Across Engines}{3}
+\begin{NxCodeBox}{sql}{title={\textbf{Creating a New Application User}
+        \begin{NxDarkList}
+                \nxEachLabel{DBSecondary}{Tertiary}{{1}{43}}{%
+                        {app_user}/{Represents a database identity with login credentials and access privileges.},%
+                        {user creation}/{Defines authentication method, resource limits, and optional role membership.}
+                }
+        \end{NxDarkList}
+}}
+
+-- PostgreSQL
+CREATE USER app_user
+WITH PASSWORD 'securepass123'
+CREATEDB
+LOGIN
+CONNECTION LIMIT 10;
+
+-- MariaDB / MySQL
+CREATE USER 'app_user'@'localhost'
+IDENTIFIED BY 'securepass123'
+PASSWORD EXPIRE INTERVAL 90 DAY
+COMMENT 'Application-level user with limited access';
+
+-- SQLite3
+-- No CREATE USER command; access control is handled externally
+-- Example: authentication managed by application or file system
+-- Users are simulated via application logic
+\end{NxCodeBox}
+
+\begin{NxLightListBox}[title={CREATE USER — The Ritual of Identity Provisioning}]
+        \nxEachLabel{ArrowDark}{Secondary}{{1}{43}}{%
+                {Purpose}/{Establishes a new database identity for authentication and access control},%
+                {Input}/{\nxLnArcBox[]{CREATE USER name WITH options}},%
+                {Fallback}/{Without users, access must be anonymous or externally managed},%
+                {Rendering}/{Creates login credentials and optionally assigns privileges or roles},%
+                {Use Case}/{Used to isolate application access, enforce quotas, or delegate schema ownership}
+        }
+\end{NxLightListBox}
+
+\begin{NxLightBox}[title={CREATE USER — Syntax Glyph Map}]
+        \begin{tabularx}{\textwidth}{|l|X|}
+                \hline
+                \textbf{Engine} & \textbf{CREATE USER Support} \\
+                \hline
+                PostgreSQL & {\nxCheckSuccess} supports LOGIN, PASSWORD, CREATEDB, CONNECTION LIMIT, and role assignment \\
+                MariaDB / MySQL & {\nxCheckSuccess} supports IDENTIFIED BY, PASSWORD EXPIRE, COMMENT, and host scoping \\
+                SQLite3 & {\nxTimesDanger} no native user management; relies on external or application-level authentication \\
+                \hline
+                \textbf{Engine} & \textbf{CREATE USER Behavior} \\
+                \hline
+                PostgreSQL & Adds user to catalog; can be granted roles and privileges \\
+                MariaDB / MySQL & Creates user with host binding; privileges assigned via GRANT \\
+                SQLite3 & No internal user system; access is file-based or app-defined \\
+                \hline
+        \end{tabularx}
+\end{NxLightBox}
+
+\begin{NxLightListBox}[title={CREATE USER — Beginner Questions}]
+        \nxEachLabel{ArrowDark}{Secondary}{{1}{43}}{%
+                {What does CREATE USER do?}/{It defines a new identity that can log in and interact with the database.},%
+                {Can I limit user access?}/{Yes — use roles, privileges, and connection limits.},%
+                {What is IDENTIFIED BY?}/{It sets the user’s password in MariaDB/MySQL.},%
+                {Does SQLite support users?}/{No — authentication is handled outside the engine.},%
+                {Can users create databases?}/{In PostgreSQL, yes — use \nxLnArcBox[]{CREATEDB}.},%
+                {Can I expire passwords?}/{Yes — MariaDB supports expiration intervals and policies.}
+        }
+\end{NxLightListBox}
+

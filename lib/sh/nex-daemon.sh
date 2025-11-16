@@ -1,0 +1,1 @@
+opt/nex-daemon.sh

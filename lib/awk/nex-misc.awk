@@ -258,3 +258,207 @@ function __nx_swap(V, D1, D2,	t)
 	V[D2] = t
 }
 
+
+# D1:		the file path
+# B:		the boolean toggle:
+# 			empty or 0 as an int:	basename
+# 			something:		dirname
+# D2:		path sep, defaults to /
+function nx_file_path(D1, B, D2,	i, j)
+{
+	D2 = __nx_else(D2, "/")
+	if (! sub(/^-/, ENVIRON["OLDPWD"], D1))
+	if (! sub(/^~/, ENVIRON["HOME"], D1))
+	if (! sub(/^NX_L:/, ENVIRON["NEXUS_LIB"], D1))
+	if (! sub(/^NX_C:/, ENVIRON["NEXUS_CNF"], D1))
+	if (! sub(/^NX_D:/, ENVIRON["NEXUS_DOCS"], D1))
+	if (! sub(/^NX_E:/, ENVIRON["NEXUS_ENV"], D1))
+	if (! sub(/^NX_SB:/, ENVIRON["NEXUS_SBIN"], D1))
+	if (! sub(/^NX_B:/, ENVIRON["NEXUS_BIN"], D1))
+	if (! sub(/^NX_J:/, ENVIRON["NEXUS_LIB"] "java" D2 ENVIRON["G_NEX_JAVA_PROJECT"], D1))
+		sub(/^NX_S:/, ENVIRON["NEXUS_SRC"], D1)
+	gsub(D2 "+", D2, D1)
+	gsub(D2 "+$", "", D1)
+	i = D1
+	if (! sub("[^" D2 "]+$", "", i))
+		return D1
+	i = length(i)
+	j = length(D2)
+	if (B == "")
+		return substr(D1, i + j)
+	if (B == 0)
+		return D1
+	return substr(D1, 1, i - j)
+}
+
+# D1:		the relative or absolute file path
+# D2:		the absolute path of the directory the file path is in if its not an absolute path
+# V:		the actual hashmap that holds the valid unique file names/paths
+# D3:		path sep, defaults to /
+
+# indexes
+# [-0] = all the absolute unique directory paths
+# [0] = all the absolute realpaths to the file
+function nx_uniq_file(D1, D2, V, D3,	b, r, d, i)
+{
+	b = nx_file_path(D1)
+	D3 = __nx_else(D3, "/")
+	r = nx_file_path( D2 D3 D1, 0)
+	if (nx_is_file(r)) {
+		d = nx_file_path(r, 1)
+	} else if (nx_is_file(D1)) {
+		r = D1
+		d = nx_file_path(D1, 1)
+	} else {
+		for (i = -1; i >= V["-0"]; --i) {
+			r = nx_file_path(V[i] D3 b, 0)
+			if (nx_is_file(r)) {
+				d = nx_file_path(r, 1)
+				break
+			}
+		}
+	}
+	if (d == "")
+		return -1
+	if (! (d in V))
+		nx_bijective(V , "" --V["-0"], d)
+	if (! (r in V))
+		nx_bijective(V , "" ++V[0], r)
+	return 1
+}
+
+function nx_sub_counter(D1, D2)
+{
+	return gsub(D2, "", D1)
+}
+
+function nx_nesc_match(D1, D2, B, D3,	f, l, t, i)
+{
+	if (D1 == "")
+		return -1
+	f = 0
+	D2 = __nx_else(D2, " ")
+	if ((D3 = __nx_else(D3, "\\\\", 1)) == "\\\\")
+		l = 1
+	else
+		l = length(D3)
+	while (match(D1, D2)) {
+		f = f + RSTART
+		if (! (match(substr(D1, 1, RSTART - 1), D3 "+$") && D3) || int(RLENGTH % 2) == 0)
+			break
+		i = nx_sub_counter(substr(D1, 1, f - 1), D3)
+		f = f + RLENGTH - i * l
+		D1 = substr(D1, f + 1)
+	}
+	i = nx_sub_counter(substr(D1, 1, f - 1), D3)
+	return __nx_if(B && D1 == "", -1, f - i * l)
+}
+
+function nx_find_next(D1, V, B1, B2, D2,	i, f, m)
+{
+	if (D1 == "")
+		return -1
+	B = __nx_if(B, ">0", "<0")
+	for (i in V) {
+		m = nx_nesc_match(D1, V[i], D2)
+		if (! f || __nx_equality(m, B, f))
+			f = m
+	}
+
+	if (f == length(D1))
+		return __nx_if(B2, -1, f)
+	return __nx_if(B1 == ">0", f + 1, f)
+}
+
+function __nx_file_merge_push(V, D)
+{
+	if (D ~ /^[ \t]*$/)
+		return -1
+	V[__nx_file_merge_rt(V, 1)] = D
+	return __nx_file_merge_rt(V)
+}
+
+function __nx_file_merge_rt(V, N)
+{
+	if (N = int(N))
+		V[V["rt"] "0"] = V[V["rt"] "0"] + N
+	return V["rt"] V[V["rt"] "0"]
+}
+
+# D1:		the file name or input stream
+# D2:		the sigil to identify the include directive
+# D3:		files to omit if encountered
+# D4:		the directive name itself
+function nx_file_merge(D1, D2, D3, D4,	stk, fls, trk)
+{
+	if (nx_uniq_file(D1, "", fls) != 1)
+		return -1
+
+	D4 = __nx_else(D4, "include", 1)
+
+	# the directive name
+	trk["dir"] = "nx_" D4
+
+	# the directive sigil
+	trk["sig"] = __nx_else(D2, "#", 1)
+
+	# are there files to omit if founds after the directive??
+	if (D2 = nx_trim_split(D3, stk, "<nx:null/>")) {
+		do {
+			nx_uniq_file(que[D2], fls[fls["-0"]], fls)
+		} while (--D2 > 0)
+		split("", trk, "")
+	}
+
+	stk["rt"] = "."
+
+	do {
+		while ((getline D2 < D1) > 0) {
+			# if the directive is at the start of the line
+			# or it within a line and has white space at both ends
+			if (D2 ~ "([ \t]+|^)" trk["sig"] trk["dir"] && match(D2, trk["sig"] trk["dir"] "[ \t]+")) {
+				# from the start up to before the sigil
+				trk["cr"] = substr(D2, 1, RSTART - 1)
+
+				# after the directive
+				D2 = substr(D2, RSTART + RLENGTH)
+
+				# if the directive isnt NF
+				if (match(D2, /^[^ \t]+/)) {
+					# if its a new file
+					if (nx_uniq_file(substr(D2, RSTART, RLENGTH), fls[fls["-0"]], fls) != -1) {
+						__nx_file_merge_push(stk, trk["cr"])
+						trk[++trk[0]] = fls[fls[0]]
+						trk[fls[fls[0]]] = stk["rt"] "" ++stk[stk["rt"] "0"] "."
+						if ((trk["cr"] = substr(D2, RSTART + RLENGTH)) !~ /^[ \t]*$/)
+							trk["cr"] = trk["cr"] "\n"
+						__nx_file_merge_push(stk,  trk["cr"])
+					} else {
+						# directive match, but either the arg was not a file or its already been passed
+						# add the line without the directive
+						__nx_file_merge_push(stk, trk["cr"] substr(D2, RSTART + RLENGTH) "\n")
+					}
+				} else if (trk["cr"] !~ /^[ \t]*$/) {
+					# directive match, but no file provided, add the cr
+					__nx_file_merge_push(stk, trk["cr"] "\n")
+				}
+			} else if (D2 !~ /^[ \t]*$/) {
+				# no directive match, add the line
+				__nx_file_merge_push(stk, D2 "\n")
+			}
+		}
+		close(D1)
+
+		# if its a file
+		D1 = trk[trk[0]]
+		# the root
+		stk["rt"] = trk[trk[trk[0]]]
+	} while (trk[0]-- > 0)
+	delete trk
+	delete fls
+	nx_dfs(stk)
+	for (D2 = 1; D2 <= stk[0]; D2++)
+		printf(stk[stk[D2]])
+	delete stk
+}
+
