@@ -1,9 +1,0 @@
-\begin{Verbatim}[commandchars=\\\{\}]
-\PYG{c+c1}{\PYGZsh{} Example 1:}
-format\PYG{+w}{ }\PYG{l+s+s2}{\PYGZdq{}Hello:World\PYGZdq{}}\PYG{+w}{ }\PYG{l+s+s2}{\PYGZdq{}\PYGZlt{}1\PYGZgt{} \PYGZlt{}2\PYGZgt{} \PYGZlt{}\PYGZgt{}\PYGZdq{}}
-\PYG{c+c1}{\PYGZsh{} Hello World \PYGZlt{}\PYGZgt{}}
-
-\PYG{c+c1}{\PYGZsh{} Example 2:}
-format\PYG{+w}{ }\PYG{l+s+s2}{\PYGZdq{}Hello:World\PYGZdq{}}\PYG{+w}{ }\PYG{l+s+s2}{\PYGZdq{}\PYGZlt{}\PYGZgt{} \PYGZlt{}\PYGZgt{} \PYGZlt{}2\PYGZgt{}\PYGZdq{}}
-\PYG{c+c1}{\PYGZsh{} Hello \PYGZlt{}\PYGZgt{} World}
-\end{Verbatim}

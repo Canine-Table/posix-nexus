@@ -1,7 +1,0 @@
-\begin{Verbatim}[commandchars=\\\{\}]
-\PYG{c+c1}{\PYGZsh{} Example 1}
-\PYG{c+c1}{\PYGZsh{} Define a variable}
-\PYG{n+nv}{my\PYGZus{}variable}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}Hello, World!\PYGZdq{}}
-ref\PYG{+w}{ }my\PYGZus{}variable
-\PYG{c+c1}{\PYGZsh{} Hello, World!}
-\end{Verbatim}

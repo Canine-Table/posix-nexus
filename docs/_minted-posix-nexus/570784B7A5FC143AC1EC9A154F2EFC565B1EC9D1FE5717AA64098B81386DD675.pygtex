@@ -1,4 +1,0 @@
-\begin{Verbatim}[commandchars=\\\{\}]
-toupper\PYG{+w}{ }\PYG{l+s+s2}{\PYGZdq{}hello world\PYGZdq{}}
-\PYG{c+c1}{\PYGZsh{} Output: HELLO WORLD}
-\end{Verbatim}

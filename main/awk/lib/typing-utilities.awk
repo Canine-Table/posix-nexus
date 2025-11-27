@@ -1,4 +1,0 @@
-function _null() {
-    return "";
-
-}
