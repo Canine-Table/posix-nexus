@@ -1,4 +1,5 @@
 \documentclass[a4paper,12pt]{article}
+<<<<<<< HEAD
 \input{../lib/tex/nex-preamble.tex}
 \nxHyper[]%
 \nxSnowFade%
@@ -17,3 +18,30 @@
 	%\nxInput{awk-toolkit}
 \end{document}
 
+=======
+
+% Setup Preamble and Packages
+\input{setup/preamble/include.tex}
+
+% Macro Definitions
+\input{setup/macros/include.tex}
+
+\begin{document}
+    \subfile{sections/00-title.tex}
+    \begin{abstract}
+        This manual provides comprehensive guidance on using POSIX-Nexus, a cutting-edge daemon that leverages the speed of awk and the parsing power of LaTeX's expl3 syntax to deliver exceptional performance.
+        The manual outlines the goals and objectives of POSIX-Nexus, highlights its key features, and offers detailed instructions to help you harness its capabilities to achieve unparalleled speed and efficiency in your scripts and applications.
+    \end{abstract}
+    \newpage
+    \begin{baseBoxOne}{Contents}{dark}
+        \tableofcontents
+        \bigskip
+    \end{baseBoxOne}
+    \newpage
+    \subfile{sections/01-introduction.tex}
+    \subfile{sections/02-contribution.tex}
+    \subfile{sections/03-license.tex}
+    \subfile{sections/04-journey.tex}
+    \subfile{sections/05-components.tex}
+\end{document}
+>>>>>>> 2ea5924 (updated docs and removed the -f for export which is not a posix compliant flag)
