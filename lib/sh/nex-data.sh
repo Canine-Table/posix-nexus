@@ -1,3 +1,5 @@
+#nx_include nex-str.sh
+#nx_include nex-cmd.sh
 
 nx_data_ref()
 {
@@ -5,189 +7,247 @@ nx_data_ref()
 }
 
 nx_data_ref_append()
+(
+	nx_data_optargs 'v:d@s:' "$@"
+	NEX_k_v="$(nx_data_ref "$NEX_k_v")" || exit 65
+	test -n "$NEX_k_v" -a -n "$NEX_K_d" && tmpa="${NEX_k_v}${NEX_k_s:-<nx:null/>}"
+	printf '%s' "$tmpa$NEX_K_d"
+)
+
+nx_data_compare()
+(
+	nx_data_optargs 'l@r@m:s:c' "$@"
+	${AWK:-$(nx_cmd_awk)} \
+		-v lft="$NEX_K_l" \
+		-v rgt="$NEX_K_r" \
+		-v mde="$NEX_k_m" \
+		-v sep="$NEX_k_s" \
+		-v cnt="$NEX_f_c" \
+	"
+		$(nx_data_include -i "${NEXUS_LIB}/awk/nex-struct-extras.awk")
+	"'
+		BEGIN {
+			split(lft, larr, "<nx:null/>")
+			nx_arr_flip(larr)
+			split(rgt, rarr, "<nx:null/>")
+			nx_arr_flip(rarr)
+			split("", arr, "")
+			nx_arr_compare(larr, rarr, arr, mde, sep, __nx_if(cnt != "<nx:true/>", 2, 3))
+			delete larr
+			delete rarr
+			rgt = 0
+			if (cnt != "<nx:true/>") {
+				for (lft in arr) {
+					gsub("\x27", "\\\\x27", lft)
+					if (rgt++)
+						printf(" \\\n\x27%s\x27", lft)
+					else
+						printf("\x27%s\x27", lft)
+				}
+				printf("; # Nex is done here!\n")
+			} else {
+				print arr[0]
+			}
+			delete arr
+		}
+	'
+)
+
+nx_data_optargs()
 {
-	tmpa="$(nx_data_ref "$1")"
-	test -n "$tmpa" -a -n "$2" && v="${tmpa}${3:-,}"
-	printf '%s\n' "$v$2"
+	eval "$(
+		${AWK:-$(nx_cmd_awk)} \
+			-v inpt="$(nx_str_chain "$@")" \
+			"
+				$(nx_data_include -i "${NEXUS_LIB}/awk/nex-sh-extras.awk")
+			"'
+				BEGIN {
+					print nx_sh_optargs(inpt)
+				}
+			'
+	)"
+}
+
+nx_data_dir()
+{
+	test -e "$1" || return 66 && {
+		test -d "$1" && {
+			printf '%s' "$(cd "$1" && pwd)"
+			return 196
+		} || {
+			printf '%s' "$(cd $(dirname "$1") && pwd)"
+		}
+	}
 }
 
 nx_data_include()
 (
-	eval "$(nx_str_optarg ':d:f:s:o:i:' "$@")"
-	test -e "$o" -a -n "$f" && mv "$o" "${o}-$(date +"%s").bak"
-	test -z "$o" && o='/dev/stdout'
-	i="$(nx_info_path -p "${i:-"$1"}")"
-	[ -f "$i" -a -r "$i" ] && {
-		cat "$i" | ${AWK:-$(nx_cmd_awk)} \
-			-v sig="${s:-#}" \
-			-v dir="${d:-nx_include}" \
-			-v inpt="$i" \
-		"
-			$(cat \
-				"${NEXUS_LIB}/awk/nex-misc.awk" \
-				"${NEXUS_LIB}/awk/nex-struct.awk" \
-				"${NEXUS_LIB}/awk/nex-log.awk" \
-				"${NEXUS_LIB}/awk/nex-json.awk" \
-				"${NEXUS_LIB}/awk/nex-str.awk" \
-				"${NEXUS_LIB}/awk/nex-math.awk"
-			)
-		"'
-			BEGIN {
-				d = sig dir
-			} {
-				if (s = nx_include($0, d, inpt, arr))
-					print s
-			} END {
-				delete arr
-			}
-		' > "$o"
-	}
-)
+	while :; do
+		case "$1" in
+			-t) {
+				case "$2" in
+					-*) {
+						trm=' \\t'
+					};;
+					*) {
+						trm="$2"
+						shift
+					};;
+				esac
 
-nx_data_repeat()
-{
-	${AWK:-$(nx_cmd_awk)} -v cmd="$1" -v repeat="$2" '
-		BEGIN {
-			for (i = split(repeat, arr, "<nx:null/>"); i > 0; --i)
-				printf("NEX_ARG=\x22%s\x22; %s\n", arr[i], cmd)
-			delete arr
-		}
-	'
-}
-
-nx_data_append()
-{
-	printf '%s\n' "$(
-		v="$(nx_data_ref "$1")"
-		test -z "$2" && {
-			printf '%s' "$v"
-			exit
-		}
-		s="${3:-:}"
-		case "$s$v$s" in
-			*"$s$2$s"*) printf '%s' "$v";;
+			};;
+			-l) {
+				lvl="$2"
+				shift
+			};;
+			-d) {
+				dir="$2"
+				shift
+			};;
+			-s) {
+				sig="$2"
+				shift
+			};;
+			-i) {
+				inpt="$2"
+				shift
+			};;
+			-r) {
+				rt="$2"
+				shift
+			};;
+			-e) {
+				ext="$2"
+				shift
+			};;
 			*) {
-				if test -n "$4"; then
-					printf '%s' "$2${v:+"$s$v"}"
-				else
-					printf '%s' "${v:+"$v$s"}$2"
-				fi
+				break
 			};;
 		esac
-	)"
-}
-
-nx_data_jdump()
-{
-	${AWK:-$(nx_cmd_awk)} -v jdump="$*" \
+		shift
+	done
+	test -z "$inpt" && {
+		inpt="$1"
+		shift
+	}
+	rt="${rt:-$NEXUS_LIB}"
+	${AWK:-$(nx_cmd_awk)} \
+		-v inpt="$(nx_data_dir "$inpt")/$(basename "$inpt")" \
+		-v exc="$ext" \
+		-v trm="$trm" \
+		-v lvl="$lvl" \
+		-v sig="$sig" \
+		-v dir="$dir" \
 	"
-		$(nx_data_include -i "${NEXUS_LIB}/awk/nex-json.awk")
+		$(cat \
+			"${rt}/awk/nex-misc.awk" \
+			"${rt}/awk/nex-struct.awk" \
+			"${rt}/awk/nex-io.awk" \
+			"${rt}/awk/nex-int.awk" \
+			"${rt}/awk/nex-log.awk" \
+			"${rt}/awk/nex-str.awk"
+		)
 	"'
 		BEGIN {
-			nx_json(jdump, arr, 2)
-			for (jdump in arr)
-				printf("%s = %s\n", jdump, arr[jdump])
-			delete arr;
-		}
-	'
-}
-
-nx_data_jtree()
-(
-	eval "$(nx_str_optarg ':r:j:n:' "$@")"
-	test "$n" = '0' || n="$(nx_int_natural "$n")"
-	${AWK:-$(nx_cmd_awk)} -v jdump="$j" -v root="${r:-}" -v indent="$n" \
-	"
-		$(nx_data_include -i "${NEXUS_LIB}/awk/nex-json.awk")
-	"'
-		BEGIN {
-			if (err = nx_json(jdump, arr, 2))
-				exit err
-			print nx_json_flatten(root, arr, indent)
-			delete arr
+			nx_file_merge(inpt, exc, lvl, trm, sig, dir)
 		}
 	'
 )
 
-nx_data_pair()
-{
-	${AWK:-$(nx_cmd_awk)} -v str="$@" \
+nx_data_path_append()
+(
+	nx_data_optargs 'v:s:' "$@"
+	NEX_k_v="$(nx_data_ref "$NEX_k_v")" || exit 65
+	test -n "$NEX_k_v" -a -n "$NEX_K_d" && tmpa="${NEX_k_v}${NEX_k_s:-<nx:null/>}"
+	${AWK:-$(nx_cmd_awk)} \
+		-v val="$NEX_k_v" \
+		-v sep="$NEX_k_s" \
+		-v str="$NEX_R" \
 	"
 		$(nx_data_include -i "${NEXUS_LIB}/awk/nex-struct.awk")
 	"'
 		BEGIN {
-			sep["\x22"] = "\x22"
-			sep["\x27"] = "\x27"
-			sep["\x09"] = ""
-			sep["\x20"] = ""
-			nx_find_pair(str, sep, arr)
-			print substr(str, arr["osidx"] + arr["oeidx"], arr["csidx"] + arr["ceidx"] - 1)
-			delete arr
-			delete sep
-		}
-	'
-}
-
-nx_data_entries()
-{
-	${AWK:-$(nx_cmd_awk)} -v str="$1" -v ed="$2" \
-	"
-		$(nx_data_include -i "${NEXUS_LIB}/awk/nex-struct.awk")
-	"'
-		BEGIN {
-			if (ed = nx_entries(str, ed))
-				print ed
+			nx_trim_split(str, strs, "<nx:null/>")
+			strs["b4"] = 1
+			for (i = 1; i <= strs[0]; ++i) {
+				if (sub(/^-/, "", strs[i])) {
+					if (strs[i] == "a")
+						strs["b4"] = 0
+					else
+						strs["b4"] = 1
+				} else if (sep val sep !~ sep strs[i] sep) {
+					if (strs["b4"])
+						val = nx_join_str(val, strs[i], sep)
+					else
+						val = nx_join_str(strs[i], val, sep)
+				}
+			}
+			delete strs
+			if (val)
+				print val
 			else
 				exit 1
 		}
 	'
-}
+)
 
-nx_data_uniq()
+nx_data_word()
 (
-	eval "$(nx_str_optarg ':f:i:' "$@")"
-	${AWK:-$(nx_cmd_awk)} -v fl="$f" -v inpt="$i" \
+	nx_data_optargs 'k@p' "$@"
+	${AWK:-$(nx_cmd_awk)} \
+		-v str="$NEX_S" \
+		-v sep="$NEX_K_k" \
+		-v phdr="${NEX_f_p:+<nx:null/><nx:placeholder/>}" \
 	"
-		$(nx_data_include -i "${NEXUS_LIB}/awk/nex-struct.awk")
+		$(nx_data_include -i "${NEXUS_LIB}/awk/nex-struct-extras.awk")
 	"'
 		BEGIN {
-			lns[0] = 0
-			if (i = split(fl, fls, "<nx:null/>")) {
-				do {
-					while ((getline fl < fls[i]) > 0) {
-						if (! (fl in lns))
-							nx_bijective(lns, ++lns[0], fl)
-					}
-				} while (--i > 0)
+			if (! sep) {
+				dlm["\x22"] = "\x22"
+				dlm["\x27"] = "\x27"
+				dlm["\x60"] = "\x60"
+				dlm["\x09"] = ""
+				dlm["\x20"] = ""
 			}
-			if (i = split(inpt, fls, "\n|<nx:null/>")) {
-				do {
-					if (! (fls[i] in lns))
-						nx_bijective(lns, ++lns[0], fls[i])
-				} while (--i > 0)
+			nx_find_pair(str, mth, dlm, sep __nx_only(sep, phdr))
+			delete dlm
+			for (i = 5; i <= mth[mth[0]]; i += mth[0]) {
+				if (mth[i + 2] == "0")
+					print substr(str, 1, mth[i] - 1)
+				else
+					print substr(str, mth[i] + mth[i + 1], mth[i + 2])
 			}
-			delete fls
-			do {
-				print lns[lns[0]]
-			} while (--lns[0] > 0)
-			delete lns
+			delete mth
 		}
 	'
 )
 
-nx_data_import()
-{
-	${AWK:-$(nx_cmd_awk)} -v fl="NX_C:/file7.txt" \
+nx_data_match()
+(
+	nx_data_optargs 'o@v:bli' "$@"
+	${AWK:-$(nx_cmd_awk)} \
+		-v str="${NEX_k_v:-$NEX_S}" \
+		-v opt="$NEX_K_o" \
+		-v bnd="${NEX_f_b:-'<nx:false/>'}" \
+		-v ln="${NEX_f_l:-'<nx:false/>'}" \
+		-v cse="${NEX_f_c:-'<nx:false/>'}" \
 	"
-		$(nx_data_include -i "${NEXUS_LIB}/awk/nex-misc.awk")
+		$(nx_data_include -i "${NEXUS_LIB}/awk/nex-struct-extras.awk")
 	"'
 		BEGIN {
-			arr["h"] = " "
-			arr["t"] = ","
-			str = "\o\o\o\,bar\ baz,\ and\ was\ ,w"
-			#print nx_find_next(str, arr, 1)
-			print nx_file_merge("/opt/posix-nexus/env/file1.txt")
+			nx_trim_split(opt, opts, "<nx:null/>")
+			if (cse == "<nx:true/>")
+				str = tolower(str)
+			if ((str = nx_option(str, opts, res, bnd == "<nx:true/>", ln == "<nx:true/>")) != -1) {
+				print str
+				str = 0
+			} else {
+				str = 1
+			}
+			delete res
+			delete opts
+			exit str
 		}
 	'
-}
+)
 

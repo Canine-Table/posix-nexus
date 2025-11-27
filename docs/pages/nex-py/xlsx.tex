@@ -1,0 +1,131 @@
+\nxSections{XLSX Module}{1}
+
+\nxSections{PivotPipeline Glyph}{2}
+
+\begin{NxCodeBox}{python}{title={PivotPipeline Class}}
+class PivotPipeline:
+    """
+    Fluent pipeline to load data, compute pivot-like summaries, and export results.
+    """
+    # loaders: read_csv, read_excel, from_dataframe
+    # transforms: cast_categories, filter, rename
+    # pivot builders: pivot, crosstab
+    # post-process: flatten_columns, reset_index, sort
+    # exporters: to_latex, to_csv, to_xlsx_with_pivot
+    # access: result
+\end{NxCodeBox}
+
+\begin{NxLightListBox}[title={PivotPipeline — The Pivot Glyph}]
+    \nxEachLabel{ArrowDark}{Secondary}{{1}{43}}{%
+        {Purpose}/{Provides a fluent interface for loading, transforming, pivoting, and exporting tabular data},%
+        {Input}/{DataFrame or file path (CSV/Excel)},%
+        {Mechanism}/{Wraps pandas operations in chainable methods, storing pivot results in \_pivot},%
+        {Use Case}/{Used in reporting pipelines, data audits, or exporting pivot tables to LaTeX/Excel}
+    }
+\end{NxLightListBox}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\nxSections{Loader Glyphs}{2}
+
+\begin{NxCodeBox}{python}{title={Loaders}}
+pipeline.read_csv("data.csv")
+pipeline.read_excel("data.xlsx")
+pipeline.from_dataframe(df)
+\end{NxCodeBox}
+
+\begin{NxLightListBox}[title={Loader Glyphs — The Ingress}]
+    \nxEachLabel{ArrowDark}{Secondary}{{1}{43}}{%
+        {Purpose}/{Load tabular data into pipeline},%
+        {Input}/{CSV path, Excel path, or existing DataFrame},%
+        {Mechanism}/{Delegates to pandas read functions, ensures copy of DataFrame},%
+        {Use Case}/{Initialize pipeline from raw data sources}
+    }
+\end{NxLightListBox}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\nxSections{Transform Glyphs}{2}
+
+\begin{NxCodeBox}{python}{title={Transforms}}
+pipeline.cast_categories(["Region", "Product"])
+pipeline.filter("Revenue > 1000")
+pipeline.rename(Revenue="Sales")
+\end{NxCodeBox}
+
+\begin{NxLightListBox}[title={Transform Glyphs — The Mutation}]
+    \nxEachLabel{ArrowDark}{Secondary}{{1}{43}}{%
+        {Purpose}/{Mutate DataFrame columns or rows},%
+        {Input}/{Column names, query strings, rename mappings},%
+        {Mechanism}/{Casts dtypes, filters rows, renames headers},%
+        {Use Case}/{Prepare data for pivoting or reporting}
+    }
+\end{NxLightListBox}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\nxSections{Pivot Glyphs}{2}
+
+\begin{NxCodeBox}{python}{title={Pivot Builders}}
+pipeline.pivot(index=["Region"], columns=["Product"], values=["Revenue"], aggfunc="sum")
+pipeline.crosstab("Region", "Product", values="Revenue", aggfunc="sum")
+\end{NxCodeBox}
+
+\begin{NxLightListBox}[title={Pivot Glyphs — The Summoner}]
+    \nxEachLabel{ArrowDark}{Secondary}{{1}{43}}{%
+        {Purpose}/{Compute pivot tables or crosstabs},%
+        {Input}/{Index, columns, values, aggregation function},%
+        {Mechanism}/{Delegates to pandas pivot_table or crosstab},%
+        {Use Case}/{Summarize data by categories and measures}
+    }
+\end{NxLightListBox}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\nxSections{Post-Process Glyphs}{2}
+
+\begin{NxCodeBox}{python}{title={Post-Process}}
+pipeline.flatten_columns("_").reset_index().sort(by="Region")
+\end{NxCodeBox}
+\begin{NxLightListBox}[title={Post-Process Glyphs — The Refiner}]
+    \nxEachLabel{ArrowDark}{Secondary}{{1}{43}}{%
+        {Purpose}/{Refine pivot output},%
+        {Input}/{Separator for flattening, sort keys},%
+        {Mechanism}/{Flattens MultiIndex, resets index, sorts values},%
+        {Use Case}/{Prepare pivot for export or display}
+    }
+\end{NxLightListBox}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\nxSections{Exporter Glyphs}{2}
+
+\begin{NxCodeBox}{python}{title={Exporters}}
+pipeline.to_latex("pivot.tex", caption="Sales Pivot")
+pipeline.to_csv("pivot.csv")
+pipeline.to_xlsx_with_pivot("pivot.xlsx", options={
+    "index": ["Region"], "columns": ["Product"], "values": ["Revenue"], "aggfunc": "sum"
+})
+\end{NxCodeBox}
+
+\begin{NxLightListBox}[title={Exporter Glyphs — The Outgress}]
+    \nxEachLabel{ArrowDark}{Secondary}{{1}{43}}{%
+        {Purpose}/{Export pivot results},%
+        {Input}/{File path, export options},%
+        {Mechanism}/{Writes LaTeX, CSV, or Excel with native pivot table},%
+        {Use Case}/{Integrate pivot results into reports or spreadsheets}
+    }
+\end{NxLightListBox}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\nxSections{Access Glyph}{2}
+
+\begin{NxCodeBox}{python}{title={Access}}
+df_result = pipeline.result()
+\end{NxCodeBox}
+
+\begin{NxLightListBox}[title={Access Glyph — The Revealer}]
+    \nxEachLabel{ArrowDark}{Secondary}{{1}{43}}{%
+        {Purpose}/{Access pivot result},%
+        {Input}/{None},%
+        {Mechanism}/{Returns copy of \_pivot DataFrame},%
+        {Use Case}/{Retrieve pivot for further analysis or inspection}
+    }
+\end{NxLightListBox}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+

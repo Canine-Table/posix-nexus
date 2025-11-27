@@ -1,8 +1,0 @@
-0	default
-1	bridge
-3	ethernet
-11	wireless
-32	tap
-772	loopback
-65534	tun
-

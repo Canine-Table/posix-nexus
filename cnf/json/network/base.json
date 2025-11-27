@@ -1,0 +1,11 @@
+{
+	"l2": {
+		"address": "random",
+		"prefix": "beef"
+	},
+	"state": "up",
+	"attributes": {
+	  "group": "default",
+		"lld_gen": "random"
+	}
+}

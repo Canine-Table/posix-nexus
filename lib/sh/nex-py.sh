@@ -1,1 +1,1 @@
-opt/nex-py.sh
+modules/nex-py.sh

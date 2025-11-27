@@ -1,0 +1,39 @@
+0:		success — Universal across Bash, Linux, BSD.
+1:		general error — Defined in Bash and Linux (catch‑all).
+2:		misuse of shell builtins — Bash defines this; Linux follows.
+3:		URL malformed
+5:		couldn’t resolve proxy
+6:		couldn’t resolve host
+7:		failed to connect to host
+23:		incomplete. corrupt or invalid IPC data transfer
+24:		no reply IPC error
+28:		operation timeout
+30:		timeout
+35:		SSL connect error
+47:		too many redirects
+64–78:		BSD sysexits.h codes — Adopted when not conflicting:
+64:		usage error
+65:		data error
+66:		input file error
+67:		no user (addressee unknown)
+68:		host name unknown
+69:		service unavailable
+70:		internal software error
+71:		system error (e.g. cannot fork)
+72:		critical OS file missing
+73:		cannot create output file
+74:		I/O error
+75:		temporary failure
+76:		protocol error
+77:		permission denied
+78:		configuration error
+126:		command invoked cannot execute — Bash + Linux.
+127:		command not found — Bash + Linux.
+128+n:		fatal error signal “n” — Bash + Linux convention.
+130:		terminated with SIGINT (Ctrl‑C)
+137:		killed with SIGKILL
+143:		terminated with SIGTERM
+196-226:	not an error not success simply a state mostly use for case statements
+227-254:	an error specific to the function
+255:		exit -1 / impossible error — Bash + Linux treat exit -1 as 255; BSD does not override.
+

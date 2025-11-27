@@ -1,8 +1,8 @@
-
+#!/bin/sh
 nx_init()
 {
 	. "$(
-		tmpa="${HOME}/.nx-root"
+		tmpa="${HOME}/.nx/.nx-root"
 		tmpb="$(cat "$tmpa" 2> /dev/null)"
 		if test "$1" != '-f' -a -f "$tmpb" -a -r "$tmpb"; then
 			printf '%s' "$tmpb"
@@ -15,4 +15,5 @@ nx_init()
 }
 
 nx_init "$@"
+. "$HOME/.bashrc"
 nx_cnf_export

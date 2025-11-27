@@ -1,0 +1,218 @@
+\nxSections{I/O Modules}{1}
+
+\nxSections{File Existence Conductor}{2}
+\begin{NxCodeBox}{awk}{title={nx\_is\_file(D)}}
+function nx_is_file(D)
+{
+    if (D == "")
+        return 0
+    if ((getline < D) > 0)
+        close(D)
+    else
+        return 0
+    return 1
+}
+\end{NxCodeBox}
+
+\begin{NxLightListBox}[title={File Existence Glyph — nx\_is\_file}]
+    \nxEachLabel{ArrowDark}{Secondary}{{1}{43}}{%
+        {Purpose}/{Checks if a given path \texttt{D} is a readable file},%
+        {Input}/{\texttt{D}: file path string},%
+        {Mechanism}/{Attempts to open file with \texttt{getline}; closes if successful},%
+        {Return}/{\texttt{1} if file exists and is readable, else \texttt{0}},%
+        {Use Case}/{Primitive check before merging, storing, or resolving paths in overlay systems}
+    }
+\end{NxLightListBox}
+
+\begin{NxCodeBox}{awk}{title={\textbf{Check existing file}
+        \begin{NxDarkList}
+            \nxEachLabel{CodePrimary}{Tertiary}{{1}{43}}{%
+                {Input}/{\texttt{"./data.txt"}},%
+                {Operation}/{\texttt{nx\_is\_file("./data.txt")}},%
+                {Expected Result}/{Returns \texttt{1} if file is readable}
+            }
+        \end{NxDarkList}
+}}
+nx_is_file("./data.txt")
+\end{NxCodeBox}
+
+\begin{NxCodeBox}{awk}{title={\textbf{Check missing file}
+        \begin{NxDarkList}
+            \nxEachLabel{CodePrimary}{Tertiary}{{1}{43}}{%
+                {Input}/{\texttt{"./nofile.txt"}},%
+                {Operation}/{\texttt{nx\_is\_file("./nofile.txt")}},%
+                {Expected Result}/{Returns \texttt{0} since file does not exist}
+            }
+        \end{NxDarkList}
+}}
+nx_is_file("./nofile.txt")
+\end{NxCodeBox}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\nxSections{File Path Conductor}{2}
+\begin{NxCodeBox}{awk}{title={nx\_file\_path(D1, B, D2)}}
+# D1: file path
+# B:  toggle ("" or 0 → basename, non-empty → dirname)
+# D2: path separator, defaults to "/"
+function nx_file_path(D1, B, D2, i, j)
+{
+    D2 = __nx_else(D2, "/")
+    if (! sub(/^-/, ENVIRON["OLDPWD"], D1))
+    if (! sub(/^~/, ENVIRON["HOME"], D1))
+    if (! sub(/^NX_L:/, ENVIRON["NEXUS_LIB"], D1))
+    if (! sub(/^NX_C:/, ENVIRON["NEXUS_CNF"], D1))
+    if (! sub(/^NX_D:/, ENVIRON["NEXUS_DOCS"], D1))
+    if (! sub(/^NX_E:/, ENVIRON["NEXUS_ENV"], D1))
+    if (! sub(/^NX_SB:/, ENVIRON["NEXUS_SBIN"], D1))
+    if (! sub(/^NX_B:/, ENVIRON["NEXUS_BIN"], D1))
+    if (! sub(/^NX_J:/, ENVIRON["NEXUS_LIB"] "java" D2 ENVIRON["G_NEX_JAVA_PROJECT"], D1))
+        sub(/^NX_S:/, ENVIRON["NEXUS_SRC"], D1)
+    gsub(D2 "+", D2, D1)
+    gsub(D2 "+$", "", D1)
+    i = D1
+    if (! sub("[^" D2 "]+$", "", i))
+        return D1
+    i = length(i)
+    j = length(D2)
+    if (B == "")
+        return substr(D1, i + j)
+    if (B == 0)
+        return D1
+    return substr(D1, 1, i - j)
+}
+\end{NxCodeBox}
+
+\begin{NxLightListBox}[title={File Path Glyph — nx\_file\_path}]
+    \nxEachLabel{ArrowDark}{Secondary}{{1}{43}}{%
+        {Purpose}/{Resolves and normalizes file paths, expanding environment prefixes},%
+        {Input}/{\texttt{D1}: raw path; \texttt{B}: toggle; \texttt{D2}: separator (defaults to "/")},%
+        {Mechanism}/{Expands prefixes (\texttt{~}, \texttt{NX\_*}), normalizes separators, trims trailing slashes},%
+        {Toggle}/{\texttt{B=""}: return basename; \texttt{B=0}: return full path; else: return dirname},%
+        {Return}/{Resolved path string},%
+        {Use Case}/{Used in file merge/store glyphs to normalize and extract path components}
+    }
+\end{NxLightListBox}
+
+\begin{NxCodeBox}{awk}{title={\textbf{Expand home directory and get basename}
+        \begin{NxDarkList}
+            \nxEachLabel{CodePrimary}{Tertiary}{{1}{43}}{%
+                {Input}/{\texttt{"~/docs/file.txt"}},%
+                {Operation}/{\texttt{nx\_file\_path("~/docs/file.txt", "")}},%
+                {Expected Result}/{Returns \texttt{"file.txt"}}
+            }
+        \end{NxDarkList}
+}}
+nx_file_path("~/docs/file.txt", "")
+\end{NxCodeBox}
+
+\begin{NxCodeBox}{awk}{title={\textbf{Expand environment prefix and get dirname}
+        \begin{NxDarkList}
+            \nxEachLabel{CodePrimary}{Tertiary}{{1}{43}}{%
+                {Input}/{\texttt{"NX\_D:/project/file.txt"}},%
+                {Operation}/{\texttt{nx\_file\_path("NX_D:/project/file.txt", 1)}},%
+                {Expected Result}/{Returns expanded dirname (e.g. \texttt{ENVIRON["NEXUS\_DOCS"]/project})}
+            }
+        \end{NxDarkList}
+}}
+nx_file_path("NX_D:/project/file.txt", 1)
+\end{NxCodeBox}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\nxSections{File Store Conductor}{2}
+\begin{NxCodeBox}{awk}{title={nx\_file\_store(V, D1, D2, D3, B)}}
+# [1] == realpath
+# [2] == dirname
+# [3] == basename
+function nx_file_store(V, D1, D2, D3, B, trk)
+{
+    if (D1 == "")
+        return -1
+    if (! (0 in V) || int(V[0]) < 3)
+        nx_parr_stk(V, 3)
+    D3 = __nx_else(D3, "/")
+    trk["rlp"] = nx_file_path(D2 __nx_only(D2, D3) D1, 0)
+    trk["orlp"] = nx_file_path(D1, 0)
+    trk["bs"] = nx_file_path(D1)
+    if (nx_is_file(trk["rlp"])) {
+        trk["drp"] = nx_file_path(trk["rlp"], 1)
+    } else if (nx_is_file(trk["orlp"])) {
+        trk["drp"] = nx_file_path(trk["orlp"], 1)
+        trk["rlp"] = trk["orlp"]
+    } else {
+        for (trk["i"] = 2; trk["i"] <= V[2]; trk["i"] = trk["i"] + 3) {
+            trk["rlp"] = nx_file_path(V[trk["i"]] D3 D1, 0)
+            if (nx_is_file(trk["rlp"]) && ! (trk["rlp"] in V)) {
+                trk["drp"] = nx_file_path(trk["rlp"], 1)
+                break
+            }
+        }
+    }
+    D1 = -1
+    if (trk["drp"] != "") {
+        if (! (trk["rlp"] in V)) {
+            nx_bijective(V, trk["rlp"], nx_parr_stk(V, 1, trk["rlp"]))
+            D1 = 1
+        }
+        if (! (trk["drp"] in V))
+            nx_bijective(V, trk["drp"], nx_parr_stk(V, 2, trk["drp"]))
+        if (! (trk["bs"] in V))
+            nx_bijective(V, trk["bs"], nx_parr_stk(V, 3, trk["bs"]))
+    }
+    delete trk
+    return D1
+}
+\end{NxCodeBox}
+
+\begin{NxLightListBox}[title={File Store Glyph — nx\_file\_store}]
+    \nxEachLabel{ArrowDark}{Secondary}{{1}{43}}{%
+        {Purpose}/{Stores file path components (realpath, dirname, basename) into array \texttt{V}},%
+        {Input}/{\texttt{D1}: file path; \texttt{D2}: optional prefix; \texttt{D3}: separator (defaults to "/"); \texttt{B}: unused},%
+        {Mechanism}/{Resolves realpath and basename via \texttt{nx\_file\_path}, checks existence with \texttt{nx\_is\_file}, falls back to search in \texttt{V}},%
+        {Storage}/{If valid, inserts bijective mappings into \texttt{V}: \texttt{[1]=realpath}, \texttt{[2]=dirname}, \texttt{[3]=basename}},%
+        {Return}/{\texttt{1} if new realpath stored, \texttt{-1} otherwise},%
+        {Use Case}/{Used in file merge glyphs to normalize and register file paths for inclusion}
+    }
+\end{NxLightListBox}
+
+\begin{NxCodeBox}{awk}{title={\textbf{Store existing file path}
+        \begin{NxDarkList}
+            \nxEachLabel{CodePrimary}{Tertiary}{{1}{43}}{%
+                {Input}/{\texttt{"./docs/file.txt"}},%
+                {Operation}/{\texttt{nx\_file\_store(V, "./docs/file.txt")}},%
+                {Expected Result}/{Registers realpath, dirname, basename into \texttt{V}; returns \texttt{1}}
+            }
+        \end{NxDarkList}
+}}
+nx_file_store(V, "./docs/file.txt")
+\end{NxCodeBox}
+
+\begin{NxCodeBox}{awk}{title={\textbf{Store non-existent file path}
+        \begin{NxDarkList}
+            \nxEachLabel{CodePrimary}{Tertiary}{{1}{43}}{%
+                {Input}/{\texttt{"./nofile.txt"}},%
+                {Operation}/{\texttt{nx\_file\_store(V, "./nofile.txt")}},%
+                {Expected Result}/{Fails to resolve, returns \texttt{-1}}
+            }
+        \end{NxDarkList}
+}}
+nx_file_store(V, "./nofile.txt")
+\end{NxCodeBox}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+

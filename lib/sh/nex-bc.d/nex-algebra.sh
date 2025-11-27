@@ -1,0 +1,61 @@
+#nx_include NEX_L:/sh/nex-bc.sh
+
+nx_bc_alg()
+(
+	__nx_bc "$@" -m 'algebra'
+)
+
+nx_bc_pow()
+(
+	nx_data_optargs 'v:' "$@"
+	__nx_bc "$@" -m 'algebra' -c "nx_erde_pow(${NEX_k_v:-$NEX_S})" || {
+		nx_tty_print -e 'pow(x, y) domain breach — x ≤ 0\n'
+		exit 2
+	}
+)
+
+nx_bc_sqrt()
+(
+	nx_data_optargs 'v:' "$@"
+	__nx_bc "$@" -m 'algebra' -c "nx_nr_sqrt(${NEX_k_v:-$NEX_S})" || {
+		nx_tty_print -e 'sqrt(x) domain breach — x ≤ 0\n'
+		exit 2
+	}
+)
+
+nx_bc_lcd()
+(
+	nx_data_optargs 'v:' "$@"
+	__nx_bc "$@" -m 'algebra' -c "nx_lcd(${NEX_k_v:-$NEX_S})" || {
+		nx_tty_print -e 'lcm(x,y) domain breach — x,y must be positive integers'
+		exit 2
+	}
+)
+
+nx_bc_euc()
+(
+	nx_data_optargs 'v:' "$@"
+	__nx_bc "$@" -m 'algebra' -c "nx_euc(${NEX_k_v:-$NEX_S})" || {
+		nx_tty_print -e 'euc(x,y) domain breach — x,y must be non‑negative integers\n'
+		exit 2
+	}
+)
+
+nx_bc_binom()
+(
+	nx_data_optargs 'v:' "$@"
+	__nx_bc "$@" -m 'algebra' -c "nx_binom(${NEX_k_v:-$NEX_S})" || {
+		nx_tty_print -e 'binomial(n,k) domain breach — n,k must be non‑negative integers with k ≤ n\n'
+		exit 2
+	}
+)
+
+nx_bc_mod()
+(
+	nx_data_optargs 'v:' "$@"
+	__nx_bc "$@" -m 'algebra' -c "nx_int_mod(${NEX_k_v:-$NEX_S})" -s 0 || {
+		nx_tty_print -e 'modulo(a,b) domain breach — divisor must be non‑zero and both operands integral\n'
+		exit 2
+	}
+)
+

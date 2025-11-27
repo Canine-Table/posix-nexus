@@ -1,1 +1,1 @@
-opt/nex-git.sh
+modules/nex-git.sh

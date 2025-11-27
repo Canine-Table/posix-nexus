@@ -1,0 +1,29 @@
+{
+	"attributes": {
+		"group": 1
+	},
+	"name": {
+		"alias": "Logical software bridge device aggregating multiple interfaces refered to as <nx:placeholder/>."
+	},
+	"values": {
+		"mcast_igmp_version": 3,
+    "ageing_time": 20000,
+		"vlan_stats_per_port": 1,
+		"stp_enable": 1,
+		"vlan_stats_enabled": 1,
+		"hello_time": 300,
+		"vlan_filtering": 1,
+		"vlan_protocol": "802.1Q",
+		"vlan_default_pvid": 999,
+		"mcast_vlan_snooping": 1,
+		"mdb_offload_fail_notification": 1,
+		"mcast_stats_enabled": 1,
+		"mcast_igmp_version": 3,
+		"mcast_mld_version": 1,
+		"nf_call_iptables": 1,
+		"nf_call_ip6tables": 1,
+		"nf_call_arptables": 1,
+		"mcast_mld_version": 2
+	}
+}
+

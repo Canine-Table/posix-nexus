@@ -1,0 +1,14 @@
+{
+	"l2": {
+		"address": "none"
+	},
+	"attributes": {
+		"group": 772,
+		"mtu": 65536,
+		"lld_gen": "none"
+	},
+	"name": {
+		"alias": "The <nx:placeholder/> does not traverse wires. It does not blink with LEDs. It does not care for MAC addresses or ARP. It is pure essence—an idea made manifest. A metaphysical interface, looping endlessly, like Ouroboros devouring its own tail."
+	}
+}
+

@@ -1,0 +1,31 @@
+# Treat all .tex, .sty, and .cls files as LaTeX
+**/*.tex linguist-language=TeX
+**/*.sty linguist-language=TeX
+**.cls linguist-language=TeX
+
+# Treat all .awk files as AWK scripts
+**/*.awk linguist-language=Awk
+
+# Treat all .sh files as Shell scripts
+**/*.sh linguist-language=Shell
+
+# Treat all .sed files as Sed scripts
+**/*.sed linguist-language=Sed
+
+# Treat all .vim files as VimL scripts
+**/*.vim linguist-language=Vim
+
+# Treat all .c and .h files as C
+**/*.c linguist-language=C
+**/*.h linguist-language=C
+
+*.asm linguist-language=Assembly
+**/*.s linguist-language=Assembly
+**/*.S linguist-language=Assembly
+
+**/*.lua linguist-language=Lua
+
+**/*.py linguist-language=Python
+
+src/test-mod.sh linguist-vendored
+

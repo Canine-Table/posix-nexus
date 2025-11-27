@@ -1,5 +1,4 @@
 \documentclass[a4paper,12pt]{article}
-<<<<<<< HEAD
 \input{../lib/tex/nex-preamble.tex}
 \nxHyper[]%
 \nxSnowFade%
@@ -18,37 +17,3 @@
 	%\nxInput{awk-toolkit}
 \end{document}
 
-=======
-
-% Setup Preamble and Packages
-\input{setup/preamble/include.tex}
-
-% Macro Definitions
-\input{setup/macros/include.tex}
-
-\begin{document}
-    \label{top}
-    \subfile{sections/00-title.tex}
-    \begin{baseBoxOne}{}{dark}
-        \begin{abstract}
-                This manual provides comprehensive guidance on using POSIX-Nexus, a micro-sized modular daemon designed to enhance script and application performance.
-                Written exclusively with POSIX-compliant tools, POSIX-Nexus leverages the speed of awk and the parsing power of \LaTeX's expl3 syntax.
-                Its modular design allows you to add optional features to tailor its capabilities to your specific needs.
-                This manual outlines the objectives and key features of POSIX-Nexus, offering detailed instructions to help you harness its POSIX-compliant tools for unparalleled speed and efficiency in your projects.
-            \bigskip
-        \end{abstract}
-    \end{baseBoxOne}
-    \newpage
-    \label{contents}
-    \begin{baseBoxOne}{\Large\sTE{Contents}}{dark}
-        \tableofcontents
-        \bigskip
-    \end{baseBoxOne}
-    \newpage
-    \subfile{sections/01-introduction.tex}
-    \subfile{sections/02-contribution.tex}
-    \subfile{sections/03-license.tex}
-    \subfile{sections/04-journey.tex}
-    \subfile{sections/05-components.tex}
-\end{document}
->>>>>>> 2ea5924 (updated docs and removed the -f for export which is not a posix compliant flag)

@@ -1,8 +1,10 @@
-#nx_include "nex-misc.awk"
-#nx_include "nex-struct.awk"
-#nx_include "nex-str.awk"
-#nx_include "nex-log.awk"
-#nx_include "nex-math.awk"
+#nx_include nex-misc-extras.awk
+#nx_include nex-struct-extras.awk
+#nx_include nex-str-extras.awk
+#nx_include nex-log-extras.awk
+#nx_include nex-int-extras.awk
+#nx_include nex-io.awk
+#nx_include nex-map.awk
 
 function nx_json_log(V, D)
 {
@@ -138,7 +140,16 @@ function nx_json_log_db(V, N, D, B)
 		nx_grid(V, "Invalid float syntax: '<nx:placeholder/>' has more than one decimal point. JSON is confused.", 12)
 		nx_grid(V, "Too many '.' characters in '<nx:placeholder/>'. JSON only supports base‑10, not base‑chaos.", 12)
 		nx_grid(V, "Unexpected '.' in numeric literal '<nx:placeholder/>'. JSON’s math teacher would be disappointed.", 12)
-
+	
+		# Invalid scientific notation (13)
+		nx_grid(V, "Malformed scientific notation: '<nx:placeholder/>' is missing digits after the exponent.", 13)
+		nx_grid(V, "Syntax error: number '<nx:placeholder/>' has an 'e' but no valid exponent.", 13)
+		nx_grid(V, "Invalid sci‑notation: '<nx:placeholder/>' contains multiple 'e' characters. JSON isn’t that exponential.", 13)
+		nx_grid(V, "Unexpected format in '<nx:placeholder/>'. Scientific notation requires digits before and after 'e'.", 13)
+		nx_grid(V, "Bad exponent in '<nx:placeholder/>'. JSON expects an integer after 'e' or 'E'.", 13)
+		nx_grid(V, "Number '<nx:placeholder/>' misuses scientific notation. This isn’t science fiction.", 13)
+		nx_grid(V, "Invalid numeric literal: '<nx:placeholder/>' has an exponent sign but no digits.", 13)
+		nx_grid(V, "Malformed sci‑notation: '<nx:placeholder/>' confuses JSON’s math teacher.", 13)
 	}
 }
 
@@ -434,8 +445,10 @@ function nx_json_apply(V1, V2, V3, B, V4)
 			if (V2["idx"] == "NX_KEY") {
 				V2["nxt"] = V2["rec"]
 				if (V2["rt"] "." V2["nxt"] in V1) {
-					if (B > 1)
-						nx_log_stderr(nx_log_warn(nx_json_log(V2, nx_json_log_db(V4, 10, V2["rt"] "." V2["nxt"]))))
+					if (B > 2)
+						nx_ansi_alert(nx_json_log(V2, nx_json_log_db(V4, 10, V2["rt"] "." V2["nxt"])))
+					else
+						V1[V2["rt"] "." V2["nxt"]] = V2["rec"]
 				} else {
 					V1[V2["rt"] "\x7b0\x7d"] = nx_join_str(V1[V2["rt"] "\x7b0\x7d"], V2["nxt"], "<nx:null/>")
 				}
@@ -451,19 +464,31 @@ function nx_json_float(V1, V2, V3, V4, B, V5)
 {
 	if (nx_is_digit(V3[V2["cr"]])) { # If current character is a digit
 		V2["rec"] = V2["rec"] V3[V2["cr"]] # Append to recorded number
+	} else if (V3[V2["cr"]] ~ /[eE]/) { # If current character sci
+		if (V2["sci"]) {
+			if (B)
+				nx_ansi_error(nx_json_log(V2, nx_json_log_db(V5, 13, V2["rec"] ".")))
+			return 110
+		} else {
+			V2["rec"] = V2["rec"] V3[V2["cr"]] # Append to recorded number
+			if (V3[V2["cr"] + 1] ~ /[+]|[-]/)
+				V2["rec"] = V2["rec"] V3[++V2["cr"]] # Append the sign to the record
+			V2["sci"] = 1
+		}
 	} else {
 		if (V2["rec"] ~ /[.]$/) # If last recorded value is a decimal point
 			V2["rec"] = V2["rec"] 0 # Append a zero for valid float representation
 		if (V3[V2["cr"]] == ".") {
 			if (B)
-				nx_log_stderr(nx_log_error(nx_json_log(V2, nx_json_log_db(V5, 12, V2["rec"] "."))))
+				nx_ansi_error(nx_json_log(V2, nx_json_log_db(V5, 12, V2["rec"] ".")))
 			return 100
 		}
 		V2["cat"] = "NX_DIGIT"
 		if (B > 2) # Debugging
-			nx_log_stderr(nx_log_alert(nx_json_log(V2, V2["rec"])))
+			nx_ansi_alert(nx_json_log(V2, V2["rec"]))
 		nx_json_apply(V1, V2, V4, B, V5) # Apply the parsed value
 		V2["ste"] = "NX_DELIMITER" # Move to delimiter state
+		V2["sci"] = 0
 		if (! nx_is_space(V3[V2["cr"]])) # If next character is not a space
 			V2["cr"]-- # Step back to reevaluate
 	}
@@ -496,12 +521,12 @@ function nx_json_string(V1, V2, V3, V4, V5, B, V6)
 		} else {
 			V2["cat"] =  "NX_ERR_MISSING_QUOTE"
 			if (B)
-				nx_log_stderr(nx_log_error(nx_json_log(V2, nx_json_log_db(V6, 2, V2["qte"]))))
+				nx_ansi_error(nx_json_log(V2, nx_json_log_db(V6, 2, V2["qte"])))
 			return 21
 		}
 		V2["qte"] = ""
 		if (B > 2)
-			nx_log_stderr(nx_log_alert(nx_json_log(V2, V2["rec"])))
+			nx_ansi_alert(nx_json_log(V2, V2["rec"]))
 		nx_json_apply(V1, V2, V4, B, V6)
 		V2["ste"] = "NX_DELIMITER"
 	}
@@ -520,11 +545,11 @@ function nx_json_identifier(V1, V2, V3, V4, B, V5,	t)
 		} else {
 			V2["cat"] = "NX_ERR_INVALID_IDENTIFIER"
 			if (B)
-				nx_log_stderr(nx_log_error(nx_json_log(V2, nx_json_log_db(V5, 5, V2["rec"]))))
+				nx_ansi_error(nx_json_log(V2, nx_json_log_db(V5, 5, V2["rec"])))
 			return 50
 		}
 		if (B > 2)
-			nx_log_stderr(nx_log_alert(nx_json_log(V2, V2["rec"])))
+			nx_ansi_alert(nx_json_log(V2, V2["rec"]))
 		nx_json_apply(V1, V2, V4, B, V5)
 		V2["ste"] = "NX_DELIMITER"
 		if (! nx_is_space(V3[V2["cr"]]))
@@ -541,7 +566,7 @@ function nx_json_delimiter(V1, V2, V3, V4, V5, B, V6)
 	if (V3[V2["cr"]] != V2["dlm"]) {
 		V2["cat"] = "NX_ERR_UNEXPECTED_DELIM"
 		if (B)
-			nx_log_stderr(nx_log_error(nx_json_log(V2, nx_json_log_db(V6, 4, V3[V2["cr"]] "<nx:null/>" V2["dlm"]))))
+			nx_ansi_error(nx_json_log(V2, nx_json_log_db(V6, 4, V3[V2["cr"]] "<nx:null/>" V2["dlm"])))
 		return 40
 	} else if (V4[V2["stk"]] == "[" || V2["dlm"] == ":") {
 		V2["dlm"] = ","
@@ -558,7 +583,7 @@ function nx_json_delimiter(V1, V2, V3, V4, V5, B, V6)
 		V2["cat"] = "NX_OBJECT"
 	}
 	if (B > 3)
-		nx_log_stderr(nx_log_debug(nx_json_log_delim(V2, V3[V2["cr"]])))
+		nx_ansi_debug(nx_json_log_delim(V2, V3[V2["cr"]]))
 	V2["ste"] = "NX_DEFAULT" # Set state back to default
 }
 
@@ -571,23 +596,23 @@ function nx_json_depth(V1, V2, V3, V4, V5, B, V6)
 		V2["ste"] = "NX_DEFAULT"
 	} else if (V3[V2["cr"]] == V5[V4[V2["stk"]]]) { # Matching Bracket
 		if (V2["lcr"] == "\x2c" && B > 1)
-			nx_log_stderr(nx_log_warn(nx_json_log_delim(V2, nx_json_log_db(V6, 11, V3[V2["cr"]]))))
+			nx_ansi_warning(nx_json_log_delim(V2, nx_json_log_db(V6, 11, V3[V2["cr"]])))
 		V2["cat"] = V5[V4[V2["stk"]]V5[V4[V2["stk"]]]]
 		delete V4[V2["stk"]--]
 		V2["ste"] = "NX_DELIMITER"
 		V2["dlm"] = ","
 	} else if (V2["ste"] == "NX_NONE") { # Never pushed to stack
 		if (B)
-			nx_log_stderr(nx_log_error(nx_json_log_delim(V2, nx_json_log_db(V6, 6, "[' or '{<nx:null/>" V3[V2["cr"]]))))
+			nx_ansi_error(nx_json_log_delim(V2, nx_json_log_db(V6, 6, "[' or '{<nx:null/>" V3[V2["cr"]])))
 		return 60
 	} else if (! V2["stk"]) { # Empty Stack
 		if (B)
-			nx_log_stderr(nx_log_error(nx_json_log_delim(V2, nx_json_log_db(V6, 7, V3[V2["cr"]]))))
+			nx_ansi_error(nx_json_log_delim(V2, nx_json_log_db(V6, 7, V3[V2["cr"]])))
 		return 70
 	} else { # Invalid Bracket Pair
 		V2["cat"] = "NX_ERR_BRACKET_MISMATCH"
 		if (B)
-			nx_log_stderr(nx_log_error(nx_json_log(V2, nx_json_log_db(V6, 3, V5[V4[V2["stk"]]] "<nx:null/>" V3[V2["cr"]]))))
+			nx_ansi_error(nx_json_log(V2, nx_json_log_db(V6, 3, V5[V4[V2["stk"]]] "<nx:null/>" V3[V2["cr"]])))
 		return __nx_if(V2["ste"] == "NX_NONE", 31, 30)
 	}
 	if (V4[V2["stk"]] == "\x7b")
@@ -598,7 +623,7 @@ function nx_json_depth(V1, V2, V3, V4, V5, B, V6)
 		V2["idx"] = ""
 	nx_json_apply(V1, V2, V4, B, V6)
 	if (B > 3)
-		nx_log_stderr(nx_log_debug(nx_json_log_delim(V2, V3[V2["cr"]])))
+		nx_ansi_debug(nx_json_log_delim(V2, V3[V2["cr"]]))
 }
 
 function nx_json_default(V1, V2, V3, V4, V5, V6, B, V7)
@@ -609,7 +634,7 @@ function nx_json_default(V1, V2, V3, V4, V5, V6, B, V7)
 	} else if (V2["idx"] == "NX_KEY" && V3[V2["cr"]] != V5[V4[V2["stk"]]]) {
 		V2["cat"] = "NX_ERR_UNEXPECTED_KEY"
 		if (B)
-			nx_log_stderr(nx_log_error(nx_json_log(V2, nx_json_log_db(V7, 8, V3[V2["cr"]]))))
+			nx_ansi_error(nx_json_log(V2, nx_json_log_db(V7, 8, V3[V2["cr"]])))
 		return 80
 	} else if (V3[V2["cr"]] in V5) {
 		return nx_json_depth(V1, V2, V3, V4, V5, B, V7)
@@ -622,7 +647,7 @@ function nx_json_default(V1, V2, V3, V4, V5, V6, B, V7)
 	} else {
 		V2["cat"] = "NX_ERR_UNEXPECTED_CHAR"
 		if (B)
-			nx_log_stderr(nx_log_error(nx_json_log(V2, nx_json_log_db(V7, 9, V3[V2["cr"]]))))
+			nx_ansi_error(nx_json_log(V2, nx_json_log_db(V7, 9, V3[V2["cr"]])))
 		return 90
 	}
 }
@@ -674,7 +699,7 @@ function nx_json(D, V, B,	tok, stk, rec, bm, qm, db)
 	nx_json_log_db(db)
 	if (D == "") {
 		if (B)
-			nx_log_stderr(nx_log_error(nx_json_log_db(db, 1, "", 1)))
+			nx_ansi_error(nx_json_log_db(db, 1, "", 1))
 		return 10
 	}
 	tok["ste"] = "NX_NONE"
@@ -698,13 +723,13 @@ function nx_json(D, V, B,	tok, stk, rec, bm, qm, db)
 	if (tok["qte"] && ! tok["err"]) {
 		tok["cat"] = "NX_ERR_MISSING_QUOTE"
 		if (B)
-			nx_log_stderr(nx_log_error(nx_json_log(tok, nx_json_log_db(db, 2, tok["qte"]))))
+			nx_ansi_error(nx_json_log(tok, nx_json_log_db(db, 2, tok["qte"])))
 		tok["err"] = 20
 	}
 	if (stk[tok["stk"]] && ! tok["err"]) {
 		tok["cat"] = "NX_ERR_BRACKET_MISMATCH"
 		if (B)
-			nx_log_stderr(nx_log_error(nx_json_log(tok, nx_json_log_db(db, 3, bm[stk[tok["stk"]]], "<nx:null/>" rec[tok["cr"]]))))
+			nx_ansi_error(nx_json_log(tok, nx_json_log_db(db, 3, bm[stk[tok["stk"]]], "<nx:null/>" rec[tok["cr"]])))
 		tok["err"] = 30
 	}
 	D = tok["err"]

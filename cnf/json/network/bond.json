@@ -1,0 +1,13 @@
+{
+	"attributes": {
+		"group": 4
+	},
+	"name": {
+		"alias": "Logical software bond device aggregating multiple interfaces refered to as <nx:placeholder/>."
+	},
+	"values": {
+		"mode": "active-backup",
+		"miimon": 1000
+	}
+}
+

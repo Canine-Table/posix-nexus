@@ -1,2 +1,1 @@
-
-g_nx_ip_alt -n ns1 veth0
+nx_data_match -o "optA optB" -v "optA"

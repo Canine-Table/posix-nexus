@@ -1,3 +1,318 @@
 \nxSections{Data Module}{1}
 
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\nxSections{Command‑Line Parser}{2}
+\begin{NxCodeBox}{sh}{title={nx\_data\_optargs()}}
+nx_data_optargs()
+{
+    eval "$(
+        ${AWK:-$(nx_cmd_awk)} \
+            -v inpt="$(nx_str_chain "$@")" \
+            "
+                $(nx_data_include -i "${NEXUS_LIB}/awk/nex-sh-extras.awk")
+            "'
+                BEGIN {
+                    print nx_sh_optargs(inpt)
+                }
+            '
+    )"
+}
+\end{NxCodeBox}
+
+\begin{NxLightListBox}[title={Command‑Line Parser — The Optargs Glyph}]
+    \nxEachLabel{ArrowDark}{Secondary}{{1}{43}}{%
+        {Purpose}/{Parses shell arguments into structured variables using AWK macros},%
+        {Input}/{Raw argument list \texttt{\$@}, chained into a single string via \texttt{nx\_str\_chain}},%
+        {Mechanism}/{Delegates parsing to \texttt{nx\_sh\_optargs} defined in \texttt{nex-sh-extras.awk}},%
+        {Output}/{Populates \texttt{NEX\_k\_*} and \texttt{NEX\_f\_*} variables with parsed options},%
+        {Use Case}/{Acts as the TeX‑style gobbler: consumes matching options, leaves remainder stringified in \texttt{NEX\_S}}
+    }
+\end{NxLightListBox}
+
+\begin{NxCodeBox}{sh}{title={\textbf{Parse options into variables}
+        \begin{NxDarkList}
+            \nxEachLabel{CodePrimary}{Tertiary}{{1}{43}}{%
+                {Input}/{\texttt{nx\_data\_optargs -f -g value}},%
+                {Expected}/{Sets \texttt{NEX\_f\_f="<nx:true/>"}, \texttt{NEX\_f\_g="value"}, remainder in \texttt{NEX\_S}}
+            }
+        \end{NxDarkList}
+}}
+nx_data_optargs -f -g value
+\end{NxCodeBox}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\nxSections{Option Matcher}{2}
+\begin{NxCodeBox}{sh}{title={nx\_data\_match()}}
+nx_data_match()
+(
+    nx_data_optargs 'o@v:bl' "$@"
+    ${AWK:-$(nx_cmd_awk)} \
+        -v str="${NEX_k_v:-$NEX_S}" \
+        -v opt="$NEX_K_o" \
+        -v bnd="${NEX_f_b:-'<nx:false/>'}" \
+        -v ln="${NEX_f_l:-'<nx:false/>'}" \
+    "
+        $(nx_data_include -i "${NEXUS_LIB}/awk/nex-struct-extras.awk")
+    "'
+        BEGIN {
+            nx_trim_split(opt, opts, "<nx:null/>")
+            if ((str = nx_option(str, opts, res, bnd == "<nx:true/>", ln == "<nx:true/>")) != -1) {
+                print str
+                str = 0
+            } else {
+                str = 1
+            }
+            delete res
+            delete opts
+            exit str
+        }
+    '
+)
+\end{NxCodeBox}
+
+\nxSections{Flag Semantics}{2}
+\begin{NxLightListBox}[title={Boolean Flag Behavior}]
+    \nxEachLabel{ArrowDark}{Secondary}{{1}{43}}{%
+        {-f}/{First occurrence sets \texttt{NEX\_f\_f="<nx:true/>"}},%
+        {-f -f}/{Second occurrence negates, toggling to \texttt{<nx:false/>}},%
+        {-fval}/{Explicit value disables toggle; sets \texttt{NEX\_f\_f="val"}},%
+        {-f=val}/{Same as above; assigns literal string \texttt{"val"}},%
+        {-f=val\ for\ f}/{Escaped assignment; assigns full string \texttt{"val for f"} without toggle}
+    }
+\end{NxLightListBox}
+
+\begin{NxCodeBox}{sh}{title={\textbf{Flag Toggle Example}
+        \begin{NxDarkList}
+            \nxEachLabel{CodePrimary}{Tertiary}{{1}{43}}{%
+                {Input}/{\texttt{nx\_data\_optargs 'f' -f -f}},%
+                {Expected}/{First \texttt{-f} sets \texttt{NEX\_f\_f="<nx:true/>"}, second \texttt{-f} negates to \texttt{"<nx:false/>"}}
+            }
+        \end{NxDarkList}
+}}
+nx_data_optargs 'f' -f -f
+\end{NxCodeBox}
+
+\begin{NxCodeBox}{sh}{title={\textbf{Flag Reactivation Example}
+        \begin{NxDarkList}
+            \nxEachLabel{CodePrimary}{Tertiary}{{1}{43}}{%
+                {Input}/{\texttt{nx\_data\_optargs 'f' -f=<nx:true/> -f}},%
+                {Expected}/{Special assignment reactivates toggle; first sets true, second negates to <nx:false/>}
+            }
+        \end{NxDarkList}
+}}
+nx_data_optargs 'f' -f=<nx:true/> -f
+\end{NxCodeBox}
+
+\begin{NxCodeBox}{sh}{title={\textbf{Flag Reactivation from False}
+        \begin{NxDarkList}
+            \nxEachLabel{CodePrimary}{Tertiary}{{1}{43}}{%
+                {Input}/{\texttt{nx\_data\_optargs 'f' -f<nx:false/> -f}},%
+                {Expected}/{Starts from false, next \texttt{-f} flips back to <nx:true/>}
+            }
+        \end{NxDarkList}
+}}
+nx_data_optargs 'f' -f<nx:false/> -f
+\end{NxCodeBox}
+
+\nxSections{Flag Gobbling Logic}{2}
+\begin{NxLightListBox}[title={Flag Branch — Behavior}]
+    \nxEachLabel{ArrowDark}{Secondary}{{1}{43}}{%
+        {fs}/{If next char matches flag separator (\texttt{=}), assign explicit value: \texttt{-f=val}},%
+        {fa}/{If next char matches append separator (\texttt{+}), append new segment: \texttt{-f+'val'}},%
+        {fr}/{If next char matches replace/pop separator (\texttt{-}), replace or pop last segment: \texttt{-f-'val'}},%
+        {ln > 2}/{If flag token has extra chars, gobble them as inline value: \texttt{-fval}},%
+        {else}/{Default toggle: first \texttt{-f} true, second \texttt{-f} false},%
+        {debug}/{If verbosity \texttt{N > 3}, print debug info and final flag value}
+    }
+\end{NxLightListBox}
+
+\begin{NxCodeBox}{sh}{title={\textbf{Inline Value}
+        \begin{NxDarkList}
+            \nxEachLabel{CodePrimary}{Tertiary}{{1}{43}}{%
+                {Input}/{\texttt{-fval}},%
+                {Expected}/{Sets \texttt{NEX\_f\_f="val"}}
+            }
+        \end{NxDarkList}
+}}
+nx_data_optargs 'f' -fval
+\end{NxCodeBox}
+
+\begin{NxCodeBox}{sh}{title={\textbf{Explicit Assignment}
+        \begin{NxDarkList}
+            \nxEachLabel{CodePrimary}{Tertiary}{{1}{43}}{%
+                {Input}/{\texttt{-f=foo}},%
+                {Expected}/{\texttt{NEX\_f\_f="foo"}; toggle disabled}
+            }
+        \end{NxDarkList}
+}}
+nx_data_optargs 'f' -f=foo
+\end{NxCodeBox}
+
+\begin{NxCodeBox}{sh}{title={\textbf{Append Segment}
+        \begin{NxDarkList}
+            \nxEachLabel{CodePrimary}{Tertiary}{{1}{43}}{%
+                {Input}/{\texttt{-f+'extra'}},%
+                {Expected}/{Appends \texttt{"extra"} to current flag value}
+            }
+        \end{NxDarkList}
+}}
+nx_data_optargs 'f' -f+'extra'
+\end{NxCodeBox}
+
+
+\begin{NxCodeBox}{sh}{title={\textbf{Pop/Replace Segment}
+        \begin{NxDarkList}
+            \nxEachLabel{CodePrimary}{Tertiary}{{1}{43}}{%
+                {Input}/{\texttt{-f-'new'}},%
+                {Expected}/{Replaces last appended segment with \texttt{"new"}}
+            }
+        \end{NxDarkList}
+}}
+nx_data_optargs 'f' -f+'old' -f-'new'
+\end{NxCodeBox}
+
+\begin{NxCodeBox}{sh}{title={\textbf{Required Keyword (k:)}
+        \begin{NxDarkList}
+            \nxEachLabel{CodePrimary}{Tertiary}{{1}{43}}{%
+                {Input}/{\texttt{nx\_data\_optargs 'k:' -k foo}},%
+                {Expected}/{\texttt{NEX\_k\_k="foo"}; next token gobbled},%
+                {Input}/{\texttt{nx\_data\_optargs 'k:' -k}},%
+                {Expected}/{No explicit error; parser attempts to gobble, finds nothing, leaves \texttt{NEX\_k\_k} unset}
+            }
+        \end{NxDarkList}
+}}
+nx_data_optargs 'k:' -k foo
+\end{NxCodeBox}
+
+\begin{NxCodeBox}{sh}{title={\textbf{Keyword with Required Argument (k:)}
+        \begin{NxDarkList}
+            \nxEachLabel{CodePrimary}{Tertiary}{{1}{43}}{%
+                {Spec}/{\texttt{'k:'} → keyword requires a value},%
+                {Input}/{\texttt{nx\_data\_optargs 'k:' -k foo}},%
+                {Expected}/{\texttt{NEX\_k\_k="foo"}; next token gobbled},%
+                {Input}/{\texttt{nx\_data\_optargs 'k:' -k}},%
+                {Expected}/{No error; parser attempts to gobble, finds nothing, leaves \texttt{NEX\_k\_k} unset}
+            }
+        \end{NxDarkList}
+}}
+nx_data_optargs 'k:' -k foo
+\end{NxCodeBox}
+
+\begin{NxCodeBox}{sh}{title={\textbf{Keyword Array (k@)}
+        \begin{NxDarkList}
+            \nxEachLabel{CodePrimary}{Tertiary}{{1}{43}}{%
+                {Spec}/{\texttt{'k@'} → keyword collects multiple values},%
+                {Input}/{\texttt{nx\_data\_optargs 'k@' -k foo -k bar -k baz}},%
+                {Expected}/{\texttt{NEX\_K\_k="foo<nx:null/>bar<nx:null/>baz"}; each \texttt{-k} gobbles the next token},%
+                {Optional}/{If no value follows, array remains empty}
+            }
+        \end{NxDarkList}
+}}
+nx_data_optargs 'k@' -k foo -k bar -k baz
+\end{NxCodeBox}
+
+\begin{NxLightListBox}[title={Option Matcher — The Match Glyph}]
+    \nxEachLabel{ArrowDark}{Secondary}{{1}{43}}{%
+        {Purpose}/{Matches a candidate string against parsed options},%
+        {Input}/{Option spec \texttt{'o@v:bl'} defines expected flags; arguments passed through},%
+        {Mechanism}/{Parses options via \texttt{nx\_data\_optargs}, then calls \texttt{nx\_option} to resolve},%
+        {Comparison}/{Supports boundary toggle (\texttt{bnd}) and length toggle (\texttt{ln})},%
+        {Return}/{Prints matched string if found, exits 0; exits 1 if no match},%
+        {Use Case}/{Used to validate and select options in higher‑level command wrappers}
+    }
+\end{NxLightListBox}
+
+\begin{NxCodeBox}{sh}{title={\textbf{Match option against candidates}
+        \begin{NxDarkList}
+            \nxEachLabel{CodePrimary}{Tertiary}{{1}{43}}{%
+                {Input}/{\texttt{nx\_data\_match -o "optA optB" -v "optA"}},%
+                {Expected}/{Prints \texttt{"optA"} and exits 0},%
+                {Failure}/{If no match, exits 1}
+            }
+        \end{NxDarkList}
+}}
+nx_data_match -o "optA optB" -v "optA"
+\end{NxCodeBox}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

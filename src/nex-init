@@ -1,1 +1,18 @@
-../lib/sh/nex-init
+
+nx_init()
+{
+	. "$(
+		tmpa="${HOME}/.nx-root"
+		tmpb="$(cat "$tmpa" 2> /dev/null)"
+		if test "$1" != '-f' -a -f "$tmpb" -a -r "$tmpb"; then
+			printf '%s' "$tmpb"
+		else
+			"$(find "$HOME" /opt /usr/local -type f -path '*/lib/sh/nex-bundle.sh' -print -quit 2>/dev/null \
+				|| find / -path /opt -prune -o -path /usr/local -prune -o -path "$HOME" -prune -o -path /run -prune -o -path /boot -prune -o \
+					-type f -path '*/lib/sh/nex-bundle.sh' -print -quit 2>/dev/null)" | tee "$tmpa"
+		fi
+	)"
+}
+
+nx_init "$@"
+nx_cnf_export
