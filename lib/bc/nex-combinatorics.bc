@@ -1,11 +1,11 @@
-#nx_include "./nex-constant.bc"
-
+#nx_include nex-constant.bc
+#nx_include nex-algebra.bc
 
 ##################################################################
 define nx_fact(x) {
 	auto n
 	if (x < 0) {
-		print "[IMPURITY]: factoral input < 0 detected!!!"
+		print "<nx:impurity/>"
 		return -1
 	}
 	if (x < 2)
@@ -20,6 +20,10 @@ define nx_fact(x) {
 ##################################################################
 define nx_fib(x) {
 	auto n, o, p
+	if (x < 1) {
+		print "<nx:impurity/>"
+		return -1
+	}
 	if (x == 1)
 		return 0
 	n = 1
@@ -35,7 +39,7 @@ define nx_fib(x) {
 define nx_de_ln(x) {
 	auto n
 	if (x <= 0) {
-		print "[IMPURITY]: ln(x) domain breach — x ≤ 0"
+		print "<nx:impurity/>"
 		return -1
 	}
 	if (x == 2)
@@ -55,7 +59,8 @@ define nx_de_ln(x) {
 
 define nx_de_log2(x) {
 	if (x <= 0) {
-		print "[IMPURITY]: log2(x) domain breach — x ≤ 0\n"
+		print "<nx:impurity/>"
+		
 		return -1
 	}
 	return nx_de_ln(x) / c_log2

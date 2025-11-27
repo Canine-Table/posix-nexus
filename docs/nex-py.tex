@@ -1,0 +1,19 @@
+\documentclass[a4paper,12pt]{article}
+\input{../lib/tex/nex-preamble.tex}
+\nxHyper[]%
+\nxSnowFade%
+\nxNoParIndent
+\def\nxInput#1{\input{./pages/nex-py/#1.tex}}%
+
+\begin{document}
+	\nxCoverPage[%
+		title={Python},%
+		ref={\nxGithubLight}%
+	]
+	\nxRomanFooter
+	\nxToc{Contents}
+	\newpage
+	\nxSnowFlakeHeader{PY}
+	\nxInput{xlsx}
+\end{document}
+

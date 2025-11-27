@@ -1,1 +1,1 @@
-opt/nex-TeX.sh
+modules/nex-TeX.sh

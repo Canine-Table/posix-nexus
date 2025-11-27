@@ -1,1 +1,0 @@
-opt/nex-wget.sh

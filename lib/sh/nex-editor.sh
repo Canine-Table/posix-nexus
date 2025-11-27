@@ -1,1 +1,1 @@
-opt/nex-editor.sh
+modules/nex-editor.sh

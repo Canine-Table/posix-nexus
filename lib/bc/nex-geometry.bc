@@ -1,14 +1,15 @@
-#nx_include "./geometry.d/nex-trigonometry.bc"
-#nx_include "./geometry.d/nex-degree.bc"
-#nx_include "./geometry.d/nex-radian.bc"
-#nx_include "./nex-combinatorics.bc"
-#nx_include "./nex-calculus.bc"
-#nx_include "./nex-convert.bc"
-#nx_include "./nex-algebra.bc"
-
+#nx_include geometry.d/nex-trigonometry.bc
+#nx_include geometry.d/nex-degree.bc
+#nx_include geometry.d/nex-radian.bc
+#nx_include nex-combinatorics.bc
+#nx_include nex-calculus.bc
+#nx_include nex-convert.bc
+#nx_include nex-algebra.bc
 
 define nx_agm(x, y) {
 	auto a, b, p
+	if (nx_xy_breach(x, y) == -1)
+		return -1
 	a = x
 	b = y
 	p = 0
@@ -43,6 +44,10 @@ define nx_agm_pi() {
 	return a * a / (4 * t)
 }
 
+define nx_agm_tau() {
+	return 2 * nx_agm_pi()
+}
+
 define r_nx_sin_2x(x) {
     return 2 * r_nx_ts_sin(x) * r_nx_ts_cos(x)
 }
@@ -74,19 +79,20 @@ define r_nx_agm_tan(x) {
 }
 
 # very slow
-define nx_lz_pi(x) {
-	auto k, r, s
+define nx_lz_pi() {
+	auto k, r, s, p
 	r = 0
 	s = 1
-	for (k = 0; k < x; ++k) {
+	p = c_prec * scale
+	for (k = 0; k < p; ++k) {
 		r = r + s * (1 / (2 * k + 1))
 		s = -s
 	}
 	return 4 * r
 }
 
-define nx_lz_tau(x) {
-	return nx_lz_pi(x)
+define nx_lz_tau() {
+	return 2 * nx_lz_pi()
 }
 
 define nx_rj_pi() {
@@ -102,7 +108,7 @@ define nx_rj_pi() {
 	return 9801 / (2 * nx_nr_sqrt(2) * r)
 }
 
-define nx_rj_tau(x) {
-	return 2 * nx_rj_pi(x)
+define nx_rj_tau() {
+	return 2 * nx_rj_pi()
 }
 

@@ -1,0 +1,12 @@
+{
+	"attributes": {
+		"group": 32
+	},
+	"name": {
+		"alias": "Logical software tap device refered to as <nx:placeholder/>."
+	},
+	"values": {
+		"hairpin": "on"
+	}
+}
+

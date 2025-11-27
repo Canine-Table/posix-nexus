@@ -1,0 +1,183 @@
+\nxSections{String Module}{1}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\nxSections{Escaped Sequence Matcher}{2}
+\begin{NxCodeBox}{awk}{title={nx\_nesc\_match(D1, D2, D3)}}
+function nx_nesc_match(D1, D2, D3,	f, l)
+{
+	if (D1 == "")
+		return -1
+	f = 0
+	D2 = __nx_else(D2, " ")
+	if ((D3 = __nx_else(D3, "\\\\", 1)) == "\\\\")
+		l = 1
+	else
+		l = length(D3)
+	while (match(D1, D2)) {
+		f = f + RSTART
+		if (! (match(substr(D1, 1, RSTART - 1), D3 "+$") && D3) || int(RLENGTH % 2) == 0)
+			break
+		f = f + RLENGTH - l
+		D1 = substr(D1, f + 1)
+	}
+	return f
+}
+\end{NxCodeBox}
+
+\begin{NxLightListBox}[title={Escaped Sequence Matcher — The Escape Glyph}]
+    \nxEachLabel{ArrowDark}{Secondary}{{1}{43}}{%
+        {Purpose}/{Finds the position of a delimiter in string \(D1\), respecting escape sequences},%
+        {Input}/{\(D1\): target string; \(D2\): delimiter regex (default space); \(D3\): escape character regex (default backslash)},%
+        {Mechanism}/{Iteratively searches for delimiter, checks if it is escaped by \(D3\), and advances accordingly},%
+        {Return}/{Index of first unescaped delimiter, or \(-1\) if \(D1\) is empty},%
+        {Use Case}/{Used in tokenization, argument parsing, or IPC relay parsing where escapes must be honored}
+    }
+\end{NxLightListBox}
+
+\begin{NxCodeBox}{awk}{title={\textbf{Find first unescaped space in a string}
+        \begin{NxDarkList}
+            \nxEachLabel{CodePrimary}{Tertiary}{{1}{43}}{%
+                {Input}/{\texttt{"foo bar"}},%
+                {Delimiter}/{Space},%
+                {Escape}/{Backslash},%
+                {Expected Result}/{Returns \texttt{4}, the position of the space}
+            }
+        \end{NxDarkList}
+}}
+print nx_nesc_match("foo bar")
+\end{NxCodeBox}
+
+\begin{NxCodeBox}{awk}{title={\textbf{Skip escaped space}
+        \begin{NxDarkList}
+            \nxEachLabel{CodePrimary}{Tertiary}{{1}{43}}{%
+                {Input}/{\texttt{"foo\\ bar baz"}},%
+                {Delimiter}/{Space},%
+                {Escape}/{Backslash},%
+                {Expected Result}/{Returns \texttt{9}, the position of the unescaped space after \texttt{"bar"}}
+            }
+        \end{NxDarkList}
+}}
+print nx_nesc_match("foo\\ bar baz")
+\end{NxCodeBox}
+
+\begin{NxCodeBox}{awk}{title={\textbf{Handle double escape (escaped backslash before space)}
+        \begin{NxDarkList}
+            \nxEachLabel{CodePrimary}{Tertiary}{{1}{43}}{%
+                {Input}/{\texttt{"foo\\\\ bar"}},%
+                {Delimiter}/{Space},%
+                {Escape}/{Backslash},%
+                {Expected Result}/{Returns \texttt{5}, since the space is not escaped (two backslashes cancel)}
+            }
+        \end{NxDarkList}
+}}
+print nx_nesc_match("foo\\\\ bar")
+\end{NxCodeBox}
+
+\nxSections{Next Match Finder}{2}
+\begin{NxCodeBox}{awk}{title={nx\_find\_next(D1, V, B, D2)}}
+function nx_find_next(D1, V, B, D2,	i, f, m)
+{
+	if (D1 == "")
+		return -1
+	B = __nx_if(B, ">0", "<0")
+	for (i in V) {
+		m = nx_nesc_match(D1, V[i], D2)
+		if (! f || __nx_equality(m, B, f))
+			f = m
+	}
+	if (f != length(D1) && B == ">0")
+		return f + 1
+	return f
+}i
+\end{NxCodeBox}
+
+\begin{NxLightListBox}[title={Next Match Finder — The Match Glyph}]
+    \nxEachLabel{ArrowDark}{Secondary}{{1}{43}}{%
+        {Purpose}/{Finds the next delimiter match in string \(D1\) across a set of candidate patterns \(V\)},%
+        {Input}/{\(D1\): target string; \(V\): array of delimiter regexes; \(B\): comparison toggle; \(D2\): escape character regex},%
+        {Mechanism}/{Iterates over all patterns in \(V\), uses \texttt{nx\_nesc\_match} to locate matches, compares positions with \texttt{\_\_nx\_equality}},%
+        {Comparison}/{If \(B\) is empty, defaults to \texttt{">0"} (find next greater); otherwise \texttt{"<0"}},%
+        {Return}/{Index of the next matching delimiter, or \(-1\) if \(D1\) is empty},%
+        {Use Case}/{Used in tokenization, parsing overlays, or IPC relays where multiple delimiters may apply}
+    }
+\end{NxLightListBox}
+
+\begin{NxCodeBox}{awk}{title={\textbf{Find next space or comma in a string}
+        \begin{NxDarkList}
+            \nxEachLabel{CodePrimary}{Tertiary}{{1}{43}}{%
+                {Input}/{\texttt{"foo, bar baz"}},%
+                {Delimiters}/{\texttt{V[1] = ","}, \texttt{V[2] = " "}},%
+                {Escape}/{Default backslash},%
+                {Expected Result}/{Returns \texttt{4}, the position of the comma}
+            }
+        \end{NxDarkList}
+}}
+V[1] = ","
+V[2] = " "
+print nx_find_next("foo, bar baz", V)
+\end{NxCodeBox}
+
+\begin{NxCodeBox}{awk}{title={\textbf{Skip escaped delimiter}
+        \begin{NxDarkList}
+            \nxEachLabel{CodePrimary}{Tertiary}{{1}{43}}{%
+                {Input}/{\texttt{"foo\\,bar baz"}},%
+                {Delimiters}/{\texttt{V[1] = ","}, \texttt{V[2] = " "}},%
+                {Escape}/{Backslash},%
+                {Expected Result}/{Returns \texttt{8}, the position of the space after \texttt{"bar"}}
+            }
+        \end{NxDarkList}
+}}
+V[1] = ","
+V[2] = " "
+print nx_find_next("foo\\,bar baz", V)
+\end{NxCodeBox}
+
+\begin{NxCodeBox}{awk}{title={\textbf{Handle multiple delimiters with comparison toggle}
+        \begin{NxDarkList}
+            \nxEachLabel{CodePrimary}{Tertiary}{{1}{43}}{%
+                {Input}/{\texttt{"alpha|beta gamma"}},%
+                {Delimiters}/{\texttt{V[1] = "|"}, \texttt{V[2] = " "}},%
+                {Toggle}/{Default \texttt{">0"} ensures smallest index chosen},%
+                {Expected Result}/{Returns \texttt{6}, the position of the space after \texttt{"beta"}}
+            }
+        \end{NxDarkList}
+}}
+V[1] = "|"
+V[2] = " "
+print nx_find_next("alpha|beta gamma", V)
+\end{NxCodeBox}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+

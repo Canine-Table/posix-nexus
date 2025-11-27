@@ -1,1 +1,1 @@
-opt/nex-bc.sh
+modules/nex-bc.sh
