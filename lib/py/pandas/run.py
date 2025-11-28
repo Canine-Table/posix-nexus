@@ -19,9 +19,6 @@ import os
 console = Console()
 table = Table(show_header=True, header_style="bold magenta")
 
-f1 = NxEnvFs.env("CST8118_7_303_Benjamin-Stroobach-Wilson_Lookup.xlsx")
-f2 = NxEnvFs.env("Carbon_monoxide_emissions_by_facility.utf8.xlsx")
-
 #print(pd.ExcelFile(f2).sheet_names["Sheet1"])
 #print(NxEnvFs.header(f2))
 #print(NxEnvFs.csv2xlsx(f2))
