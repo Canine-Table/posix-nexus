@@ -61,6 +61,21 @@
 			\pgfkeyssetvalue{/nx/cover page/ref}{\nx@tmpa}%
 		\fi%
 	},%
+	/nx/.cd,%
+	/nx/refer/.is family,%
+	nx refer/.style={%
+		nx, refer/.cd%
+	},%
+	/nx/refer/.cd,%
+	acr style/.default={long-short-desc},%
+	gls style/.default={index},%
+	bib style/.default={},%
+	abr style/.default={long-short-sc},%
+	acr style/.store in=\nx@acr,%
+	gls style/.store in=\nx@gls,%
+	bib style/.store in=\nx@bib,%
+	abr style/.store in=\nx@abr,%
+	/nx/.cd,%
 	%%% List Box Family %%%
 	/nx/.cd,%
 	/nx/list box/.is family,%

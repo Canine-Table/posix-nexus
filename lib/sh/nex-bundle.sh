@@ -97,14 +97,8 @@ nx_env()
 		export NEXUS_LOG="${tmpb}env"
 		export NEXUS_SBIN="${tmpb}sbin"
 		export NEXUS_BIN="${tmpb}bin"
-		nx_cnf_export()
-		{
-			for tmpa in "\${NEXUS_CNF}/nex-export.cnf" "\${NEXUS_CNF}/nex-alias.cnf"; do
-				test -f "\$tmpa" -a -r "\$tmpa" && . "\$tmpa"
-			done
-		}
 	EOF
-	tmpc="${tmpb}cnf/.nexrc"
+	tmpc="${tmpb}cnf/.nex-rc"
 	test -f "$tmpc" -a -r "$tmpc" && printf 'export ENV="%s"\n' "${tmpc}" >> "${tmpb}env/.nexus-shell.bundles.sh"
 	umask 022
 	nx_init_install -o 0 -O 0 -b "$tmpb" cnf env src docs bin sbin img -b "$HOME/" ".nx/ssl" ".nx/csr"

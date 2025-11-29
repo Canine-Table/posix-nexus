@@ -28,7 +28,7 @@ import java.util.List;
 public class NxMain {
 	public static void main(String[] args) throws Exception  {
 		//NxTest.bits(37).on(3).flip(7).off(7).cascade(4).toBinary();
-		NxTest.testCmdExec();
+		//NxTest.testCmdExec();
 
 		//.toBinary();
 		int i = 1020434;

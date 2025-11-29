@@ -1,10 +1,26 @@
+
+function! NxTexLogger()
+	" Open a log file for writing
+	let logfile = expand(getenv('NEXUS_ENV') . '/log/vimtex_vars.log')
+	call writefile([], logfile)  " clear file first
+	" Loop through all global variables
+	for [name, value] in items(g:)
+	  if name =~# '^vimtex'
+	    " Format like awk: key => value
+	    call writefile([name . '  =>  ' . string(value)], logfile, 'a')
+	  endif
+	endfor
+
+	echo "VimTeX variables written to " . logfile
+endfunction
+
 function! s:NxTeXSettings()
 	set tabstop=2 softtabstop=0 shiftwidth=2 noexpandtab autoindent
 	if empty(v:servername) && exists('*remote_startserver')
 		call remote_startserver('VIM')
 	endif
 	let g:nex_tex_root = expand('%:p:h')
-	let g:nex_tex_aux = g:nex_tex_root . '/aux/'
+	let g:nex_tex_aux = g:nex_tex_root . '/auxiliary'
 	let g:vimtex_latexmk_build_dir = g:nex_tex_aux
 	let g:vimtex_view_automatic = 1
 	let g:vimtex_compiler_method = NxBaseName(getenv('G_NEX_TEX_BACKEND'))
@@ -15,7 +31,11 @@ function! s:NxTeXSettings()
 		\ 'latexrun': 'NxConfigureLaTeXRun',
 		\ 'tectonic': 'NxConfigureTectonic',
 		\ 'arara': 'NxConfigureArara',
-	\}
+	\ }
+	let g:vimtex_compiler_clean_paths = [
+		\ g:nex_tex_root,
+		\ g:nex_tex_aux
+	\ ]
 	let g:vimtex_quickfix_open_on_warning = 0
 	let g:vimtex_view_enabled = 1
 	let g:vimtex_fold_manual = 1
@@ -37,7 +57,7 @@ function! s:NxTeXSettings()
 		endif
 		call NxCallFunction(l:backends[g:vimtex_compiler_method])
 		augroup NxVimKeyMap
-			autocmd!
+autocmd!
 			nnoremap <buffer> <Leader>lv :VimtexView<CR>
 			nnoremap <buffer> <Leader>ll :VimtexCompile<CR>
 			noremap  <buffer> <Leader>lL :VimtexCompileSS<CR>
@@ -64,21 +84,41 @@ function! NxConfigureLaTeXMK()
 		\ 'lualatex' : '-lualatex',
 		\ 'xelatex' : '-xelatex',
 	\ }
+
+	"let g:Tex_DefaultTargetFormat="pdf"
+
+	"let g:Tex_CompileRule_pdf='pdflatex --output-directory=' . g:nex_tex_aux . ' -aux-directory=' . g:nex_tex_aux . ' -interaction=nonstopmode $*'
+	"let g:vimtex_compiler_latexmk = {
+		\ 'callback' : 1,
+		\ 'continuous' : 1,
+		\ 'out_dir' : g:nex_tex_aux,
+		\ 'aux_dir' : g:nex_tex_aux,
+		\ 'executable' : g:vimtex_compiler_method,
+		\ 'hooks' : [{ 'name': 'copy-pdf', 'callback': {-> system('cp ' . g:nex_tex_aux . '/' . expand('%:t:r') . '.pdf .') } } ],
+		\ 'options' : [
+			\ '-emulate-aux-dir=' . g:nex_tex_aux,
+			\  '-verbose',
+			\ '-shell-escape',
+		\ ],
+	\ }
 	let g:vimtex_compiler_lualatex = {
 		\ 'callback' : 1,
 		\ 'continuous' : 1,
+		\ 'out_dir' : g:nex_tex_aux,
+		\ 'aux_dir' : g:nex_tex_aux,
 		\ 'executable' : g:vimtex_compiler_method,
-		\ 'hooks' : [{ 'name': 'copy-pdf', 'callback': {-> system('cp ' . g:nx_tex_aux . '/' . expand('%:t:r') . '.pdf .') } } ],
+		\ 'hooks' : [{ 'name': 'copy-pdf', 'callback': {-> system('cp ' . g:nex_tex_aux . '/' . expand('%:t:r') . '.pdf .') } } ],
 		\ 'options' : [
+			\ '-emulate-aux-dir=' . g:nex_tex_aux,
 			\  '-verbose',
 			\  '-synctex=1',
+			\ '-dir-report',
+			\ '-lualatex',
 			\  '-interaction=nonstopmode',
 			\ '-file-line-error',
 			\ '-halt-on-error',
 			\ '-reorder',
-			\ '-shell-escape',
-			\ '-outdir=aux',
-			\ '-aux-directory=aux'
+			\ '-shell-escape'
 		\ ],
 	\ }
 

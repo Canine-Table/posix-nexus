@@ -79,6 +79,20 @@
 }
 
 \makeatletter
+\def\nxBib[#1]{%
+	\pgfkeys{%
+		nx refer,%
+		gls style,%
+		bib style,%
+		acr style,%
+		abr style,%
+		#1%
+	}%
+	\setglossarystyle{\nx@gls}
+	\setacronymstyle{\nx@acr}
+	\setabbreviationstyle{\nx@abr}
+}
+
 \def\nxHyper[#1]{%
 	\pgfkeys{%
 		nx cover page,%

@@ -1,0 +1,6 @@
+
+#test -r "$HOME/.bashrc" -a -f "$HOME/.bashrc" && . "$HOME/.bashrc"
+
+. "$(cat "$HOME/.nx/.nx-root")"
+nx_cfg_export
+

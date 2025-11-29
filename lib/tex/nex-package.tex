@@ -9,7 +9,31 @@
 	bottom=3cm % Adds additional space at the bottom
 ]{geometry} % Controls page dimensions
 
-\usepackage[backend=biber,style=alphabetic]{biblatex}
+\usepackage[colorlinks]{hyperref} % Makes references and URLs clickable within the document
+\usepackage{graphicx}
+\usepackage{fontspec}
+\usepackage{tocloft}
+
+\usepackage[%
+	backend=biber,%
+	style=numeric%
+]{biblatex}
+
+\usepackage[%
+	acronym,%
+	nopostdot,%
+	nonumberlist,%
+	style=tree%
+]{glossaries}
+
+\usepackage[%
+	abbreviations,%
+	symbols,%
+	automake,%
+]{glossaries-extra}
+
+%\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
 
 \usepackage[
 	most,%
@@ -51,7 +75,3 @@
 \usepackage{varwidth} % Allows variable-width text boxes for alignment flexibility
 \usepackage{minted} % For enhanced source code highlighting using Pygments\usepackage{listings} % Enhances the formatting of source code listings, making them more readable and visually appealing
 
-\usepackage{hyperref} % Makes references and URLs clickable within the document
-\usepackage{graphicx}
-\usepackage{fontspec}
-\usepackage{tocloft}

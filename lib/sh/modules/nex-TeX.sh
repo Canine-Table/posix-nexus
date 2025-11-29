@@ -1,3 +1,5 @@
+#nx_include nex-TeX.d/nex-glossaries.sh
+#nx_include nex-cmd.sh
 
 nx_tex_export()
 {

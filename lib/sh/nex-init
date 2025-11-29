@@ -15,5 +15,6 @@ nx_init()
 }
 
 nx_init "$@"
-. "$HOME/.bashrc"
-nx_cnf_export
+#. "$HOME/.bashrc"
+
+nx_cfg_export

@@ -3,7 +3,7 @@
 
 nx_tty_print()
 (
-	${AWK:-$(nx_data_awk)} \
+	${AWK:-$(nx_cmd_awk)} \
 		-v inpt="$(nx_str_chain "$@")" \
 		"
 			$(nx_data_include -i "${NEXUS_LIB}/awk/nex-log-extras.awk")

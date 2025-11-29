@@ -1,0 +1,42 @@
+\documentclass[a5paper,13pt]{article}
+\RequirePackage{ifluatex} % Checks if the document is compiled with LuaLaTeX
+\ifluatex%
+	\usepackage{luacode} % Allows embedding Lua code directly in LaTeX
+	\edef\nxTeXPath{\directlua{tex.sprint(os.getenv("TEXMFHOME"))}}
+	\directlua{
+		local pkgrt = os.getenv('NEXUS_LIB') .. '/lua/'
+		package.path = pkgrt .. '?.lua;' .. pkgrt .. 'opt/?.lua;' .. package.path
+		package.path = pkgrt .. 'luatex/?.lua;' .. pkgrt  .. 'luatex/opt/?.lua;' .. package.path
+		nex = require('luatex/nex-luatex-init')
+	}
+	\makeatletter
+	\def\input@path{{\nxTeXPath/sty/}}
+	\makeatother
+	\message{Posix-Nexus LuaLaTeX preamble fully loaded!}
+\else%
+	\PackageError{luacode}{LuaTeX is required, but not detected}{}%
+\fi%
+
+\nxHyper[]%
+\nxSnowFade%
+\nxNoParIndent
+\def\nxInput#1{\input{./pages/nex-math/#1.tex}}%
+
+
+%%%\newglossary*{math}{Math}
+
+\newglossaryentry{algorithm}{
+  name=Algorithm,
+  description={A step-by-step procedure for solving a problem}
+}
+
+\newglossaryentry{dataset}{
+  name={Dataset},
+  description={A structured collection of data}
+}
+
+\makeglossaries
+
+\begin{document}
+\documentclass[a5paper,13pt]{article}
+\end{document}

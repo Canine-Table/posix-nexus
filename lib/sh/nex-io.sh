@@ -2,9 +2,9 @@
 
 nx_io_noclobber()
 (
-	nx_data_optargs 'p:s:n:bfrFRD' "$@"
+	nx_data_optargs 'p:s:n:bfrFRDM' "$@"
 	NEX_k_n="${NEX_k_n:-8}"
-	nx_int_range -v "$NEX_k_n" || NEX_k_n=8
+	nx_int_range -g 1 -l 128 -e -a -v "$NEX_k_n" || NEX_k_n=8
 	NEX_k_p="$(nx_fs_canonize -p "$NEX_k_p")"
 	NEX_k_s="$(nx_fs_canonize -b "$NEX_k_s")"
 	test -z "$NEX_k_p$NEX_k_s" && exit 66 || tmpc="$NEX_k_p$NEX_k_s"
