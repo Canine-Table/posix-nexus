@@ -2,6 +2,7 @@
 #nx_include nex-bc.d/nex-algebra.sh
 #nx_include nex-bc.d/nex-geometry.sh
 #nx_include nex-bc.d/nex-bases.sh
+#nx_include nex-bc.d/nex-calculus.sh
 
 __nx_bc()
 {

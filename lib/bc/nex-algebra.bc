@@ -61,7 +61,7 @@ define nx_part(x, y) {
 
 ##################################################################
 define nx_abs(x) {
-	if (-x = 0 || x < 0)
+	if (x < 0)
 		return -x
 	return x
 }
@@ -201,16 +201,11 @@ define nx_scale(x) {
 }
 
 ##################################################################
-define nx_abs(x) {
-	if (x < 0)
-		return -x
-	return x
-}
-
-##################################################################
 define nx_pt_mod(x, y) {
-	x = nx_abs(nx_pt_trunc(x))
-	y = nx_abs(nx_pt_trunc(y))
+	x = nx_abs(x)
+	if (x == 0)
+		return 0
+	y = nx_abs(y)
 	if (y > 0)
 		return x - y * nx_pt_trunc(x / y)
 	print "<nx:impurity/>"

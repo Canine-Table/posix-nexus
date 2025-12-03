@@ -1,8 +1,7 @@
 
 ##################################################################
 define r_nx_ts_cos(x) {
-	return r_nx_pt_quad_c(x) * nx_ts(nx_rad_cos(x), 2, scale * 22, 2, 1)
-
+	return nx_ts(nx_pt_mod2pi(x), 2, 2, 1)
 }
 
 ##################################################################
@@ -12,50 +11,10 @@ define r_nx_ts_sec(x) {
 
 ##################################################################
 define r_nx_ts_acos(x, y) {
-	if (x > 1 || x < -1) {
-		print "[IMPURITY]: acos(x) domain breach — |x| > 1\n"
-		return -1
-	}
-	return c_pi / 2 - r_nx_ts_asin(x, y)
-}
-
-##################################################################
-define r_nx_solve_sss(a, b, c) {
-	return r_nx_ts_acos((a*a + b*b - c*c) / (2 * a * b))
-}
-
-define nx_solved_sss(a, b, c) {
-	auto x, y, z
-	if (a + b <= c || b + c <= a || c + a <= b) {
-		print "[IMPURITY]: triangle inequality breach"
-		return -1
-	}
-	x = r_nx_solve_sss(b, c, a)
-	y = r_nx_solve_sss(c, a, b)
-	z = r_nx_solve_sss(a, b, c)
-
-	print "Angle A (rad): ", x, " →  (deg): ", nx_rad2deg(x), "\n"
-	print "Angle B (rad): ", y, " → (deg): ", nx_rad2deg(y), "\n"
-	print "Angle C (rad): ", z, " → (deg): ", nx_rad2deg(z), "\n"
-	print "Sum A + B + C (rad): ", x + y + z,  " → (deg) ", nx_rad2deg(x + y + z), "\n"
-}
-
-##################################################################
-define r_nx_solve_sas(a, b, c) {
-    auto x
-    if (a <= 0 || b <= 0) {
-        print "[IMPURITY]: side lengths must be positive"
-        return -1
-    }
-    if (c <= 0 || c >= c_pi) {
-        print "[IMPURITY]: angle must be in (0, π) radians"
-        return -1
-    }
-    x = a*a + b*b - 2 * a * b * r_nx_ts_cos(c)
-    if (x < 0) {
-        print "[IMPURITY]: invalid SAS input — negative squared side"
-        return -1
-    }
-    return nx_nr_sqrt(x)
+        if (x > 1 || x < -1) {
+		print "<nx:impurity230/>"
+                return -1
+        }
+        return c_pi_2 - r_nx_ts_asin(x, y)
 }
 

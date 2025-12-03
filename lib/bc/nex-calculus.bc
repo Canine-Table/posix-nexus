@@ -6,31 +6,35 @@ define nx_mc_esp(x, y) {
 }
 
 define nx_ts(n, t, k, s) {
-	auto r, p
+	auto r
 	if (t < 1 || k <= 0) {
 		print "<nx:impurity/>"
 		return -1
 	}
 	r = s
-	p = 129
-	while (p > 0) {
-		p = p - 1
-		r = r - nx_mc_esp(n, t) + nx_mc_esp(n, t += k)
-		t += k
+	s = 0
+	while (s != r) {
+		s = r
+		r = r - nx_mc_esp(n, t)
+		t = t + k
+		r = r + nx_mc_esp(n, t)
+		t = t + k
 	}
 	return r
 }
 
 ##################################################################
-define nx_ts_alt(z, i, p, k, s) {
-	auto r, t
+define nx_ts_alt(z, i, k, s) {
+	auto r, t, p
 	if (nx_abs(z) > 1) {
-		print "[IMPURITY]: series domain breach — |z| > 1"
+		print "<nx:impurity230/>"
 		return -1
 	}
 	r = z
 	t = z
-	while (i < p) {
+	p = 0
+	while (p != r) {
+		p = r
 		t = t * z * z
 		r = r + s * t / i
 		s = -s

@@ -1,68 +1,16 @@
-#nx_include "trig.d/nex-radian.bc"
-#nx_include "trig.d/nex-trig.bc"
-#nx_include "nex-real.bc"
-#nx_include "nex-convert.bc"
 
 define r_nx_ts_tan(x) {
-  auto c
-  # Reduce to [-π, π]
-  #x = nx_rad_tan(x)
-  # Pole detection: cos(y) ≈ 0
-  c = r_nx_ts_cos(x)
-  if (nx_abs(c) < c_scale) {
-    print "[IMPURITY]: tan(x) pole breach — cos(x) ≈ ", c_scale,"\n"
-    return -1
-  }
-  return r_nx_ts_sin(x) / c
-}
-
-##################################################################
-define r_nx_tan(x) {
 	return r_nx_ts_sin(x) / r_nx_ts_cos(x)
 }
 
-##################################################################
 define r_nx_ts_cot(x) {
-	return 1 / r_nx_tan(x)
-}
-
-##################################################################
-define r_nx_tan_sec(x) {
-	auto y
-	y = r_nx_ts_tan(x)
-	return 1 + y*y
-}
-
-##################################################################
-define pr_nx_cot_csc(x) {
-	auto a
-	a = r_nx_ts_cot(x)
-	return 1 + a*a
-}
-
-##################################################################
-
-define r_nx_tan_id(a, b) {
-	auto w, x, y, z
-	if (nx_abs(1 - x * y) < c_epsilon || nx_abs(1 + x * y) < c_epsilon) {
-		print "[IMPURITY]: tangent identity denominator breach\n"
-		return -1
-	}
-
-	x = r_nx_tan(a)
-	y = r_nx_tan(b)
-
-	w = (x + y) / (1 + x * y)
-	z = (x - y) / (1 - x * y)
-
-	print "Sum tan(a+b): ", w, " → angle (deg): ", nx_rad2deg(r_nx_ts_atan(w)), "\n"
-	print "Diff tan(a-b): ", z, " → angle (deg): ", nx_rad2deg(r_nx_ts_atan(z)), "\n"
+	return 1 / r_nx_ts_tan(x)
 }
 
 ##################################################################
 define r_nx_ts_atan(z) {
 	if (nx_abs(z) == 1)
-		return (nx_sign(z) * c_pi) / 4
+		return nx_sign(z) * c_pi_4
 	if (nx_abs(z) > 0.999 && p < 256) {
 		p = 256
 	} else if (nx_abs(z) > 0.95 && p < 192) {
@@ -71,10 +19,10 @@ define r_nx_ts_atan(z) {
 		p = 160
 	}
 	if (z > 1)
-		return c_pi / 2 - nx_ts_alt(1 / z, 3, c_prec, 2, -1)
+		return c_pi / 2 - nx_ts_alt(1 / z, 3, 2, -1)
 	if (z < -1)
-		return -c_pi / 2 - nx_ts_alt(1 / z, 3, c_prec, 2, -1)
-	return nx_ts_alt(z, 3, c_prec, 2, -1)
+		return -c_pi / 2 - nx_ts_alt(1 / z, 3, 2, -1)
+	return nx_ts_alt(z, 3, 2, -1)
 }
 
 ##################################################################
@@ -89,9 +37,7 @@ define r_nx_atan2(y, x) {
 		return c_pi / 2
 	if (x == 0 && y < 0)
 		return -c_pi / 2
-	print "[IMPURITY]: x == 0 && y == 0 in atan2\n"
+	print "<nx:impurity232/>"
 	return -1
 }
-
-##################################################################
 

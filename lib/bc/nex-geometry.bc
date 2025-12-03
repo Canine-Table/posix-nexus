@@ -5,15 +5,18 @@
 #nx_include nex-calculus.bc
 #nx_include nex-convert.bc
 #nx_include nex-algebra.bc
+#nx_include nex-misc.bc
 
-define nx_agm(x, y) {
+define nx_agm(x, y, l) {
 	auto a, b, p
 	if (nx_xy_breach(x, y) == -1)
 		return -1
+	if (nx_abs(p) == 0)
+		l = nx_pt_ceil(nx_de_log2(scale + 10))
 	a = x
 	b = y
 	p = 0
-	while (a != b && p++ < c_prec) {
+	while (a != b && p++ < l) {
 		x = (a + b) / 2
 		y = nx_nr_sqrt(a * b)
 		a = x
@@ -28,7 +31,7 @@ define nx_agm_pi() {
 	b = nx_nr_sqrt(0.5)
 	t = 0.25
 	p = 1
-	l = nx_pt_ceil(nx_de_log2(scale))
+	l = nx_pt_ceil(nx_de_log2(scale + 10))
 	for (i = 0; i < l; ++i) {
 		an = (a + b) / 2
 		bn = nx_nr_sqrt(a * b)
@@ -42,6 +45,13 @@ define nx_agm_pi() {
 	}
 	a = a + b
 	return a * a / (4 * t)
+}
+
+if (scale > 36) {
+	c_pi = nx_agm_pi()
+	c_pi_2 = c_pi / 2
+	c_pi_4 = c_pi_2 / 2
+	c_tan = c_pi * 2
 }
 
 define nx_agm_tau() {
