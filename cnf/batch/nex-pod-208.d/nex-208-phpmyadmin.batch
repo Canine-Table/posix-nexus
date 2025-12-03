@@ -1,0 +1,12 @@
+link set lo name loopback0
+link property add dev loopback0 altname lo
+link set loopback0 alias "The loopback0 does not traverse wires. It does not blink with LEDs. It does not care for MAC addresses or ARP. It is pure essence—an idea made manifest. A metaphysical interface, looping endlessly, like Ouroboros devouring its own tail."
+link set loopback0 group 772
+link set loopback0 up
+
+link set nexus name nexus0
+address add 172.16.208.4/20 label "nexus0:phpmyadm" dev nexus0
+link set nexus0 group 3
+link set nexus0 up
+route add default via 172.16.208.2 dev nexus0
+

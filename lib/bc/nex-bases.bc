@@ -1,8 +1,14 @@
-#nx_include "./nex-calculus.bc"
-#nx_include "./nex-algebra.bc"
 
-define nx_from_dec (n1, n2) {
+define nx_from_dec(n1, n2) {
 	auto a, r
+	if (n2 < 2) {
+		print "<nx:impurity/>"
+		return -1
+	}
+	if (obase < 11 && n2 > obase) {
+		print "<nx:impurity228/>"
+		return -1
+	}
 	a = 0
 	while (n1 > 0) {
 		r = n1 % n2
@@ -14,11 +20,12 @@ define nx_from_dec (n1, n2) {
 
 define nx_reverse(n) {
 	auto r
-	r = 0
-	while (n > 0) {
-		r = r * 10 + (n % 10)
-		n /= 10
+	while (n > 1) {
+		r = r * 10 + n % 10
+		n = n / 10
 	}
+	if (scale > 0)
+		return r * (10 ^ scale)
 	return r
 }
 

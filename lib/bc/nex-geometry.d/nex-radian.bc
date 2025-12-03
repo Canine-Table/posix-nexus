@@ -1,3 +1,5 @@
+#nx_include NEX_L:/bc/nex-convert.bc
+
 define nx_rad_cos(x) {
 	x = nx_pt_mod2pi(x)
 	if (x > c_pi)

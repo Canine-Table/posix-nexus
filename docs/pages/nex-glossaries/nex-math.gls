@@ -1,0 +1,5 @@
+\newglossaryentry{pi}{
+  name={\ensuremath{\pi}},
+  description={Ratio of circumference to diameter of a circle}
+}
+

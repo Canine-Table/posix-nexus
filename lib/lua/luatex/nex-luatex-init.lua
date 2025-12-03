@@ -13,5 +13,9 @@ M.bool = M.module.load['nex-bool']
 
 M.tex = {}
 
+M.tex.slope = function(rise, run, intercept)
+	return run .. "/" .. rise .. "*x+" .. intercept
+end
+
 return M
 

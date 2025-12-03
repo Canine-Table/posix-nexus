@@ -1,5 +1,7 @@
+#nx_include NEX_L:/bc/nex-algebra.bc
+
 define nx_ang_cos(x) {
-	x = nx_mod(x, 360)
+	x = nx_pt_mod(x, 360)
 	if (x < 0)
 		x = x + 360
 	# reflect across 180°
@@ -14,7 +16,7 @@ define nx_ang_cos(x) {
 
 define nx_ang_sin(x) {
 	auto s
-	x = nx_mod(x, 360)
+	x = nx_pt_mod(x, 360)
 	s = 1
 	if (x < 0)
 		x = x + 360

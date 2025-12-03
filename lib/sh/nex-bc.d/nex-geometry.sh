@@ -1,4 +1,5 @@
 #nx_include NEX_L:/sh/nex-bc.sh
+#nx_include nex-geometry.d/nex-trigonometry,sh
 
 nx_bc_geo()
 (
@@ -21,7 +22,7 @@ nx_bc_agm()
 	nx_data_optargs 'v:' "$@"
 	__nx_bc "$@" -m 'geometry' -c "nx_agm(${NEX_k_v:-$NEX_S})" || {
 		nx_tty_print -e 'agm(a,b) domain breach — inputs must be strictly positive reals'
-		exit 2
+		exit 227
 	}
 )
 

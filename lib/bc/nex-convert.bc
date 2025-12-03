@@ -1,6 +1,5 @@
-#nx_include "./nex-geometry.bc"
-#nx_include "./nex-convert.bc"
-#nx_include "./nex-algebra.bc"
+#nx_include nex-constant.bc
+#nx_include nex-algebra.bc
 
 ##################################################################
 define nx_rad2deg(x) {
@@ -19,5 +18,3 @@ define nx_pt_mod2pi(x) {
 
 ##################################################################
 
-
-##################################################################

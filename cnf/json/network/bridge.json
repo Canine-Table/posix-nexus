@@ -9,7 +9,7 @@
 		"mcast_igmp_version": 3,
     "ageing_time": 20000,
 		"vlan_stats_per_port": 1,
-		"stp_enable": 1,
+		"stp_state": 1,
 		"vlan_stats_enabled": 1,
 		"hello_time": 300,
 		"vlan_filtering": 1,

@@ -1,0 +1,8 @@
+#vlan add dev bridge0 vid '176,192,208,224,240' pvid untagged master
+vlan add dev vlan176 vid 176
+vlan add dev vlan192 vid 192
+vlan add dev vlan208 vid 208
+vlan add dev vlan224 vid 224
+vlan add dev vlan240 vid 240
+#link set dev vlan240 state up
+

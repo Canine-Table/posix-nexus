@@ -1,0 +1,24 @@
+
+\pgfplotsset{%
+	width=\linewidth,%
+	height=\linewidth,%
+	compat=1.18,%
+	axis lines=middle,% Draws x and y axes through the origin
+	xlabel={$x$},%
+	ylabel={$y$},% Labels for clarity
+	grid=both,% Adds a grid for reference
+	minor tick num=1,% Adds minor ticks between major ones
+	samples=100,
+  tick style={/nx/graph/grid},
+	legend style={%
+		at={(0.5,-0.2)},%
+		anchor=north,%
+		legend pos=north west,%
+		domain=-1:1,%
+		legend columns=1,%
+		cells={anchor=west},%
+		font=\footnotesize,%
+		rounded corners=2pt%
+	}
+}
+

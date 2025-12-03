@@ -1,6 +1,6 @@
-#nx_include geometry.d/nex-trigonometry.bc
-#nx_include geometry.d/nex-degree.bc
-#nx_include geometry.d/nex-radian.bc
+#nx_include nex-geometry.d/nex-trigonometry.bc
+#nx_include nex-geometry.d/nex-degree.bc
+#nx_include nex-geometry.d/nex-radian.bc
 #nx_include nex-combinatorics.bc
 #nx_include nex-calculus.bc
 #nx_include nex-convert.bc

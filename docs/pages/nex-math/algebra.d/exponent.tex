@@ -1,0 +1,99 @@
+\nxSections{Polynomial Exponents}{3}
+
+\nxLnArcBox[]{\bf\nxSFont{12pt}Exponent Flip Examples}
+\begin{empheq}[box=\nxWarningMathBox]{align}
+    x^5 &= \frac{1}{x^{-5}} & \quad x^{12} &= \frac{1}{x^{-12}} \\
+    x^{17} &= \frac{1}{x^{-17}} & \quad 15x^9 &= \frac{15}{x^{-9}} \\
+    28x^5 &= \frac{28}{x^{-5}} & \quad x^5 &= \frac{1}{x^{-5}} \\
+    x^{-3} &= \frac{1}{x^3} & \quad x^3 &= \frac{1}{x^{-3}} \\
+    x^{-3} &= \frac{1}{x^3}
+		\label{eq:exponent-flip}
+\end{empheq}
+\bigskip
+
+\begin{empheq}[box=\nxWarningMathBox]{align*}
+    (((x^{32y^{5z^3}})^8)^3)^{-9}
+        &= (x^{32y^{5z^3}})^{8 \cdot 3} \quad \nxArw{5} x^{768y^{5z^3}} \\
+        &= \left(x^{768y^{5z^3}}\right)^{-9} \quad \nxArw{5} x^{-9 \cdot 768y^{5z^3}} \\
+        &= x^{-6912y^{5z^3}}
+\end{empheq}
+\bigskip
+
+\begin{NxLightListBox}[title={Polynomial Exponent Rules Applied}]
+    \nxEachLabel{ArrowDark}{Secondary}{{4}{5}}{%
+        {Power of a Power}/{\((a^m)^n = a^{mn}\)},%
+        {Nested Powers}/{Combine: \(8 \cdot 3 = 24\)},%
+        {Outer Flip}/{Apply \((-9)\): \(x^{768y^{5z^3}} \to x^{-6912y^{5z^3}}\)},%
+        {Technique}/{Multiply all exponents carefully, preserve inner structure},%
+        {Outcome}/{Final simplified form: \(x^{-6912y^{5z^3}}\)}%
+    }
+\end{NxLightListBox}
+
+
+\begin{empheq}[box=\nxWarningMathBox]{align*}
+    (((x^{32y^{5z^3}})^8)^3)^{-9}
+        &= (x^{32y^{5z^3}})^{8 \cdot 3} \quad \nxArw{5} x^{768y^{5z^3}} \\
+        &= \left(x^{768y^{5z^3}}\right)^{-9} \quad \nxArw{5} x^{-9 \cdot 768y^{5z^3}} \\
+        &= x^{-6912y^{5z^3}}
+\end{empheq}
+\bigskip
+
+\begin{NxLightListBox}[title={Exponent Rules Applied}]
+    \nxEachLabel{ArrowDark}{Secondary}{{4}{5}}{%
+        {Power of a Power}/{\((a^m)^n = a^{mn}\)},%
+        {Nested Powers}/{Combine: \(8 \cdot 3 = 24\)},%
+        {Outer Flip}/{Apply \((-9)\): \(x^{768y^{5z^3}} \to x^{-6912y^{5z^3}}\)},%
+        {Technique}/{Multiply all exponents carefully, preserve inner structure},%
+        {Outcome}/{Final simplified form: \(x^{-6912y^{5z^3}}\)}%
+    }
+\end{NxLightListBox}
+
+\begin{empheq}[box=\nxWarningMathBox]{align*}
+	x^2 \cdot x^4 = x^{2 + 4} \quad & \nxArw{5} \; x^6 \\
+	x^7 \cdot x^5 = x^{5 + 7} \quad & \nxArw{5} \; x^{12} \\
+	x^8 \cdot x^9 = x^{8 + 9} \quad & \nxArw{5} \; x^{17} \\
+	(3x^3)(5x^6) = (3 \cdot 5)x^{3 + 6} \quad & \nxArw{5} 15x^9 \\
+	(4x^2)(7x^3) = (4 \cdot 7)x^{2 + 3} \quad & \nxArw{5} 28x^5 \\
+	(4xy^2)(8x^2y^3) = (4 \cdot 8)x^{1 + 2}(1 \cdot 1)y^{2 + 3} \quad & \nxArw{5} \; 32x^3y^5 \\
+	(5x^2y^3)(6x^3y^4) = (5 \cdot 6)x^{2 + 3}(1 \cdot 1)y^{3 + 4} \quad & \nxArw{5} \; 30x^5y^7 \\
+	(7x^3y^4)(8x^5y^7) = (7 \cdot 8)x^{3 + 5}(1 \cdot 1)y^{4 + 7} \quad & \nxArw{5} \; 56x^8y^{11} \\
+\end{empheq}
+\begin{empheq}[box=\nxWarningMathBox]{align*}
+	(x^3)^4 = x^{3 \cdot 4} = x^{12} \\
+	(x^4)^6 = x^{4 \cdot 6} = x^{24} \\
+	(x^3)^5 = x^{3 \cdot 5} = x^{15} \\
+	(3x^2)^4 = 3^{1 \cdot 4}x^{2 \cdot 4} = 3^4x^8 = 81x^8 \\
+	(2x^3)^3 = 2^{1 \cdot 3}x^{3 \cdot 3} = 2^3x^9 = 8x^9
+\end{empheq}
+\begin{empheq}[box=\nxWarningMathBox]{align*}
+	(3x^2)^2(2x^3)^3 &= 3^{1 \cdot 2}x^{2 \cdot 2}2^{1 \cdot 3}x{3 \cdot 3} \\
+									 &= 3^2x^42^3x^9 \\
+									 &= 9 \cdot 8x^{4 + 9} \\
+									 &= 72x^{13}
+\end{empheq}
+\begin{empheq}[box=\nxWarningMathBox]{align*}
+	(3^2x^3y^4)^2(2^3x^2y^5)^3 &=
+		(3^{2 \cdot 2}x^{3 \cdot 2}y^{4 \cdot 2})
+		(2^{3 \cdot 3}x^{2 \cdot 3}y^{5 \cdot 3})\\
+	&= (3^4x^6y^8)(2^9x^6y^{15})\\
+	&= (81x^6y^8)(512x^6y^{15})\\
+	&= 81 \cdot 512x{6 + 6}y^{8 + 15}\\
+	&= 41472x^{12}y^{23}
+\end{empheq}
+\begin{empheq}[box=\nxWarningMathBox]{align*}
+	-2^3 = -2 \cdot -2 \cdot -2 = -8 \\
+	(-2)^3 = -2 \cdot -2 \cdot -2 = -8 \\
+	-(-2)^3 = -2 \cdot -2 \cdot -2 = 8
+\end{empheq}
+\begin{empheq}[box=\nxWarningMathBox]{align*}
+	(-7x^2y^3)^0 &= -7^{2 \cdot 0}x^{2 \cdot 0}y^{3 \cdot 0} \\
+	&= -7^0x^0y^0 \\
+	&= 1 \cdot 1 \cdot 1 \\
+	&= 1
+\end{empheq}
+\begin{empheq}[box=\nxWarningMathBox]{align*}
+	3x(5x + 8) &= 15x^2 + 24x \\
+	4x(x^2 - 2x + 3) &= 4x^3 -8x^2 + 12x
+\end{empheq}
+\bigskip
+

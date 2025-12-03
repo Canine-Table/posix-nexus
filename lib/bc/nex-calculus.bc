@@ -5,14 +5,16 @@ define nx_mc_esp(x, y) {
 	return (x ^ y) / nx_fact(y)
 }
 
-define nx_ts(n, t, p, k, s) {
-	auto r
-	if (t < 1 || k <= 0 || p <= t) {
-		print "[IMPURITY]: invalid series parameters — check t, k, p"
+define nx_ts(n, t, k, s) {
+	auto r, p
+	if (t < 1 || k <= 0) {
+		print "<nx:impurity/>"
 		return -1
 	}
 	r = s
-	while (t < p) {
+	p = 129
+	while (p > 0) {
+		p = p - 1
 		r = r - nx_mc_esp(n, t) + nx_mc_esp(n, t += k)
 		t += k
 	}

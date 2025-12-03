@@ -1,6 +1,7 @@
-#nx_include "./geometry.d/trigonometry.d/nex-sine.bc"
-#nx_include "./geometry.d/trigonometry.d/nex-cosine.bc"
-#nx_include "./geometry.d/trigonometry.d/nex-tangent.bc"
+#nx_include NEX_L:/bc/nex-geometry.bc
+#nx_include nex-trigonometry.d/nex-sine.bc
+#nx_include nex-trigonometry.d/nex-cosine.bc
+#nx_include nex-trigonometry.d/nex-tangent.bc
 
 ##################################################################
 define r_nx_pt_quad(x) {

@@ -1,0 +1,61 @@
+\nxSections{Point–Slope Form}{2}
+
+\begin{empheq}[box=\nxSuccessMathBox]{align}
+		y - y_1 = m(x - x_1)
+\end{empheq}
+\bigskip
+
+\begin{NxLightListBox}[title={Point–Slope Form}]
+		\nxEachLabel{ArrowDark}{Secondary}{{4}{5}}{%
+				{Form}/{\( y - y_1 = m(x - x_1) \)},%
+				{Slope}/{\(m\) is the rate of change (rise/run)},%
+				{Point}/{\((x_1, y_1)\) is a known point on the line},%
+				{Technique}/{Use when slope and one point are known},%
+				{Outcome}/{Easily converts to slope–intercept or standard form}%
+		}
+\end{NxLightListBox}
+
+\nxLnArcBox[]{\bf\nxSFont{12pt}$y - 3 = 2(x - 2)$}
+\begin{empheq}[box=\nxWarningMathBox]{align*}
+	\text{Point–slope:}\quad & y - 3 = 2(x - 2) \\[0.5ex]
+	\text{Given:}\quad & m = 2,\; x_1 = 2,\; y_1 = 3 \\[0.5ex]
+	\text{Slope–intercept:}\quad & y - 3 = 2x - 4 \;\Rightarrow\; y = 2x - 1 \\[0.5ex]
+	\text{Intercepts:}\quad & x\text{-int: } y=0 \Rightarrow 0 = 2x - 1 \Rightarrow x = \tfrac{1}{2} \\[-0.25ex]
+	& y\text{-int: } x=0 \Rightarrow y = -1 \\[0.5ex]
+	\text{Standard form:}\quad & y = 2x - 1 \Rightarrow -2x + y = -1 \Rightarrow 2x - y = 1
+\end{empheq}
+\bigskip
+
+\begin{tikzpicture}
+	\begin{axis}[%
+		xtick={-4,-2,...,4},%
+		ytick={-4,-2,...,4},%
+	]
+	\legend{{$(2,3)$},{$(3,5)$}}
+		\addplot[only marks, mark=*, color=nex.graph.x] coordinates {(2,3)};
+		\addplot[only marks, mark=*, color=nex.graph.y] coordinates {(3,5)};
+		\addplot[domain=-4:4, thick, color=nex.graph.y]{\nxSlope{1,2,-1}};
+	\end{axis}
+\end{tikzpicture}
+\bigskip
+
+\nxLnArcBox[]{\bf\nxSFont{12pt}$y + 4 = \frac{-3}{2}(x + 1)$}
+\begin{empheq}[box=\nxWarningMathBox]{align*}
+	\text{Point–slope:}\quad & y + 4 = \frac{-3}{2}(x + 1) \\[0.5ex]
+\end{empheq}
+\bigskip
+
+\begin{tikzpicture}
+	\begin{axis}[%
+		xtick={-4,-2,...,4},%
+		ytick={-4,-2,...,4},%
+		legend pos=north east%
+	]
+	\legend{{$(-1,-4)$},{$(-4,-2)$}}
+		\addplot[only marks, mark=*, color=nex.graph.x] coordinates {(-1,-4)};
+		\addplot[only marks, mark=*, color=nex.graph.y] coordinates {(-4,-2)};
+    \addplot[domain=-4:4, thick, color=nex.graph.y]{(-2/3)*x - 14/3};
+
+	\end{axis}
+\end{tikzpicture}
+\bigskip

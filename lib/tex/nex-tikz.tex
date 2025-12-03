@@ -165,8 +165,54 @@
 		minimum width=2.5cm,%
 		minimum height=1cm,%
 		text centered%
+	},%
+	/nx/graph/.cd,%
+	axis/.style={%
+		->,%
+		thick,%
+		color=#1%
+	},%
+	grid/.style={%
+		help lines,%
+		color=nex.graph.grid%
+	},%
+	slope triangle/.style={%
+		draw=nex.graph.slopeTriangle,%
+		thick,%
+		fill=nex.graph.back%
+	},
+	label/.style={%
+		font=\scriptsize\ttfamily,%
+		color=nex.graph.label
+	},%
+	error zone/.style={%
+		draw=nex.graph.error,%
+		thick,%
+		fill=nex.graph.error!20%
+	},%
+	mid/.style={%
+		font=\scriptsize\ttfamily,%
+		color=nex.graph.label,%
+		fill=nex.graph.slopeTriangle,%
+		rounded corners,%
+		midway%
+	},%
+	highlight/.style={%
+		draw=black,%
+		thick,%
+		fill=nex.graph.back%
 	}%
 }
+
+\def\nxLDiv#1#2#3{%
+	\begin{tikzpicture}[baseline=(A.base)]
+		\node (B) {$#1$};
+		\node at ([xshift=3mm,yshift=-0.6mm]B.east) (A) {$#2$};
+		\draw (A.north east) -- (A.north west) -- ++(-0.05,0) ++(0, -0.34) arc [start angle=270, delta angle=180, x radius=1mm, y radius=1.7mm];
+		\node at ([yshift=2mm]A.north) {$#3$};
+	\end{tikzpicture}
+}
+
 
 \long\def\nxCoverPage[#1]{%
 	\pgfkeys{%

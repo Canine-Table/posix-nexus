@@ -1,0 +1,49 @@
+#nx_include NEX_L:/sh/nex-bc.sh
+
+nx_bc_trig()
+(
+	nx_data_optargs 'c:d' "$@"
+	#case "$NEX_f_d" in
+	#	'<nx:true/>') NEX_k_c="nx_rad2deg($NEX_k_c)";;
+	#	'<nx:false>') NEX_k_c="nx_deg2rad($NEX_k_c)";;
+	#esac
+	__nx_bc "$@" -c "$NEX_k_c" -m 'geometry'
+	# __nx_bc "$@" -c "$NEX_k_c" -m 'geometry.d/nex-trigonometry'
+)
+
+nx_bc_cos()
+(
+	nx_data_optargs 'v:f' "$@"
+	NEX_k_v="${NEX_k_v:-$NEX_S}"
+	case "$NEX_f_f" in
+		'<nx:true/>') NEX_k_v="r_nx_ts_acos($NEX_k_v)";;
+		'<nx:false>') NEX_k_v="r_nx_ts_sec($NEX_k_v)";;
+		*) NEX_k_v="r_nx_ts_cos($NEX_k_v)";;
+	esac
+	nx_bc_trig "$@" -c "$NEX_k_v"
+)
+
+nx_bc_sin()
+(
+	nx_data_optargs 'v:f' "$@"
+	NEX_k_v="${NEX_k_v:-$NEX_S}"
+	case "$NEX_f_f" in
+		'<nx:true/>') NEX_k_v="r_nx_ts_asin($NEX_k_v)";;
+		'<nx:false>') NEX_k_v="r_nx_ts_csc($NEX_k_v)";;
+		*) NEX_k_v="r_nx_ts_sin($NEX_k_v)";;
+	esac
+	nx_bc_trig "$@" -c "$NEX_k_v"
+)
+
+nx_bc_tan()
+(
+	nx_data_optargs 'v:f' "$@"
+	NEX_k_v="${NEX_k_v:-$NEX_S}"
+	case "$NEX_f_f" in
+		'<nx:true/>') NEX_k_v="r_nx_ts_atan($NEX_k_v)";;
+		'<nx:false>') NEX_k_v="r_nx_ts_cot($NEX_k_v)";;
+		*) NEX_k_v="r_nx_ts_tan($NEX_k_v)";;
+	esac
+	nx_bc_trig "$@" -c "$NEX_k_v"
+)
+

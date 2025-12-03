@@ -1,0 +1,15 @@
+link delete nexus0 type veth
+netns delete nex-posix-128
+netns delete nex-qemu-176
+netns delete nex-pod-208
+netns delete nex-vpn-192
+netns delete nex-iscsi-224
+netns delete nex-srv-240
+netns delete nex-208-pgadmin
+netns delete nex-208-phpmyadmin
+netns delete nex-176-questing
+netns delete nex-176-wsc2025
+netns delete nex-176-gentoo
+netns delete nex-176-debian
+netns delete nex-176-lfs
+
