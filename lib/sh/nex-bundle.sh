@@ -122,6 +122,10 @@ nx_env()
 )
 
 test "$1" = '-d' && set -x
-time nx_env
+if test "$(command -v time)" = 'time'; then
+	time nx_env
+else
+	nx_env
+fi
 test "$1" = '-d' && set +x
 

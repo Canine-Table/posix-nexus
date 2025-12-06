@@ -1,30 +1,136 @@
 \nxSections{Radicals}{2}
 
 \begin{NxLightListBox}[title={Definition of Radical}]
-    \nxEachLabel{ArrowDark}{Secondary}{{4}{5}}{%
-        {Radical}/{An expression that uses the root symbol \(\sqrt{}\)},%
-        {Square Root}/{The most common radical, \(\sqrt{x}\), meaning the number which squared gives \(x\)},%
-        {Index}/{The small number above the radical, e.g. \(\sqrt[3]{x}\) is the cube root},%
-        {Radicand}/{The number or expression inside the radical sign},%
-        {Example}/{\(\sqrt{25} = 5\), \(\sqrt[3]{8} = 2\)},%
-        {Use}/{Radicals are used to express roots, simplify algebraic expressions, and solve equations}%
-    }
+	\nxEachLabel{ArrowDark}{Secondary}{{4}{5}}{%
+		{Radical}/{An expression that uses the root symbol \(\sqrt{}\)},%
+		{Square Root}/{The most common radical, \(\sqrt{x}\), meaning the number which squared gives \(x\)},%
+		{Index}/{The small number above the radical, e.g. \(\sqrt[3]{x}\) is the cube root},%
+		{Radicand}/{The number or expression inside the radical sign},%
+		{Example}/{\(\sqrt{25} = 5\), \(\sqrt[3]{8} = 2\)},%
+		{Use}/{Radicals are used to express roots, simplify algebraic expressions, and solve equations}%
+	}
 \end{NxLightListBox}
 
 \begin{empheq}[box=\nxWarningMathBox]{align*}
-    \text{Simplify } \sqrt{50} \\
-    \sqrt{50} &= \sqrt{25 \cdot 2} \quad \nxArw{5} \\
-              &= \sqrt{25} \cdot \sqrt{2} \quad \nxArw{5} \\
-              &= 5\sqrt{2}
+		\sqrt{50} \;\nxArw{5}\;
+		\sqrt{25 \cdot 2} \;\nxArw{5}\;
+		\sqrt{25} \cdot \sqrt{2} \;\nxArw{5}\;
+	5\sqrt{2}
 \end{empheq}
 
 \begin{NxLightListBox}[title={Using Radicals}]
+	\nxEachLabel{ArrowDark}{Secondary}{{4}{5}}{%
+		{Step 1}/{Identify the radicand},%
+		{Step 2}/{Factor the radicand into perfect powers and leftovers},%
+		{Step 3}/{Simplify by taking the root of the perfect power},%
+		{Step 4}/{Leave the leftover inside the radical},%
+		{Outcome}/{\(\sqrt{50} = 5\sqrt{2}\)}%
+	}
+\end{NxLightListBox}
+
+\begin{NxLightListBox}[title={Overview of \texttt{nx\_squares}}]
     \nxEachLabel{ArrowDark}{Secondary}{{4}{5}}{%
-        {Step 1}/{Identify the radicand},%
-        {Step 2}/{Factor the radicand into perfect powers and leftovers},%
-        {Step 3}/{Simplify by taking the root of the perfect power},%
-        {Step 4}/{Leave the leftover inside the radical},%
-        {Outcome}/{\(\sqrt{50} = 5\sqrt{2}\)}%
+        {Purpose}/{Computes square roots using iterative scaling and subtraction},%
+        {Input}/{A single value \(x\)},%
+        {Initialization}/{Takes absolute value, sets scaling factor, prepares working variables},%
+        {Scaling}/{Doubles a seed until it exceeds the radicand},%
+        {Iteration}/{Subtracts scaled values, updates root approximation step by step},%
+        {Condition}/{Handles zero and invalid cases gracefully, returns early if needed},%
+        {Output}/{Final square root approximation, or truncated value if iteration fails}%
+    }
+\end{NxLightListBox}
+
+\begin{NxCodeBox}{c}{title={Square Roots}, phantomlabel={code:SquareRoot}}
+define nx_nr_sqrt(x) {
+	auto y, p
+	if (nx_xy_breach(x, 1) == -1)
+		return -1
+	y = x / 2
+	p = 0
+	while (y != p) {
+		p = y
+		y = (y + x / y) / 2
+	}
+	return y
+}
+\end{NxCodeBox}
+
+\begin{NxCodeBox}{c}{title={Square Roots}, phantomlabel={code:SquareRoots}}
+define nx_squares(x) {
+	auto a, s, b, y
+	a = nx_abs(x)
+	if (a == 0 || scale == 0)
+		return x
+	s = 1
+	while (s < a)
+		s = s * 2
+	b = nx_scale(1)
+	x = 0
+	y = 0
+	while (s > b) {
+		if (s <= a) {
+			a = a - s
+			x = y
+			y = nx_nr_sqrt(s)
+			if (y == -1)
+				return x
+			if (x != 0)
+				print x, ","
+		}
+		s = s / 3
+	}
+	return y
+}
+\end{NxCodeBox}
+
+\begin{NxLightListBox}[title={Definition of Vinculum}]
+	\nxEachLabel{ArrowDark}{Secondary}{{4}{5}}{%
+		{Vinculum}/{The horizontal bar drawn over the radicand in a radical},%
+		{Scope}/{Shows exactly which terms are included under the radical},%
+		{Fraction Use}/{Also used as the bar separating numerator and denominator in fractions},%
+		{Repeating Decimal}/{Used to mark repeating digits, e.g. \(0.\overline{3}\)},%
+		{Example}/{In \(\sqrt{a+b}\), the vinculum extends over \(a+b\)},%
+		{Use}/{Ensures clarity of grouping inside radicals, fractions, and repeating decimals}%
+	}
+\end{NxLightListBox}
+
+\begin{NxLightListBox}[title={Definition of Radicand}]
+    \nxEachLabel{ArrowDark}{Secondary}{{4}{5}}{%
+        {Radicand}/{The number or expression placed under the radical sign \(\sqrt{}\)},%
+        {Role}/{It is the quantity from which a root is extracted},%
+        {Example}/{In \(\sqrt{25}\), the radicand is 25},%
+        {Extended}/{In \(\sqrt[3]{8}\), the radicand is 8, and the index is 3},%
+        {Scope}/{The vinculum (bar) shows exactly which terms belong to the radicand},%
+        {Outcome}/{Identifying the radicand clarifies what is being rooted in the expression}%
+    }
+\end{NxLightListBox}
+
+\begin{NxLightListBox}[title={Square Root Expansion}]
+    \nxEachLabel{ArrowDark}{Secondary}{{4}{5}}{%
+        {Radical}/{\(\sqrt{72}\)},%
+        {Factor}/{Break into perfect square and leftover: \(72 = 36 \cdot 2\)},%
+        {Expand}/{\(\sqrt{72} = \sqrt{36 \cdot 2} = \sqrt{36}\cdot\sqrt{2}\)},%
+        {Simplify}/{\(\sqrt{36} = 6\)},%
+        {Outcome}/{\(\sqrt{72} = 6\sqrt{2}\)}%
+    }
+\end{NxLightListBox}
+
+\begin{NxLightListBox}[title={Square Root Truncation}]
+    \nxEachLabel{ArrowDark}{Secondary}{{4}{5}}{%
+        {Radical}/{\(\sqrt{72}\)},%
+        {Approximation}/{Leave as decimal: \(\sqrt{72} \approx 8.485\)},%
+        {Truncation}/{Cut after two decimals: \(8.48\)},%
+        {Outcome}/{Truncated radical value \(\approx 8.48\)}%
+    }
+\end{NxLightListBox}
+
+\begin{NxLightListBox}[title={Types of Square Roots}]
+    \nxEachLabel{ArrowDark}{Secondary}{{4}{5}}{%
+        {Integer Square Root}/{The root of a whole number. It may simplify to a rational (e.g. \(\sqrt{25} = 5\)) or remain irrational (e.g. \(\sqrt{2}\))},%
+        {Fraction Square Root}/{The root of a ratio \(\tfrac{p}{q}\), defined as \(\sqrt{\tfrac{p}{q}} = \tfrac{\sqrt{p}}{\sqrt{q}}\)},%
+        {Rational Square Root}/{Occurs when both numerator and denominator are perfect squares, e.g. \(\sqrt{\tfrac{9}{16}} = \tfrac{3}{4}\)},%
+        {Irrational Square Root}/{Occurs when either numerator or denominator is not a perfect square, e.g. \(\sqrt{\tfrac{2}{9}} = \tfrac{\sqrt{2}}{3}\)},%
+        {Impurity Case}/{When the denominator equals 0, the expression is undefined, e.g. \(\sqrt{\tfrac{p}{0}}\)}%
     }
 \end{NxLightListBox}
 

@@ -1,0 +1,35 @@
+#nx_include nex-algebra.bc
+
+define nx_ntn_sci(x, y) {
+	auto m, e
+	m = nx_abs(x)
+	if (m == 0) {
+		print "<nx:impurity/>"
+		return 0
+	}
+	e = nx_exp_sci(m)
+	print nx_sign(x) * (m / ibase^e)
+	if (y == 1) {
+		print "e"
+	} else if (y == 2) {
+		print "E"
+	} else {
+		print " * ", ibase, "^"
+	}
+	return e
+}
+
+define nx_exp_sci(m) {
+	auto e
+	e = 0
+	while (m >= ibase) {
+		m = m / ibase
+		e = e + 1
+	}
+	while (m < 1) {
+		m = m * ibase
+		e = e - 1
+	}
+	return e
+}
+
