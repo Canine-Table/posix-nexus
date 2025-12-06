@@ -1,20 +1,2 @@
-\makeatletter
-\def\nx@Sections#1#2#3{\csname#1\endcsname{#3}\nxLabel{#2:#3}{}{\label{#2:#3}}}
-\def\nxSections#1#2{
-	\nxEmpty{#1}{}{%
-		\edef\nx@tmpe{\nxDigit{#2}}%
-		\ifnum\nx@tmpe>-1
-			\expandafter\nx@Sections\directlua{
-				local tmpa = 'sec'
-				local tmpb = 'section'
-				for i = \nx@tmpe, 2, -1 do
-					tmpa = 's' .. tmpa
-					tmpb = 'sub' .. tmpb
-				end
-				tex.sprint('{' .. tmpb .. '}{' .. tmpa .. '}{#1}')
-			}
-		\fi
-	}
-}
-\makeatother
+
 

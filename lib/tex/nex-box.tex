@@ -390,6 +390,15 @@
 	IfBlankF={#2}{#2}%
 }
 
+\newtcolorbox{NxDivider}[1][]{
+		nobeforeafter,%
+		minimal,%
+		on line,%
+		nxBackOpacity,%
+		breakable,%
+		IfBlankF={#1}{#1}%
+}
+
 \newtcbox{\nxLnBox}[1][]{nxLn, #1}
 \long\def\nxLnArcBox[#1]#2{%
 	\tcbox[%

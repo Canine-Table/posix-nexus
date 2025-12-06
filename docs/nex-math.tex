@@ -1,11 +1,15 @@
 \documentclass[a5paper,13pt]{article}
+\newif\ifnxBIB
+\nxBIBfalse
+\newif\ifnxGLS
+\nxGLSfalse
 \input{../lib/tex/nex-preamble.tex}
 \nxHyper[]%
 \nxSnowFade%
 \nxNoParIndent
 \def\nxInput#1{\input{./pages/nex-math/#1.tex}}%
 
-\input{pages/nex-glossaries/math.tex}
+%\input{pages/nex-glossaries/math.tex}
 
 \begin{document}
 	\nxCoverPage[title={Math Notes}, ref={Github}]
@@ -17,15 +21,15 @@
 	%\nxInput{gates}
 	%\nxInput{trigonometry}
 	%\nxInput{linear-equations}
+
 	\nxInput{algebra}
 
 	%\nxInput{definitions}
-
-	\nxSections{Glossary}{1}
-	\begin{NxLightBox}[title={Glossary}]
-		\printunsrtglossary % main
+	%\nxSections{Glossary}{1}
+	%\begin{NxLightBox}[title={Glossary}]
+		%\printunsrtglossary % main
 		%\printunsrtglossary[type=abbreviations]
 		%\printunsrtglossary[type=symbols]
-	\end{NxLightBox}
+	%\end{NxLightBox}
 \end{document}
 

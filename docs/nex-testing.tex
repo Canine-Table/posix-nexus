@@ -1,0 +1,32 @@
+\documentclass[a5paper,13pt]{article}
+\newif\ifnxBIB
+\nxBIBfalse
+\newif\ifnxGLS
+\nxGLSfalse
+\input{../lib/tex/nex-preamble.tex}
+\nxHyper[]%
+\nxSnowFade%
+\nxNoParIndent
+\def\nxInput#1{\input{./pages/nex-testing/#1.tex}}%
+
+%\input{pages/nex-glossaries/math.tex}
+
+\begin{document}
+	\nxCoverPage[title={\LaTeX Testing}, ref={Github}]
+	\nxRomanFooter
+	\nxToc{Contents}
+	\newpage
+	\nxSnowFlakeHeader{\LaTeX Macro Testing}
+	%hello world
+	%\directlua{tex.print(.depth)}
+
+	\nxSections{Beginning}{1}
+	hello world
+	%\nxLoadedLua{}
+	\nxInput{testa}
+
+
+
+	%\nxInput{bases}
+\end{document}
+

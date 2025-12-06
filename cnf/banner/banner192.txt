@@ -1,0 +1,90 @@
+WW                                                                                                                                                                                            WW
+NNW                                                                                                                                                                                          WXN
+X0XW                                                                                                                                                                                        WXKN
+N00XW                                                                                                                                                                                      WX0KW
+W0OKXN                                                                                                                                                                                   WNXKOKW
+WKk0KXNW                                                                                                                                                                                WNKK0OX
+ XOk0KKXW                                                                                                                                                                              WXKK0O0N
+ N0kO00KXNW                                                                               WNW                                                                                        WNXK00Ok0W
+ WKkkO00KKXNW                                                                            WXXN                                                                                       WXKK00OkkXW
+  NOxkOO00KKXNW                                                                          NKXW                                                                                     WXKK000OkkON
+  WKkxkOO000KKXNW                                                                       WXKXN                                                                                   WNKK000OOkkkKW
+   W0xxkkOO000KKXNW                                                                     WK0KXW                                                                                WNXK0000Okkkx0N
+    NkdxkkkO0000KKXNW                                                            WW     WK0KKNW                                                                             WNKKK000OOkkkxkX
+    WKxdxkkkOO0000KKXNW                                                          NNW    WKO0KKXNWW                                                                       WWXKK00000OOkkkxxKW
+     WKxdxkkkkOO0000KKXNWW                                                       NXXNW   N0O0KKKXXNW                                                                   WNXKK00000OOkkkkxx0N
+      W0xddxkkkkOO00000KKXNW                                                     WXKXXNWWWN0000KKKKXNW                                                               WNXKKK0000OOkkkkxdxON
+       W0xddxxkkkkOO00000KKXNWW                                                   WX00KXNNNNK00000KKKXXNW                                                         WNXXKK00000OOkkkkkxdxON
+        WKkdddxkkkkkOO000000KKXNW                                                  WNK000KKXXK0000000KKKXNWW                                                   WWNXKKK00000OOkkkkkxxdxON
+         WXOxddxxkkkkkOOO000000KKXNWW                                                WNXK00000K000KKKKKKKKKXNW                                              WWNXKKK00000OOOkkkkkkxxdx0N
+           N0kdddxxkkkkkOOO000000KKXXNW                                              WWNXK0OOOOO00000000KKKKKXNW                                         WWNXKKK000000OOOkOkkkkxxdxOXW
+            WX0xdddxxkkkkOOOOO000000KKXXNW                                        WNXK0OOkkOO00000OO00KK0000KKKXW                                      WNXKKK000000OOOOOOkkkkxxdxkKN
+  WNW         WX0kdddxxkkOkkkkOOO000000KKXXNW                                   WXK0OkkOkkO0000000000KXNNXKK00KKXW                                  WNXKKKK00000OOOOkkOkkkkxxdxkKNW        WWW
+  XO0NW         WN0kxxdxxkkkkkkkOOOO000000KKKXNW                              WN0OOO0KXK00000000000000KNW WNXK0KKNW                              WNXKKK000000OOOOOOkkkkkxxdxxOKNW        WN0ON
+  WOdk0XNW        WNK0kxxxxxkkkkOOOOOOO000000KKKXNW                          WXOkOKNWNKKK0000OOOOO00000KXNWWWXK0KXW                           WNXXKK000000OOOOOOOOkkkxxxxxk0XW        WWX0kx0W
+   XxodkOKXNW        WNK0kxxxxxkkkOOOOOOOO000000KKXXNW                       N0k0NWWN00K0000OkkO00OOO0000KKKXXK00KN                        WNNXKK000000OOOOOOOOkkkxxxxxO0XNW       WNXK0kxdkX
+   W0oloxkkO0KXNW       WNX0kxxxxxkkOOOOOOOOO00000KKKXXNW                   WKO0N  N00K0000Okx0NWWXK0OOOOOO000000KXW                     WNXKK000000OOOOOOOOkkkxxxxkOKXNW       WNK0OOkxdodKW
+    NOolodxxkkkO0KXNW      WWXKOkxxxxkkOOOOOOOOO00000KKKXNW                 WK0N  W0O0K0000kxON    WWNXKKK00OOOO00KNW                  WXKK000000OOOOOOOOkkxxxxkO0XNW       WNXK0Okkkxxdoo0W
+     NOolodxxxkkkkOO0KXNW      WNX0OkxxxkkOOOOOOOO000000KKXNW               WKKW WXO0K00000kx0W            WWNXK0O0KNW               WNKK00000OOOOOOOOkkxxxxk0KNW      WWNXK0OOkkkxxxdoloON
+      NOolldxxxxxxkkkOOO0KXNNW     WNX0OkxxkkOOOOOOO000000KKXW               NN  WKO0K000K0kx0W                 WX00KN             WNXK000000OOO00OOkxxxkOKXNW    WWNXK00OOOOkkxxxxxdoloON
+       N0dlloddxxxxxxkkOOOOOO0KKXNW    WXKOkxxkkOOOO00000000KXW                  WKO0K000K0OxON                   WXKN            WXK00000000O00OkkkkO0XNW   WWNXK00OOOOOOkkxxxxxxdolld0N
+        WKxolloddxxxxxxxxkkOOOOOOO0KKNWW  WNK0kkkkOOOOOO000000KNW                WKk0K000KK0kk0W                   WNW           WXK00000000OOkkkkOKXWW WWNXK00OOOOOOOkkkxxxxxxddolloxKW
+          N0dllloodxxxxxxxxxxkkkkOOOOO00KXNW WNK0kxkkOOO0000000KNW               WKkO00000KK0kkKNW                             WNK0000000OOOkkkOKNW  WNXK0OOOOOOOkkkxxxxxxxxxdoollldON
+           WXOxolllooddxxxxxxxxxxkkkkOOOOOO0XNW WNK0kkkkOOOOO000KXW               NOkO00000KK0OkOKN                           WNK00000OOOkkkOKNW  WNK0OOOOOOkkkkkkxxxxxxxxdoolllldOXW
+             WN0kdllllooddxxxxxxkkkkkkkkkkkkkO0XNW WNKOkkkOOOOO00KXW              WKkk000000KK0OOk0XW                        WXK000OOOOkkk0XW  WNK0kkkkkkkkkkkkkxxxxxdddolllllox0XW
+                WX0kdolllllooddddxxxxkkkkkkkkkkkOKNW  WX0kkkOOOOO0KXNW             N0kOO00000KKKK0OO0NW                     WXK00OOOkkkOKNW WWX0Okkkkkkkkkkkkkxxdddooollllodx0XW
+                   WNK0kxdolllllloooodddxxxxxxxkkkk0XW  WX0kkkOOOO00KNW            WXOkkO000000KKKK0OOKW                   NXK0OOOkkkOKNW WNKOkkkkkkxxxxddddoooollllloodxOKXW
+          WNKXWW       WNXK0OkxdooooooooooooddddxxxxkOKN  WNKOkkkOO00KNW            WXOkkO00000000KK00OKN                WNK00OOkkk0XW  WX0kkxxxxdddooooooooooooodxkO0XNWW       WNXN
+           N0kk0XNW         WWNNXKK00OOkkxxdddoooodddxxOKNW WNKOkkkOO0KXW            WXOkkO000000000KK000NW             WXK0OOkkOKNW  WX0kxxdddddddddxxxkkOO00KKXNWW         WWXKOk0N
+            W0ddxkO0KXNWW              WWWNNNXXKK00OOkkkkO0NW  WXKOkOOO0KNW           WKOkkO000000000KK00KNW          WNK0OOkO0XNW  WN0OOO0000KKXXXNNNWWWW              WWNXK0Oxdx0W
+             W0dooddxxkO00KXXNWWWW                   WWWNNXNW    WNXKOOOO0KNW        WWWKOkkO0000000000KK00NW       WNX0OOO0KNW      WWWWW                     WWWWNXXK00OkxddooxKW
+              WXxoloddxxxxxxkkOO0000KKKKKKKKXXXXXXXNNNNNNNWWWW      WWXK0OOOKNW     WXXWWKkkkO0000000000K000NW     NK0O0KXNW        WWWWNNNNNNNXXXXXXXXKKKKKKK0000OkkkxxxxddolokXW
+                N0dlooodddddxxxkkkkkkkkkkkOOOOOOOOOOOOOOOO00000KKXNNWW  WNNXKXNW    N00N N0kkkO0000000O00000KN   WNXXXNWW   WNNXXKK0000OOOOOOOOOOOOOOOOOkkkkkkkkkkxxxddddoolld0W
+                 WNOdlllooddddddddddxxxxxxkkkkkkkkkkkkkkkkkkkkkxxxkOO0KXNWW   W    WXkkKW XOkkO000000OOOO000OKW       WWNXK0OOkkkxxxkkkkkkkkkkkkkkkkkkkkkkxxxxdddddddooollloONW
+                   WXOdlllllooddddddddxxxdxxxxxxxkxxxxxxxxxxxxxxxddddddxk0XW       NKkx0W WKkkkO00000OOOOO00OOXW     WXOkxddddxxxxxxkkxxxxxxxxxxxxxxxxxxxxxdddddddoollccldOXW
+                     WN0kolccllloooddddddxxxxxxxxxxxxxxdddddooooooodxO0XNW   WW   WKOkx0W WXOkkkkO000OOOkkO0OO0N      WNXKOkxdoooooodddddxxxxxxxxxxxxxxxdddddooollccclok0NW
+                        WX0kdolccccllllooooooooooooooolllllllodkO0XNWW   WNXKXW  WXOOkxON  N0kkkkO000OOOkxkOOOOXW WXXNW   WWNX0Okdolllllllllooooooooooooollllcccccldk0XW
+                           WNX0kxdollccccccllllllllllloodxO0KXNW      WNK0kOXW  WXOOOkx0W  N0kkkkkO00OOOkxxxOkx0W WXOk0KNW      WNXK0kxdoollllcccccclllcccccllodk0KNW
+                                WNXK0OOkxxxxxxxxkkOO0KXNNW       WWNXKOkxxON   WN0OOkxxKW  N0xkkkkO00OOOOxddxkxON   N0xdkOKXNWW      WWNXXK0OOkxxxxddxxxkOO0KXNWW
+                        NKXNWW          WWWWWWWWW          WWNXXK0OkkxddxKW    N0kOOxdkX   NOxxkkkO00OOOOxdddxxxKW   WKxdddxkO0KXXNW          WWWWWWWWWW           WWXXN
+                        WKkdxkOKXNNWW           WWWWWNNXXK00OOkkkxxxdodONW    WKkkOkxdOW  WXkxxxxkO00OOOOxdddxxx0W     NOdoddxxxxkkO00KXXNWWWW              WWNXX0OkxOKW
+                          N0xlllodxkkOO000KK0000OOOOkkkxxxxxxxxxddoodkXW  W   XkkkkxdxXW  W0xxxxxkO00OOOkxdxkxddON   W  WXkoooodddxxxxxxkkkOOO0000KKKK00000OOkxdolox0N
+                           WN0xolllooooddddddddxxxxxxxxddddoooooolokKW  WXKW W0xkkxdd0W   XkxxxxxkO0OOOOkxdk0kddkX  NKXW  WKkollooooodddxxxxxxxxxxxxddddddoooollokKN
+                              WXOdlccllllloooooooooooooooolllllldOXW  WXOkKW NkxkxdokX   W0xxxxxxkOOOkkkkdokKkdoxXW WKk0NW  WXOdlllllooooooooooooooooolllllllldOXW
+                                WNKOxolccllllllllllllllllccloxOKNW  WXOdd0W WKxxkdodKW   XkdxxxkkOOOkkkkxddOXOdoxX   WOdx0XW  WNKOdocccllllllllllllllllllloxOKNW
+                                    WX0OxdolllcccccccllodxOKNW   WX0xoloON  W0dxxooON   WOddxxxkOOOkkkkkdod0NOooxX    NkoodkKNW   WXKOxdolcccccccclllodkO0XW
+                                        WWNXK00OOOO00KXNWW   WNKOxollcoOW   W0dxdoxX   WKxdxxxxkOOkkkkkxooxKNOolkN     Nklllodk0XWW   WWNXK000OOO00KXNWW
+                                                        WWNK0kxollcccd0W    W0odooOW   NOddxxxkkkkkkkkxdookNNkloOW      N0occllodxO0XNWW
+                                           WWWWWWNNNXK00kxdoollcc:clkXW     W0doodKW   Xxodxxxkkkkkkkkdood0WXxldK        WKxlcclllloodxkOKKXNNNWWWWW
+                                          WNKkxdddddoolllllccc:ccokXW        XxllxX   W0dodxxxkkkkkkkxolokNWXdlkN          WKxoccccclllllllooodddxOKW
+                                            WX0kdolcccc:cccccldk0NW          NOolkN   NOooddxxkkkkkkxooldKWW0odX             WXOxolcccccc::cclodk0NW
+                                                WNXK0OOkkOO0KXW               XdlkW   XxoddddxkkkkxxdlloOW Nkd0W                WNX0OOkkkkOO0XNW
+                                                                              W0okN   XxodddxxkkkkxdollkN  Xk0W
+                                                                               WOkX   XdoddddxxxxxdollxXW WXXW
+                                                                                WXN   XxoodddxxxxdolldKW
+                                                                                      Nxlodddxxxdollo0W      NKN
+                                                                                  WWW NOooodddxdolllkN  WW   Kx0W
+                                                                                 WKOX W0oloddddollldX  W00W W0oxN
+                                                                                 XdxX  XxlooooollloOW W0oOW  KolOW
+                                                                                NxcxN  WOoloooollldK  XdckW  XdcoKW
+                                                                               WOlckW   XxllooolllkN WOlcxN  NxccdX
+                                                                               KdclkW  WWKdloolllo0W Nxclo0W W0lclOW
+                                                                              WOlclOW N0KW0ollllldKW XxcllkN  NxccxX
+                                                                              Nxcco0  XddXN0dlllldX  Xdcllo0W W0lcoK
+                                                                              XdlldK  KocxKNKdlllxX  XdlllldX  Nxco0W
+                                                                              XdccdX  KoccdKWXxlcdK  NxllollkW W0loKW
+                                                                              NxccxN  Koclld0WNOdxK  NklloocdX  XddX
+                                                                              W0lckW  Koclolo0WWNNW  W0ocllcl0W WO0W
+                                                                               NxlOW  NxclooloONW     XdcllclOW WNW
+                                                                                XxOW  WOlloolllkKN    WOlclcl0W
+                                                                                 XKW   KdcloolclokN    KdcccdK
+                                                                                       WOlcooolccl0W   NkccckN
+                                                                                        NkllloolccdX   WOccdKW
+                                                                                         Nklllollco0W  WOll0W
+                                                                                          NklllllllOW  WkoOW
+                                                                                           Nkllllcl0W  NO0W
+                                                                                            XxlllcoK   WNW
+                                                                                            WKdccckN
+                                                                                             WOlcdX
+                                                                                              Kkx0W
+                                                                                              WNNW

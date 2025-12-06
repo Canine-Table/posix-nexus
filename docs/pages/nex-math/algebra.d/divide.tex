@@ -1,4 +1,4 @@
-\nxSections{Dividing Polynomials}{3}
+\nxSections{Dividing}{2}
 
 \begin{NxLightListBox}[title={Fraction Components}]
     \nxEachLabel{ArrowDark}{Secondary}{{4}{5}}{%
@@ -11,19 +11,36 @@
 \end{NxLightListBox}
 
 \begin{empheq}[box=\nxWarningMathBox]{align}
-	\frac{x^8}{x^3} = x^{8 - 3} & \nxArw{5} x^5 \label{eq:division-basic} \\
-		\frac{x^5}{x^2} = x^{5 - 2} & \nxArw{5} x^3 \\
-		\frac{x^5}{x^8} = x^{5 - 8} & \nxArw{5} x^{-3} \label{eq:division-negative} \\
-	\frac{x^4}{x^7} = x^{4 - 7} & \nxArw{5} x^{-3} \\
+	\frac{6-2^3}{2} &= \frac{6-8}{2}\\
+									&= \frac{-2}{2}\\
+									&= -1
 \end{empheq}
+\bigskip
+
+\begin{NxLightListBox}[title={Verbose Floating-Point Multiplication}]
+    \nxEachLabel{ArrowDark}{Secondary}{{4}{5}}{%
+        {Step 1}/{Choose two floating-point numbers, e.g. \(3.25\) and \(2.5\)},%
+        {Step 2}/{Express them as fractions: \(3.25 = \tfrac{325}{100}\), \(2.5 = \tfrac{25}{10}\)},%
+        {Step 3}/{Multiply numerators: \(325 \times 25 = 8125\)},%
+        {Step 4}/{Multiply denominators: \(100 \times 10 = 1000\)},%
+        {Step 5}/{Form product fraction: \(\tfrac{8125}{1000}\)},%
+        {Step 6}/{Simplify fraction: \(\tfrac{8125}{1000} = 8.125\)},%
+        {Step 7}/{Restore decimal form: product is \(8.125\)}%
+    }
+\end{NxLightListBox}
+
 \begin{empheq}[box=\nxWarningMathBox]{align*}
-	\frac{24x^9y^5}{8x^3y^12} &= \frac{24}{8}x^{9 - 3}\frac{1}{1}y^{5 - 12} \\
-														&= 3x^6y^{-7} \\
-														&=\frac{3x^6}{y^7}
+	10.4 &\nxArw{5} \frac{10.4}{1} \frac{10.4}{1} \cdot 10 &\nxArw{5} &\nxArw{5} \frac{104}{10} \\
+	1.3 &\nxArw{5}  \frac{1.3}{1} &\nxArw{5}\frac{1.3}{1} \cdot 10 &\nxArw{5} \frac{13}{10} \\
+	1.5 &\nxArw{5}  \frac{1.5}{1} &\nxArw{5}\frac{1.5}{1} \cdot 10 &\nxArw{5} \frac{15}{10} \\
+	-2.35 &\nxArw{5} \frac{-2.35}{1} \nxArw{22} \frac{2.35}{-1} &\nxArw{5} \frac{-2.35}{1} \cdot 100 &\nxArw{5} \frac{-235}{100}
 \end{empheq}
+
 \begin{empheq}[box=\nxWarningMathBox]{align*}
-	\frac{12x^5y^{-3}z^4}{36x^8y^{-4}x^{-8}} &= \frac{\frac{12}{3}x^{5 - 8}}{\frac{36}{3}}\frac{1}{1}y^{-3 - -4}\frac{1}{1}z^{4 - -8} \\
-																					 &= \frac{x^{-3}y^1z^{12}}{3} \\
-																					 &= \frac{yz^{12}}{3x^3}
+	(10056,1950) \nxArw{18} \sqrt(10056,1950) = 26\\
+	\frac{10.3^2-(-2.35)^2}{1.3(1.5)} &= \frac{106.09 - 5.522}{1.95} \\
+																		&= \frac{100.568}{1.95} \\
+																		&= \frac{100568}{1950} \\
+																		&= \frac{3868}{75}
 \end{empheq}
 

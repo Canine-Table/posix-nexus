@@ -33,6 +33,34 @@ nx_cfg_gcc()
 	test -n "$G_NEX_CC" -a "$(nx_fs_path -b "$G_NEX_CC")" = 'gcc' && export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01'
 }
 
+
+nx_cfg_banner()
+(
+	test -d "$NEXUS_CNF/banner" || exit 72
+	eval "export $(nx_tty_all)"
+	if nx_int_range -g 64 -v "$G_NEX_TTY_COLUMNS"; then
+		if nx_int_range -g 288 -v "$G_NEX_TTY_COLUMNS"; then
+			G_NEX_TTY_COLUMNS=288
+		elif nx_int_range -g 256 -v "$G_NEX_TTY_COLUMNS"; then
+			G_NEX_TTY_COLUMNS=256
+		elif nx_int_range -g 224 -v "$G_NEX_TTY_COLUMNS"; then
+			G_NEX_TTY_COLUMNS=224
+		elif nx_int_range -g 196 -v "$G_NEX_TTY_COLUMNS"; then
+			G_NEX_TTY_COLUMNS=196
+		elif nx_int_range -g 160 -v "$G_NEX_TTY_COLUMNS"; then
+			G_NEX_TTY_COLUMNS=160
+		elif nx_int_range -g 128 -v "$G_NEX_TTY_COLUMNS"; then
+			G_NEX_TTY_COLUMNS=128
+		elif nx_int_range -g 96 -v "$G_NEX_TTY_COLUMNS"; then
+			G_NEX_TTY_COLUMNS=96
+		else
+			G_NEX_TTY_COLUMNS=64
+		fi
+		G_NEX_TTY_COLUMNS="$NEXUS_CNF/banner/banner${G_NEX_TTY_COLUMNS}.txt"
+		test -f "$G_NEX_TTY_COLUMNS" -a -r "$G_NEX_TTY_COLUMNS" && nx_tty_print -c -R -e "\n$(cat "$G_NEX_TTY_COLUMNS")\n"
+	fi
+)
+
 nx_cfg_path()
 {
 	PATH="$(nx_data_path_append -v PATH -s ':' \

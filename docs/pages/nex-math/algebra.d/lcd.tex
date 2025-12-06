@@ -1,0 +1,77 @@
+\nxSections{Lowest Common Denominator}{2}
+
+\begin{NxLightP}
+	refer to \ref{code:EuclideanGCF} to see the gcd function.
+\end{NxLightP}
+
+\begin{NxCodeBox}{c}{title={The Lowest Common Denominator}, phantomlabel={code:EuclideanLCD}}
+define nx_lcd(x, y) {
+				return x * y / nx_euc(x, y)
+}
+\end{NxCodeBox}
+
+\begin{empheq}[box=\nxWarningMathBox]{align*}
+	\frac{3}{4} + \frac{2}{5} \;\nxArw{5}\;
+	\frac{3 \cdot 5}{4 \cdot 5} + \frac{2 \cdot 4}{5 \cdot 4} \;\nxArw{5}\;
+	\frac{15}{20} + \frac{8}{20} \;\nxArw{5}\;
+	\frac{15 + 8}{20} \;\nxArw{5}\;
+	\frac{23}{20}
+\end{empheq}
+\begin{empheq}[box=\nxWarningMathBox]{align*}
+	\frac{5}{6} + \frac{4}{7} \;\nxArw{5}\;
+	\frac{5 \cdot 7}{6 \cdot 7} + \frac{4 \cdot 6}{7 \cdot 6} \;\nxArw{5}\;
+	\frac{35}{42} + \frac{24}{42} \;\nxArw{5}\;
+	\frac{35 - 24}{42} \;\nxArw{5}\;
+	\frac{11}{42}
+\end{empheq}
+\begin{empheq}[box=\nxWarningMathBox]{align*}
+	\frac{7}{5} \cdot \frac{4}{3} \;\nxArw{5}\;
+	\frac{7 \cdot 4}{5 \cdot 3}\;\nxArw{5}\;
+	\frac{28}{15}\;\nxArw{5}\;
+	1\frac{13}{15}
+\end{empheq}
+\begin{empheq}[box=\nxWarningMathBox]{align*}
+	(18,20) \nxArw{18} \gcd(18,20) = 2\\
+	\frac{3}{5} \cdot \frac{6}{4} \;\nxArw{5}\;
+	\frac{3 \cdot 6}{5 \cdot 4}\;\nxArw{5}\;
+	\frac{18}{20}\;\nxArw{5}\;
+	\frac{\frac{18}{2}}{\frac{20}{2}}\;\nxArw{5}\;
+	\frac{9}{10}
+\end{empheq}
+\begin{empheq}[box=\nxWarningMathBox]{align*}
+	(28,63) \nxArw{18} \gcd(28,63) = 7\\
+	(56,35) \nxArw{18} \gcd(56,35) = 7\\
+	\frac{28}{63} \cdot \frac{56}{35} \;\nxArw{5}\;
+	\frac{\frac{28}{7}}{\frac{63}{7}} \cdot \frac{\frac{56}{7}}{\frac{35}{7}} \;\nxArw{5}\;
+	\frac{4}{9} \cdot \frac{8}{5} \;\nxArw{5}\;
+	\frac{4 \cdot 8}{9 \cdot 5}\;\nxArw{5}\;
+	\frac{32}{45}
+\end{empheq}
+\bigskip
+
+\begin{NxLightListBox}[title={Definition of Keep-Change-Flip}]
+		\nxEachLabel{ArrowDark}{Secondary}{{4}{5}}{%
+				{Keep}/{Keep the first fraction exactly as it is},%
+				{Change}/{Change the division sign to multiplication},%
+				{Flip}/{Flip the second fraction (take its reciprocal)},%
+				{Example}/{$\frac{3}{4} \div \frac{2}{5}$},%
+				{Outcome}/{$\frac{3}{4} \times \frac{5}{2} = \frac{15}{8}$}%
+		}
+\end{NxLightListBox}
+
+\begin{empheq}[box=\nxWarningMathBox]{align*}
+		\frac{3}{4} \div \frac{2}{5}\;\nxArw{5}\;
+		\frac{3}{4} \times \frac{5}{2}
+\end{empheq}
+
+\begin{NxLightListBox}[title={Using Keep-Change-Flip}]
+		\nxEachLabel{ArrowDark}{Secondary}{{4}{5}}{%
+				{Step 1}/{Write the division problem},%
+				{Step 2}/{Keep the first fraction},%
+				{Step 3}/{Change division to multiplication},%
+				{Step 4}/{Flip the second fraction},%
+				{Step 5}/{Multiply across numerators and denominators},%
+				{Outcome}/{Simplified fraction result}%
+		}
+\end{NxLightListBox}
+

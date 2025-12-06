@@ -5,5 +5,12 @@
 \def\nxZdn#1{\directlua{tex.print(nex.str.isZdn(#1))}}
 \def\nxQdn#1{\directlua{tex.print(nex.str.isQdn(#1))}}
 \def\nxRdn#1{\directlua{tex.print(nex.str.isRdn(#1))}}
-\def\nxSlope#1{\directlua{tex.print(nex.tex.slope(#1))}}
+%\def\nxSlope#2{\directlua{tex.print(nex.tex.slope(#1))}}
+\def\nxSections#1#2{\directlua{nex.tex.var.section:set(#2, "#1")}}
+
+\def\nxLoadedLua{%
+	\catcode`\_=11
+	\directlua{nex.tex.loaded()}
+	\catcode`\_=8
+}
 

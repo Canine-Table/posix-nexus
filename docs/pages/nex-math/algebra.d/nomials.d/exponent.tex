@@ -1,5 +1,30 @@
 \nxSections{Polynomial Exponents}{3}
 
+\begin{NxLightListBox}[title={Definition of Negative Exponent}]
+    \nxEachLabel{ArrowDark}{Secondary}{{4}{5}}{%
+        {Positive Exponent}/{\(x^n\) means multiply \(x\) by itself \(n\) times},%
+        {Negative Exponent}/{\(x^{-n}\) means reciprocal of \(x^n\)},%
+        {Rule}/{\(x^{-n} = \frac{1}{x^n}\)},%
+        {Example}/{\(x^{-3} = \frac{1}{x^3}\)},%
+        {Use}/{Negative exponents express division or reciprocals in algebra and calculus}%
+    }
+\end{NxLightListBox}
+
+\begin{empheq}[box=\nxWarningMathBox]{align*}
+    x^3 &= x \cdot x \cdot x \;\nxArw{5}\;
+    x^{-3} &= \frac{1}{x^3}
+\end{empheq}
+
+\begin{NxLightListBox}[title={Using Negative Exponents}]
+    \nxEachLabel{ArrowDark}{Secondary}{{4}{5}}{%
+        {Step 1}/{Recall exponent rules: \(x^a \cdot x^b = x^{a+b}\)},%
+        {Step 2}/{Set \(a=3\), \(b=-3\): \(x^3 \cdot x^{-3} = x^{0}\)},%
+        {Step 3}/{But \(x^0 = 1\)},%
+        {Step 4}/{So \(x^{-3}\) must equal \(\frac{1}{x^3}\)},%
+        {Outcome}/{Negative exponent means reciprocal of positive power}%
+    }
+\end{NxLightListBox}
+
 \nxLnArcBox[]{\bf\nxSFont{12pt}Exponent Flip Examples}
 \begin{empheq}[box=\nxWarningMathBox]{align}
     x^5 &= \frac{1}{x^{-5}} & \quad x^{12} &= \frac{1}{x^{-12}} \\
@@ -8,14 +33,6 @@
     x^{-3} &= \frac{1}{x^3} & \quad x^3 &= \frac{1}{x^{-3}} \\
     x^{-3} &= \frac{1}{x^3}
 		\label{eq:exponent-flip}
-\end{empheq}
-\bigskip
-
-\begin{empheq}[box=\nxWarningMathBox]{align*}
-    (((x^{32y^{5z^3}})^8)^3)^{-9}
-        &= (x^{32y^{5z^3}})^{8 \cdot 3} \quad \nxArw{5} x^{768y^{5z^3}} \\
-        &= \left(x^{768y^{5z^3}}\right)^{-9} \quad \nxArw{5} x^{-9 \cdot 768y^{5z^3}} \\
-        &= x^{-6912y^{5z^3}}
 \end{empheq}
 \bigskip
 
@@ -28,7 +45,6 @@
         {Outcome}/{Final simplified form: \(x^{-6912y^{5z^3}}\)}%
     }
 \end{NxLightListBox}
-
 
 \begin{empheq}[box=\nxWarningMathBox]{align*}
     (((x^{32y^{5z^3}})^8)^3)^{-9}

@@ -1,0 +1,261 @@
+\nxSections{Factoring Polynomials}{3}
+
+\begin{NxLightBox}[title={$4a^2 + 2ab − 3a^2b + 5$}]
+	\begin{tabularx}{\textwidth}{|X|X|X|}
+		\hline
+		\textbf{Terms} & \textbf{Factors} & \textbf{Prime Factors} \\
+		\hline
+		$4a^2$ & $4,a^2$ & $2,2,a,a$ \\
+		$2ab$ & $3,a,b$ & $2,a,b$ \\
+		$-3a^2b$ & $-3,a^2,b$ & $-3, a, a, b$ \\
+		$5$ & $5$ & $5$ \\
+		\hline
+	\end{tabularx}
+\end{NxLightBox}
+
+\begin{NxLightBox}[title={$xy^2 -3x^2y^2 - 6y + z$}]
+	\begin{tabularx}{\textwidth}{|X|X|X|}
+		\hline
+		\textbf{Terms} & \textbf{Factors} & \textbf{Prime Factors} \\
+		\hline
+		$xy^2$ & $4,a^2$ & $2,2,a,a$ \\
+		$-3x^2y$ & $3,a,b$ & $2,a,b$ \\
+		$-6y$ & $-6,y$ & $-2, 3, y$ \\
+		$z$ & $z$ & $z$ \\
+		\hline
+	\end{tabularx}
+\end{NxLightBox}
+
+\begin{NxLightBox}[title={$-5 + 2 (3a^2 - 3t)$}]
+	\begin{tabularx}{\textwidth}{|X|X|X|}
+		\hline
+		\textbf{Terms} & \textbf{Factors} & \textbf{Prime Factors} \\
+		\hline
+		$-5$ & $-5$ & $-5$ \\
+		$2(3a^2 - 3t)$ & $2.3a^2 - 3t$ & $2.3a^2 - 3t$ \\
+		$6t$ & $6,t$ & $3,3,t$ \\
+		\hline
+	\end{tabularx}
+\end{NxLightBox}
+
+\begin{NxLightBox}[title={$3x^2 + 5x - 2$}]
+	\begin{tabularx}{\textwidth}{|X|X|X|}
+		\hline
+		\textbf{Terms} & \textbf{Factors} & \textbf{Prime Factors} \\
+		\hline
+		$3x^2$ & $3,x^2$ & $3.x.x$ \\
+		$5x$ & $5,x$ & $5,x$ \\
+		$-2$ & $-2$ & $-2$ \\
+		\hline
+	\end{tabularx}
+\end{NxLightBox}
+
+\begin{NxLightListBox}[title={Definition of Prime Factor}]
+		\nxEachLabel{ArrowDark}{Secondary}{{4}{5}}{%
+				{Prime}/{A number greater than 1 divisible only by 1 and itself},%
+				{Factor}/{A number that divides another evenly},%
+				{Prime Factor}/{A prime number that divides another number exactly},%
+				{Example}/{60 = \(2^2 \cdot 3 \cdot 5\); prime factors are 2, 3, 5},%
+				{Use}/{Prime factors are the building blocks of integers, used in LCM, GCD, and simplification}%
+		}
+\end{NxLightListBox}
+
+\begin{empheq}[box=\nxWarningMathBox]{align*}
+		\text{Find LCM of 12 and 18} \\
+		12 &= 2^2 \cdot 3 \quad \nxArw{5} \\
+		18 &= 2 \cdot 3^2 \quad \nxArw{5} \\
+		\text{LCM} &= 2^2 \cdot 3^2 \quad \nxArw{20} 36
+\end{empheq}
+
+\begin{NxLightListBox}[title={Using Prime Factors for LCM}]
+		\nxEachLabel{ArrowDark}{Secondary}{{4}{5}}{%
+				{Step 1}/{Prime factorize each number},%
+				{Step 2}/{Collect all distinct primes},%
+				{Step 3}/{Take the highest power of each prime},%
+				{Step 4}/{Multiply them together},%
+				{Outcome}/{LCM(12,18) = 36}%
+		}
+\end{NxLightListBox}
+
+\begin{NxCodeBox}{c}{title={Euclidean Modulus}, phantomlabel={code:EuclideanModulus}}
+define nx_pt_mod(x, y) {
+				x = nx_abs(x)
+				if (x == 0)
+								return 0
+				y = nx_abs(y)
+				if (y > 0)
+								return x - y * nx_pt_trunc(x / y)
+				print "<nx:impurity/>"
+				return -1
+}
+\end{NxCodeBox}
+
+\begin{NxCodeBox}{c}{title={The Greatest Common Factor}, phantomlabel={code:EuclideanGCF}}
+define nx_euc(x, y) {
+				auto n
+				if (x == y)
+								return x
+				while (x > 0 && y > 0) {
+								n = x
+								x = nx_pt_mod(y, x)
+								y = n
+				}
+				return n
+}
+\end{NxCodeBox}
+
+\begin{empheq}[box=\nxWarningMathBox]{align*}
+	(8, 12) \nxArw{18} \gcd(8, 12) = 4\\
+	8x + 12\;\nxArw{5}\;
+	4(\frac{8x}{2} + \frac{12}{4})\;\nxArw{5}\;
+	4(2x + 3)
+\end{empheq}
+\begin{empheq}[box=\nxWarningMathBox]{align*}
+	(4, 2) \nxArw{18} \gcd(4, 2) = 2\\
+	4x^2 + 2x\;\nxArw{5}\;
+	2x(\frac{4x^2}{2x} + \frac{2x}{2x})\;\nxArw{5}\;
+	2x(2x + 1)
+\end{empheq}
+\begin{empheq}[box=\nxWarningMathBox]{align*}
+	(12, 18) \nxArw{18} \gcd(12, 18) = 6\\
+	12ab^2 + 18a^2b^3\;\nxArw{5}\;
+	6ab^2(2 + 3ab)
+\end{empheq}
+\bigskip
+
+\begin{NxLightListBox}[title={Definition of Perfect Square}]
+		\nxEachLabel{ArrowDark}{Secondary}{{4}{5}}{%
+				{Perfect Square}/{A number that can be expressed as \(n^2\) for some integer \(n\)},%
+				{Integer Squared}/{Formed by multiplying an integer by itself},%
+				{Examples}/{\(1, 4, 9, 16, 25, 36, \dots\)},%
+				{Non-Examples}/{\(2, 3, 5, 6, 7, 10, \dots\)},%
+				{Use}/{Perfect squares appear in factoring, radicals, and Pythagorean identities}%
+		}
+\end{NxLightListBox}
+
+\begin{empheq}[box=\nxWarningMathBox]{align*}
+		\text{Check if 49 is a perfect square} \\
+		49 &= 7 \cdot 7 \quad \nxArw{5} \\
+			 &= 7^2 \quad \nxArw{20} \\
+		\text{Therefore, 49 is a perfect square.}
+\end{empheq}
+
+\begin{NxLightListBox}[title={Using Perfect Squares}]
+		\nxEachLabel{ArrowDark}{Secondary}{{4}{5}}{%
+				{Step 1}/{Identify the number},%
+				{Step 2}/{Ask if it can be written as \(n^2\)},%
+				{Step 3}/{If yes, it is a perfect square},%
+				{Step 4}/{If no, it is not},%
+				{Outcome}/{49 is a perfect square since \(49 = 7^2\)}%
+		}
+\end{NxLightListBox}
+
+\begin{NxLightListBox}[title={Difference of Squares Applied}]
+		\nxEachLabel{ArrowDark}{Secondary}{{4}{5}}{%
+				{Identity}/{\((a^2 - b^2) = (a-b)(a+b)\)},%
+				{Example}/{\(x^2 - 9\)},%
+				{Factorization}/{Apply rule: \(x^2 - 3^2 = (x-3)(x+3)\)},%
+				{Technique}/{Recognize perfect squares and subtract},%
+				{Outcome}/{Final factored form: \((x-3)(x+3)\)}%
+		}
+\end{NxLightListBox}
+
+\begin{empheq}[box=\nxWarningMathBox]{align*}
+		x^2 - 9\;\nxArw{5}\;
+		x^2 - 3^2\;\nxArw{5}\;
+		(x-3)(x+3)
+\end{empheq}
+\bigskip
+
+\begin{NxLightListBox}[title={Perfect Squares Difference}]
+		\nxEachLabel{ArrowDark}{Secondary}{{4}{5}}{%
+				{Identity}/{\((a^2 - b^2) = (a-b)(a+b)\)},%
+				{Example}/{\(x^2 - 9\)},%
+				{Factorization}/{\((x-3)(x+3)\)},%
+				{Technique}/{Spot the squares, apply the difference rule},%
+				{Outcome}/{Factored polynomial form}%
+		}
+\end{NxLightListBox}
+
+\begin{empheq}[box=\nxWarningMathBox]{align*}
+	(25) \nxArw{18} \sqrt(25) = 5\\
+	x^2 - 25\;\nxArw{5}\;
+	(x + 5)(x - 5)
+\end{empheq}
+\begin{empheq}[box=\nxWarningMathBox]{align*}
+			(x - 5)(x + 5)\nxArw{5}\;
+			x^2 + 5x + -5x + -25 \nxArw{5}\;\\\nxArw{20}\;
+			x^2 + (5x + -5x \nxArw{5}\; 0) - 25\nxArw{5}\;
+			x^2 - 25
+\end{empheq}
+\begin{empheq}[box=\nxWarningMathBox]{align*}
+	(9) \nxArw{18} \sqrt(9) = 3\\
+	x^2 - 9\;\nxArw{5}\;
+	(x + 3)(x - 3)
+\end{empheq}
+\begin{empheq}[box=\nxWarningMathBox]{align*}
+	(4) \nxArw{18} \sqrt(4) = 2\\
+	x^2 - 4\;\nxArw{5}\;
+	(x + 2)(x - 2)
+\end{empheq}
+\begin{empheq}[box=\nxWarningMathBox]{align*}
+	4x^2 - 25\;\nxArw{5}\;
+	(2x + 5)(2x - 5)
+\end{empheq}
+\begin{empheq}[box=\nxWarningMathBox]{align*}
+	(81) \nxArw{18} \sqrt(81) = 9\\
+	(16) \nxArw{18} \sqrt(16) = 4\\
+	16x^2 - 25\;\nxArw{5}\;
+	(4x + 9)(4x - 9)
+\end{empheq}
+\begin{empheq}[box=\nxWarningMathBox]{align*}
+	25x^2 - 16y^2\;\nxArw{5}\;
+	(5x + 4y)(5x - 4y)
+\end{empheq}
+\begin{empheq}[box=\nxWarningMathBox]{align*}
+	81x^4 - 16y^8\;\nxArw{5}\;
+	(9x^2 + 4y^4)(9x^2 - 4y^4)\;\nxArw{5}\;
+	(3x + 2y^2)(3x - 2y^2)
+\end{empheq}
+\bigskip
+
+\begin{NxLightListBox}[title={Factor by Grouping Applied}]
+		\nxEachLabel{ArrowDark}{Secondary}{{4}{5}}{%
+				{Setup}/{Polynomial with 4 terms},%
+				{Grouping}/{Split into two pairs},%
+				{Inner Factor}/{Factor each pair separately},%
+				{Common Binomial}/{Extract the shared binomial},%
+				{Outcome}/{Final factored form}%
+		}
+\end{NxLightListBox}
+
+\begin{empheq}[box=\nxWarningMathBox]{align*}
+	x^3 + 3x^2 + 2x + 6\;\nxArw{5}\;
+	(x^3 + 3x^2) + (2x + 6)\;\nxArw{5}\;\\\nxArw{20}
+	x^2(x+3) + 2(x+3)\;\nxArw{5}\;
+	(x^2+2)(x+3)
+\end{empheq}
+\begin{empheq}[box=\nxWarningMathBox]{align*}
+	x^3 - 4x^2 + 3x - 12\;\nxArw{5}\;
+	x^2(x - 4) + 3(x - 4)\;\nxArw{5}\;\\\nxArw{20}
+	\frac{x^2(x - 4)}{x - 4} + \frac{3(x - 4)}{x - 4}\;\nxArw{5}\;\\\nxArw{20}
+	(x - 4)(x^2 + 3)
+\end{empheq}
+\begin{empheq}[box=\nxWarningMathBox]{align*}
+	2x^3 - 6x^2 + 4x - 12\;\nxArw{5}\;
+	2x^2(x - 3) + 4(x - 3)\;\nxArw{5}\;\\\nxArw{20}
+	\frac{2x^2(x - 3)}{x - 3} + \frac{4(x - 3)}{x  - 3}\;\nxArw{5}\;\\\nxArw{20}
+	(x - 3)(2x^2 + 4)
+\end{empheq}
+\begin{empheq}[box=\nxWarningMathBox]{align*}
+	3x^3 + 8x^2 - 6x - 16\;\nxArw{5}\;
+	x^2(3x + 8) - 2(3x + 8)\;\nxArw{5}\;\;\\\nxArw{20}
+	\frac{x^2(3x + 8)}{3x + 8} + \frac{-2(3x + 8)}{3x + 8}\;\nxArw{5}\;\\\nxArw{20}
+	(x^2 - 2)(3x + 8)\;\nxArw{5}\;\\\nxArw{20}
+	3x^3 - 6x + 8x^2 - 16\;\nxArw{5}\;
+	3x(x^2 - 2) + 8(x^2 - 2)\;\nxArw{5}\;\;\\\nxArw{20}
+	\frac{3x(x^2 - 2)}{x^2 - 2} + \frac{8(x^2 - 2)}{x^2 - 2}\;\nxArw{5}\;\\\nxArw{20}
+	(x^2 - 2)(3x + 8)
+\end{empheq}
+\bigskip
+

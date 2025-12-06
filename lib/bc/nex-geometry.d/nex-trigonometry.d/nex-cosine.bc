@@ -10,11 +10,11 @@ define r_nx_ts_sec(x) {
 }
 
 ##################################################################
-define r_nx_ts_acos(x, y) {
-        if (x > 1 || x < -1) {
+define r_nx_ts_acos(x) {
+	if (x > 1 || x < -1) {
 		print "<nx:impurity230/>"
-                return -1
-        }
-        return c_pi_2 - r_nx_ts_asin(x, y)
+		return -1
+	}
+	return c_pi_2 - r_nx_ts_asin(x)
 }
 

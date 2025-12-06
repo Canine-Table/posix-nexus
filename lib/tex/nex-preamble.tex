@@ -2,10 +2,11 @@
 \ifluatex%
 	\usepackage{luacode} % Allows embedding Lua code directly in LaTeX
 	\edef\nxTeXPath{\directlua{tex.sprint(os.getenv("TEXMFHOME"))}}
+	\edef\nxSvgPath{\directlua{tex.sprint(os.getenv("NEXUS_LIB") .. "/svg")}}
 	\directlua{
 		local pkgrt = os.getenv('NEXUS_LIB') .. '/lua/'
-		package.path = pkgrt .. '?.lua;' .. pkgrt .. 'opt/?.lua;' .. package.path
-		package.path = pkgrt .. 'luatex/?.lua;' .. pkgrt  .. 'luatex/opt/?.lua;' .. package.path
+		package.path = pkgrt .. '?.lua;' .. pkgrt .. 'modules/?.lua;' .. package.path
+		package.path = pkgrt .. 'luatex/?.lua;' .. pkgrt  .. 'luatex/modules/?.lua;' .. package.path
 		nex = require('luatex/nex-luatex-init')
 	}
 	\input{\nxTeXPath/nex-package.tex}
@@ -20,6 +21,7 @@
 	\input{\nxTeXPath/nex-sec.tex}
 	\input{\nxTeXPath/nex-typography.tex}
 	\input{\nxTeXPath/nex-renew.tex}
+	%\includesvg{\nxSvgPath/posix-nexus.svg}
 	%\input{\nxTeXPath/nex-forest.tex}
 	\input{\nxTeXPath/nex-plots.tex}
 	\makeatletter
