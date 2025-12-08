@@ -1,4 +1,5 @@
-function! s:NxInit()
+
+function! s:NxVimInit()
 	filetype on
 	filetype plugin on
 	filetype indent on
@@ -16,80 +17,109 @@ function! s:NxInit()
 	set history=10000
 	set nowrap
 	set belloff=all
-	call NxCallFile(
-		\ 'misc.vim',
-		\ 'types.vim',
-		\ 'str.vim',
-		\ 'mappings.vim',
-		\ 'variables.vim'
-	\)
-	let g:nx_home_dir = expand(getenv('HOME'))
-	if NxBaseName(getenv('G_NEX_WGET')) == 'curl'
-		let g:nx_download_cmd = 'silent !curl -fLo '
-		let g:nx_download_cmd_options = ' --create-dirs '
-	elseif NxBaseName(getenv('G_NEX_WGET')) == 'wget'
-		let g:nx_download_cmd = 'silent !wget -O '
-		let g:nx_download_cmd_options = ' '
-	else
-		echoerr 'Error: No curl or wget found.'
+	if has("termguicolors")
+		set termguicolors
 	endif
-	if stridx($VIMRUNTIME, 'nvim') >= 0
-		let g:nx_editor = 'nvim'
-		call s:NxNeoVimInit()
-		call NxCallFile('nex-nvim-init.lua')
+	set background=dark
+	call NxCallFile("nex-mappings.vim", "nex-misc.vim")
+	call NxVimVersion()
+	let tmpa = GetNxCmd("curl", "wget")
+	if tmpa == ""
+		echoerr "Error: No curl or wget found."
 	else
-		if v:version < 900
-			let g:nx_editor = 'vim'
-		else
-			let g:nx_editor = 'vim9'
+		if tmpa == "wget"
+			let g:NxWww = {a,b -> (mkdir(fnamemodify(a, ':h'), 'p'); system("wget -O '" . a . "' '" . b . "'"))}
+		elseif tmpa == "curl"
+			let g:NxWww = {a,b -> system("curl -fLo '" . a . "' --create-dirs '" . b . "'")}
 		endif
-		call s:NxVimInit()
+		call GetNxWww({
+			\ 'autoload/plug.vim': 'https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
+		\ })
 	endif
-	call NxCallFile(
-		\ 'ext/nex-xml.vim',
-		\ 'ext/nex-md.vim',
-		\ 'ext/nex-git.vim',
-		\ 'ext/nex-java.vim',
-		\ 'ext/nex-TeX.vim'
-	\)
-	call NxPath({
-		\ 'autoload/plug.vim': 'https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
-	\})
-	call NxCallFile('plugins.vim', 'snippets.vim')
-	call s:NxColorTheme()
+	if filereadable(fnamemodify(g:nex_vim_config . "autoload/plug.vim", ":p"))
+		call NxCallFile("nex-plugins.vim")
+		call s:NxColorTheme()
+	endif
+	call NxClipboard()
+	if has("python3")
+		call NxCallFile("nex-snippets.vim")
+	endif
 endfunction
 
-function! s:NxNeoVimInit()
-	if empty(getenv('LOCALAPPDATA'))
-		let g:nx_data_path = g:nx_home_dir . '/.local/share/nvim/'
-		let g:nx_config_path = g:nx_home_dir . '/.config/nvim/'
-		let g:nx_cache_path = g:nx_home_dir . '/.cache/nvim/'
+function! s:NxVimOs()
+	let g:NxCmd = {x -> system("command -v " . x)}
+	if has('macunix')
+		return 1
+	elseif has("unix")
+		return 2
+	elseif has("win32")
+		let g:NxCmd = {x -> system("where " . x)}
+		return 3
 	else
-		let g:nx_data_path = g:nx_home_dir . '/AppData/Local/nvim/'
-		let g:nx_config_path = g:nx_home_dir . '/AppData/Local/nvim-data/'
-		let g:nx_cache_path = g:nx_home_dir . '/AppData/Local/nvim-cache/'
+		let g:NxCmd = {x -> ""}
+		return 4
 	endif
 endfunction
 
-function! s:NxVimInit()
-	if empty(getenv('LOCALAPPDATA'))
-		let g:nx_data_path = g:nx_home_dir . '/.vim/'
-		let g:nx_config_path = g:nx_home_dir . '/.vim/'
-		let g:nx_cache_path = g:nx_home_dir . '/.vim/'
+function! NxClipboard()
+	let g:nex_clip = NxBaseName(getenv("G_NEX_CLIPBOARD"))
+	if has("clipboard")
+		nnoremap <silent> <leader>yy :%y+<CR>
+	elseif g:nex_clip != ""
+		call NxCallFile("nex-clip.vim")
+	endif
+endfunction
+
+function! GetNxCmd(...)
+	for arg in a:000
+		if g:NxCmd(arg) != ""
+			return arg
+		endif
+	endfor
+endfunction
+
+function! NxVimVersion()
+	let g:nex_vim_os = s:NxVimOs()
+	if stridx($VIMRUNTIME, "nvim") >= 0
+		let g:nex_vim = "nvim"
+		return s:NxNeoVimPaths()
+	elseif v:version < 900
+		let g:nex_vim = "vim"
 	else
-		let g:nx_data_path = g:nx_home_dir . '/vimfiles/'
-		let g:nx_config_path = g:nx_home_dir . '/vimfiles/'
-		let g:nx_cache_path = g:nx_home_dir . '/vimfiles/'
+		let g:nex_vim = "vim9"
 	endif
-	call NxPath({
-		\ 'colors/dracula.vim': 'https://raw.githubusercontent.com/dracula/vim/master/colors/dracula.vim',
-	\})
+	if g:nex_vim_os == 3
+		let tmpa = getenv("HOME") . "/vimfiles/"
+	else
+		let tmpa = getenv("HOME") . "/.vim/"
+	endif
+	let g:nex_vim_data = tmpa
+	let g:nex_vim_cache = tmpa
+	let g:nex_vim_config = tmpa
+	call NxContainer(g:nex_vim_config . "/pack/")
 endfunction
 
-function! NxPath(args)
-	for [key, val] in items(a:args)
-		if ! filereadable(g:nx_config_path . key)
-			execute g:nx_download_cmd . g:nx_config_path . key . g:nx_download_cmd_options . val
+function! s:NxNeoVimPaths()
+	if g:nex_vim_os == 3
+		let g:nex_vim_data = getenv("HOME") . '/AppData/Local/nvim/'
+		let g:nex_vim_config = getenv("HOME") . '/AppData/Local/nvim-data/'
+		let g:nex_vim_cache = getenv("HOME") . '/AppData/Local/nvim-cache/'
+	else
+		let g:nex_vim_data = getenv("HOME") . '/.local/share/nvim/'
+		let g:nex_vim_config = getenv("HOME") . '/.config/nvim/'
+		let g:nex_vim_cache = getenv("HOME") . '/.cache/nvim/'
+	endif
+endfunction
+
+function! GetNxWww(a)
+	if type(a:a) != v:t_dict
+		echoerr "Error: dict expected for GetNxWww."
+		return v:false
+	endif
+	for [key, val] in items(a:a)
+		let target = fnamemodify(g:nex_vim_config . key, ":p")
+		if ! filereadable(target)
+			call g:NxWww(target, val)
 		endif
 	endfor
 endfunction
@@ -125,14 +155,14 @@ endfunction
 
 function! s:NxColorTheme()
 	try
-		colorscheme dracula-soft
+		colorscheme nord
 	catch /^Vim\%((\a\+)\)\=:E185/
 		call PlugUpdateUpgrade()
 		try
-			colorscheme dracula
+			colorscheme dracula-soft
 		catch /^Vim\%((\a\+)\)\=:E185/
 			try
-				colorscheme nord
+				colorscheme dracula
 			catch
 				colorscheme industry
 			endtry
@@ -140,5 +170,5 @@ function! s:NxColorTheme()
 	endtry
 endfunction
 
-call s:NxInit()
+call s:NxVimInit()
 

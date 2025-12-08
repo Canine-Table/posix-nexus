@@ -1,8 +1,6 @@
 
 \makeatletter
 
-\newcolumntype{Y}{>{\raggedleft\arraybackslash}X}
-
 \tcbset{%
 	enhanced,%
 	autoparskip,%
@@ -584,49 +582,8 @@
 }
 
 \nxThemed{nxBox}
-
-\def\nxNestedList#1#2#3#4{%
-	{\nxSFont{16pt}\bf #1}
-	\begin{NxLightList}
-		\global\nx@cnta=0
-		\foreach \x/\y in {#4} {
-			\global\advance\nx@cnta by 1
-			\expandafter\csname nx#2Item\endcsname\nxLnBox[nxCol=tertiary]{~\nxLnArcBox{\the\nx@cnta}~~\bf\x\nxKern{4pt}}
-			\begin{NxLightList}
-				\foreach \z in \y {
-					\expandafter\csname nx#3Item\endcsname\z%
-				}%
-			\end{NxLightList}
-		}
-	\end{NxLightList}
-}
-
-\long\def\nxBeamer#1#2{
-	\end{frame}
-		\begin{tcbitemize}[%
-			raster equal height=rows,%
-			raster rows=#1
-			enhanced,%
-			left=0mm,%
-			right=0mm,%
-			top=0mm,%
-			bottom=0mm,%
-			boxsep=0mm,%
-			nxBackOpacity,%
-			halign=flush center,%
-			valign=flush center%
-		]
-		\foreach \x/\y in {#2,\relax} {
-			\tcbitem[\x]
-			\begin{center}
-				\y
-			\end{center}
-		}
-	\end{frame}
-}
-
-\def\nxParameters#1{%
-	\nxNestedList{Parameters}{CodeDark}{ArrowDark}{#1}
-}
 \makeatother
+
+\newcolumntype{Y}{>{\raggedleft\arraybackslash}X}
+\newcolumntype{Z}{>{$}X<{$}}
 

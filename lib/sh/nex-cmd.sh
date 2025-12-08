@@ -33,7 +33,7 @@ nx_cmd_shell()
 
 nx_cmd_editor()
 {
-	g_nx_cmd nvim vim gvim vim.tiny vi
+	g_nx_cmd vim nvim gvim vim.tiny vi
 }
 
 nx_cmd_cc()

@@ -1,20 +1,3 @@
-function! NxRunCurrentFile()
-	update
-	if &filetype ==# 'java'
-	elseif &filetype ==# 'python'
-		execute '!python3 %'
-	elseif &filetype ==# 'c'
-		execute '!gcc % -o %:r && ./%:r'
-	elseif &filetype ==# 'cpp'
-		execute '!g++ % -o %:r && ./%:r'
-	elseif &filetype ==# 'sh'
-		execute '!bash %'
-	else
-		echoerr "No run command set for filetype: " . &filetype
-	endif
-endfunction
-
-
 let g:mapleader = ","
 nnoremap x d$
 nnoremap X d^
@@ -45,13 +28,4 @@ nnoremap <leader>n :call NexMap()<CR>
 nnoremap <leader>pi :PlugInstall<CR>
 nnoremap <leader>pu :call PlugUpdateUpgrade()<CR>
 nnoremap <leader>u <Cmd>call UltiSnips#RefreshSnippets()<CR>
-nnoremap <Leader>lv :VimtexView<CR>
-nnoremap <Leader>ll :VimtexCompile<CR>
-noremap <Leader>lL :VimtexCompileSS<CR>
-nnoremap <Leader>LL :VimtexCompileSelected<CR>
-nnoremap <Leader>lq :VimtexStop<CR>
-noremap <Leader>lm :VimtexToggleMain<CR>
-noremap <Leader>lt :VimtexLog<CR>
-noremap <leader>wc <Cmd>VimtexCountWords<CR>
-"nnoremap <leader><F5> :call NxRunCurrentFile()<CR>
 

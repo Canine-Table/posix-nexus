@@ -1,1 +1,0 @@
-opt/nex-TeX.vim

@@ -20,10 +20,15 @@
 	%\nxInput{bases}
 	%\nxInput{gates}
 	%\nxInput{trigonometry}
-	%\nxInput{linear-equations}
+	%\nxInput{algebra}
+%\directlua{
 
-	\nxInput{algebra}
-	\nxInput{sets}
+
+	\nxLoadedLua
+	%\nxInput{sets}
+\directlua{tex.print(nex.clua.lsqlite3)}
+
+		%$:match("%d+%.%d+"))}
 
 	%\nxInput{definitions}
 	%\nxSections{Glossary}{1}

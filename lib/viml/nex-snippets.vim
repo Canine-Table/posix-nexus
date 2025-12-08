@@ -1,5 +1,5 @@
 function! s:NxSnippetSettings()
-	if exists(':python3')
+	if exists('python3')
 		" use Tab to expand snippets
 		let g:UltiSnipsExpandTrigger = '<Tab>'
 		" use Tab to move forward through tabstops

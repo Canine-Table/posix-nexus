@@ -1,0 +1,78 @@
+\nxSections{Coordinate Plane}{3}
+
+\begin{NxLightListBox}[title={Domain}]
+    \nxEachLabel{ArrowDark}{Secondary}{{4}{5}}{%
+        {Definition}/{The set of all possible input values \(x\) for a function},%
+        {Coordinate Plane}/{Represents the horizontal axis (x-axis)},%
+        {Example}/{For \(f(x)=\sqrt{x}\), the domain is \(x \geq 0\)},%
+        {Relation}/{Domain specifies where the function is defined},%
+        {Outcome}/{Determines the allowable values you can plug into the function}%
+    }
+\end{NxLightListBox}
+
+\begin{NxLightListBox}[title={Range}]
+    \nxEachLabel{ArrowDark}{Secondary}{{4}{5}}{%
+        {Definition}/{The set of all possible output values \(y\) from a function},%
+        {Coordinate Plane}/{Represents the vertical axis (y-axis)},%
+        {Example}/{For \(f(x)=\sqrt{x}\), the range is \(y \geq 0\)},%
+        {Relation}/{Range shows the values the function can produce},%
+        {Outcome}/{Determines the spread of results plotted on the plane}%
+    }
+\end{NxLightListBox}
+
+\begin{NxLightListBox}[title={Interval Notation}]
+    \nxEachLabel{ArrowDark}{Secondary}{{4}{5}}{%
+        {[a,b]}/{Closed interval: includes both endpoints \(a\) and \(b\)},%
+        {(a,b)}/{Open interval: excludes both endpoints \(a\) and \(b\)},%
+        {[a,b)}/{Half-open interval: includes \(a\) but excludes \(b\)},%
+        {(a,b]}/{Half-open interval: excludes \(a\) but includes \(b\)},%
+        {[0,x)}/{All real numbers from 0 up to but not including \(x\)},%
+        {(0,x)}/{All real numbers greater than 0 and less than \(x\)}%
+    }
+\end{NxLightListBox}
+
+\begin{NxLightListBox}[title={Relation of Ordered Pairs}]
+    \nxEachLabel{ArrowDark}{Secondary}{{4}{5}}{%
+        {Ordered Pair}/{A pair written as \((x,y)\), where \(x\) is the input and \(y\) is the output},%
+        {Relation}/{Any set of ordered pairs that connects elements from one set (domain) to another (range)},%
+        {Domain}/{The collection of all first elements \(x\) in the ordered pairs},%
+        {Range}/{The collection of all second elements \(y\) in the ordered pairs},%
+        {Function}/{A special type of relation where each \(x\) is paired with exactly one \(y\)},%
+        {Example}/{Relation: \(\{(1,2),(2,3),(3,4)\}\); Domain: \(\{1,2,3\}\); Range: \(\{2,3,4\}\)}%
+    }
+\end{NxLightListBox}
+
+\begin{NxLightBox}[title={Ordered Pairs}]
+    \begin{tabularx}{\textwidth}{|Z|Z|}
+        \hline
+        \textbf{Input $(a,b)$} & \textbf{Output Value} \\
+        \hline
+        (0,0) & 5 \\
+        (1,0) & 9 \\
+        (1,1) & 8 \\
+        (2,1) & 15 \\
+        (2,2) & 17 \\
+        (3,1) & 26 \\
+        \hline
+    \end{tabularx}
+\end{NxLightBox}
+
+\begin{tikzpicture}
+	\begin{axis}[%
+		title={Ordered Pairs},%
+		xlabel={$x$},%
+		ylabel={$y$},%
+		ymin=0,%
+		ymax=3,%
+		xmin=0,%
+		xmax=3,%
+		minor y tick num=1,%
+		nodes near coords%
+	]
+		\foreach \x/\y in {0/0,1/0,1/1,2/1,2/2,3/1}{
+			\addplot[only marks, mark=*, color=nex.graph.x] coordinates {(\x,\y)};
+		}
+	\end{axis}
+\end{tikzpicture}
+\bigskip
+

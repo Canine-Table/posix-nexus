@@ -3,7 +3,7 @@
 
 nx_data_ref()
 {
-	test -n "$1" && eval "printf \$$1"
+	test -n "$1" && eval "printf \$$1" 2> /dev/null
 }
 
 nx_data_ref_append()
@@ -157,11 +157,9 @@ nx_data_include()
 nx_data_path_append()
 (
 	nx_data_optargs 'v:s:' "$@"
-	NEX_k_v="$(nx_data_ref "$NEX_k_v")" || exit 65
-	test -n "$NEX_k_v" -a -n "$NEX_K_d" && tmpa="${NEX_k_v}${NEX_k_s:-<nx:null/>}"
 	${AWK:-$(nx_cmd_awk)} \
-		-v val="$NEX_k_v" \
-		-v sep="$NEX_k_s" \
+		-v val="$(nx_data_ref "$NEX_k_v")" \
+		-v sep="${NEX_k_s:-<nx:null/>}" \
 		-v str="$NEX_R" \
 	"
 		$(nx_data_include -i "${NEXUS_LIB}/awk/nex-struct.awk")
