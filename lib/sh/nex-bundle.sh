@@ -85,7 +85,8 @@ nx_env()
 		printf '%s\n' "$tmpb"
 		exit 1
 	}
-
+	umask 022
+	nx_init_install -o 0 -O 0 -b "$tmpb" cnf env src docs bin sbin img -b "$HOME/" ".nx/ssl" ".nx/csr"
 	cat > "${tmpb}env/.nexus-shell.bundles.sh" <<- EOF
 		#!${SHELL:-$(command -v sh)}
 		export NEXUS_ROOT="$tmpb"
@@ -100,8 +101,6 @@ nx_env()
 	EOF
 	tmpc="${tmpb}cnf/.nex-rc"
 	test -f "$tmpc" -a -r "$tmpc" && printf 'export ENV="%s"\n' "${tmpc}" >> "${tmpb}env/.nexus-shell.bundles.sh"
-	umask 022
-	nx_init_install -o 0 -O 0 -b "$tmpb" cnf env src docs bin sbin img -b "$HOME/" ".nx/ssl" ".nx/csr"
 	for tmpc in "${tmpb}lib/sh/"*".sh"; do
 		test ! "$tmpc" = "${tmpb}lib/sh/${tmpa}" -a  -r "$tmpc" && {
 			tmpe="$tmpe<nx:null/>$tmpc"
