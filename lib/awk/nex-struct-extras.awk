@@ -62,8 +62,6 @@ function nx_uarr(V, D)
 {
 	if (D1 == "")
 		return -1
-	if (! length(V))
-		split("", V, "")
 	return V[D1]++
 }
 

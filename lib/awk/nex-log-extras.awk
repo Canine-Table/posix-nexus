@@ -98,13 +98,9 @@ function nx_ansi_warning(D1, B, D2)
 
 function nx_log_db(N, D, B, V,		msg)
 {
-	if (length(V))
+	if (0 in V)
 		N = V[N "," nx_modulus_range(__nx_entropy(V[N]), V[N]) + 1]
-	else
-		B = 0
 	if (N != "") {
-		if (B)
-			delete V
 		B = split(D, msg, "<nx:null/>")
 		for (D = 1; D <= B; D++) {
 			if (! gsub("<nx:placeholder[ \t]+index=" D "[ \t]*/>", msg[D], N))

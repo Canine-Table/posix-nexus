@@ -280,7 +280,7 @@ function nx_json_match(D1, D2, V1, V2, D3, B1, B2, B3,	v)
 
 function nx_json_stack(D1, V, D2)
 {
-	if (length(V) && nx_json_type(D1, V) == 2) {
+	if (nx_json_type(D1, V) == 2) {
 		if (D2) {
 			V[".nx" D1 "[" ++V[".nx" D1 "[0]"] "]"] = D2
 		} else if (V[".nx" D1 "[" V[".nx" D1 "[0]"] "]"]) {
@@ -296,7 +296,7 @@ function nx_json_stack(D1, V, D2)
 
 function nx_json_compare(D1, D2, D3, V1, V2, V3, D4,	_v1, _v2, i, d)
 {
-	if ((length(V1) || nx_json_split(D1, V1, V2, D4)) && (length(V3) || nx_json_split(D2, V1, V3, D4))) {
+	if (nx_json_split(D1, V1, V2, D4) && nx_json_split(D2, V1, V3, D4)) {
 		D3 = __nx_else(nx_json_match("", D3, _v1, _v2, "[ 'left', 'intersect', 'difference' ]"), "left")
 		for (i = 1; i <= V2[0]; i++) {
 			if ((V2[i] in V3) == (D3 == "intersect"))
