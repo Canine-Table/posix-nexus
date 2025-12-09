@@ -1,9 +1,7 @@
 
 local M = {}
 
-local db3 = requires('lsqlite3')
-
-function M:new(name)
+function M:new(db3, name)
 	local p = os.getenv("NEXUS_CNF") .. "/db/" .. (name or "default") .. ".db"
 	local this = {
 		path = p,
@@ -23,6 +21,25 @@ function M:create(t)
 	end
 	return true
 end
+
+function M:insert(s, p, t)
+	if type(t) ~= "table" or type(s) ~= "string" then
+		return false
+	end
+	local val = ""
+	for k, v in pairs(t) do
+		if val ~= "" then
+			val = val .. ",(" .. v .. ")"
+		else
+			val = "(" .. v .. ")"
+		end
+	end
+	self.db:exec(string.format("INSERT INTO %s (%s) VALUES %s;", s, p, val))
+	return true
+end
+
+-- (1, 'Alice', 25) ON CONFLICT(%s) DO UPDATE SET
+
 
 return M
 

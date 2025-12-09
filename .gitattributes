@@ -17,6 +17,7 @@
 
 # Treat all .c and .h files as C
 **/*.c linguist-language=C
+**/*.bc linguist-language=C
 **/*.h linguist-language=C
 
 *.asm linguist-language=Assembly
@@ -27,5 +28,5 @@
 
 **/*.py linguist-language=Python
 
-src/test-mod.sh linguist-vendored
+test/** linguist-vendored
 

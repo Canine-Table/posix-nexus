@@ -5,6 +5,9 @@
 kpse.set_program_name("luatex")
 
 local M = {}
+package.loadlib(kpse.find_file("lsqlite3", "clua"), "luaopen_lsqlite3")()
+M.db3 = require('lsqlite3')
+
 M.module = require('nex-module')
 M.system = M.module.load['nex-system']
 M.int = M.module.load['nex-int']
@@ -25,40 +28,8 @@ M.tex.loaded = function()
 	end
 end
 
-M.clua = {
-	lsqlite3 = kpse.find_file("lsqlite3", "clua")
-}
-package.loadlib(M.clua.lsqlite3, "luaopen_lsqlite3")()
-
---assert(open, "luaopen_lsqlite3 symbol not found in lsqlite3.so")
---local mod = open()
---package.preload["lsqlite3"] = function() return mod end
---M.db3 = M.module.load['lsqlite3']
---db3 = require("lsqlite3")
-
---local db3 = require("lsqlite3")
--- Add LuaRocks local install paths
-
-
---local db3 = require("luasql/sqlite3")
--- local db3 = require("/home/user/.luarocks/lib/lua/6.4/lsqlite3")
-
---[=[
-
-
-local ver = _VERSION:match("%d+%.%d+")
-local home = os.getenv("HOME")
-package.path  = home .. "/.luarocks/share/lua/" .. ver .. "/?.lua;" ..
-	home .. "/.luarocks/share/lua/" .. ver .. "/?/init.lua;" ..
-	package.path
-package.cpath = home .. "/.luarocks/lib/lua/" .. ver .. "/?.so;" ..
-	"/usr/lib/lua/" .. ver .. "/?.so;" ..
-	package.cpath
-
-
-
-M.sql = M.module.load['nex-db']
-M.tex.var.db = M.sql:new("TeX")
+M.sql = require('nex-db')
+M.tex.var.db = M.sql:new(M.db3, "TeX")
 M.tex.var.db:create({
 	bib = "id TEXT PRIMARY KEY, author TEXT, title TEXT, year INTEGER, journal TEXT",
 	gls = "term TEXT PRIMARY KEY, definition TEXT",
@@ -66,9 +37,9 @@ M.tex.var.db:create({
 	idx = "term TEXT, page INTEGER"
 })
 
-
---]=]
---]=]
+M.tex.var.db:insert("acr", "short,long", {
+	"'foil', 'First Outer Inner Last'"
+})
 
 return M
 

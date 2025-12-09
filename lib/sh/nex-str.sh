@@ -36,6 +36,15 @@ nx_str_join()
 	printf '%s' "$1" | ${AWK:-$(nx_cmd_awk)} -v dlm="$2" 'NR==1{printf "%s",$0; next}{printf "%s", dlm $0}'
 }
 
+nx_str_cnt()
+(
+	nx_data_optargs 'd:' "$@"
+	${AWK:-$(nx_cmd_awk)} \
+		-v dlm="${NEX_k_d:-,}" \
+		-v str="$NEX_S" \
+		'BEGIN {print gsub(dlm, "\\\&", str)}'
+)
+
 nx_str_chain()
 {
 	printf '%s' "$1"
@@ -130,20 +139,4 @@ nx_str_grep()
 		}
 	'
 )
-
-: <<- 'EOF'
-nx_str_od()
-(
-	h_nx_cmd od || {
-		nx_tty_printf -e 'o no od was not found'
-		exit 127
-	}
-	nx_data_optargs 'k@o@x@e' "$@"
-	test "$G_NEX_ASM_ENDIAN" -eq 1 -o "$NEX_f_e" = '<nx:true/>' && NEX_f_e='big' || NEX_f_e='little'
- --address-radix=none \
-					--format="${tmpb}1" \
-
-)
-
-EOF
 

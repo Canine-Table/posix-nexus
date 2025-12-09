@@ -1,4 +1,5 @@
 #nx_include NEX_L:/sh/nex-bc.sh
+#nx_include nex-algebra.d/nex-linear.sh
 
 nx_bc_alg()
 (

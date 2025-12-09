@@ -1,0 +1,11 @@
+define nx_euc(x, y) {
+				auto n
+				if (x == y)
+								return x
+				while (x > 0 && y > 0) {
+								n = x
+								x = nx_pt_mod(y, x)
+								y = n
+				}
+				return n
+}
