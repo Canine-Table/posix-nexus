@@ -73,7 +73,6 @@ nx_cfg_path()
 		"$HOME/.local/bin" \
 		"$HOME/.local/sbin" \
 		"$NEXUS_BIN" \
-		"$NEXUS_CNF" \
 		"$NEXUS_SBIN"
 	)"
 
@@ -93,7 +92,7 @@ nx_cfg_ps1()
 {
 	test -n "$G_NEX_MNT_CHROOT" && tmpa='chroot' || tmpa=''
 	test -n "$VIRTUAL_ENV" && tmpa="$(nx_data_path_append -v tmpa -s ',' 'venv')"
-	tty -s && case "${TERM}" in
+	test -t 1 && case "${TERM}" in
 		screen*|Eterm*|alacritty*|aterm*|foot*|gnome*|konsole*|kterm*|putty*|rxvt*|tmux*|xterm*)
 			{
 				export PS1="$(
