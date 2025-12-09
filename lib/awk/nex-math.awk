@@ -38,7 +38,7 @@ function nx_remainder(N1, N2)
 
 function nx_generator(V, N1, N2, N3, B1, B2)
 {
-	if (! (length(V) && 0 "_idx" in V) && (N1 = nx_digit(N1, 1)) != "") {
+	if (! (0 "_idx" in V) && (N1 = nx_digit(N1, 1)) != "") {
 		N2 = __nx_else(nx_digit(N2, 1), 0)
 		N3 = __nx_else(nx_not_zero(N3, 1), 1)
 		if (N1 > N2) {
@@ -130,7 +130,9 @@ function nx_fermats_little_theorm(N, V, B,		i, p, l)
 	if (__nx_is_integral(N)) {
 		if ((N = int(N)) < 2)
 			return
-		if (! (l = length(V)))
+		if (1 in V)
+			l = length(V)
+		else
 			l = split("2,3,5,7,11,13,17,19,23,29,31,37,41,43,47,53", V, ",")
 		for (i = 1; i <= l; i++) {
 			if (! (nx_divisible(N, V[i]) && N == V[i])) {
@@ -234,7 +236,7 @@ function nx_prime(N,	n)
 function __nx_base(D, V)
 {
 	if (D ~ /^[a-zA-Z]$/) {
-		if (! (length(V) && "Z" in V))
+		if (! ("Z" in V))
 			__nx_upper_map(V)
 		D = V[D]
 	}
@@ -309,7 +311,7 @@ function __nx_reuse_number(N1, V1, N2, V2)
 
 function nx_number_map(V1, N1, V2, N2, N3,	b)
 {
-	if (! (length(V1) && 0 in V1))
+	if (! (0 in V1))
 		V1[0] = 0
 	if (! (nx_natural(N3) && N3 <= V1[0]))
 		N3 = V1[0] + 1
@@ -338,7 +340,7 @@ function nx_number_map(V1, N1, V2, N2, N3,	b)
 
 function nx_number(V, N, B1, B2, B3,	t)
 {
-	if (length(V) && 0 in V) {
+	if (0 in V) {
 		if (__nx_is_integral(N, 1) && __nx_is_signed(N)) {
 			sub(/[+]/, "", N)
 			N = nx_modulus_range(V[0] + N, 1, V[0])
