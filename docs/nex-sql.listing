@@ -1,6 +1,0 @@
-SELECT
-	name,
-	COUNT(DISTINCT wake_size) AS wake_sizes
-FROM aircrafts
-	WHERE name IN ('Boeing', 'Airbus')
-	GROUP BY name;

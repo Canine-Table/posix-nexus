@@ -1,3 +1,4 @@
+
 let g:mapleader = ","
 nnoremap x d$
 nnoremap X d^

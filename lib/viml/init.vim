@@ -1,8 +1,5 @@
 
 function! s:NxVimInit()
-	filetype on
-	filetype plugin on
-	filetype indent on
 	set number textwidth=0 encoding=utf-8
 	set incsearch ignorecase smartcase hlsearch
 	set tabstop=8 softtabstop=0 shiftwidth=8 noexpandtab autoindent
@@ -11,7 +8,7 @@ function! s:NxVimInit()
 	set list listchars=trail:▓,tab:▒░
 	set wrap breakindent
 	set magic
-	set verbose=1
+	"set verbose=1
 	set title
 	set hidden
 	set history=10000
@@ -21,7 +18,12 @@ function! s:NxVimInit()
 		set termguicolors
 	endif
 	set background=dark
-	call NxCallFile("nex-mappings.vim", "nex-misc.vim")
+	call NxCallFile(
+		\ "nex-mappings.vim",
+		\ "nex-str.vim",
+		\ "nex-fs.vim",
+		\ "nex-misc.vim"
+	\ )
 	call NxVimVersion()
 	let tmpa = GetNxCmd("curl", "wget")
 	if tmpa == ""
@@ -36,13 +38,20 @@ function! s:NxVimInit()
 			\ 'autoload/plug.vim': 'https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
 		\ })
 	endif
-	if filereadable(fnamemodify(g:nex_vim_config . "autoload/plug.vim", ":p"))
-		call NxCallFile("nex-plugins.vim")
-		call s:NxColorTheme()
-	endif
 	call NxClipboard()
 	if has("python3")
 		call NxCallFile("nex-snippets.vim")
+	endif
+	call NxCallFile(
+		\ 'modules/nex-xml.vim',
+		\ 'modules/nex-TeX.vim'
+	\ )
+	filetype plugin on
+	filetype on
+	filetype indent on
+	if filereadable(fnamemodify(g:nex_vim_config . "autoload/plug.vim", ":p"))
+		call NxCallFile("nex-plugins.vim")
+		call s:NxColorTheme()
 	endif
 endfunction
 

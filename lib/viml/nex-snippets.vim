@@ -15,5 +15,5 @@ function! s:NxSnippetSettings()
 	endif
 endfunction
 
-call s:NxSnippetSettings()
+"call s:NxSnippetSettings()
 

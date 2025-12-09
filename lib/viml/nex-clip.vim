@@ -17,8 +17,8 @@ function NxClipboardSettings()
 			echoerr "No clipboard backend available."
 			return v:false
 		else
-			"set clipboard+=unnamedplus
-			"let g:clipboard = tmpa
+			set clipboard+=unnamedplus
+			let g:clipboard = tmpa
 			execute 'nnoremap <silent> <leader>yy :write !' . tmpa . '<CR>'
 		endif
 	endif
