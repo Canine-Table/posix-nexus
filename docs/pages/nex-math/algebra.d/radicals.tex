@@ -1,5 +1,21 @@
 \nxSections{Radicals}{2}
 
+\begin{NxLightListBox}[title={Identity of $\sqrt[n]{a^n}$}]
+	\nxEachLabel{ArrowDark}{Secondary}{{4}{5}}{%
+		{Expression}/{\(\sqrt[n]{a^n}\)},%
+		{Meaning}/{The \(n\)-th root of \(a^n\)},%
+		{Simplification}/{Cancels the root and exponent, yielding \(a\)},%
+		{Condition}/{Valid when \(a \geq 0\) for real roots, or in complex domain otherwise},%
+		{Example}/{\(\sqrt[3]{2^3} = \sqrt[3]{8} = 2\)},%
+		{Extension}/{\(\sqrt[n]{a^m} = a^{m/n}\)}%
+	}
+\end{NxLightListBox}
+
+\begin{empheq}[box=\nxWarningMathBox]{align*}
+	\sqrt[n]{a^n} = a
+\end{empheq}
+\bigskip
+
 \begin{NxLightListBox}[title={Definition of Radical}]
 	\nxEachLabel{ArrowDark}{Secondary}{{4}{5}}{%
 		{Radical}/{An expression that uses the root symbol \(\sqrt{}\)},%
@@ -29,15 +45,15 @@
 \end{NxLightListBox}
 
 \begin{NxLightListBox}[title={Overview of \texttt{nx\_squares}}]
-    \nxEachLabel{ArrowDark}{Secondary}{{4}{5}}{%
-        {Purpose}/{Computes square roots using iterative scaling and subtraction},%
-        {Input}/{A single value \(x\)},%
-        {Initialization}/{Takes absolute value, sets scaling factor, prepares working variables},%
-        {Scaling}/{Doubles a seed until it exceeds the radicand},%
-        {Iteration}/{Subtracts scaled values, updates root approximation step by step},%
-        {Condition}/{Handles zero and invalid cases gracefully, returns early if needed},%
-        {Output}/{Final square root approximation, or truncated value if iteration fails}%
-    }
+	\nxEachLabel{ArrowDark}{Secondary}{{4}{5}}{%
+		{Purpose}/{Computes square roots using iterative scaling and subtraction},%
+		{Input}/{A single value \(x\)},%
+		{Initialization}/{Takes absolute value, sets scaling factor, prepares working variables},%
+		{Scaling}/{Doubles a seed until it exceeds the radicand},%
+		{Iteration}/{Subtracts scaled values, updates root approximation step by step},%
+		{Condition}/{Handles zero and invalid cases gracefully, returns early if needed},%
+		{Output}/{Final square root approximation, or truncated value if iteration fails}%
+	}
 \end{NxLightListBox}
 
 \begin{NxCodeBox}{c}{title={Square Roots}, phantomlabel={code:SquareRoot}}
@@ -95,42 +111,42 @@ define nx_squares(x) {
 \end{NxLightListBox}
 
 \begin{NxLightListBox}[title={Definition of Radicand}]
-    \nxEachLabel{ArrowDark}{Secondary}{{4}{5}}{%
-        {Radicand}/{The number or expression placed under the radical sign \(\sqrt{}\)},%
-        {Role}/{It is the quantity from which a root is extracted},%
-        {Example}/{In \(\sqrt{25}\), the radicand is 25},%
-        {Extended}/{In \(\sqrt[3]{8}\), the radicand is 8, and the index is 3},%
-        {Scope}/{The vinculum (bar) shows exactly which terms belong to the radicand},%
-        {Outcome}/{Identifying the radicand clarifies what is being rooted in the expression}%
-    }
+	\nxEachLabel{ArrowDark}{Secondary}{{4}{5}}{%
+		{Radicand}/{The number or expression placed under the radical sign \(\sqrt{}\)},%
+		{Role}/{It is the quantity from which a root is extracted},%
+		{Example}/{In \(\sqrt{25}\), the radicand is 25},%
+		{Extended}/{In \(\sqrt[3]{8}\), the radicand is 8, and the index is 3},%
+		{Scope}/{The vinculum (bar) shows exactly which terms belong to the radicand},%
+		{Outcome}/{Identifying the radicand clarifies what is being rooted in the expression}%
+	}
 \end{NxLightListBox}
 
 \begin{NxLightListBox}[title={Square Root Expansion}]
-    \nxEachLabel{ArrowDark}{Secondary}{{4}{5}}{%
-        {Radical}/{\(\sqrt{72}\)},%
-        {Factor}/{Break into perfect square and leftover: \(72 = 36 \cdot 2\)},%
-        {Expand}/{\(\sqrt{72} = \sqrt{36 \cdot 2} = \sqrt{36}\cdot\sqrt{2}\)},%
-        {Simplify}/{\(\sqrt{36} = 6\)},%
-        {Outcome}/{\(\sqrt{72} = 6\sqrt{2}\)}%
-    }
+	\nxEachLabel{ArrowDark}{Secondary}{{4}{5}}{%
+		{Radical}/{\(\sqrt{72}\)},%
+		{Factor}/{Break into perfect square and leftover: \(72 = 36 \cdot 2\)},%
+		{Expand}/{\(\sqrt{72} = \sqrt{36 \cdot 2} = \sqrt{36}\cdot\sqrt{2}\)},%
+		{Simplify}/{\(\sqrt{36} = 6\)},%
+		{Outcome}/{\(\sqrt{72} = 6\sqrt{2}\)}%
+	}
 \end{NxLightListBox}
 
 \begin{NxLightListBox}[title={Square Root Truncation}]
-    \nxEachLabel{ArrowDark}{Secondary}{{4}{5}}{%
-        {Radical}/{\(\sqrt{72}\)},%
-        {Approximation}/{Leave as decimal: \(\sqrt{72} \approx 8.485\)},%
-        {Truncation}/{Cut after two decimals: \(8.48\)},%
-        {Outcome}/{Truncated radical value \(\approx 8.48\)}%
-    }
+	\nxEachLabel{ArrowDark}{Secondary}{{4}{5}}{%
+		{Radical}/{\(\sqrt{72}\)},%
+		{Approximation}/{Leave as decimal: \(\sqrt{72} \approx 8.485\)},%
+		{Truncation}/{Cut after two decimals: \(8.48\)},%
+		{Outcome}/{Truncated radical value \(\approx 8.48\)}%
+	}
 \end{NxLightListBox}
 
 \begin{NxLightListBox}[title={Types of Square Roots}]
-    \nxEachLabel{ArrowDark}{Secondary}{{4}{5}}{%
-        {Integer Square Root}/{The root of a whole number. It may simplify to a rational (e.g. \(\sqrt{25} = 5\)) or remain irrational (e.g. \(\sqrt{2}\))},%
-        {Fraction Square Root}/{The root of a ratio \(\tfrac{p}{q}\), defined as \(\sqrt{\tfrac{p}{q}} = \tfrac{\sqrt{p}}{\sqrt{q}}\)},%
-        {Rational Square Root}/{Occurs when both numerator and denominator are perfect squares, e.g. \(\sqrt{\tfrac{9}{16}} = \tfrac{3}{4}\)},%
-        {Irrational Square Root}/{Occurs when either numerator or denominator is not a perfect square, e.g. \(\sqrt{\tfrac{2}{9}} = \tfrac{\sqrt{2}}{3}\)},%
-        {Impurity Case}/{When the denominator equals 0, the expression is undefined, e.g. \(\sqrt{\tfrac{p}{0}}\)}%
-    }
+	\nxEachLabel{ArrowDark}{Secondary}{{4}{5}}{%
+		{Integer Square Root}/{The root of a whole number. It may simplify to a rational (e.g. \(\sqrt{25} = 5\)) or remain irrational (e.g. \(\sqrt{2}\))},%
+		{Fraction Square Root}/{The root of a ratio \(\tfrac{p}{q}\), defined as \(\sqrt{\tfrac{p}{q}} = \tfrac{\sqrt{p}}{\sqrt{q}}\)},%
+		{Rational Square Root}/{Occurs when both numerator and denominator are perfect squares, e.g. \(\sqrt{\tfrac{9}{16}} = \tfrac{3}{4}\)},%
+		{Irrational Square Root}/{Occurs when either numerator or denominator is not a perfect square, e.g. \(\sqrt{\tfrac{2}{9}} = \tfrac{\sqrt{2}}{3}\)},%
+		{Impurity Case}/{When the denominator equals 0, the expression is undefined, e.g. \(\sqrt{\tfrac{p}{0}}\)}%
+	}
 \end{NxLightListBox}
 

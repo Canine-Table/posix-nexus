@@ -1,7 +1,7 @@
 \nxSections{Distance Formula}{3}
 
 %%% Speed up compile %%%
-\begin{comment}
+%\begin{comment}
 
 \begin{empheq}[box=\nxSuccessMathBox]{align}
 	\text{2D points} \qquad d = \sqrt{(x_2 - x_1)^2 + (y_2 - y_1)^2} \\
@@ -10,15 +10,27 @@
 \bigskip
 
 \begin{NxLightListBox}[title={Distance Formula}]
-    \nxEachLabel{ArrowDark}{Secondary}{{4}{5}}{%
-        {Definition}/{Gives the length of the line segment between two points in the plane},%
-        {Points}/{Two points \((x_1,y_1)\) and \((x_2,y_2)\)},%
-        {Formula}/{\(\sqrt{(x_2 - x_1)^2 + (y_2 - y_1)^2}\)},%
-        {Origin}/{Derived from the Pythagorean Theorem},%
-        {Domain}/{Applies to all real coordinates in 2D space},%
-        {Extension}/{Generalizes to 3D: \(\sqrt{(x_2-x_1)^2+(y_2-y_1)^2+(z_2-z_1)^2}\)}%
-    }
+	\nxEachLabel{ArrowDark}{Secondary}{{4}{5}}{%
+		{Definition}/{Gives the length of the line segment between two points in the plane},%
+		{Points}/{Two points \((x_1,y_1)\) and \((x_2,y_2)\)},%
+		{Formula}/{\(\sqrt{(x_2 - x_1)^2 + (y_2 - y_1)^2}\)},%
+		{Origin}/{Derived from the Pythagorean Theorem},%
+		{Domain}/{Applies to all real coordinates in 2D space},%
+		{Extension}/{Generalizes to 3D: \(\sqrt{(x_2-x_1)^2+(y_2-y_1)^2+(z_2-z_1)^2}\)}%
+	}
 \end{NxLightListBox}
+
+\begin{NxLightListBox}[title={Identity of $\sqrt[n]{a^n}$}]
+	\nxEachLabel{ArrowDark}{Secondary}{{4}{5}}{%
+		{Expression}/{\(\sqrt[n]{a^n}\)},%
+		{Meaning}/{The \(n\)-th root of \(a^n\)},%
+		{Simplification}/{Cancels the root and exponent, yielding \(a\)},%
+		{Condition}/{Valid when \(a \geq 0\) for real roots, or in complex domain otherwise},%
+		{Example}/{\(\sqrt[3]{2^3} = \sqrt[3]{8} = 2\)},%
+		{Extension}/{\(\sqrt[n]{a^m} = a^{m/n}\)}%
+	}
+\end{NxLightListBox}
+
 
 \begin{NxLightP}
 	refer to \ref{code:SquareRoot} to see the sqrt function.
@@ -26,15 +38,15 @@
 
 \begin{NxCodeBox}{c}{title={Distance Formula Functions}, phantomlabel={code:DistanceFormula}}
 define nx_fma_dist1(x1, x2) {
-        return nx_nr_sqrt((x2 - x1)^2)
+		return nx_nr_sqrt((x2 - x1)^2)
 }
 
 define nx_fma_dist2(x1, x2, y1, y2) {
-        return nx_nr_sqrt((x2 - x1)^2 + (y2 - y1)^2)
+		return nx_nr_sqrt((x2 - x1)^2 + (y2 - y1)^2)
 }
 
 define nx_fma_dist3(x1, x2, y1, y2, z1, z2) {
-        return nx_nr_sqrt((x2 - x1)^2 + (y2 - y1)^2  + (z2 - z1)^2)
+		return nx_nr_sqrt((x2 - x1)^2 + (y2 - y1)^2  + (z2 - z1)^2)
 }
 \end{NxCodeBox}
 
@@ -60,7 +72,8 @@ define nx_fma_dist3(x1, x2, y1, y2, z1, z2) {
 		xmin=0,%
 		xmax=7,%
 		minor y tick num=1,%
-		enlargelimits=0%
+		enlargelimits=0,%
+		legend entries={Points}%
 	]
 		\addplot[
 			sharp plot,
@@ -87,17 +100,54 @@ define nx_fma_dist3(x1, x2, y1, y2, z1, z2) {
 \bigskip
 
 %%% Speed up compile %%%
-\end{comment}
+%\end{comment}
 
 \begin{empheq}[box=\nxWarningMathBox]{align*}
 	P_1(-3,4) \qquad P_2(9, -1) \\
 	x_1 = -3 \qquad x_2 = 9 \\
 	y_1 = 4 \qquad y_2 = -1 \\
 	d = \sqrt{(9 - (-3))^2 + ((-1) - 4)^2} \;\nxArw{5}\;
-	\sqrt{3^2 + 4^2} \;\nxArw{5}\;
-	\sqrt{9 + 16}  \;\nxArw{5}\;
-	\sqrt{25} \;\nxArw{5}\;
-	5
+	\sqrt{12^2 + -5^2} \;\nxArw{5}\;
+	\sqrt{144 + 25}  \;\nxArw{5}\;
+	\sqrt{169} \;\nxArw{5}\;
+	13
 \end{empheq}
+\bigskip
+
+\begin{tikzpicture}
+	\begin{axis}[%
+		title={$d = \sqrt{(9 - (-3))^2 + ((-1) - 4)^2}$},%
+		xlabel={$x$},%
+		ylabel={$y$},%
+		ymin=-4,%
+		ymax=10,%
+		xmin=-4,%
+		xmax=10,%
+		minor y tick num=1,%
+		enlargelimits=0.2,%
+		legend entries={Points}%
+	]
+		\addplot[
+			sharp plot,
+			mark=*,
+			/nx/graph/slope triangle
+		] coordinates {
+			(-3,4)
+			(9,-1)
+		};
+
+		\draw[color=black, draw=nex.graph.x] (-3,4) node[above left] {$P_1(-3,4)$}
+			-- node[midway, above]{$12\nxArw{2}$} (9,4)
+			node[%
+				draw,%
+				rectangle,%
+				minimum width=3mm,%
+				minimum height=3mm,%
+				below left,%
+				] {} node[above right] {$90^\circ$}
+			-- node[midway, below]{$5\nxArw{59}$} (9,-1)
+			node[below right] {$P_2(9,-1)$};
+	\end{axis}
+\end{tikzpicture}
 \bigskip
 

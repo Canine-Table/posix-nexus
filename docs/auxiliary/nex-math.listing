@@ -1,11 +1,11 @@
 define nx_fma_dist1(x1, x2) {
-        return nx_nr_sqrt((x2 - x1)^2)
+		return nx_nr_sqrt((x2 - x1)^2)
 }
 
 define nx_fma_dist2(x1, x2, y1, y2) {
-        return nx_nr_sqrt((x2 - x1)^2 + (y2 - y1)^2)
+		return nx_nr_sqrt((x2 - x1)^2 + (y2 - y1)^2)
 }
 
 define nx_fma_dist3(x1, x2, y1, y2, z1, z2) {
-        return nx_nr_sqrt((x2 - x1)^2 + (y2 - y1)^2  + (z2 - z1)^2)
+		return nx_nr_sqrt((x2 - x1)^2 + (y2 - y1)^2  + (z2 - z1)^2)
 }

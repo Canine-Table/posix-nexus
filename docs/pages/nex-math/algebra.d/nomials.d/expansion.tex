@@ -1,0 +1,55 @@
+\nxSections{Expanding Polynomials}{3}
+
+\begin{NxLightListBox}[title={Binomial Expansion}]
+	\nxEachLabel{ArrowDark}{Secondary}{{4}{5}}{%
+		{Definition}/{Expansion of \((a+b)^n\) into a sum of terms},%
+		{General Formula}/{\((a+b)^n = \sum_{k=0}^{n} \binom{n}{k} a^{n-k} b^k\)},%
+		{Binomial Coefficient}/{\(\binom{n}{k} = \frac{n!}{k!(n-k)!}\)},%
+		{Pattern}/{Exponents of \(a\) decrease, exponents of \(b\) increase},%
+		{Symmetry}/{Coefficients are symmetric: \(\binom{n}{k} = \binom{n}{n-k}\)},%
+		{Connection}/{Coefficients form Pascal’s Triangle},%
+		{Example}/{\((x+1)^4 = x^4 + 4x^3 + 6x^2 + 4x + 1\)}%
+	}
+\end{NxLightListBox}
+
+\begin{NxLightListBox}[title={Pascal’s Triangle Connection}]
+	\nxEachLabel{ArrowDark}{Secondary}{{4}{5}}{%
+		{Structure}/{Pascal’s Triangle is built by starting with 1 at the top, each entry below is the sum of the two above},%
+		{Coefficients}/{Row $n$ of Pascal’s Triangle gives the coefficients for $(a+b)^n$},%
+		{Symmetry}/{Coefficients are symmetric: $\binom{n}{k} = \binom{n}{n-k}$},%
+		{Example Row 4}/{Coefficients $1,4,6,4,1$ expand $(a+b)^4$},%
+		{Combinatorics}/{Each coefficient counts the number of ways to choose $k$ items from $n$},%
+		{Extension}/{Pascal’s Triangle also encodes identities: hockey-stick pattern, Fibonacci connections, binomial sums}%
+	}
+\end{NxLightListBox}
+
+\begin{NxLightListBox}[title={Hockey‑Stick Identity}]
+	\nxEachLabel{ArrowDark}{Secondary}{{4}{5}}{%
+		{Pattern}/{Pick a diagonal in Pascal’s Triangle, sum entries until a row},%
+		{Result}/{The sum equals the entry just below and to the right (like a hockey stick)},%
+		{Formula}/{\(\binom{r}{r} + \binom{r+1}{r} + \cdots + \binom{n}{r} = \binom{n+1}{r+1}\)},%
+		{Example}/{\(\binom{2}{2} + \binom{3}{2} + \binom{4}{2} = \binom{5}{3}\)},%
+		{Visual}/{The diagonal entries form the “shaft,” the final entry is the “blade”}%
+	}
+\end{NxLightListBox}
+
+\begin{NxLightListBox}[title={Fibonacci Connection}]
+	\nxEachLabel{ArrowDark}{Secondary}{{4}{5}}{%
+		{Pattern}/{Sum shallow diagonals of Pascal’s Triangle},%
+		{Result}/{The sums produce Fibonacci numbers},%
+		{Example}/{Row sums: \(1,1,2,3,5,8,13,\dots\)},%
+		{Formula}/{\(\text{Fib}(n) = \sum \binom{n-k}{k}\)},%
+		{Visual}/{Diagonal “paths” through Pascal’s Triangle trace Fibonacci lineage}%
+	}
+\end{NxLightListBox}
+
+\begin{NxLightListBox}[title={Binomial Sums}]
+	\nxEachLabel{ArrowDark}{Secondary}{{4}{5}}{%
+		{Row Sum}/{\(\sum_{k=0}^n \binom{n}{k} = 2^n\)},%
+		{Alternating Sum}/{\(\sum_{k=0}^n (-1)^k \binom{n}{k} = 0\)},%
+		{Weighted Sum}/{\(\sum_{k=0}^n k \binom{n}{k} = n \cdot 2^{n-1}\)},%
+		{Combinatorial Meaning}/{Row sum counts all subsets of an \(n\)-element set},%
+		{Probability Link}/{Binomial distribution probabilities sum to 1 using these identities}%
+	}
+\end{NxLightListBox}
+
