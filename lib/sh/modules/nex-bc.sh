@@ -8,7 +8,7 @@
 __nx_bc()
 {
 	nx_return="$(
-		eval "export $(nx_tty_all)"
+		eval "$(nx_tty_all)"
 		export BC_LINE_LENGTH=$NX_TTY_COLUMNS
 		nx_data_optargs 's:o:i:c:m:l' "$@"
 		printf '%s' "

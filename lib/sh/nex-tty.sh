@@ -11,7 +11,7 @@ nx_tty_print()
 			BEGIN {
 				ln = split(inpt, flds, "<nx:null/>")
 				trk["sig"] = "<nx:true/>"
-				trk["bg"] = ""
+				trk["bg"] = "<nx:false/>"
 				for (i = 1; i <= ln; i++) {
 					if (sub(/^-/, "", flds[i])) {
 						inpt = tolower(flds[i])

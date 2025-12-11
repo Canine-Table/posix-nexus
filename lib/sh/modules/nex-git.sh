@@ -1,71 +1,59 @@
-#nx_include nex-git.d/nex-branch.sh
-#nx_include nex-git.d/nex-commit.sh
 #nx_include nex-git.d/nex-config.sh
-#nx_include nex-git.d/nex-fsck.sh
 #nx_include nex-git.d/nex-log.sh
-#nx_include nex-git.d/nex-merge.sh
-#nx_include nex-git.d/nex-pull.sh
-#nx_include nex-git.d/nex-push.sh
-#nx_include nex-git.d/nex-rebase.sh
-#nx_include nex-git.d/nex-stach.sh
-#nx_include nex-git.d/nex-status.sh
-#nx_include nex-git.d/nex-sync.sh
-
-### Router ### Router ### Router ### Router ### Router ### Router ### Router ### Router ### Router ###
+#nx_include nex-git.d/nex-remote.sh
+#nx_include nex-git.d/nex-commit.sh
 
 nx_git()
 (
-	origin='origin'
+	origin='upstream'
 	branch='main'
-	shifts="0"
+	nx_prnt='~'
+	nx_obj_fmt='sha1'
 	sign=""
-	scope="global"
-	nscope=""
-	__nx_git_router "$@"
+	scope=""
+	no_scope=""
+	__nx_git "$@"
 )
 
-__nx_git_router()
+__nx_git()
 {
-	while test "$#" -gt 1; do
-		arg="$1"
+	while test "$#" -gt 0; do
+		nx_flg="$1"
 		shift
-		case "$arg" in
-			-u|--unite|--sync) {
-				__nx_git_sync "$@"
-			};;
-			-S|--stach) {
-				__nx_git_stash "$@"
-			};;
-			-s|--status) {
-				__nx_git_status "$@"
-			};;
-			-b|--branch) {
-				__nx_git_branch "$@"
-			};;
-			-c|--config) {
-				__nx_git_config "$@"
-			};;
-			-l|--log) {
+		nx_shft=0
+		case "$nx_flg" in
+			--log|-l) {
 				__nx_git_log "$@"
 			};;
-			-r|--rebase) {
-				__nx_git_rebase "$@"
+			--remote|-r) {
+				__nx_git_remote "$@"
 			};;
-			-m|--merge) {
-				__nx_git_merge "$@"
-			};;
-			-C|--commit) {
+			--save|-s|--commit) {
 				__nx_git_commit "$@"
 			};;
-			-p|--push) {
-				__nx_git_push "$@"
+			--config|-c) {
+				__nx_git_config "$@"
 			};;
-			-P|--pull) {
-				__nx_git_pull "$@"
+			.) return;;
+			-h|--help) {
+				nx_tty_print \
+					-i 'Usage: nx_git [sub-command] [options]\n\n' \
+					-s '--log | -l\n' \
+					-i '    View commit history and graph overlays\n\n' \
+					-w '--remote | -r\n' \
+					-i '    Manage remotes, sync branches, and merge strategies\n\n' \
+					-s '--save | -s | --commit\n' \
+					-i '    Create commits, amend, reset, and sign\n\n' \
+					-w '--config | -c\n' \
+					-i '    Set git configuration options and scope\n\n' \
+					-c -R \
+					-i 'Color legend:\n' \
+					-s '    [green]   commit and log operations\n' \
+					-w '    [yellow]  remote and config operations\n' \
+				2>&1 | ${PAGER:-tee}
 			};;
 		esac
-		test "$shifts" -gt 0 && shift "$shifts"
-		shifts="0"
+		test "$nx_shft" -gt 0 && shift "$nx_shft"
 	done
 }
 

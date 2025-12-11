@@ -169,10 +169,10 @@ function nx_ansi_error(D1, B, D2)
 		B = "^e"
 	else
 		B = ""
-	if (D2 == "<nx:true/>e")
-		nx_ansi_print("<e_b" B "%<nx:null/>" D1)
-	else if (D2 == "<nx:true/>E")
+	if (D2 == "<nx:true/>E")
 		nx_ansi_print("<E_b" B "%<nx:null/>" D1)
+	else if (D2 == "<nx:true/>e")
+		nx_ansi_print("<e_b" B "%<nx:null/>" D1)
 	else if (D2 == "<nx:false/>e")
 		nx_ansi_print("e_b" B "%<nx:null/>" D1)
 	else

@@ -1,5 +1,14 @@
 \nxSections{Distance Formula}{3}
 
+%%% Speed up compile %%%
+\begin{comment}
+
+\begin{empheq}[box=\nxSuccessMathBox]{align}
+	\text{2D points} \qquad d = \sqrt{(x_2 - x_1)^2 + (y_2 - y_1)^2} \\
+	\text{3D points} \qquad d = \sqrt{(x_2 - x_1)^2 + (y_2 - y_1)^2 + (z_2 - z_1)^2}
+\end{empheq}
+\bigskip
+
 \begin{NxLightListBox}[title={Distance Formula}]
     \nxEachLabel{ArrowDark}{Secondary}{{4}{5}}{%
         {Definition}/{Gives the length of the line segment between two points in the plane},%
@@ -11,10 +20,84 @@
     }
 \end{NxLightListBox}
 
-\begin{empheq}[box=\nxSuccessMathBox]{align}
-	\text{2D points} \qquad d = \sqrt{(x_2 - x_1)^2 + (y_2 - y_1)^2} \\
-	\text{2D points} \qquad d = \sqrt{(x_2 - x_1)^2 + (y_2 - y_1)^2 + (z_2 - z_1)^2}
+\begin{NxLightP}
+	refer to \ref{code:SquareRoot} to see the sqrt function.
+\end{NxLightP}
+
+\begin{NxCodeBox}{c}{title={Distance Formula Functions}, phantomlabel={code:DistanceFormula}}
+define nx_fma_dist1(x1, x2) {
+        return nx_nr_sqrt((x2 - x1)^2)
+}
+
+define nx_fma_dist2(x1, x2, y1, y2) {
+        return nx_nr_sqrt((x2 - x1)^2 + (y2 - y1)^2)
+}
+
+define nx_fma_dist3(x1, x2, y1, y2, z1, z2) {
+        return nx_nr_sqrt((x2 - x1)^2 + (y2 - y1)^2  + (z2 - z1)^2)
+}
+\end{NxCodeBox}
+
+\begin{empheq}[box=\nxWarningMathBox]{align*}
+	P_1(1,2) \qquad P_2(4, 6) \\
+	x_1 = 1 \qquad x_2 = 4 \\
+	y_1 = 2 \qquad y_2 = 6 \\
+	d = \sqrt{(4 - 1)^2 + (6 - 2)^2} \;\nxArw{5}\;
+	\sqrt{3^2 + 4^2} \;\nxArw{5}\;
+	\sqrt{9 + 16}  \;\nxArw{5}\;
+	\sqrt{25} \;\nxArw{5}\;
+	5
 \end{empheq}
 \bigskip
 
+\begin{tikzpicture}
+	\begin{axis}[%
+		title={$d = \sqrt{(4 - 1)^2 + (6 - 2)^2}$},%
+		xlabel={$x$},%
+		ylabel={$y$},%
+		ymin=0,%
+		ymax=7,%
+		xmin=0,%
+		xmax=7,%
+		minor y tick num=1,%
+		enlargelimits=0%
+	]
+		\addplot[
+			sharp plot,
+			mark=*,
+			/nx/graph/slope triangle
+		] coordinates {
+			(1,2)
+			(4,6)
+		};
+
+		\draw[color=black, draw=nex.graph.x] (1,2) node[below left] {$P_1(1,2)$}
+			-- node[midway, below]{$3\nxArw{2}$} (4,2)
+			node[%
+				draw,%
+				rectangle,%
+				minimum width=3mm,%
+				minimum height=3mm,%
+				above left,%
+				] {} node[below right] {$90^\circ$}
+			-- node[midway, below]{$4\nxArw{59}$} (4,6)
+			node[above right] {$P_2(4,6)$};
+	\end{axis}
+\end{tikzpicture}
+\bigskip
+
+%%% Speed up compile %%%
+\end{comment}
+
+\begin{empheq}[box=\nxWarningMathBox]{align*}
+	P_1(-3,4) \qquad P_2(9, -1) \\
+	x_1 = -3 \qquad x_2 = 9 \\
+	y_1 = 4 \qquad y_2 = -1 \\
+	d = \sqrt{(9 - (-3))^2 + ((-1) - 4)^2} \;\nxArw{5}\;
+	\sqrt{3^2 + 4^2} \;\nxArw{5}\;
+	\sqrt{9 + 16}  \;\nxArw{5}\;
+	\sqrt{25} \;\nxArw{5}\;
+	5
+\end{empheq}
+\bigskip
 

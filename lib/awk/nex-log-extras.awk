@@ -14,9 +14,9 @@ function __nx_ansi_templateA(D1, B, D2, D3,	l, u)
 	if (D2 == "<nx:true/>" u)
 		nx_ansi_print("<" u "_b" B "%<nx:null/>" D1)
 	else if (D2 == "<nx:false/>" l)
-		nx_ansi_print("<" l "_b" B "%<nx:null/>" D1)
+		nx_ansi_print("" l "_b" B "%<nx:null/>" D1)
 	else if (D2 == "<nx:true/>" l)
-		nx_ansi_print(l "_b" B "%<nx:null/>" D1)
+		nx_ansi_print("<" l "_b" B "%<nx:null/>" D1)
 	else
 		nx_ansi_print(u "_b" B "%<nx:null/>" D1)
 }
@@ -32,11 +32,11 @@ function __nx_ansi_templateB(D1, B, D2, D3,	l, u)
 	else
 		B = ""
 	if (D2 == "<nx:true/>" u)
-		nx_ansi_print("b<" u "_b" B "%<nx:null/>" D1)
+		nx_ansi_print("B<" u "_b" B "%<nx:null/>" D1)
 	else if (D2 == "<nx:false/>" l)
-		nx_ansi_print("B<" l "_b" B "%<nx:null/>" D1)
-	else if (D2 == "<nx:true/>" l)
 		nx_ansi_print(l "_b" B "%<nx:null/>" D1)
+	else if (D2 == "<nx:true/>" l)
+		nx_ansi_print("b<" l "_b" B "%<nx:null/>" D1)
 	else
 		nx_ansi_print(u "_b" B "%<nx:null/>" D1)
 }
@@ -52,18 +52,18 @@ function __nx_ansi_templateC(D1, B, D2, D3,	l, u)
 	else
 		B = ""
 	if (D2 == "<nx:true/>" u)
-		nx_ansi_print("l<" u "_b" B "%<nx:null/>" D1)
+		nx_ansi_print("L<" u "_b" B "%<nx:null/>" D1)
 	else if (D2 == "<nx:false/>" l)
-		nx_ansi_print("L<" l "_b" B "%<nx:null/>" D1)
-	else if (D2 == "<nx:true/>" l)
 		nx_ansi_print(l "_b" B "%<nx:null/>" D1)
+	else if (D2 == "<nx:true/>" l)
+		nx_ansi_print("l<" l "_b" B "%<nx:null/>" D1)
 	else
 		nx_ansi_print(u "_b" B "%<nx:null/>" D1)
 }
 
 function nx_ansi_info(D1, B, D2)
 {
-	return __nx_ansi_templateA(D1, B, D2, "a")
+	return __nx_ansi_templateA(D1, B, D2, "i")
 }
 
 function nx_ansi_debug(D1, B, D2)

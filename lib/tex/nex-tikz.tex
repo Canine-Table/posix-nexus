@@ -183,7 +183,12 @@
 	},
 	label/.style={%
 		font=\scriptsize\ttfamily,%
-		color=nex.graph.label
+		color=nex.graph.label,
+		draw=nex.graph.slopeTriangle,%
+		thick,%
+		fill=nex.graph.back,%
+		nodes near coords,%
+		point meta=explicit symbolic%
 	},%
 	error zone/.style={%
 		draw=nex.graph.error,%
@@ -202,6 +207,10 @@
 		thick,%
 		fill=nex.graph.back%
 	}%
+}
+
+\def\nxRandCol{%
+  {rgb,1:red,\pgfmathparse{rnd}\pgfmathresult;green,\pgfmathparse{rnd}\pgfmathresult;blue,\pgfmathparse{rnd}\pgfmathresult}%
 }
 
 \def\nxLDiv#1#2#3{%
