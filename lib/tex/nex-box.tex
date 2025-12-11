@@ -411,6 +411,23 @@
 }
 
 \def\nxBox#1{%
+	\edef\nx@tmpa{Nx\nxTitle{#1}{ }{ }Matrix}
+	\newenvironment{\nx@tmpa}{
+		\begingroup
+		\rowcolors{2}{}{}
+		\begin{#1matrix}
+	}{
+		\end{#1matrix}
+		\endgroup
+	}
+}
+
+\nxBox{b}
+\nxBox{m}
+\nxBox{v}
+\nxBox{}
+
+\def\nxBox#1{%
 	\edef\nx@tmpa{Nx\nxTitle{#1}{ }{ }List}
 	\newenvironment{\nx@tmpa}{\begin{itemize}}{\end{itemize}}
 	\tcolorboxenvironment{\nx@tmpa}{%

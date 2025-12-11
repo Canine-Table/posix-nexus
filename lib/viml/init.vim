@@ -1,7 +1,8 @@
 
 function! s:NxVimInit()
 	set number textwidth=0 encoding=utf-8
-	set incsearch ignorecase smartcase hlsearch
+	set incsearch hlsearch
+	"set ignorecase smartcase
 	set tabstop=8 softtabstop=0 shiftwidth=8 noexpandtab autoindent
 	set ruler laststatus=2 showcmd showmode
 	set wildmode=longest,list,full wildmenu

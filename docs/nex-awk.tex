@@ -1,4 +1,8 @@
 \documentclass[a4paper,12pt]{article}
+\newif\ifnxBIB
+\nxBIBfalse
+\newif\ifnxGLS
+\nxGLSfalse
 \input{../lib/tex/nex-preamble.tex}
 \nxHyper[]%
 \nxSnowFade%
@@ -15,12 +19,12 @@
 	\newpage
 	\nxSnowFlakeHeader{AWK}
 	\nxInput{math}
-	%\nxInput{json}
-	%\nxInput{log}
-	%\nxInput{misc}
+	\nxInput{json}
+	\nxInput{log}
+	\nxInput{misc}
 	\nxInput{str}
 	\nxInput{struct}
-	%\nxInput{io}
-	%\nxInput{sh}
+	\nxInput{io}
+	\nxInput{sh}
 \end{document}
 
