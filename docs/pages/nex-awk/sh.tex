@@ -1,89 +1,231 @@
 \nxSections{Shell Modules}{1}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\nxSections{The Argument Parser}{2}
+
+
+\nxSections{Option Separators}{3}
+
+\begin{NxLightBox}[title={Variable Positions in trk}]
+	\begin{tabularx}{\textwidth}{|Z|c|Z|l|}
+		\hline
+		\textbf{Index} & \textbf{Default} & \textbf{Variable} & \textbf{Meaning} \\
+		\hline
+		- & \nxSQ{,} & ds & Default delimiter string \\
+		1 & \nxSQ{:} & ks & Key separator \\
+		2 & \nxSQ{\&} & als & Alias / altname separator \\
+		3 & \nxSQ{@} & fas	& Appendable flag array separator \\
+		4 & \nxSQ{\#} & kas	& Appendable keyword array separator \\
+		5 & \nxSQ{<} & go	 & Begin group marker \\
+		6 & \nxSQ{>} & gc	 & End group marker \\
+		7 & \nxSQ{~~} & lo & Begin or continue long option mode \\
+		8 & \nxSQ{;} & lc	 & End long option mode \\
+		9 & \nxSQ{=} & fs	 & Optional set flag separator \\
+		10 & \nxSQ{+} & fsa	& Optional push flag separator \\
+		11 & \nxSQ{-} & fsr	& Optional pop flag separator \\
+		\hline
+	\end{tabularx}
+\end{NxLightBox}
+
+
+\begin{NxLightListBox}[title={Short vs Long Option Group Leaders}]
+		\nxEachLabel{ArrowDark}{Secondary}{{4}{5}}{%
+				{Short form}/{Input: \nxSQ{alpha<beta gamma>} \nxArw{2} Flags = a, l, p, h; Group leader = a; Members = b, e, t, a, gamma},%
+				{Long form}/{Input: \nxSQ{ alpha<beta gamma>} \nxArw{2} Group leader = alpha; Members = beta, gamma},%
+				{Key distinction}/{Leading space (\nxSQ{lo}) preserves token as long option; without space, token explodes into flags and first flag becomes leader}%
+		}
+\end{NxLightListBox}
+
+\begin{NxLightListBox}[title={Defaults for Option Groups}]
+	\nxEachLabel{ArrowDark}{Secondary}{{4}{5}}{%
+		{Group 1}/{\nxSQ{\#} keyword arrays},%
+		{Group 2}/{\nxSQ{@} flag arrays},%
+		{Group 3}/{\nxSQ{:} keywords},%
+		{Group 4}/{\nxSQ{~~} flags},%
+		{Alias Requirement}/{Each group requires one alias slot},%
+		{Stride Variable}/{Denoted by $S$},%
+		{Group Count}/{Denoted by $G$},%
+		{Alias Slots}/{Denoted by $A$}%
+	}
+\end{NxLightListBox}
+
+\begin{NxCodeBox}{awk}{phantomlabel={code:GroupOfGroupsExample1}, title={\textbf{Group-of-Groups Behavior}
+		\begin{NxDarkList}
+				\nxEachLabel{CodePrimary}{Tertiary}{{1}{43}}{%
+					{Input}/{\nxSQ{ alpha<beta gamma> delta<epsilon zeta>}},%
+					{Expansion}/{\texttt{--beta --gamma --alpha --gamma --beta --epsilon --gamma --zeta --delta --zeta}},%
+					{NEX\_gf\_alpha}/{Group 1 index \nxArw{2} beta<nx:null/>gamma},%
+					{Group 1 index}/{Group 2 index \nxArw{2} gamma<nx:null/>beta<nx:null/>gamma},%
+					{NEX\_gf\_delta}/{Group 1 index \nxArw{2} epsilon<nx:null/>zeta},%
+					{NEX\_gf\_delta}/{Group 2 index \nxArw{2} zeta}%
+				}
+		\end{NxDarkList}
+}}
+debug_level = 2
+string_value = " alpha<beta gamma> delta<epsilon zeta>"
+nx_sh_opts(string_value, debug_level, arr)
+\end{NxCodeBox}
+
+\nxSections{Stride proof and runtime mapping}{3}
+
+\begin{NxLightListBox}[title={Variables}]
+	\nxEachLabel{ArrowDark}{Secondary}{{4}{5}}{%
+		{D1}/{Options string},%
+		{go, gc}/{Group open/close markers},%
+		{als}/{Alias symbol},%
+		{D2}/{Runtime group stride contribution ($S_{\text{groups}}$)},%
+		{strde}/{Final array stride ($S_{\text{total}}$)}%
+	}
+\end{NxLightListBox}
+
+\begin{empheq}[box=\nxWarningMathBox]{align*}
+	A_g &= \text{leader aliases} + \text{member aliases} \\
+	S_g &= 1 + A_g \quad \text{(canonical leader slot + alias slots)} \\
+	S_{\text{groups}} &= \sum_g S_g = \sum_g (1 + A_g) \\
+	S_{\text{total}} &= 12 + S_{\text{groups}}
+\end{empheq}
+\bigskip
+
+\begin{NxLightBox}[title={Runtime correspondence}]
+	\begin{tabularx}{\textwidth}{|Z|Z|l|}
+		\hline
+		\textbf{Symbol} & \textbf{Runtime} & \textbf{Meaning} \\
+		\hline
+		S_{\text{groups}} & D2 & nx\_sh\_stride count (groups + aliases) \\
+		S_{\text{total}} & strde & 12 + D2 (final stride for nx\_parr\_stk) \\
+		\hline
+	\end{tabularx}
+\end{NxLightBox}
+
+\begin{NxLightBox}[title={Anchors spaced by $S_{\text{total}}$}]
+	\begin{tabularx}{\textwidth}{|X|Z|l|}
+		\hline
+		\textbf{Category} & \textbf{Base index} & \textbf{Walk by} \\
+		\hline
+		Keywords				 & 1	& $+\,S_{\text{total}}$ \\
+		Flags						& 4	& $+\,S_{\text{total}}$ \\
+		Flag arrays			& 7	& $+\,S_{\text{total}}$ \\
+		Keyword arrays	 & 10 & $+\,S_{\text{total}}$ \\
+		Groups (triplets)& 13 & $+\,3$ per group header, values spaced by $S_{\text{total}}$ \\
+		\hline
+	\end{tabularx}
+\end{NxLightBox}
+
+
+\begin{comment}
+\nxSections{Alias Resolution in Keyword Arrays}{3}
+
+\begin{NxLightListBox}[title={Dual-Layer Behavior}]
+	\nxEachLabel{ArrowDark}{Secondary}{{4}{5}}{%
+		{Layer 1}/{Alias resolution: all aliases collapse to the first parameter in the chain},%
+		{Layer 2}/{Category chaining: values accumulate under the canonical parameter slot},%
+		{Outcome}/{Aliases unify multiple syntactic forms into one semantic category},%
+		{Example}/{Input: \nxSQ{-A a -a b -A c}},%
+		{Resolution}/{Output: $NEX\_K\_a = a<nx:null/>b<nx:null/>c$},%
+		{Interpretation}/{Alias \nxSQ{A} resolves to canonical \nxSQ{a}, values chained into keyword array group}%
+	}
+\end{NxLightListBox}
+
+\begin{empheq}[box=\nxWarningMathBox]{align*}
+	\text{Alias Chain: } a \;\&\; A \;\&\; \alpha \\
+	\text{Canonical Param: } a \\
+	\text{Output Variable: } NEX\_K\_a \\
+	\text{Values: } a<nx:null/>b<nx:null/>c
+\end{empheq}
+
+
+
+
+\begin{empheq}[box=\nxWarningMathBox]{align*}
+								\frac{3}{4} \div \frac{2}{5}\;\nxArw{5}\;
+								\frac{3}{4} \times \frac{5}{2}
+\end{empheq}
+
+
 \nxSections{Environment Key Conductor}{2}
 \begin{NxCodeBox}{awk}{title={nx\_to\_environ(D)}}
 function nx_to_environ(D, m)
 {
-    D = toupper(nx_trim_str(D))
-    gsub(/[ \t]/, "_", D)
-    if (! (m = sub(/^[.]/, "L_", D)))
-    if (! (m = sub(/^[*]/, "G_", D)))
-    if (! (m = sub(/^[@]/, "NEXUS_", D)))
-    if (! (m = sub(/^[%]/, "P_", D)))
-        sub(/^[0-9]/, "_\\&", D)
-    gsub(/[^0-9A-Z_]/, "", D)
-    return D
+		D = toupper(nx_trim_str(D))
+		gsub(/[ \t]/, "_", D)
+		if (! (m = sub(/^[.]/, "L_", D)))
+		if (! (m = sub(/^[*]/, "G_", D)))
+		if (! (m = sub(/^[@]/, "NEXUS_", D)))
+		if (! (m = sub(/^[%]/, "P_", D)))
+				sub(/^[0-9]/, "_\\&", D)
+		gsub(/[^0-9A-Z_]/, "", D)
+		return D
 }
 \end{NxCodeBox}
 
 \begin{NxLightListBox}[title={Environment Key Glyph — nx\_to\_environ}]
-    \nxEachLabel{ArrowDark}{Secondary}{{1}{43}}{%
-        {Purpose}/{Transforms a raw string into a valid environment variable key},%
-        {Input}/{\texttt{D}: raw identifier string},%
-        {Mechanism}/{Trims and uppercases string, replaces whitespace with underscores, applies prefix rules, sanitizes non-alphanumeric characters},%
-        {Prefix Rules}/{\texttt{. → L\_}, \texttt{* → G\_}, \texttt{@ → NEXUS\_}, \texttt{\% → P\_}, leading digit → prefixed with underscore},%
-        {Return}/{Normalized environment key string},%
-        {Use Case}/{Used to convert arbitrary identifiers into safe environment variable names for overlays or system exports}
-    }
+		\nxEachLabel{ArrowDark}{Secondary}{{1}{43}}{%
+				{Purpose}/{Transforms a raw string into a valid environment variable key},%
+				{Input}/{\texttt{D}: raw identifier string},%
+				{Mechanism}/{Trims and uppercases string, replaces whitespace with underscores, applies prefix rules, sanitizes non-alphanumeric characters},%
+				{Prefix Rules}/{\texttt{. \nxArw{2} L\_}, \texttt{* \nxArw{2} G\_}, \texttt{@ \nxArw{2} NEXUS\_}, \texttt{\% \nxArw{2} P\_}, leading digit \nxArw{2} prefixed with underscore},%
+				{Return}/{Normalized environment key string},%
+				{Use Case}/{Used to convert arbitrary identifiers into safe environment variable names for overlays or system exports}
+		}
 \end{NxLightListBox}
 
 \begin{NxCodeBox}{awk}{title={\textbf{Convert dotted identifier}
-        \begin{NxDarkList}
-            \nxEachLabel{CodePrimary}{Tertiary}{{1}{43}}{%
-                {Input}/{\texttt{".config"}},%
-                {Operation}/{\texttt{nx\_to\_environ(".config")}},%
-                {Expected Result}/{Returns \texttt{"L\_CONFIG"}}
-            }
-        \end{NxDarkList}
+				\begin{NxDarkList}
+						\nxEachLabel{CodePrimary}{Tertiary}{{1}{43}}{%
+								{Input}/{\texttt{".config"}},%
+								{Operation}/{\texttt{nx\_to\_environ(".config")}},%
+								{Expected Result}/{Returns \texttt{"L\_CONFIG"}}
+						}
+				\end{NxDarkList}
 }}
 nx_to_environ(".config")
 \end{NxCodeBox}
 
 \begin{NxCodeBox}{awk}{title={\textbf{Convert starred identifier}
-        \begin{NxDarkList}
-            \nxEachLabel{CodePrimary}{Tertiary}{{1}{43}}{%
-                {Input}/{\texttt{"*global"}},%
-                {Operation}/{\texttt{nx\_to\_environ("*global")}},%
-                {Expected Result}/{Returns \texttt{"G\_GLOBAL"}}
-            }
-        \end{NxDarkList}
+				\begin{NxDarkList}
+						\nxEachLabel{CodePrimary}{Tertiary}{{1}{43}}{%
+								{Input}/{\texttt{"*global"}},%
+								{Operation}/{\texttt{nx\_to\_environ("*global")}},%
+								{Expected Result}/{Returns \texttt{"G\_GLOBAL"}}
+						}
+				\end{NxDarkList}
 }}
 nx_to_environ("*global")
 \end{NxCodeBox}
 
 \begin{NxCodeBox}{awk}{title={\textbf{Convert at-prefixed identifier}
-        \begin{NxDarkList}
-            \nxEachLabel{CodePrimary}{Tertiary}{{1}{43}}{%
-                {Input}/{\texttt{"@path"}},%
-                {Operation}/{\texttt{nx\_to\_environ("@path")}},%
-                {Expected Result}/{Returns \texttt{"NEXUS\_PATH"}}
-            }
-        \end{NxDarkList}
+				\begin{NxDarkList}
+						\nxEachLabel{CodePrimary}{Tertiary}{{1}{43}}{%
+								{Input}/{\texttt{"@path"}},%
+								{Operation}/{\texttt{nx\_to\_environ("@path")}},%
+								{Expected Result}/{Returns \texttt{"NEXUS\_PATH"}}
+						}
+				\end{NxDarkList}
 }}
 nx_to_environ("@path")
 \end{NxCodeBox}
 
 \begin{NxCodeBox}{awk}{title={\textbf{Convert percent-prefixed identifier}
-        \begin{NxDarkList}
-            \nxEachLabel{CodePrimary}{Tertiary}{{1}{43}}{%
-                {Input}/{\texttt{"\%param"}},%
-                {Operation}/{\texttt{nx\_to\_environ("\%param")}},%
-                {Expected Result}/{Returns \texttt{"P\_PARAM"}}%
-            }
-        \end{NxDarkList}
+				\begin{NxDarkList}
+						\nxEachLabel{CodePrimary}{Tertiary}{{1}{43}}{%
+								{Input}/{\texttt{"\%param"}},%
+								{Operation}/{\texttt{nx\_to\_environ("\%param")}},%
+								{Expected Result}/{Returns \texttt{"P\_PARAM"}}%
+						}
+				\end{NxDarkList}
 }}
 nx_to_environ("%param")
 \end{NxCodeBox}
 
 \begin{NxCodeBox}{awk}{title={\textbf{Convert numeric-leading identifier}
-        \begin{NxDarkList}
-            \nxEachLabel{CodePrimary}{Tertiary}{{1}{43}}{%
-                {Input}/{\texttt{"123abc"}},%
-                {Operation}/{\texttt{nx\_to\_environ("123abc")}},%
-                {Expected Result}/{Returns \texttt{"\_123ABC"}}
-            }
-        \end{NxDarkList}
+				\begin{NxDarkList}
+						\nxEachLabel{CodePrimary}{Tertiary}{{1}{43}}{%
+								{Input}/{\texttt{"123abc"}},%
+								{Operation}/{\texttt{nx\_to\_environ("123abc")}},%
+								{Expected Result}/{Returns \texttt{"\_123ABC"}}
+						}
+				\end{NxDarkList}
 }}
 nx_to_environ("123abc")
 \end{NxCodeBox}
@@ -93,36 +235,36 @@ nx_to_environ("123abc")
 \begin{NxCodeBox}{awk}{title={\_\_nx\_stringify\_opts(V, D1, D2, D3, D4, D5, N)}}
 function __nx_stringify_opts(V, D1, D2, D3, D4, D5, N, i, j)
 {
-    for (i in V) {
-        gsub("'", "\\'", V[i])
-        D1 = nx_join_str(D1,
-            "NEX_" D2 "" ++j "=\x27" i "\x27 NEX_" D2 "_" i "=\x27" V[i] "\x27",
-            D4)
-        if (N > 2)
-            nx_ansi_info("(" D3 ") " i " = " V[i] "\n")
-    }
-    return nx_join_str(D1, "NEX_" D2 "=\x27" trk["i"] "\x27" D5, D4)
+		for (i in V) {
+				gsub("'", "\\'", V[i])
+				D1 = nx_join_str(D1,
+						"NEX_" D2 "" ++j "=\x27" i "\x27 NEX_" D2 "_" i "=\x27" V[i] "\x27",
+						D4)
+				if (N > 2)
+						nx_ansi_info("(" D3 ") " i " = " V[i] "\n")
+		}
+		return nx_join_str(D1, "NEX_" D2 "=\x27" trk["i"] "\x27" D5, D4)
 }
 \end{NxCodeBox}
 
 \begin{NxLightListBox}[title={Stringify Options Glyph — \_\_nx\_stringify\_opts}]
-    \nxEachLabel{ArrowDark}{Secondary}{{1}{43}}{%
-        {Purpose}/{Converts associative array \texttt{V} into environment-style option strings},%
-        {Input}/{\texttt{V}: option map; \texttt{D1}: accumulator string; \texttt{D2}: option prefix; \texttt{D3}: label; \texttt{D4}: delimiter; \texttt{D5}: suffix; \texttt{N}: verbosity toggle},%
-        {Mechanism}/{Iterates over \texttt{V}, escapes quotes, appends formatted \texttt{NEX\_*} assignments into \texttt{D1}, optionally prints ANSI info},%
-        {Output}/{Returns concatenated string of environment-style assignments},%
-        {Use Case}/{Used to serialize options into exportable environment variables for overlay systems}
-    }
+		\nxEachLabel{ArrowDark}{Secondary}{{1}{43}}{%
+				{Purpose}/{Converts associative array \texttt{V} into environment-style option strings},%
+				{Input}/{\texttt{V}: option map; \texttt{D1}: accumulator string; \texttt{D2}: option prefix; \texttt{D3}: label; \texttt{D4}: delimiter; \texttt{D5}: suffix; \texttt{N}: verbosity toggle},%
+				{Mechanism}/{Iterates over \texttt{V}, escapes quotes, appends formatted \texttt{NEX\_*} assignments into \texttt{D1}, optionally prints ANSI info},%
+				{Output}/{Returns concatenated string of environment-style assignments},%
+				{Use Case}/{Used to serialize options into exportable environment variables for overlay systems}
+		}
 \end{NxLightListBox}
 
 \begin{NxCodeBox}{awk}{title={\textbf{Serialize options with prefix "CFG"}
-        \begin{NxDarkList}
-            \nxEachLabel{CodePrimary}{Tertiary}{{1}{43}}{%
-                {State}/{\texttt{V["path"]="usr/bin"}, \texttt{V["mode"]="debug"}},%
-                {Operation}/{\texttt{\_\_nx\_stringify\_opts(V, "", "CFG", "opts", ";", "", 3)}},%
-                {Expected Result}/{Returns string with assignments like \texttt{NEX\_CFG1='path' NEX\_CFG\_path='usr/bin'; NEX\_CFG2='mode' NEX\_CFG\_mode='debug'} and prints ANSI info}
-            }
-        \end{NxDarkList}
+				\begin{NxDarkList}
+						\nxEachLabel{CodePrimary}{Tertiary}{{1}{43}}{%
+								{State}/{\texttt{V["path"]="usr/bin"}, \texttt{V["mode"]="debug"}},%
+								{Operation}/{\texttt{\_\_nx\_stringify\_opts(V, "", "CFG", "opts", ";", "", 3)}},%
+								{Expected Result}/{Returns string with assignments like \texttt{NEX\_CFG1='path' NEX\_CFG\_path='usr/bin'; NEX\_CFG2='mode' NEX\_CFG\_mode='debug'} and prints ANSI info}
+						}
+				\end{NxDarkList}
 }}
 __nx_stringify_opts(V, "", "CFG", "opts", ";", "", 3)
 \end{NxCodeBox}
@@ -132,9 +274,9 @@ __nx_stringify_opts(V, "", "CFG", "opts", ";", "", 3)
 \nxSections{Shell Option Arguments Conductor}{2}
 \begin{NxCodeBox}{awk}{title={nx\_sh\_optargs(D1, N, D2, D3, D4)}}
 function nx_sh_optargs(D1, N, D2, D3, D4,
-    args, trk, stk, kwdas, kwds, grp, grps, flgs, grpa, grpas)
+		args, trk, stk, kwdas, kwds, grp, grps, flgs, grpa, grpas)
 {
-  # Check if the input string D1 is not empty
+	# Check if the input string D1 is not empty
 	if (D1 == "")
 		return -1
 
@@ -155,17 +297,17 @@ function nx_sh_optargs(D1, N, D2, D3, D4,
 	# groups
 	trk["go"] = __nx_else(stk[5], "<") # begin group
 	trk["gc"] = __nx_else(stk[6], ">") # eng group
-	nx_bijective(trk, trk["gc"], trk["go"]) # bijective  results
+	nx_bijective(trk, trk["gc"], trk["go"]) # bijective	results
 	trk["gs"] = trk["go"] # initial state
 
 	trk["lo"] = __nx_else(stk[7], "~") # begin long option
 	trk["lc"] = __nx_else(stk[8], "-") # end long option
-	nx_bijective(trk, trk["lc"], trk["lo"]) # bijective  results
+	nx_bijective(trk, trk["lc"], trk["lo"]) # bijective	results
 	trk["ls"] = trk["lo"] # initial state
 
 	trk["ln"] = split(args[1], stk, "")
 
-	for (trk["i"] = 1;  trk["i"] <= trk["ln"]; ++trk["i"]) {
+	for (trk["i"] = 1;	trk["i"] <= trk["ln"]; ++trk["i"]) {
 		if (nx_is_alpha(stk[trk["i"]]) && (stk[trk["i"] + 1] != trk["as"] && stk[trk["i"] + 1] != trk["go"] && stk[trk["i"] + 1] != trk["ks"])) {
 			if (trk["gl"]) {
 				if (trk["glj"] == 1) {
@@ -302,80 +444,80 @@ function nx_sh_optargs(D1, N, D2, D3, D4,
 \end{NxCodeBox}
 
 \begin{NxLightListBox}[title={Shell Option Arguments Glyph — nx\_sh\_optargs}]
-    \nxEachLabel{ArrowDark}{Secondary}{{1}{43}}{%
-        {Purpose}/{Parses a shell-style argument string into flags, keywords, groups, and arrays},%
-        {Input}/{\texttt{D1}: raw argument string; \texttt{N}: verbosity/debug level; \texttt{D2}: param separator; \texttt{D3}: delimiter set; \texttt{D4}: custom delimiters},%
-        {Mechanism}/{Splits input into tokens, defines separators (key, flag, appendable, group, long option), detects flags, keywords, groups, arrays, and remainder args},%
-        {Groups}/{Supports group toggles (\texttt{<...>}) and group arrays (\texttt{<...@>}), tracked via bijective mapping},%
-        {Flags}/{Single-letter flags parsed, optional values via \texttt{=} or concatenation},%
-        {Keywords}/{Key-value pairs (\texttt{k: v}) and keyword arrays (\texttt{k@ v1 v2})},%
-        {Output}/{Returns environment-style string with \texttt{NEX\_*} assignments for remainder, flags, keywords, groups},%
-        {Use Case}/{Used to normalize shell option parsing into structured environment variables for Nex overlay systems}
-    }
+		\nxEachLabel{ArrowDark}{Secondary}{{1}{43}}{%
+				{Purpose}/{Parses a shell-style argument string into flags, keywords, groups, and arrays},%
+				{Input}/{\texttt{D1}: raw argument string; \texttt{N}: verbosity/debug level; \texttt{D2}: param separator; \texttt{D3}: delimiter set; \texttt{D4}: custom delimiters},%
+				{Mechanism}/{Splits input into tokens, defines separators (key, flag, appendable, group, long option), detects flags, keywords, groups, arrays, and remainder args},%
+				{Groups}/{Supports group toggles (\texttt{<...>}) and group arrays (\texttt{<...@>}), tracked via bijective mapping},%
+				{Flags}/{Single-letter flags parsed, optional values via \texttt{=} or concatenation},%
+				{Keywords}/{Key-value pairs (\texttt{k: v}) and keyword arrays (\texttt{k@ v1 v2})},%
+				{Output}/{Returns environment-style string with \texttt{NEX\_*} assignments for remainder, flags, keywords, groups},%
+				{Use Case}/{Used to normalize shell option parsing into structured environment variables for Nex overlay systems}
+		}
 \end{NxLightListBox}
 
 \begin{NxCodeBox}{awk}{title={\textbf{Parse simple flags}
-        \begin{NxDarkList}
-            \nxEachLabel{CodePrimary}{Tertiary}{{1}{43}}{%
-                {Input}/{\texttt{"-a -b"}},%
-                {Operation}/{\texttt{nx\_sh\_optargs("-a -b", 3)}},%
-                {Expected Result}/{Flags \texttt{a}, \texttt{b} detected, returned as \texttt{NEX\_f\_a}, \texttt{NEX\_f\_b}}
-            }
-        \end{NxDarkList}
+				\begin{NxDarkList}
+						\nxEachLabel{CodePrimary}{Tertiary}{{1}{43}}{%
+								{Input}/{\texttt{"-a -b"}},%
+								{Operation}/{\texttt{nx\_sh\_optargs("-a -b", 3)}},%
+								{Expected Result}/{Flags \texttt{a}, \texttt{b} detected, returned as \texttt{NEX\_f\_a}, \texttt{NEX\_f\_b}}
+						}
+				\end{NxDarkList}
 }}
 nx_sh_optargs("-a -b", 3)
 \end{NxCodeBox}
 
 \begin{NxCodeBox}{awk}{title={\textbf{Parse keyword arguments}
-        \begin{NxDarkList}
-            \nxEachLabel{CodePrimary}{Tertiary}{{1}{43}}{%
-                {Input}/{\texttt{"-x key:value"}},%
-                {Operation}/{\texttt{nx\_sh\_optargs("-x key:value", 3)}},%
-                {Expected Result}/{Keyword \texttt{key} stored with value \texttt{value}, returned as \texttt{NEX\_k\_key}}
-            }
-        \end{NxDarkList}
+				\begin{NxDarkList}
+						\nxEachLabel{CodePrimary}{Tertiary}{{1}{43}}{%
+								{Input}/{\texttt{"-x key:value"}},%
+								{Operation}/{\texttt{nx\_sh\_optargs("-x key:value", 3)}},%
+								{Expected Result}/{Keyword \texttt{key} stored with value \texttt{value}, returned as \texttt{NEX\_k\_key}}
+						}
+				\end{NxDarkList}
 }}
 nx_sh_optargs("-x key:value", 3)
 \end{NxCodeBox}
 
 \begin{NxCodeBox}{awk}{title={\textbf{Parse grouped flags}
-        \begin{NxDarkList}
-            \nxEachLabel{CodePrimary}{Tertiary}{{1}{43}}{%
-                {Input}/{\texttt{"-g a<b c>"}},%
-                {Operation}/{\texttt{nx\_sh\_optargs("-g a<b c>", 3)}},%
-                {Expected Result}/{Group \texttt{a} with members \texttt{c}, returned as \texttt{NEX\_g\_a}}
-            }
-        \end{NxDarkList}
+				\begin{NxDarkList}
+						\nxEachLabel{CodePrimary}{Tertiary}{{1}{43}}{%
+								{Input}/{\texttt{"-g a<b c>"}},%
+								{Operation}/{\texttt{nx\_sh\_optargs("-g a<b c>", 3)}},%
+								{Expected Result}/{Group \texttt{a} with members \texttt{c}, returned as \texttt{NEX\_g\_a}}
+						}
+				\end{NxDarkList}
 }}
 nx_sh_optargs("-g a<b c>", 3)
 \end{NxCodeBox}
 
 \begin{NxCodeBox}{awk}{title={\textbf{Parse keyword arrays}
-        \begin{NxDarkList}
-            \nxEachLabel{CodePrimary}{Tertiary}{{1}{43}}{%
-                {Input}/{\texttt{"-k opt@ val1 val2"}},%
-                {Operation}/{\texttt{nx\_sh\_optargs("-k opt@ val1 val2", 3)}},%
-                {Expected Result}/{Keyword array \texttt{opt} with values \texttt{val1,val2}, returned as \texttt{NEX\_K\_opt}}
-            }
-        \end{NxDarkList}
+				\begin{NxDarkList}
+						\nxEachLabel{CodePrimary}{Tertiary}{{1}{43}}{%
+								{Input}/{\texttt{"-k opt@ val1 val2"}},%
+								{Operation}/{\texttt{nx\_sh\_optargs("-k opt@ val1 val2", 3)}},%
+								{Expected Result}/{Keyword array \texttt{opt} with values \texttt{val1,val2}, returned as \texttt{NEX\_K\_opt}}
+						}
+				\end{NxDarkList}
 }}
 nx_sh_optargs("-k opt@ val1 val2", 3)
 \end{NxCodeBox}
 
 \begin{NxLightBox}[title={Shell Option Separators — Syntax Glyph Map}]
-    \begin{tabularx}{\textwidth}{|l|X|X|}
-        \hline
-        \textbf{Separator} & \textbf{Role} & \textbf{Example} \\
-        \hline
-        \nxLnArcBox[]{:} & Key separator & key:value → NEX\_k\_key='value' \\
-        \hline
-        \nxLnArcBox[]{=} & Flag separator &-f=value → NEX\_f\_f='value' \\
-        \hline
-        \nxLnArcBox[]{@} & Keyword array separator & opt@ v1 v2 → NEX\_K\_opt='v1,v2' \\
-        \hline
-        \nxLnArcBox[]{< >} & Group delimiters & a<b c> → group 'a' with member 'c' \\
-        \hline
-    \end{tabularx}
+		\begin{tabularx}{\textwidth}{|l|X|X|}
+				\hline
+				\textbf{Separator} & \textbf{Role} & \textbf{Example} \\
+				\hline
+				\nxLnArcBox[]{:} & Key separator & key:value \nxArw{2} NEX\_k\_key='value' \\
+				\hline
+				\nxLnArcBox[]{=} & Flag separator &-f=value \nxArw{2} NEX\_f\_f='value' \\
+				\hline
+				\nxLnArcBox[]{@} & Keyword array separator & opt@ v1 v2 \nxArw{2} NEX\_K\_opt='v1,v2' \\
+				\hline
+				\nxLnArcBox[]{< >} & Group delimiters & a<b c> \nxArw{2} group 'a' with member 'c' \\
+				\hline
+		\end{tabularx}
 \end{NxLightBox}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -395,3 +537,4 @@ nx_sh_optargs("-k opt@ val1 val2", 3)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+\end{comment}

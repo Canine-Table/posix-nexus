@@ -155,10 +155,10 @@ function __nx_ansi_pmap(D)
 
 function nx_fd_stderr(D)
 {
-	if (D) {
-		gsub(/"/, "\\\"" D)
-		system("printf \"" D "\" 1>&2")
-	}
+	if (D == "")
+		return -1
+	printf("%s", D) > "/dev/stderr"
+	return D
 }
 
 function nx_ansi_error(D1, B, D2)

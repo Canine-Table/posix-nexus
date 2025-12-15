@@ -1,0 +1,3 @@
+debug_level = 2
+string_value = " alpha<beta gamma> delta<epsilon zeta>"
+nx_sh_opts(string_value, debug_level, arr)

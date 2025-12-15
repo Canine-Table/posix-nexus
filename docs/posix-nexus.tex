@@ -1,4 +1,8 @@
 \documentclass[a4paper,12pt]{article}
+\newif\ifnxBIB
+\nxBIBfalse
+\newif\ifnxGLS
+\nxGLSfalse
 \input{../lib/tex/nex-preamble.tex}
 \nxHyper[]%
 \nxSnowFade%
@@ -7,12 +11,11 @@
 \def\nxInput#1{\input{./pages/posix-nexus/#1.tex}}%
 
 \begin{document}
-	\nxCoverPage[title={Project Documentation}, ref={Github}]
+	\nxCoverPage[title={Project Documentation}, ref={\nxGithubLight}]
 	\nxRomanFooter
 	\nxToc{Contents}
 	\newpage
 	\nxSnowFlakeHeader{Posix-Nexus}
-	\nxInput{ansi-escape-codes}
 	%\nxInput{js-toolkit}
 	%\nxInput{awk-toolkit}
 \end{document}
