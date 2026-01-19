@@ -1,5 +1,41 @@
 \makeatletter
 \tikzset{%
+	-{anx}/.tip={%
+		Rays[%
+			n=9,%
+			round,%
+			slant=.1,%
+			length=1mm%
+		]%
+	},%
+	-{bnx}/.tip={
+		Kite[%
+			round,%
+			slant=.1,%
+			length=1.5mm%
+		]
+	},%
+	nxArwRay/.pic = {
+			\draw[%
+			draw=nex.#1.upper,%
+			>={anx[nex.#1.back.title]},%
+			<-{bnx[nex.#1.back]},%
+				thin,%
+				decorate,%
+				decoration={%
+					snake,%
+					amplitude=.5mm,%
+					segment length=1mm,%
+					post length=1.5mm,%
+					pre length=1.5mm%
+				}
+				] (0,0) -- (0.55,0);
+	},
+	nxCol/.style={%
+			text=nex.#1.text,%
+			fill=nex.#1.back,%
+			draw=nex.#1.frame%
+	},%
 	highlight/.style={draw=black, thick, fill=yellow!30},%
 	error/.style={draw=red, thick, fill=red!10},%
 	compute/.style={process, fill=cyan!20},%
@@ -222,7 +258,6 @@
 	\end{tikzpicture}
 }
 
-
 \long\def\nxCoverPage[#1]{%
 	\pgfkeys{%
 		nx cover page,%
@@ -269,7 +304,7 @@
 			text=nex.danger.text,%
 			yshift=1cm,%
 			align=center,%
-			text width=\linewidth,%
+			,,text width=\linewidth,%
 			yslant=0.1%
 		]{\nxSFont{24pt} \bf \nx@title};
 		\node[below=of logo, text=nex.danger.text, yshift=-1cm, align=center, text width=\linewidth] (author) {\nxSFont{24pt} \bf \nx@author};

@@ -2,6 +2,7 @@
 function NxClipboardSettings()
 	if filereadable("/dev/clipboard") &&  system("test -c /dev/clipboard && printf '%s' 'char'") =~ 'char'
 		nnoremap <silent> <leader>yy :write /dev/clipboard<CR>
+		xnoremap <silent> <leader>yy :'<,'>write /dev/clipboard<CR>
 	else
 		let tmpa = NxMatchExec(g:nex_clip, {
 			\ "xsel": "-ib",
@@ -20,6 +21,7 @@ function NxClipboardSettings()
 			set clipboard+=unnamedplus
 			let g:clipboard = tmpa
 			execute 'nnoremap <silent> <leader>yy :write !' . tmpa . '<CR>'
+			execute 'xnoremap <silent> <leader>yy :write !' . tmpa . '<CR>'
 		endif
 	endif
 endfunction

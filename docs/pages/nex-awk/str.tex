@@ -1,6 +1,88 @@
 \nxSections{String Module}{1}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\nxSections{String Reaper}{2}
+\begin{NxCodeBox}{awk}{phantomlabel={func:nx_reap_str}, title={\textbf{String Reaper Arguments}
+	\begin{NxDarkList}
+		\nxEachLabel{CodePrimary}{Tertiary}{{1}{43}}{%
+			{D1}/{Input string to modify},%
+			{N1}/{Count of removals (integer, absolute)},%
+			{D2}/{Substring/pattern to remove},%
+			{N2}/{Direction flag: \begin{NxDarkList}
+				\nxEachLabel{BugSuccess}{Tertiary}{{1}{43}}{%
+					{0}/{Remove forward (left to right)},%
+					{1}/{Remove backward (right to left)}%
+				}
+			\end{NxDarkList}}%
+		}
+	\end{NxDarkList}
+}}
+function nx_reap_str(D1, N1, D2, N2)
+\end{NxCodeBox}
+
+\begin{NxLightListBox}[title={String Reaper — Controlled Substring Removal}]
+	\nxEachLabel{ArrowDark}{Secondary}{{1}{43}}{%
+		{Purpose}/{Removes occurrences of substring \(D2\) from string \(D1\), with count and direction control},%
+		{Input}/{\(D1\): target string; \(N1\): number of removals (integer, absolute); \(D2\): substring to remove; \(N2\): direction flag (0 = forward, 1 = backward)},%
+		{Mechanism}/{If \(N1\) is invalid or zero, all matches of \(D2\) are removed. Otherwise, removes up to \(N1\) matches, scanning left-to-right if \(N2=0\) or right-to-left if \(N2=1\)},%
+		{Return}/{Modified string with requested removals applied},%
+		{Use Case}/{Used in keyword argument pop operations, controlled string mutation, or cleanup of repeated tokens}
+	}
+\end{NxLightListBox}
+
+\nxSections{Examples}{3}
+\begin{NxCodeBox}{awk}{title={\textbf{Remove first occurrence (forward pop)}
+		\begin{NxDarkList}
+			\nxEachLabel{CodePrimary}{Tertiary}{{1}{43}}{%
+				{Input}/{\nxSQ{\nxSpaces{hello world hello}}},%
+				{N1}/{1},%
+				{Substring}/{\nxSQ{hello}},%
+				{Direction}/{Forward (0)},%
+				{Expected Result}/{\nxDQ{\nxSpaces{ world hello}}}
+			}
+		\end{NxDarkList}
+}}
+print nx_reap_str("hello world hello", 1, "hello", 0)
+\end{NxCodeBox}
+
+\begin{NxCodeBox}{awk}{title={\textbf{Remove last occurrence (backward pop)}
+		\begin{NxDarkList}
+			\nxEachLabel{CodePrimary}{Tertiary}{{1}{43}}{%
+				{Input}/{\nxDQ{hello world hello}},%
+				{N1}/{1},%
+				{Substring}/{\nxDQ{hello}},%
+				{Direction}/{Backward (1)},%
+			{Expected Result}/{\nxDQ{\nxSpaces{hello world }}}
+			}
+		\end{NxDarkList}
+}}
+print nx_reap_str("hello world hello", 1, "hello", 1)
+\end{NxCodeBox}
+
+
+
+
+\begin{NxCodeBox}{awk}{title={\textbf{Remove all occurrences (zero count)}
+		\begin{NxDarkList}
+			\nxEachLabel{CodePrimary}{Tertiary}{{1}{43}}{%
+				{Input}/{\nxDQ{\nxSpaces{foo bar foo bar}}},%
+				{N1}/{0},%
+				{Substring}/{\nxDQ{foo}},%
+				{Direction}/{Forward (0)},%
+				{Expected Result}/{\nxDQ{\nxSpaces{ bar{ }{ }bar}}}
+			}
+		\end{NxDarkList}
+}}
+print nx_reap_str("foo bar foo bar", 0, "foo", 0)
+\end{NxCodeBox}
+
+
+
+
+
+\begin{comment}
+
 \nxSections{Escaped Sequence Matcher}{2}
 \begin{NxCodeBox}{awk}{title={nx\_nesc\_match(D1, D2, D3)}}
 function nx_nesc_match(D1, D2, D3,	f, l)
@@ -25,50 +107,50 @@ function nx_nesc_match(D1, D2, D3,	f, l)
 \end{NxCodeBox}
 
 \begin{NxLightListBox}[title={Escaped Sequence Matcher — The Escape Glyph}]
-    \nxEachLabel{ArrowDark}{Secondary}{{1}{43}}{%
-        {Purpose}/{Finds the position of a delimiter in string \(D1\), respecting escape sequences},%
-        {Input}/{\(D1\): target string; \(D2\): delimiter regex (default space); \(D3\): escape character regex (default backslash)},%
-        {Mechanism}/{Iteratively searches for delimiter, checks if it is escaped by \(D3\), and advances accordingly},%
-        {Return}/{Index of first unescaped delimiter, or \(-1\) if \(D1\) is empty},%
-        {Use Case}/{Used in tokenization, argument parsing, or IPC relay parsing where escapes must be honored}
-    }
+	\nxEachLabel{ArrowDark}{Secondary}{{1}{43}}{%
+		{Purpose}/{Finds the position of a delimiter in string \(D1\), respecting escape sequences},%
+		{Input}/{\(D1\): target string; \(D2\): delimiter regex (default space); \(D3\): escape character regex (default backslash)},%
+		{Mechanism}/{Iteratively searches for delimiter, checks if it is escaped by \(D3\), and advances accordingly},%
+		{Return}/{Index of first unescaped delimiter, or \(-1\) if \(D1\) is empty},%
+		{Use Case}/{Used in tokenization, argument parsing, or IPC relay parsing where escapes must be honored}
+	}
 \end{NxLightListBox}
 
 \begin{NxCodeBox}{awk}{title={\textbf{Find first unescaped space in a string}
-        \begin{NxDarkList}
-            \nxEachLabel{CodePrimary}{Tertiary}{{1}{43}}{%
-                {Input}/{\texttt{"foo bar"}},%
-                {Delimiter}/{Space},%
-                {Escape}/{Backslash},%
-                {Expected Result}/{Returns \texttt{4}, the position of the space}
-            }
-        \end{NxDarkList}
+		\begin{NxDarkList}
+			\nxEachLabel{CodePrimary}{Tertiary}{{1}{43}}{%
+				{Input}/{\texttt{"foo bar"}},%
+				{Delimiter}/{Space},%
+				{Escape}/{Backslash},%
+				{Expected Result}/{Returns \texttt{4}, the position of the space}
+			}
+		\end{NxDarkList}
 }}
 print nx_nesc_match("foo bar")
 \end{NxCodeBox}
 
 \begin{NxCodeBox}{awk}{title={\textbf{Skip escaped space}
-        \begin{NxDarkList}
-            \nxEachLabel{CodePrimary}{Tertiary}{{1}{43}}{%
-                {Input}/{\texttt{"foo\\ bar baz"}},%
-                {Delimiter}/{Space},%
-                {Escape}/{Backslash},%
-                {Expected Result}/{Returns \texttt{9}, the position of the unescaped space after \texttt{"bar"}}
-            }
-        \end{NxDarkList}
+		\begin{NxDarkList}
+			\nxEachLabel{CodePrimary}{Tertiary}{{1}{43}}{%
+				{Input}/{\texttt{"foo\\ bar baz"}},%
+				{Delimiter}/{Space},%
+				{Escape}/{Backslash},%
+				{Expected Result}/{Returns \texttt{9}, the position of the unescaped space after \texttt{"bar"}}
+			}
+		\end{NxDarkList}
 }}
 print nx_nesc_match("foo\\ bar baz")
 \end{NxCodeBox}
 
 \begin{NxCodeBox}{awk}{title={\textbf{Handle double escape (escaped backslash before space)}
-        \begin{NxDarkList}
-            \nxEachLabel{CodePrimary}{Tertiary}{{1}{43}}{%
-                {Input}/{\texttt{"foo\\\\ bar"}},%
-                {Delimiter}/{Space},%
-                {Escape}/{Backslash},%
-                {Expected Result}/{Returns \texttt{5}, since the space is not escaped (two backslashes cancel)}
-            }
-        \end{NxDarkList}
+		\begin{NxDarkList}
+			\nxEachLabel{CodePrimary}{Tertiary}{{1}{43}}{%
+				{Input}/{\texttt{"foo\\\\ bar"}},%
+				{Delimiter}/{Space},%
+				{Escape}/{Backslash},%
+				{Expected Result}/{Returns \texttt{5}, since the space is not escaped (two backslashes cancel)}
+			}
+		\end{NxDarkList}
 }}
 print nx_nesc_match("foo\\\\ bar")
 \end{NxCodeBox}
@@ -92,25 +174,25 @@ function nx_find_next(D1, V, B, D2,	i, f, m)
 \end{NxCodeBox}
 
 \begin{NxLightListBox}[title={Next Match Finder — The Match Glyph}]
-    \nxEachLabel{ArrowDark}{Secondary}{{1}{43}}{%
-        {Purpose}/{Finds the next delimiter match in string \(D1\) across a set of candidate patterns \(V\)},%
-        {Input}/{\(D1\): target string; \(V\): array of delimiter regexes; \(B\): comparison toggle; \(D2\): escape character regex},%
-        {Mechanism}/{Iterates over all patterns in \(V\), uses \texttt{nx\_nesc\_match} to locate matches, compares positions with \texttt{\_\_nx\_equality}},%
-        {Comparison}/{If \(B\) is empty, defaults to \texttt{">0"} (find next greater); otherwise \texttt{"<0"}},%
-        {Return}/{Index of the next matching delimiter, or \(-1\) if \(D1\) is empty},%
-        {Use Case}/{Used in tokenization, parsing overlays, or IPC relays where multiple delimiters may apply}
-    }
+	\nxEachLabel{ArrowDark}{Secondary}{{1}{43}}{%
+		{Purpose}/{Finds the next delimiter match in string \(D1\) across a set of candidate patterns \(V\)},%
+		{Input}/{\(D1\): target string; \(V\): array of delimiter regexes; \(B\): comparison toggle; \(D2\): escape character regex},%
+		{Mechanism}/{Iterates over all patterns in \(V\), uses \texttt{nx\_nesc\_match} to locate matches, compares positions with \texttt{\_\_nx\_equality}},%
+		{Comparison}/{If \(B\) is empty, defaults to \texttt{">0"} (find next greater); otherwise \texttt{"<0"}},%
+		{Return}/{Index of the next matching delimiter, or \(-1\) if \(D1\) is empty},%
+		{Use Case}/{Used in tokenization, parsing overlays, or IPC relays where multiple delimiters may apply}
+	}
 \end{NxLightListBox}
 
 \begin{NxCodeBox}{awk}{title={\textbf{Find next space or comma in a string}
-        \begin{NxDarkList}
-            \nxEachLabel{CodePrimary}{Tertiary}{{1}{43}}{%
-                {Input}/{\texttt{"foo, bar baz"}},%
-                {Delimiters}/{\texttt{V[1] = ","}, \texttt{V[2] = " "}},%
-                {Escape}/{Default backslash},%
-                {Expected Result}/{Returns \texttt{4}, the position of the comma}
-            }
-        \end{NxDarkList}
+		\begin{NxDarkList}
+			\nxEachLabel{CodePrimary}{Tertiary}{{1}{43}}{%
+				{Input}/{\texttt{"foo, bar baz"}},%
+				{Delimiters}/{\texttt{V[1] = ","}, \texttt{V[2] = " "}},%
+				{Escape}/{Default backslash},%
+				{Expected Result}/{Returns \texttt{4}, the position of the comma}
+			}
+		\end{NxDarkList}
 }}
 V[1] = ","
 V[2] = " "
@@ -118,14 +200,14 @@ print nx_find_next("foo, bar baz", V)
 \end{NxCodeBox}
 
 \begin{NxCodeBox}{awk}{title={\textbf{Skip escaped delimiter}
-        \begin{NxDarkList}
-            \nxEachLabel{CodePrimary}{Tertiary}{{1}{43}}{%
-                {Input}/{\texttt{"foo\\,bar baz"}},%
-                {Delimiters}/{\texttt{V[1] = ","}, \texttt{V[2] = " "}},%
-                {Escape}/{Backslash},%
-                {Expected Result}/{Returns \texttt{8}, the position of the space after \texttt{"bar"}}
-            }
-        \end{NxDarkList}
+		\begin{NxDarkList}
+			\nxEachLabel{CodePrimary}{Tertiary}{{1}{43}}{%
+				{Input}/{\texttt{"foo\\,bar baz"}},%
+				{Delimiters}/{\texttt{V[1] = ","}, \texttt{V[2] = " "}},%
+				{Escape}/{Backslash},%
+				{Expected Result}/{Returns \texttt{8}, the position of the space after \texttt{"bar"}}
+			}
+		\end{NxDarkList}
 }}
 V[1] = ","
 V[2] = " "
@@ -133,20 +215,21 @@ print nx_find_next("foo\\,bar baz", V)
 \end{NxCodeBox}
 
 \begin{NxCodeBox}{awk}{title={\textbf{Handle multiple delimiters with comparison toggle}
-        \begin{NxDarkList}
-            \nxEachLabel{CodePrimary}{Tertiary}{{1}{43}}{%
-                {Input}/{\texttt{"alpha|beta gamma"}},%
-                {Delimiters}/{\texttt{V[1] = "|"}, \texttt{V[2] = " "}},%
-                {Toggle}/{Default \texttt{">0"} ensures smallest index chosen},%
-                {Expected Result}/{Returns \texttt{6}, the position of the space after \texttt{"beta"}}
-            }
-        \end{NxDarkList}
+	\begin{NxDarkList}
+		\nxEachLabel{CodePrimary}{Tertiary}{{1}{43}}{%
+			{Input}/{\texttt{"alpha|beta gamma"}},%
+			{Delimiters}/{\texttt{V[1] = "|"}, \texttt{V[2] = " "}},%
+			{Toggle}/{Default \texttt{">0"} ensures smallest index chosen},%
+			{Expected Result}/{Returns \texttt{6}, the position of the space after \texttt{"beta"}}
+		}
+	\end{NxDarkList}
 }}
 V[1] = "|"
 V[2] = " "
 print nx_find_next("alpha|beta gamma", V)
 \end{NxCodeBox}
 
+\end{comment}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

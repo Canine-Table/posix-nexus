@@ -1,2 +1,25 @@
-\nxSections{another beginners}{2}
+\nxSections{another beginners}{1}
 bye world
+
+\nxArw{43}
+
+%\nxPrimaryArwRay
+%\textcolor{nex.primary.back}{\bf\nxEm{1}{hello}}~\tikz\draw pic [thick, nex.primary.back] {nxArwRay};~hi
+
+
+\tikz\draw[%
+			draw=nex.dark.upper,%
+			>={anx[nex.dark.back]},%
+			<-{bnx[nex.dark.back]},%
+				thin,%
+				decorate,%
+				decoration={%
+					snake,%
+					amplitude=.5mm,%
+					segment length=1mm,%
+					post length=1.5mm,%
+					pre length=1.5mm%
+				}
+				] (0,0) arc [start angle=135, end angle=0, rotate=145,
+x radius=2cm, y radius=5mm];
+

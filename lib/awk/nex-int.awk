@@ -24,9 +24,14 @@ function __nx_is_float(N, B)
 	return __nx_if(B, N ~ /^([-]|[+])?[0-9]+[.][0-9]+$/, N ~ /^[0-9]+[.][0-9]+$/)
 }
 
+function __nx_is_real(N, B1, B2)
+{
+	return __nx_is_integral(N, B1) || __nx_is_float(N, __nx_else(B2, B1))
+}
+
 function nx_digit(N, B1, B2)
 {
-	if (__nx_is_integral(N, B1) || __nx_is_float(N, __nx_else(B2, B1)))
+	if (__nx_is_real(N, B1, B2))
 		return +N
 }
 
@@ -34,39 +39,40 @@ function nx_digit(N, B1, B2)
 # S = sep
 # B1 = signage
 # B2 = type
-function nx_digit_guard(D1, B1, B2, D2, B3, B4, V,	trk)
+function nx_digit_guard(D1, B1, B2, D2, B3, B4, V,
+	flt, nm, cnm, err, idx)
 {
 	if (B4 == "") {
 		nx_trim_split(D1, V, D2)
+		idx = V[0]
 	} else {
-		V[0] = 1
+		idx = 1
 		V[1] = D1
 	}
 	B2 = int(B2)
 	B1 = int(B1)
-	trk["nm"] = __nx_if(B1 == 1 || B1 == 2, "optional signed", "required unsigned")
-	trk["flt"] = __nx_if(B1 == 1 || B1 == 3, "optional signed", "required unsigned")
-	trk["err"] = 0
-	for (D1 = 1; D1 <= V[0]; ++D1) {
-		if (B2 == 2 && ! __nx_is_integral(V[D1], trk["nm"] == "optional signed")) {
-			nx_ansi_error(V[D1] " is not a valid " trk["nm"] " integral!\n")
+	nm = __nx_if(B1 == 1 || B1 == 2, "optional signed", "required unsigned")
+	flt = __nx_if(B1 == 1 || B1 == 3, "optional signed", "required unsigned")
+	err = 0
+	for (D1 = 1; D1 <= idx; ++D1) {
+		cnm = V[D1]
+		if (B2 == 2 && ! __nx_is_integral(cnm, nm == "optional signed")) {
+			nx_ansi_error("'" cnm "' is not a valid '" nm "' integral!\n")
 			nx_replace_pop(V, D1)
-			trk["err"]--
-		} else if (B2 == 3 && ! __nx_is_float(V[D1], trk["flt"] == "optional signed")) {
-			nx_ansi_error(V[D1] " is not a valid " trk["flt"] " floating point digit!\n")
+			err--
+		} else if (B2 == 3 && ! __nx_is_float(cnm, flt == "optional signed")) {
+			nx_ansi_error("'" cnm "' is not a valid '" flt "' floating point digit!\n")
 			nx_replace_pop(V, D1)
-			trk["err"]--
-		} else if (! nx_digit(V[D1], B1, B2)) {
-			nx_ansi_error(V[D1] " is not a valid " trk["nm"] "integral, nor is it a valid " trk["flt"] " floating point digit!\n")
+			err--
+		} else if (! __nx_is_real(cnm, B1, B2)) {
+			nx_ansi_error("'" cnm "' is not a valid '" nm "' integral, nor is it a valid '" flt "' floating point digit!\n")
 			nx_replace_pop(V, D1)
-			trk["err"]--
+			err--
 		}
 	}
-	if (! B3 || (B3 == 2 && trk["err"] < 0))
+	if (! B3 || (B3 == 2 && err < 0))
 		delete V
-	D1 = trk["err"]
-	delete trk
-	return D1
+	return err
 }
 
 function nx_absolute(N)

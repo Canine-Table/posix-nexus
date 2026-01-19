@@ -157,7 +157,7 @@ function nx_fd_stderr(D)
 {
 	if (D == "")
 		return -1
-	printf("%s", D) > "/dev/stderr"
+	printf("%s", D) > "/dev/fd/2"
 	return D
 }
 

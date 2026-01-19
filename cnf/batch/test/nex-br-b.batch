@@ -1,0 +1,5 @@
+#vlan add dev bridge0.176 vid 176 pvid untagged
+vlan add dev nexus0.176 vid 176 pvid untagged
+vlan add dev nexus0 vid 176 pvid untagged
+#vlan add dev nexus0 vid 999
+#vlan add dev questing vid 176 pvid untagged

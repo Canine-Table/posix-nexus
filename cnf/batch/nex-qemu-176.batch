@@ -1,0 +1,35 @@
+link set lo name loopback0
+link property add dev loopback0 altname lo
+link set loopback0 alias "The loopback0 does not traverse wires. It does not blink with LEDs. It does not care for MAC addresses or ARP. It is pure essence—an idea made manifest. A metaphysical interface, looping endlessly, like Ouroboros devouring its own tail."
+link set loopback0 group 772
+link set loopback0 up
+
+link add bridge0 type bridge \
+        vlan_filtering 1 \
+        vlan_default_pvid 176
+
+link property add dev bridge0 altname backbone176
+link set bridge0 alias "Logical software bridge device aggregating multiple interfaces refered to as bridge0."
+link set bridge0 group 1
+link set bridge0 up
+
+address add 172.16.176.2/20 label "bridge0:qemu_gw" dev bridge0
+link set bridge0 group 1
+link set bridge0 up
+route add default via 172.16.176.1 dev bridge0
+
+link set nexus0 group 3
+link set nexus0 master bridge0
+link set nexus0 up
+
+# Create TAP device for QEMU
+tuntap add dev questing mode tap user root group root
+link set questing master bridge0
+link set questing up
+tuntap add dev wdc2019 mode tap user root group root
+link set wdc2019 master bridge0
+link set wdc2019 up
+tuntap add dev wdc2022 mode tap user root group root
+link set wdc2022 master bridge0
+link set wdc2022 up
+

@@ -17,6 +17,7 @@ M.bool = M.module.load['nex-bool']
 
 M.tex = {}
 M.tex.var = {}
+M.tex.unicode = M.module.load['luatex/nex-unicode']
 M.tex.ref = M.module.load['luatex/nex-ref']
 M.tex.var.section = M.tex.ref.sec:new()
 M.tex.loaded = function()

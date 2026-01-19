@@ -1,15 +1,28 @@
 #nx_include nex-struct.awk
 #nx_include nex-map.awk
 #nx_include nex-type.awk
-#nx_include nex-type.awk
 #nx_include nex-int.awk
+#nx_include nex-log.awk
 
-function nx_boolean(V, D)
+function nx_boolean(V, D, N,	d)
 {
-	if (V[D] == "<nx:true/>")
+	d = V[D]
+	if (d == "" && N || d == "<nx:true/>")
 		V[D] = "<nx:false/>"
-	else if (V[D] == "" || V[D] == "<nx:false/>")
+	else if (d == "" || d == "<nx:false/>")
 		V[D] = "<nx:true/>"
+}
+
+function nx_delim_sep(D1, D2, V, N)
+{
+	if (D1 in V) {
+		if (N > 0)
+			nx_ansi_error("the '" D2 "' separator '" D1 "' colides with the '" V[D1] "' separator\n")
+		return -1
+	} else {
+		V[D1] = D2
+	}
+	return 0
 }
 
 function __nx_defined(D, B)

@@ -2,229 +2,313 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \nxSections{Bijective Mapper}{2}
-\begin{NxCodeBox}{awk}{title={nx\_bijective(V, D1, D2, D3)}}
+
+\begin{NxCodeBox}{awk}{phantomlabel={func:nx_bijective},
+	title={\textbf{nx\_bijective Arguments}
+	\begin{NxDarkList}
+		\nxEachArw{CodePrimary}{Tertiary}{1}{%
+			{V}/{Associative array (registry) to mutate},%
+			{D1}/{Primary key (source of mapping)},%
+			{D2}/{Secondary key (target or symmetric partner)},%
+			{D3}/{Tertiary key (cycle target or reassignment value)}%
+		}
+	\end{NxDarkList}
+}}
 function nx_bijective(V, D1, D2, D3)
-{
-    if (D1 == "")
-        return -1
-    if (D2) {
-        if (D3 != "") {
-            V[D1] = D2
-            V[D2] = D3
-            V[D3] = D1
-        } else {
-            V[D1] = D2
-            V[D2] = D1
-        }
-    } else if (D3 != "") {
-        V[V[D1]] = D3
-        if (D2 != "")
-            delete V[D1]
-    }
-}
 \end{NxCodeBox}
 
 \begin{NxLightListBox}[title={Bijective Mapper — The Mapping Glyph}]
-    \nxEachLabel{ArrowDark}{Secondary}{{1}{43}}{%
-        {Purpose}/{Creates or mutates bijective relationships between keys in associative array \(V\)},%
-        {Input}/{\(V\): associative array; \(D1, D2, D3\): keys/values to link},%
-        {Mechanism}/{If three arguments are given, forms a cycle \(D1 \to D2 \to D3 \to D1\). 
-        If two arguments, forms a symmetric pair \(D1 \leftrightarrow D2\). 
-        If only \(D3\) is provided, mutates the existing mapping of \(D1\) to point to \(D3\)},%
-        {Return}/{No explicit return; modifies array \(V\) in place},%
-        {Use Case}/{Used in overlay systems to guarantee reversible mappings and cyclic relationships between symbolic keys}
-    }
+	\nxEachArw{ArrowDark}{Secondary}{1}{%
+		{Purpose}/{Establishes or mutates bijective relationships among symbolic keys in \(V\)},%
+		{Input}/{\(V\): registry; \(D1, D2, D3\): keys to bind in symmetric or cyclic form},%
+		{Mechanism}/{\nxLnArcBox[]{\nxListDark}\begin{NxLightList}
+			\nxEachItem{ArrowDark}{%
+				{Three arguments \nxArw{2} create 3‑cycle \(D1 \to D2 \to D3 \to D1\).},%
+				{Two arguments \nxArw{2} create symmetric pair \(D1 \leftrightarrow D2\).},%
+				{One reassignment argument \nxArw{2} redirect existing mapping of \(D1\) to \(D3\).}%
+			}
+		\end{NxLightList}},%
+		{Return}/{No explicit return; modifies \(V\) in place},%
+		{Use Case}/{Used in overlay systems to guarantee reversible, navigable mappings between symbolic identifiers}
+	}
 \end{NxLightListBox}
 
+\nxSections{Examples}{3}
+
 \begin{NxCodeBox}{awk}{title={\textbf{Create symmetric pair mapping}
-        \begin{NxDarkList}
-            \nxEachLabel{CodePrimary}{Tertiary}{{1}{43}}{%
-                {Input}/{\texttt{D1 = "a"}, \texttt{D2 = "b"}},%
-                {Operation}/{Sets \texttt{V["a"] = "b"} and \texttt{V["b"] = "a"}},%
-                {Expected Result}/{\texttt{a \nxArw{3} b} bijection established}
-            }
-        \end{NxDarkList}
+	\begin{NxDarkList}
+		\nxEachArw{CodePrimary}{Tertiary}{1}{%
+			{Input}/{\texttt{D1 = \nxSQ{a}}, \texttt{D2 = \nxSQ{b}}},%
+			{Operation}/{Sets \texttt{V[\nxSQ{a}] = \nxSQ{b}} and \texttt{V[\nxSQ{b}] = \nxSQ{a}}},%
+			{Expected Result}/{\texttt{a \nxArw{3} b} bijection established}
+		}
+	\end{NxDarkList}
 }}
 nx_bijective(V, "a", "b")
 \end{NxCodeBox}
 
 \begin{NxCodeBox}{awk}{title={\textbf{Create cyclic triple mapping}
-        \begin{NxDarkList}
-            \nxEachLabel{CodePrimary}{Tertiary}{{1}{43}}{%
-                {Input}/{\texttt{D1 = "x"}, \texttt{D2 = "y"}, \texttt{D3 = "z"}},%
-                {Operation}/{Sets \texttt{x \nxArw{2} y}, \texttt{y \nxArw{2} z}, \texttt{z \nxArw{2} x}},%
-                {Expected Result}/{Cycle established among three keys}
-            }
-        \end{NxDarkList}
+	\begin{NxDarkList}
+		\nxEachArw{CodePrimary}{Tertiary}{1}{%
+			{Input}/{\texttt{D1 = \nxSQ{x}}, \texttt{D2 = \nxSQ{y}}, \texttt{D3 = \nxSQ{z}}},%
+			{Operation}/{Sets \texttt{x \nxArw{2} y}, \texttt{y \nxArw{2} z}, \texttt{z \nxArw{2} x}},%
+			{Expected Result}/{Cycle established among three keys}
+		}
+	\end{NxDarkList}
 }}
 nx_bijective(V, "x", "y", "z")
 \end{NxCodeBox}
 
 \begin{NxCodeBox}{awk}{title={\textbf{Mutate existing mapping}
-        \begin{NxDarkList}
-            \nxEachLabel{CodePrimary}{Tertiary}{{1}{43}}{%
-                {Initial State}/{\texttt{V["a"] = "b"}, \texttt{V["b"] = "a"}},%
-                {Input}/{\texttt{D1 = "a"}, \texttt{D2 = ""}, \texttt{D3 = "c"}},%
-                {Operation}/{Reassigns \texttt{V["b"] = "c"}, optionally deletes \texttt{V["a"]}},%
-                {Expected Result}/{Mapping updated: \texttt{b \nxArw{2} c}}
-            }
-        \end{NxDarkList}
+	\begin{NxDarkList}
+		\nxEachArw{CodePrimary}{Tertiary}{1}{%
+			{Initial State}/{\texttt{V[\nxSQ{a}] = \nxSQ{b}}, \texttt{V[\nxSQ{b}] = \nxSQ{a}}},%
+			{Input}/{\texttt{D1 = \nxSQ{a}}, \texttt{D2 = \nxDQ{}}, \texttt{D3 = \nxSQ{c}}},%
+			{Operation}/{Reassigns \texttt{V[\nxSQ{b}] = \nxSQ{c}}, optionally deletes \texttt{V[\nxSQ{a}]}},%
+			{Expected Result}/{Mapping updated: \texttt{b \nxArw{2} c}}
+		}
+	\end{NxDarkList}
 }}
 nx_bijective(V, "a", "", "c")
 \end{NxCodeBox}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 \nxSections{Grid Queue Conductor}{2}
-\begin{NxCodeBox}{awk}{title={nx\_grid(V, D, N)}}
+
+\begin{NxCodeBox}{awk}{phantomlabel={func:nx_grid},
+	title={\textbf{nx\_grid Arguments}
+	\begin{NxDarkList}
+		\nxEachArw{CodePrimary}{Tertiary}{1}{%
+			{V}/{Associative array acting as the grid/queue registry},%
+			{D}/{Data element to insert (string); empty when retrieving},%
+			{N}/{Control index: row selector, retrieval mode, or deletion flag}%
+		}
+	\end{NxDarkList}
+}}
 function nx_grid(V, D, N)
-{
-    if (D) {
-        if (! (0 in V && "|" in V && "-" in V)) {
-            V[0] = 1
-            V["|"] = 1
-            V["-"] = 1
-        }
-        if ((N = __nx_else(nx_natural(nx_digit(N, 1)), V[0])) < V["-"])
-            N = V["-"]
-        while (V[0] < N) {
-            if (! (++V[0] in V))
-                V[V[0]] = 0
-        }
-        V[N "," ++V[N]] = D
-    } else if (N) {
-        while (! V[V[0]] && V["-"] <= V[0])
-            delete V[V[0]--]
-        if (V["-"] <= V[0]) {
-            N = V[V[0] "," V[V[0]]]
-            if (D == "")
-                delete V[V[0] "," V[V[0]]--]
-            return N
-        }
-    } else {
-        while (V[V["-"]] < V["|"] && V["-"] <= V[0]) {
-            delete V[V["-"]++]
-            V["|"] = 1
-        }
-        if (V["-"] <= V[0]) {
-            N = V[V["-"] "," V["|"]]
-            if (D == "")
-                delete V[V["-"] "," V["|"]++]
-            return N
-        }
-    }
-}
 \end{NxCodeBox}
 
 \begin{NxLightListBox}[title={Grid Queue Conductor — The Grid Glyph}]
-    \nxEachLabel{ArrowDark}{Secondary}{{1}{43}}{%
-        {Purpose}/{Implements a grid/queue structure inside associative array \(V\)},%
-        {Input}/{\(V\): associative array; \(D\): data element; \(N\): index or control},%
-        {Mechanism}/{Initializes grid if empty, appends data into indexed slots, retrieves or deletes entries depending on arguments},%
-        {Indexes}/{\([0]\): highest row index; \(["-"]\): lowest active row; \(["|"]\): column pointer},%
-        {Return}/{When retrieving, returns the stored element at current grid position},%
-        {Use Case}/{Used for queueing, scheduling, or grid‑like storage overlays in IPC or config daemons}
-    }
+	\nxEachArw{ArrowDark}{Secondary}{1}{%
+		{Purpose}/{Implements a sparse grid/queue structure inside associative array \(V\)},%
+		{Input}/{\(V\): registry; \(D\): element to insert; \(N\): row index or control directive},%
+		{Mechanism}/{\nxLnArcBox[]{\nxListDark}\begin{NxLightList}
+			\nxEachItem{ArrowDark}{%
+				{Initializes grid on first use},%
+				{Appends new entries to next available row/column},%
+				{Retrieves or deletes entries depending on \(N\) and \(D\).}%
+			}
+		\end{NxLightList}},%
+		{Indexes}/{\nxLnArcBox[]{\nxListDark}\begin{NxLightList}
+			\nxEachArw{ArrowDark}{Primary}{1}{%
+				{[0]}/{highest allocated row},
+				{[\nxDQ{-}]}/{lowest active row (head pointer)},
+				{[\nxDQ{|}]}/{current column pointer within active row}%
+			}
+		\end{NxLightList}},%
+		{Return}/{When retrieving, returns the element at the current grid position},%
+		{Use Case}/{Queueing, scheduling, IPC overlays, or grid‑like storage in AWK daemons}
+	}
 \end{NxLightListBox}
 
+\nxSections{Examples}{3}
+
 \begin{NxCodeBox}{awk}{title={\textbf{Insert element into grid at next slot}
-        \begin{NxDarkList}
-            \nxEachLabel{CodePrimary}{Tertiary}{{1}{43}}{%
-                {Initial State}/{Empty grid},%
-                {Operation}/{Insert \texttt{"alpha"}},%
-                {Expected Result}/{Stored at \texttt{1,1}; grid initialized with \([0]=1, ["-"]=1, ["|"]=1\)}
-            }
-        \end{NxDarkList}
+	\begin{NxDarkList}
+		\nxEachArw{CodePrimary}{Tertiary}{1}{%
+			{Initial State}/{Empty grid},%
+			{Operation}/{Insert \nxDQ{alpha}},%
+			{Expected Result}/{Stored at \texttt{1,1}; grid initialized with [0]=1, [\nxDQ{-}]=1, [\nxDQ{|}]=1}
+		}
+	\end{NxDarkList}
 }}
 nx_grid(V, "alpha")
 \end{NxCodeBox}
 
 \begin{NxCodeBox}{awk}{title={\textbf{Retrieve last inserted element}
-        \begin{NxDarkList}
-            \nxEachLabel{CodePrimary}{Tertiary}{{1}{43}}{%
-                {State}/{Grid contains \texttt{"alpha"} at \texttt{1,1}},%
-                {Operation}/{Call with \texttt{N=1}},%
-                {Expected Result}/{Returns \texttt{"alpha"}}
-            }
-        \end{NxDarkList}
+	\begin{NxDarkList}
+		\nxEachArw{CodePrimary}{Tertiary}{1}{%
+			{State}/{Grid contains \nxDQ{alpha} at \texttt{1,1}},%
+			{Operation}/{Call with \texttt{N=1}},%
+			{Expected Result}/{Returns \nxDQ{alpha}}
+		}
+	\end{NxDarkList}
 }}
 print nx_grid(V, "", 1)
 \end{NxCodeBox}
 
 \begin{NxCodeBox}{awk}{title={\textbf{Iterate forward through grid}
-        \begin{NxDarkList}
-            \nxEachLabel{CodePrimary}{Tertiary}{{1}{43}}{%
-                {State}/{Grid contains multiple entries},%
-                {Operation}/{Call with no \texttt{D}, no \texttt{N}},%
-                {Expected Result}/{Returns next element at current \(["-"], ["|"]\) position, advancing column pointer}
-            }
-        \end{NxDarkList}
+	\begin{NxDarkList}
+		\nxEachArw{CodePrimary}{Tertiary}{1}{%
+			{State}/{Grid contains multiple entries},%
+			{Operation}/{Call with no \texttt{D}, no \texttt{N}},%
+			{Expected Result}/{Returns next element at current [\nxDQ{-}], [\nxDQ{|}] position, advancing column pointer}
+		}
+	\end{NxDarkList}
 }}
 print nx_grid(V)
 \end{NxCodeBox}
 
+\nxSections{Tree–Path Model}{2}
+
+\begin{forest}
+ [
+	.,
+	label={[font=\small]above:{\texttt{rt = "."}}},
+	for descendants={
+		anchor=north,
+		child anchor=north
+	},
+	grow=south,
+	l sep=1cm,
+	s sep=1cm, diamond, for tree={
+		nxCol=success%
+	},
+		where={n()==1}{
+			circle,
+			thick,
+			edge={dashed}
+		}{},
+		tikz={
+		\node [
+			draw,
+			nex.success.back,
+			fit=()(!1)(!l)
+		] {};
+	}
+	[.0
+		[3]
+	]
+	[.1, s sep=2cm, for tree={nxCol=primary}, tikz={
+		\node [
+				draw,
+				nex.primary.back,
+				fit=()(!1)(!l)
+			] {};
+		}
+		[.1.0
+			[2]
+		]
+		[.1.1]
+		[.1.2]
+	]
+	[.2, s sep=2cm, for tree={nxCol=secondary}, tikz={
+		\node [
+				draw,
+				nex.secondary.back,
+				fit=()(!1)(!l)
+			] {};
+		}
+		[.2.0
+			[1]
+		]
+		[.2.1]
+	]
+	[.3, s sep=2cm, for tree={nxCol=warning}, tikz={
+		\node [
+				draw,
+				nex.warning.back,
+				fit=()(!1)(!l)
+			] {};
+		}
+		[.3.0 
+			[0]
+		]
+	]
+]
+\end{forest}
+\bigskip
+
+\begin{NxLightListBox}[title={Node Path Forms in the DFS Tree}]
+	\nxEachArw{ArrowDark}{Secondary}{1}{%
+		{Root Prefix (\nxSQ{.})}/{Implicit root path; never stored directly. Used as prefix for all top-level nodes.},%
+		{Root Child Count (\nxSQ{.0})}/{Stores the number of children under the root. Drives the initial DFS descent.},%
+		{First Child Node (\nxSQ{.1})}/{First child of the root. Addressed by appending index to root prefix.},%
+		{Child Count of Node \nxSQ{.1} (\nxSQ{.1.0})}/{Stores how many children node \nxSQ{.1} has. Enables recursive descent.},%
+		{Second Child of Node \nxSQ{.1} (\nxSQ{.1.2})}/{Second child of node \nxSQ{.1}. Addressed by appending index.},%
+		{Child Count of Node \nxSQ{.1.2} (\nxSQ{.1.2.0})}/{Stores how many children node \nxSQ{.1.2} has. Continues the DFS scaffold.}
+	}
+\end{NxLightListBox}
+
+\begin{NxLightListBox}[title={Tree–Path Model — The Structural Glyph}]
+	\nxEachArw{ArrowDark}{Secondary}{1}{%
+		{Purpose}/{Represent a full tree using only string paths and child counters, enabling single-pass, non-recursive DFS traversal},%
+		{Root}/{The root node is the empty path \nxSQ{}; its prefix is \nxSQ{.}, and its child count is stored at \nxSQ{.0}},%
+		{Node Paths}/{Each node is addressed by a dotted path: \nxSQ{.1}, \nxSQ{.2}, \nxSQ{.1.3}, \nxSQ{.1.3.2}, etc.},%
+		{Child Counters}/{Every node stores its child count at \nxSQ{<node>.0}, e.g., \nxSQ{.1.0} or \nxSQ{.1.2.0}},%
+		{Child Nodes}/{Children are stored at \nxSQ{<node>.<index>}, e.g., \nxSQ{.1}, \nxSQ{.2}, \nxSQ{.1.1}, \nxSQ{.1.2}},%
+		{Traversal}/{The DFS engine walks the tree by incrementing child indices and descending whenever \nxSQ{<node>.0} is non-zero},%
+		{Stack Model}/{A manual stack stores \nxSQ{(si, sj)} pairs for each descent, enabling recursion-free traversal},%
+		{Flattening}/{\texttt{nx\_dfs} rewrites the tree into \nxSQ{V[1..N]} in depth-first order, with \nxSQ{V[0]} holding the total count},%
+		{Use Case}/{Foundation for include-merging, file expansion, and any structure requiring ordered, hierarchical flattening}
+	}
+\end{NxLightListBox}
+
+\nxSections{Examples}{3}
+
+\begin{NxCodeBox}{awk}{title={\textbf{Simple Tree Structure}
+	\begin{NxDarkList}
+		\nxEachArw{CodePrimary}{Tertiary}{1}{%
+			{State}/{\texttt{.0 = 2}, children at \nxSQ{.1}, \nxSQ{.2}},%
+			{Operation}/{Call \texttt{nx\_dfs(V)}},%
+			{Result}/{\texttt{V[1] = \nxSQ{.1}}, \texttt{V[2] = \nxSQ{.2}}}
+		}
+	\end{NxDarkList}
+}}
+nx_dfs(V)
+\end{NxCodeBox}
+
+\begin{NxCodeBox}{awk}{title={\textbf{Nested Tree Structure}
+	\begin{NxDarkList}
+		\nxEachArw{CodePrimary}{Tertiary}{1}{%
+			{State}/{\texttt{.0 = 1}, \texttt{.1.0 = 2}, children \nxSQ{.1.1}, \nxSQ{.1.2}},%
+			{Operation}/{Call \texttt{nx\_dfs(V)}},%
+			{Result}/{\texttt{V[1] = \nxSQ{.1}}, \texttt{V[2] = \nxSQ{.1.1}}, \texttt{V[3] = \nxSQ{.1.2}}}
+		}
+	\end{NxDarkList}
+}}
+nx_dfs(V)
+\end{NxCodeBox}
+
+
+\begin{comment}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \nxSections{Depth-First Flattening Conductor}{2}
 \begin{NxCodeBox}{awk}{title={nx\_dfs(V, trk, stk)}}
 function nx_dfs(V, trk, stk)
-{
-    if (! (".0" in V && int(V[".0"]) > 0))
-        return -1
-    stk[++stk[0]] = 1
-    stk[++stk[0]] = V[".0"]
-    V[0] = 0
-    do {
-        for (; stk[1] <= stk[2]; ++stk[1]) {
-            trk["ky"] = trk["rt"] "." stk[1]
-            V[++V[0]] = trk["ky"]
-            if (trk["ky"] ".0" in V && int(V[trk["ky"] ".0"]) > 0) {
-                trk["rt"] = trk["ky"]
-                stk[++stk[0]] = stk[1]
-                stk[++stk[0]] = stk[2]
-                stk[1] = 0
-                stk[2] = V[trk["rt"] ".0"]
-            }
-        }
-        if (stk[1] > 0 && sub(/[^.]+$/, "", trk["rt"])) {
-            sub(/[.]$/, "", trk["rt"])
-            stk[2] = stk[stk[0]--]
-            stk[1] = stk[stk[0]--] + 1
-        }
-    } while (stk[0] > 2 || stk[1] <= stk[2])
-    delete trk
-    delete stk
-}
 \end{NxCodeBox}
 
 \begin{NxLightListBox}[title={Depth-First Flattening Conductor — The Flatten Glyph}]
-    \nxEachLabel{ArrowDark}{Secondary}{{1}{43}}{%
-        {Purpose}/{Walks a nested associative array structure and flattens its keys into sequential order},%
-        {Input}/{\(V\): tree-like associative array with child counts in \texttt{.0}; \(trk\): traversal record; \(stk\): stack},%
-        {Mechanism}/{Initializes stack with root bounds, iterates children depth-first, appends each key path into \texttt{V[1..N]}},%
-        {Output}/{No return value; mutates \texttt{V} by filling indexes with flattened key paths},%
-        {Use Case}/{Used in file merge and overlay systems where only traversal order is needed, not semantic strings or mappings}
-    }
+	\nxEachArw{ArrowDark}{Secondary}{1}{%
+		{Purpose}/{Walks a nested associative array structure and flattens its keys into sequential order},%
+		{Input}/{\(V\): tree-like associative array with child counts in \texttt{.0}; \(trk\): traversal record; \(stk\): stack},%
+		{Mechanism}/{Initializes stack with root bounds, iterates children depth-first, appends each key path into \texttt{V[1..N]}},%
+		{Output}/{No return value; mutates \texttt{V} by filling indexes with flattened key paths},%
+		{Use Case}/{Used in file merge and overlay systems where only traversal order is needed, not semantic strings or mappings}
+	}
 \end{NxLightListBox}
 
 \begin{NxCodeBox}{awk}{title={\textbf{Flatten simple tree structure}
-        \begin{NxDarkList}
-            \nxEachLabel{CodePrimary}{Tertiary}{{1}{43}}{%
-                {State}/{\texttt{V[".0"]=2}, \texttt{V["1"]="alpha"}, \texttt{V["2"]="beta"}},%
-                {Operation}/{Call \texttt{nx\_dfs(V, trk, stk)}},%
-                {Expected Result}/{\texttt{V[1]=".1"}, \texttt{V[2]=".2"} — flattened key paths}
-            }
-        \end{NxDarkList}
+		\begin{NxDarkList}
+			\nxEachArw{CodePrimary}{Tertiary}{1}{%
+				{State}/{\texttt{V[\nxDQ{.0}]=2}, \texttt{V[\nxDQ{1}]=\nxDQ{alpha}}, \texttt{V[\nxDQ{2}]=\nxDQ{beta}}},%
+				{Operation}/{Call \texttt{nx\_dfs(V, trk, stk)}},%
+				{Expected Result}/{\texttt{V[1]=\nxSQ{.1}}, \texttt{V[2]=\nxSQ{.2}} — flattened key paths}
+			}
+		\end{NxDarkList}
 }}
 nx_dfs(V, trk, stk)
 \end{NxCodeBox}
 
 \begin{NxCodeBox}{awk}{title={\textbf{Flatten nested tree structure}
-        \begin{NxDarkList}
-            \nxEachLabel{CodePrimary}{Tertiary}{{1}{43}}{%
-                {State}/{\texttt{V[".0"]=1}, \texttt{V["1.0"]=2}, \texttt{V["1.1"]="x"}, \texttt{V["1.2"]="y"}},%
-                {Operation}/{Call \texttt{nx\_dfs(V, trk, stk)}},%
-                {Expected Result}/{\texttt{V[1]=".1"}, \texttt{V[2]="1.1"}, \texttt{V[3]="1.2"} — flattened depth-first order}
-            }
-        \end{NxDarkList}
+		\begin{NxDarkList}
+			\nxEachArw{CodePrimary}{Tertiary}{1}{%
+				{State}/{\texttt{V[\nxSQ{.0}]=1}, \texttt{V[\nxSQ{1.0}]=2}, \texttt{V[\nxSQ{1.1}]=\nxSQ{x}}, \texttt{V[\nxSQ{1.2}]=\nxSQ{y}}},%
+				{Operation}/{Call \texttt{nx\_dfs(V, trk, stk)}},%
+				{Expected Result}/{\texttt{V[1]=\nxSQ{.1}}, \texttt{V[2]=\nxSQ{1.1}}, \texttt{V[3]=\nxSQ{1.2}} — flattened depth-first order}
+			}
+		\end{NxDarkList}
 }}
 nx_dfs(V, trk, stk)
 \end{NxCodeBox}
@@ -233,43 +317,38 @@ nx_dfs(V, trk, stk)
 \nxSections{Replace-Pop Conductor}{2}
 \begin{NxCodeBox}{awk}{title={nx\_replace\_pop(V, D)}}
 function nx_replace_pop(V, D)
-{
-    V[D] = V[V[0]]
-    delete V[V[0]]
-    return --V[0]
-}
 \end{NxCodeBox}
 
 \begin{NxLightListBox}[title={Replace-Pop Conductor — The Pop Glyph}]
-    \nxEachLabel{ArrowDark}{Secondary}{{1}{43}}{%
-        {Purpose}/{Replaces element at key \texttt{D} with the last element in array \texttt{V}, then pops the last},%
-        {Input}/{\(V\): associative/stack array; \(D\): target key to overwrite},%
-        {Mechanism}/{Copies value from \texttt{V[V[0]]} into \texttt{V[D]}, deletes last element, decrements counter},%
-        {Return}/{New size of stack after pop},%
-        {Use Case}/{Used in stack mutation, fast removal, or reindexing without shifting all elements}
-    }
+	\nxEachArw{ArrowDark}{Secondary}{1}{%
+		{Purpose}/{Replaces element at key \texttt{D} with the last element in array \texttt{V}, then pops the last},%
+		{Input}/{\(V\): associative/stack array; \(D\): target key to overwrite},%
+		{Mechanism}/{Copies value from \texttt{V[V[0]]} into \texttt{V[D]}, deletes last element, decrements counter},%
+		{Return}/{New size of stack after pop},%
+		{Use Case}/{Used in stack mutation, fast removal, or reindexing without shifting all elements}
+	}
 \end{NxLightListBox}
 
 \begin{NxCodeBox}{awk}{title={\textbf{Replace element at index 2 with last element}
-        \begin{NxDarkList}
-            \nxEachLabel{CodePrimary}{Tertiary}{{1}{43}}{%
-                {Initial State}/{\texttt{V[0]=3}, \texttt{V[1]="a"}, \texttt{V[2]="b"}, \texttt{V[3]="c"}},%
-                {Operation}/{\texttt{nx\_replace\_pop(V, 2)}},%
-                {Expected Result}/{\texttt{V[2]="c"}, \texttt{V[0]=2}, last element removed}
-            }
-        \end{NxDarkList}
+		\begin{NxDarkList}
+			\nxEachArw{CodePrimary}{Tertiary}{1}{%
+				{Initial State}/{\texttt{V[0]=3}, \texttt{V[1]=\nxSQ{a}}, \texttt{V[2]=\nxSQ{b}}, \texttt{V[3]=\nxSQ{c}}},%
+				{Operation}/{\texttt{nx\_replace\_pop(V, 2)}},%
+				{Expected Result}/{\texttt{V[2]=\nxSQ{c}}, \texttt{V[0]=2}, last element removed}
+			}
+		\end{NxDarkList}
 }}
 nx_replace_pop(V, 2)
 \end{NxCodeBox}
 
 \begin{NxCodeBox}{awk}{title={\textbf{Pop last element directly}
-        \begin{NxDarkList}
-            \nxEachLabel{CodePrimary}{Tertiary}{{1}{43}}{%
-                {Initial State}/{\texttt{V[0]=2}, \texttt{V[1]="x"}, \texttt{V[2]="y"}},%
-                {Operation}/{\texttt{nx\_replace\_pop(V, 2)}},%
-                {Expected Result}/{\texttt{V[2]="y"}, then deleted; \texttt{V[0]=1}}
-            }
-        \end{NxDarkList}
+		\begin{NxDarkList}
+			\nxEachArw{CodePrimary}{Tertiary}{1}{%
+				{Initial State}/{\texttt{V[0]=2}, \texttt{V[1]=\nxSQ{x}}, \texttt{V[2]=\nxSQ{y}}},%
+				{Operation}/{\texttt{nx\_replace\_pop(V, 2)}},%
+				{Expected Result}/{\texttt{V[2]=\nxSQ{y}}, then deleted; \texttt{V[0]=1}}
+			}
+		\end{NxDarkList}
 }}
 nx_replace_pop(V, 2)
 \end{NxCodeBox}
@@ -277,43 +356,39 @@ nx_replace_pop(V, 2)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \nxSections{Array Flip Conductor}{2}
 \begin{NxCodeBox}{awk}{title={nx\_arr\_flip(V)}}
-function nx_arr_flip(V, i)
-{
-    for (i in V)
-        nx_bijective(V, i, 0, V[i])
-}
+function nx_arr_flip(V)
 \end{NxCodeBox}
 
 \begin{NxLightListBox}[title={Array Flip Conductor — The Flip Glyph}]
-    \nxEachLabel{ArrowDark}{Secondary}{{1}{43}}{%
-        {Purpose}/{Flips keys into values and values into keys, destructively rewriting the array},%
-        {Input}/{\(V\): associative array to be flipped},%
-        {Mechanism}/{Iterates over each key, calls \texttt{nx\_bijective} with \texttt{D2=0}, which reassigns \texttt{V[V[D1]] = D3} and deletes the original key},%
-        {Output}/{Array \texttt{V} now has values as keys pointing back to themselves or their new mapping},%
-        {Use Case}/{Used when inversion of mapping is required, e.g. turning lookup tables inside out}
-    }
+	\nxEachArw{ArrowDark}{Secondary}{1}{%
+		{Purpose}/{Flips keys into values and values into keys, destructively rewriting the array},%
+		{Input}/{\(V\): associative array to be flipped},%
+		{Mechanism}/{Iterates over each key, calls \texttt{nx\_bijective} with \texttt{D2=0}, which reassigns \texttt{V[V[D1]] = D3} and deletes the original key},%
+		{Output}/{Array \texttt{V} now has values as keys pointing back to themselves or their new mapping},%
+		{Use Case}/{Used when inversion of mapping is required, e.g. turning lookup tables inside out}
+	}
 \end{NxLightListBox}
 
 \begin{NxCodeBox}{awk}{title={\textbf{Flip simple key-value pairs}
-        \begin{NxDarkList}
-            \nxEachLabel{CodePrimary}{Tertiary}{{1}{43}}{%
-                {Initial State}/{\texttt{V["a"]="x"}, \texttt{V["b"]="y"}},%
-                {Operation}/{\texttt{nx\_arr\_flip(V)}},%
-                {Expected Result}/{\texttt{V["x"]="x"}, \texttt{V["y"]="y"}; original keys removed}
-            }
-        \end{NxDarkList}
+		\begin{NxDarkList}
+			\nxEachArw{CodePrimary}{Tertiary}{1}{%
+				{Initial State}/{\texttt{V[\nxSQ{a}]=\nxSQ{x}}, \texttt{V[\nxSQ{b}]=\nxSQ{y}}},%
+				{Operation}/{\texttt{nx\_arr\_flip(V)}},%
+				{Expected Result}/{\texttt{V[\nxSQ{x}]=\nxSQ{x}}, \texttt{V[\nxSQ{y}]=\nxSQ{y}}; original keys removed}
+			}
+		\end{NxDarkList}
 }}
 nx_arr_flip(V)
 \end{NxCodeBox}
 
 \begin{NxCodeBox}{awk}{title={\textbf{Flip numeric keys}
-        \begin{NxDarkList}
-            \nxEachLabel{CodePrimary}{Tertiary}{{1}{43}}{%
-                {Initial State}/{\texttt{V[1]="foo"}, \texttt{V[2]="bar"}},%
-                {Operation}/{\texttt{nx\_arr\_flip(V)}},%
-                {Expected Result}/{\texttt{V["foo"]="foo"}, \texttt{V["bar"]="bar"}; numeric keys removed}
-            }
-        \end{NxDarkList}
+		\begin{NxDarkList}
+			\nxEachArw{CodePrimary}{Tertiary}{1}{%
+				{Initial State}/{\texttt{V[1]=\nxSQ{foo}}, \texttt{V[2]=\nxSQ{bar}}},%
+				{Operation}/{\texttt{nx\_arr\_flip(V)}},%
+				{Expected Result}/{\texttt{V[\nxSQ{foo}]=\nxSQ{foo}}, \texttt{V[\nxSQ{bar}]=\nxSQ{bar}}; numeric keys removed}
+			}
+		\end{NxDarkList}
 }}
 nx_arr_flip(V)
 \end{NxCodeBox}
@@ -321,101 +396,44 @@ nx_arr_flip(V)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \nxSections{Array Comparison Conductor}{2}
 \begin{NxCodeBox}{awk}{title={nx\_arr\_compare(V1, V2, V3, D1, D2, B)}}
-function __nx_arr_compare(V1, D, V2, B)
-{
-    V2["irt"] = V2["dr"] "0"
-    if (B) {
-        V2["rt"] = D
-        V2["irt"] = 0
-    } else {
-        V2["irt"] = V2["dr"] "0"
-        V2["rt"] = V2["dr"] V2["ks"] D
-    }
-    if (V2["bs"] == 1) {
-        nx_bijective(V1, V2["rt"], __nx_only(! B, V2["dr"] "") ++V1[V2["irt"]])
-    } else if (V2["bs"] == 2) {
-        if (B && ! (V2["rt"] in V1))
-            V1[0]++
-        V1[V2["rt"] ]++
-    } else if (V2["bs"] == 3) {
-        V1[__nx_only(! B, V2["dr"] "") ++V1[V2["irt"]]] = D
-    } else {
-        nx_boolean(V2, V2["rt"])
-    }
-}
-
-function nx_arr_compare(V1, V2, V3, D1, D2, B, trk)
-{
-    if (! ("dr" in trk)) {
-        trk["dr"] = tolower(D1)
-        if (int(B) < 2) {
-            trk["ks"] = __nx_else(D1, "=")
-            if (! (trk["bs"] = sub(/^%/, "", D1)))
-            if (trk["bs"] = sub(/^[+]/, "", D1))
-                trk["bs"] = 2
-            else
-                trk["bs"] = __nx_if(D1 == trk["dr"], 0, 3)
-        } else {
-            trk["bs"] = 2
-        }
-        if (trk["dr"] == "r")
-            return nx_arr_compare(V2, V1, V3, "r", "", B, trk)
-        else if (trk["dr"] != "d" && trk["dr"] != "i")
-            trk["dr"] = "l"
-    }
-
-    for (D1 in V1) {
-        if ((D1 in V2) == (trk["dr"] == "i")) {
-            __nx_arr_compare(V3, D1, trk, B)
-        }
-    }
-    if (trk["dr"] == "d") {
-        for (D1 in V2) {
-            if (! (D1 in V2)) {
-                __nx_arr_compare(V3, D1, trk, B)
-            }
-        }
-    }
-    for (D1 in V3)
-        print D2 "   =   " V3[D1]
-    delete trk
-}
+function nx_arr_compare(V1, V2, V3, D1, D2, B)
 \end{NxCodeBox}
 
 \begin{NxLightListBox}[title={Array Comparison Conductor — The Compare Glyph}]
-    \nxEachLabel{ArrowDark}{Secondary}{{1}{43}}{%
-        {Purpose}/{Compares two associative arrays and records differences, intersections, or logical results into a third array},%
-        {Input}/{\(V1\): first array; \(V2\): second array; \(V3\): result array; \(D1\): directive; \(D2\): print prefix; \(B\): mode toggle},%
-        {Mechanism}/{Initializes comparison mode (\texttt{dr}, \texttt{bs}, \texttt{ks}); iterates keys of \(V1\) and optionally \(V2\); calls helper \texttt{\_\_nx\_arr\_compare} to update results},%
-        {Modes}/{\texttt{dr="i"}: intersection; \texttt{dr="d"}: difference; \texttt{dr="r"}: reverse compare; \texttt{dr="l"}: logical default},%
-        {Branch Styles}/{\texttt{bs=1}: bijective mapping; \texttt{bs=2}: counting; \texttt{bs=3}: positional assignment; else: boolean flag},%
-        {Return}/{No explicit return; prints results with prefix \texttt{D2}},%
-        {Use Case}/{Used in overlay systems to audit differences between arrays, build intersection sets, or logical overlays}
-    }
+	\nxEachArw{ArrowDark}{Secondary}{1}{%
+		{Purpose}/{Compares two associative arrays and records differences, intersections, or logical results into a third array},%
+		{Input}/{\(V1\): first array; \(V2\): second array; \(V3\): result array; \(D1\): directive; \(D2\): print prefix; \(B\): mode toggle},%
+		{Mechanism}/{Initializes comparison mode (\texttt{dr}, \texttt{bs}, \texttt{ks}); iterates keys of \(V1\) and optionally \(V2\); calls helper \texttt{\_\_nx\_arr\_compare} to update results},%
+		{Modes}/{\texttt{dr=\nxSQ{i}}: intersection; \texttt{dr=\nxSQ{d}}: difference; \texttt{dr=\nxSQ{r}}: reverse compare; \texttt{dr=\nxSQ{l}}: logical default},%
+		{Branch Styles}/{\texttt{bs=1}: bijective mapping; \texttt{bs=2}: counting; \texttt{bs=3}: positional assignment; else: boolean flag},%
+		{Return}/{No explicit return; prints results with prefix \texttt{D2}},%
+		{Use Case}/{Used in overlay systems to audit differences between arrays, build intersection sets, or logical overlays}
+	}
 \end{NxLightListBox}
 
+\nxSections{Examples}{3}
 \begin{NxCodeBox}{awk}{title={\textbf{Compare arrays for intersection}
-        \begin{NxDarkList}
-            \nxEachLabel{CodePrimary}{Tertiary}{{1}{43}}{%
-                {State}/{\texttt{V1["a"]=1}, \texttt{V2["a"]=2}, \texttt{V2["b"]=3}},%
-                {Directive}/{\texttt{"i"} → intersection},%
-                {Operation}/{\texttt{nx\_arr\_compare(V1, V2, V3, "i", "INT", 0)}},%
-                {Expected Result}/{Prints \texttt{INT = a}}
-            }
-        \end{NxDarkList}
+		\begin{NxDarkList}
+			\nxEachArw{CodePrimary}{Tertiary}{1}{%
+				{State}/{\texttt{V1[\nxSQ{a}]=1}, \texttt{V2[\nxSQ{a}]=2}, \texttt{V2[\nxSQ{b}]=3}},%
+				{Directive}/{\texttt{\nxSQ{i}} \nxArw{2} intersection},%
+				{Operation}/{\texttt{nx\_arr\_compare(V1, V2, V3, \nxSQ{i}, \nxSQ{INT}, 0)}},%
+				{Expected Result}/{Prints \texttt{INT = a}}
+			}
+		\end{NxDarkList}
 }}
 nx_arr_compare(V1, V2, V3, "i", "INT", 0)
 \end{NxCodeBox}
 
 \begin{NxCodeBox}{awk}{title={\textbf{Compare arrays for difference}
-        \begin{NxDarkList}
-            \nxEachLabel{CodePrimary}{Tertiary}{{1}{43}}{%
-                {State}/{\texttt{V1["a"]=1}, \texttt{V1["b"]=2}, \texttt{V2["a"]=3}},%
-                {Directive}/{\texttt{"d"} → difference},%
-                {Operation}/{\texttt{nx\_arr\_compare(V1, V2, V3, "d", "DIFF", 0)}},%
-                {Expected Result}/{Prints \texttt{DIFF = b}}
-            }
-        \end{NxDarkList}
+		\begin{NxDarkList}
+			\nxEachArw{CodePrimary}{Tertiary}{1}{%
+				{State}/{\texttt{V1[\nxSQ{a}]=1}, \texttt{V1[\nxSQ{b}]=2}, \texttt{V2[\nxSQ{a}]=3}},%
+				{Directive}/{\texttt{\nxSQ{d}} \nxArw{2} difference},%
+				{Operation}/{\texttt{nx\_arr\_compare(V1, V2, V3, \nxSQ{d}, \nxSQ{DIFF}, 0)}},%
+				{Expected Result}/{Prints \texttt{DIFF = b}}
+			}
+		\end{NxDarkList}
 }}
 nx_arr_compare(V1, V2, V3, "d", "DIFF", 0)
 \end{NxCodeBox}
@@ -426,88 +444,88 @@ nx_arr_compare(V1, V2, V3, "d", "DIFF", 0)
 \begin{NxCodeBox}{awk}{title={nx\_parr\_stk(V, N, D)}}
 function nx_parr_stk(V, N, D)
 {
-    N = int(N)
-    if (! (0 in V)) {
-        if (N <= 0)
-            N = 64
-        V[0] = N
-        do {
-            V[N] = N
-        } while (--N > 0)
-    } else if (N > 0 && N <= V[0]) {
-        if (D == "") {
-            if (V[N] - V[0] >= V[V[N]]) {
-                D = V[V[N]]
-                delete V[V[N]]
-                V[N] = V[N] - V[0]
-                return D
-            }
-        } else {
-            if (D == "<nx:null/>")
-                D = ""
-            V[N] = V[N] + V[0]
-            V[V[N]] = D
-            return V[N]
-        }
-    } else if (D == int(D) && (D = int(D)) >= 0 && D <= V[0]) {
-        return V[D]
-    }
-    return -1
+	N = int(N)
+	if (! (0 in V)) {
+		if (N <= 0)
+			N = 64
+		V[0] = N
+		do {
+			V[N] = N
+		} while (--N > 0)
+	} else if (N > 0 && N <= V[0]) {
+		if (D == "") {
+			if (V[N] - V[0] >= V[V[N]]) {
+				D = V[V[N]]
+				delete V[V[N]]
+				V[N] = V[N] - V[0]
+				return D
+			}
+		} else {
+			if (D == "<nx:null/>")
+				D = ""
+			V[N] = V[N] + V[0]
+			V[V[N]] = D
+			return V[N]
+		}
+	} else if (D == int(D) && (D = int(D)) >= 0 && D <= V[0]) {
+		return V[D]
+	}
+	return -1
 }
 \end{NxCodeBox}
 
 \begin{NxLightListBox}[title={Parameterized Stack Conductor — The Parr Glyph}]
-    \nxEachLabel{ArrowDark}{Secondary}{{1}{43}}{%
-        {Purpose}/{Implements a parameterized stack allocator and mutator inside associative array \texttt{V}},%
-        {Initialization}/{If stack not yet created, allocates size \texttt{N} (default 64) and fills indices},%
-        {Push}/{If \texttt{D} is non-empty, increments index offset and stores value at new slot},%
-        {Pop}/{If \texttt{D} is empty, checks offset condition, retrieves value, deletes slot, decrements index},%
-        {Access}/{If \texttt{D} is numeric, returns element at that index},%
-        {Return}/{Index of pushed element, popped value, or \texttt{-1} if invalid},%
-        {Use Case}/{Used as a generalized stack/array manager for overlay systems, file stores, or directive expansion}
-    }
+	\nxEachArw{ArrowDark}{Secondary}{1}{%
+		{Purpose}/{Implements a parameterized stack allocator and mutator inside associative array \texttt{V}},%
+		{Initialization}/{If stack not yet created, allocates size \texttt{N} (default 64) and fills indices},%
+		{Push}/{If \texttt{D} is non-empty, increments index offset and stores value at new slot},%
+		{Pop}/{If \texttt{D} is empty, checks offset condition, retrieves value, deletes slot, decrements index},%
+		{Access}/{If \texttt{D} is numeric, returns element at that index},%
+		{Return}/{Index of pushed element, popped value, or \texttt{-1} if invalid},%
+		{Use Case}/{Used as a generalized stack/array manager for overlay systems, file stores, or directive expansion}
+	}
 \end{NxLightListBox}
 
 \begin{NxCodeBox}{awk}{title={\textbf{Initialize stack with default size}
-        \begin{NxDarkList}
-            \nxEachLabel{CodePrimary}{Tertiary}{{1}{43}}{%
-                {Operation}/{\texttt{nx\_parr\_stk(V, 0)}},%
-                {Expected Result}/{Stack initialized with size 64, \texttt{V[0]=64}, slots filled}
-            }
-        \end{NxDarkList}
+		\begin{NxDarkList}
+			\nxEachArw{CodePrimary}{Tertiary}{1}{%
+				{Operation}/{\texttt{nx\_parr\_stk(V, 0)}},%
+				{Expected Result}/{Stack initialized with size 64, \texttt{V[0]=64}, slots filled}
+			}
+		\end{NxDarkList}
 }}
 nx_parr_stk(V, 0)
 \end{NxCodeBox}
 
 \begin{NxCodeBox}{awk}{title={\textbf{Push element into stack}
-        \begin{NxDarkList}
-            \nxEachLabel{CodePrimary}{Tertiary}{{1}{43}}{%
-                {Operation}/{\texttt{nx\_parr\_stk(V, 2, "alpha")}},%
-                {Expected Result}/{Stores \texttt{"alpha"} at slot \texttt{V[2+V[0]]}, returns index}
-            }
-        \end{NxDarkList}
+		\begin{NxDarkList}
+			\nxEachArw{CodePrimary}{Tertiary}{1}{%
+				{Operation}/{\texttt{nx\_parr\_stk(V, 2, \nxSQ{alpha})}},%
+				{Expected Result}/{Stores \texttt{\nxSQ{alpha}} at slot \texttt{V[2+V[0]]}, returns index}
+			}
+		\end{NxDarkList}
 }}
 nx_parr_stk(V, 2, "alpha")
 \end{NxCodeBox}
 
 \begin{NxCodeBox}{awk}{title={\textbf{Pop element from stack}
-        \begin{NxDarkList}
-            \nxEachLabel{CodePrimary}{Tertiary}{{1}{43}}{%
-                {Operation}/{\texttt{nx\_parr\_stk(V, 2, "")}},%
-                {Expected Result}/{Retrieves value at slot, deletes it, decrements offset, returns popped value}
-            }
-        \end{NxDarkList}
+		\begin{NxDarkList}
+			\nxEachArw{CodePrimary}{Tertiary}{1}{%
+				{Operation}/{\texttt{nx\_parr\_stk(V, 2, \nxDQ{})}},%
+				{Expected Result}/{Retrieves value at slot, deletes it, decrements offset, returns popped value}
+			}
+		\end{NxDarkList}
 }}
 nx_parr_stk(V, 2, "")
 \end{NxCodeBox}
 
 \begin{NxCodeBox}{awk}{title={\textbf{Access element by index}
-        \begin{NxDarkList}
-            \nxEachLabel{CodePrimary}{Tertiary}{{1}{43}}{%
-                {Operation}/{\texttt{nx\_parr\_stk(V, 0, 2)}},%
-                {Expected Result}/{Returns value at index \texttt{2} if valid}
-            }
-        \end{NxDarkList}
+		\begin{NxDarkList}
+			\nxEachArw{CodePrimary}{Tertiary}{1}{%
+				{Operation}/{\texttt{nx\_parr\_stk(V, 0, 2)}},%
+				{Expected Result}/{Returns value at index \texttt{2} if valid}
+			}
+		\end{NxDarkList}
 }}
 nx_parr_stk(V, 0, 2)
 \end{NxCodeBox}
@@ -516,31 +534,31 @@ nx_parr_stk(V, 0, 2)
 \nxSections{Associative Pair Swapper}{2}
 
 \begin{NxCodeBox}{awk}{title={\_\_nx\_swap(V, D1, D2, t)}}
-function __nx_swap(V, D1, D2,   t)
+function __nx_swap(V, D1, D2,		t)
 {
-    t = V[D1]
-    V[D1] = V[D2]
-    V[D2] = t
+	t = V[D1]
+	V[D1] = V[D2]
+	V[D2] = t
 }
 \end{NxCodeBox}
 
 \begin{NxLightListBox}[title={Associative Pair Swapper — The Swap Glyph}]
-    \nxEachLabel{ArrowDark}{Secondary}{{1}{43}}{%
-        {Purpose}/{Swaps the values of keys \(D1\) and \(D2\) in associative array \(V\)},%
-        {Input}/{\(V\): associative array; \(D1, D2\): keys to swap},%
-        {Mechanism}/{Temporarily stores \(V[D1]\), then performs the exchange},%
-        {Use Case}/{Used in sorting, reordering, or symbolic mutation of key-value pairs}
-    }
+	\nxEachArw{ArrowDark}{Secondary}{1}{%
+		{Purpose}/{Swaps the values of keys \(D1\) and \(D2\) in associative array \(V\)},%
+		{Input}/{\(V\): associative array; \(D1, D2\): keys to swap},%
+		{Mechanism}/{Temporarily stores \(V[D1]\), then performs the exchange},%
+		{Use Case}/{Used in sorting, reordering, or symbolic mutation of key-value pairs}
+	}
 \end{NxLightListBox}
 
 \begin{NxCodeBox}{awk}{title={\textbf{Swapping values between two keys in an associative array}
-        \begin{NxDarkList}
-            \nxEachLabel{CodePrimary}{Tertiary}{{1}{43}}{%
-                {Initial State}/{\texttt{V["a"] = 1}, \texttt{V["b"] = 2}},%
-                {Operation}/{Swap the values of keys \texttt{"a"} and \texttt{"b"}},%
-                {Expected Result}/{\texttt{V["a"] = 2}, \texttt{V["b"] = 1}}
-            }
-        \end{NxDarkList}
+		\begin{NxDarkList}
+			\nxEachArw{CodePrimary}{Tertiary}{1}{%
+				{Initial State}/{\texttt{V[\nxSQ{a}] = 1}, \texttt{V[\nxSQ{b}] = 2}},%
+				{Operation}/{Swap the values of keys \texttt{\nxSQ{a}} and \texttt{\nxSQ{b}}},%
+				{Expected Result}/{\texttt{V[\nxSQ{a}] = 2}, \texttt{V[\nxSQ{b}] = 1}}
+			}
+		\end{NxDarkList}
 }}
 
 V["a"] = 1
@@ -552,55 +570,55 @@ __nx_swap(V, "a", "b")
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \nxSections{Length Counter}{2}
 \begin{NxCodeBox}{awk}{title={nx\_length(V, B)}}
-function nx_length(V, B,        i, j, k)
+function nx_length(V, B,		i, j, k)
 {
-    # V is expected to be an array with V[0] = count of elements
-    if (length(V) && 0 in V) {
-        for (i = 1; i <= V[0]; i++) {
-            j = length(V[i])
-            # if k is unset, or condition matches:
-            #   B true → track max length
-            #   B false → track min length
-            if (! k || __nx_if(B, k < j, k > j))
-                k = j
-        }
-        return int(k)
-    }
+	# V is expected to be an array with V[0] = count of elements
+	if (length(V) && 0 in V) {
+		for (i = 1; i <= V[0]; i++) {
+			j = length(V[i])
+			# if k is unset, or condition matches:
+			#		B true \nxArw{2} track max length
+			#		B false \nxArw{2} track min length
+			if (! k || __nx_if(B, k < j, k > j))
+				k = j
+		}
+		return int(k)
+	}
 }
 \end{NxCodeBox}
 
 \begin{NxLightListBox}[title={Length Counter — The Count Glyph}]
-    \nxEachLabel{ArrowDark}{Secondary}{{1}{43}}{%
-        {Purpose}/{Computes either the maximum or minimum string length among elements of array \(V\)},%
-        {Input}/{\(V\): array with \texttt{V[0]} = count; \(B\): toggle (true=max, false=min)},%
-        {Mechanism}/{Iterates over each element, measures \texttt{length(V[i])}, updates \(k\) if condition holds},%
-        {Comparison}/{If \(B\) is true, tracks maximum length; if false, tracks minimum length},%
-        {Return}/{Integer length (max or min depending on \(B\)); returns nothing if \(V\) is empty},%
-        {Use Case}/{Used to audit string lengths in overlays, ensuring consistent sizing or detecting anomalies}
-    }
+	\nxEachArw{ArrowDark}{Secondary}{1}{%
+		{Purpose}/{Computes either the maximum or minimum string length among elements of array \(V\)},%
+		{Input}/{\(V\): array with \texttt{V[0]} = count; \(B\): toggle (true=max, false=min)},%
+		{Mechanism}/{Iterates over each element, measures \texttt{length(V[i])}, updates \(k\) if condition holds},%
+		{Comparison}/{If \(B\) is true, tracks maximum length; if false, tracks minimum length},%
+		{Return}/{Integer length (max or min depending on \(B\)); returns nothing if \(V\) is empty},%
+		{Use Case}/{Used to audit string lengths in overlays, ensuring consistent sizing or detecting anomalies}
+	}
 \end{NxLightListBox}
 
 \begin{NxCodeBox}{awk}{title={\textbf{Find maximum length in array}
-        \begin{NxDarkList}
-            \nxEachLabel{CodePrimary}{Tertiary}{{1}{43}}{%
-                {Input}/{\texttt{V[0]=3; V[1]="foo"; V[2]="foobar"; V[3]="bar"}},%
-                {Toggle}/{\texttt{B=true} → maximum},%
-                {Expected Result}/{Returns \texttt{6}, the length of \texttt{"foobar"}}
-            }
-        \end{NxDarkList}
+		\begin{NxDarkList}
+			\nxEachArw{CodePrimary}{Tertiary}{1}{%
+				{Input}/{\texttt{V[0]=3; V[1]=\nxSQ{foo}; V[2]=\nxSQ{foobar}; V[3]=\nxSQ{bar}}},%
+				{Toggle}/{\texttt{B=true} \nxArw{2} maximum},%
+				{Expected Result}/{Returns \texttt{6}, the length of \texttt{\nxSQ{foobar}}}
+			}
+		\end{NxDarkList}
 }}
 V[0]=3; V[1]="foo"; V[2]="foobar"; V[3]="bar"
 print nx_length(V, 1)
 \end{NxCodeBox}
 
 \begin{NxCodeBox}{awk}{title={\textbf{Find minimum length in array}
-        \begin{NxDarkList}
-            \nxEachLabel{CodePrimary}{Tertiary}{{1}{43}}{%
-                {Input}/{\texttt{V[0]=3; V[1]="foo"; V[2]="foobar"; V[3]="bar"}},%
-                {Toggle}/{\texttt{B=false} → minimum},%
-                {Expected Result}/{Returns \texttt{3}, the length of \texttt{"foo"} or \texttt{"bar"}}
-            }
-        \end{NxDarkList}
+		\begin{NxDarkList}
+			\nxEachArw{CodePrimary}{Tertiary}{1}{%
+				{Input}/{\texttt{V[0]=3; V[1]=\nxSQ{foo}; V[2]=\nxSQ{foobar}; V[3]=\nxSQ{bar}}},%
+				{Toggle}/{\texttt{B=false} \nxArw{2} minimum},%
+				{Expected Result}/{Returns \texttt{3}, the length of \texttt{\nxSQ{foo}} or \texttt{\nxSQ{bar}}}
+			}
+		\end{NxDarkList}
 }}
 V[0]=3; V[1]="foo"; V[2]="foobar"; V[3]="bar"
 print nx_length(V, 0)
@@ -609,72 +627,72 @@ print nx_length(V, 0)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \nxSections{Boundary Matcher}{2}
 \begin{NxCodeBox}{awk}{title={nx\_boundary(D, V1, V2, B1, B2)}}
-function nx_boundary(D, V1, V2, B1, B2,         i)
+function nx_boundary(D, V1, V2, B1, B2,		 i)
 {
-    # D: delimiter string
-    # V1: input array of candidate strings (V1[0] = count)
-    # V2: output array (collected matches)
-    # B1: toggle → true = suffix match, false = prefix match
-    # B2: toggle → delete V1 after processing
+	# D: delimiter string
+	# V1: input array of candidate strings (V1[0] = count)
+	# V2: output array (collected matches)
+	# B1: toggle \nxArw{2} true = suffix match, false = prefix match
+	# B2: toggle \nxArw{2} delete V1 after processing
 
-    if (length(V1) && 0 in V1 && D != "") {
-        for (i = 1; i <= V1[0]; i++) {
-            if (__nx_if(B1, V1[i] ~ D "$", V1[i] ~ "^" D))
-                V2[++V2[0]] = V1[i]
-        }
-        if (B2)
-            delete V1
-        return V2[0]
-    }
+	if (length(V1) && 0 in V1 && D != "") {
+		for (i = 1; i <= V1[0]; i++) {
+			if (__nx_if(B1, V1[i] ~ D "$", V1[i] ~ "^" D))
+				V2[++V2[0]] = V1[i]
+		}
+		if (B2)
+			delete V1
+		return V2[0]
+	}
 }
 \end{NxCodeBox}
 
 \begin{NxLightListBox}[title={Boundary Matcher — The Boundary Glyph}]
-    \nxEachLabel{ArrowDark}{Secondary}{{1}{43}}{%
-        {Purpose}/{Filters an array of strings by prefix or suffix match against delimiter \(D\)},%
-        {Input}/{\(D\): delimiter; \(V1\): candidate array; \(V2\): output array; \(B1\): match toggle; \(B2\): cleanup toggle},%
-        {Mechanism}/{Iterates over \(V1\), applies regex match at start or end depending on \(B1\), appends matches to \(V2\)},%
-        {Comparison}/{If \(B1\) is true, checks suffix (\(D\$\)); if false, checks prefix (\(^D\))},%
-        {Cleanup}/{If \(B2\) is true, deletes \(V1\) after processing},%
-        {Return}/{Count of matches stored in \(V2\)},%
-        {Use Case}/{Boundary filtering in tokenization, validating suffix/prefix rules, or pruning candidate sets}
-    }
+	\nxEachArw{ArrowDark}{Secondary}{1}{%
+		{Purpose}/{Filters an array of strings by prefix or suffix match against delimiter \(D\)},%
+		{Input}/{\(D\): delimiter; \(V1\): candidate array; \(V2\): output array; \(B1\): match toggle; \(B2\): cleanup toggle},%
+		{Mechanism}/{Iterates over \(V1\), applies regex match at start or end depending on \(B1\), appends matches to \(V2\)},%
+		{Comparison}/{If \(B1\) is true, checks suffix (\(D\$\)); if false, checks prefix (\(^D\))},%
+		{Cleanup}/{If \(B2\) is true, deletes \(V1\) after processing},%
+		{Return}/{Count of matches stored in \(V2\)},%
+		{Use Case}/{Boundary filtering in tokenization, validating suffix/prefix rules, or pruning candidate sets}
+	}
 \end{NxLightListBox}
 
 \begin{NxCodeBox}{awk}{title={\textbf{Suffix match example}
-        \begin{NxDarkList}
-            \nxEachLabel{CodePrimary}{Tertiary}{{1}{43}}{%
-                {Input}/{\texttt{D="txt"; V1[0]=3; V1[1]="file.txt"; V1[2]="data.csv"; V1[3]="note.txt"}},%
-                {Toggle}/{\texttt{B1=true} → suffix},%
-                {Expected Result}/{\texttt{V2[0]=2; V2[1]="file.txt"; V2[2]="note.txt"}}
-            }
-        \end{NxDarkList}
+		\begin{NxDarkList}
+			\nxEachArw{CodePrimary}{Tertiary}{1}{%
+				{Input}/{\texttt{D="txt"; V1[0]=3; V1[1]="file.txt"; V1[2]="data.csv"; V1[3]="note.txt"}},%
+				{Toggle}/{\texttt{B1=true} \nxArw{2} suffix},%
+				{Expected Result}/{\texttt{V2[0]=2; V2[1]="file.txt"; V2[2]="note.txt"}}
+			}
+		\end{NxDarkList}
 }}
 V1[0]=3; V1[1]="file.txt"; V1[2]="data.csv"; V1[3]="note.txt"
 print nx_boundary("txt", V1, V2, 1, 0)
 \end{NxCodeBox}
 
 \begin{NxCodeBox}{awk}{title={\textbf{Prefix match example}
-        \begin{NxDarkList}
-            \nxEachLabel{CodePrimary}{Tertiary}{{1}{43}}{%
-                {Input}/{\texttt{D="pre"; V1[0]=3; V1[1]="prefix"; V1[2]="postfix"; V1[3]="prelude"}},%
-                {Toggle}/{\texttt{B1=false} → prefix},%
-                {Expected Result}/{\texttt{V2[0]=2; V2[1]="prefix"; V2[2]="prelude"}}
-            }
-        \end{NxDarkList}
+		\begin{NxDarkList}
+			\nxEachArw{CodePrimary}{Tertiary}{1}{%
+				{Input}/{\texttt{D=\nxSQ{pre}; V1[0]=3; V1[1]=\nxSQ{prefix}; V1[2]=\nxSQ{postfix}; V1[3]=\nxSQ{prelude}}},%
+				{Toggle}/{\texttt{B1=false} \nxArw{2} prefix},%
+				{Expected Result}/{\texttt{V2[0]=2; V2[1]=\nxSQ{prefix}; V2[2]=\nxSQ{prelude}}}
+			}
+		\end{NxDarkList}
 }}
 V1[0]=3; V1[1]="prefix"; V1[2]="postfix"; V1[3]="prelude"
 print nx_boundary("pre", V1, V2, 0, 0)
 \end{NxCodeBox}
 
 \begin{NxCodeBox}{awk}{title={\textbf{Cleanup toggle example}
-        \begin{NxDarkList}
-            \nxEachLabel{CodePrimary}{Tertiary}{{1}{43}}{%
-                {Input}/{Same as suffix example},%
-                {Toggle}/{\texttt{B2=true} → deletes V1 after processing},%
-                {Expected Result}/{\texttt{V1} emptied; \texttt{V2} contains matches}
-            }
-        \end{NxDarkList}
+		\begin{NxDarkList}
+			\nxEachArw{CodePrimary}{Tertiary}{1}{%
+				{Input}/{Same as suffix example},%
+				{Toggle}/{\texttt{B2=true} \nxArw{2} deletes V1 after processing},%
+				{Expected Result}/{\texttt{V1} emptied; \texttt{V2} contains matches}
+			}
+		\end{NxDarkList}
 }}
 print nx_boundary("txt", V1, V2, 1, 1)
 \end{NxCodeBox}
@@ -682,57 +700,57 @@ print nx_boundary("txt", V1, V2, 1, 1)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \nxSections{Equality Filter}{2}
 \begin{NxCodeBox}{awk}{title={nx\_filter(D1, D2, V1, V2, B)}}
-function nx_filter(D1, D2, V1, V2, B,   i, v1, v2)
+function nx_filter(D1, D2, V1, V2, B,		i, v1, v2)
 {
-    # D1: first delimiter or comparison value
-    # D2: second delimiter or comparison value
-    # V1: input array of candidate strings (V1[0] = count)
-    # V2: output array (collected matches)
-    # B: toggle → if true, delete V1 after processing
+	# D1: first delimiter or comparison value
+	# D2: second delimiter or comparison value
+	# V1: input array of candidate strings (V1[0] = count)
+	# V2: output array (collected matches)
+	# B: toggle \nxArw{2} if true, delete V1 after processing
 
-    if (length(V1) && 0 in V1) {
-        for (i = 1; i <= V1[0]; i++) {
-            if (__nx_equality(D1, D2, V1[i]))
-                V2[++V2[0]] = V1[i]
-        }
-        if (B)
-            delete V1
-        return V2[0]
-    }
+	if (length(V1) && 0 in V1) {
+		for (i = 1; i <= V1[0]; i++) {
+			if (__nx_equality(D1, D2, V1[i]))
+				V2[++V2[0]] = V1[i]
+		}
+		if (B)
+			delete V1
+		return V2[0]
+	}
 }
 \end{NxCodeBox}
 
 \begin{NxLightListBox}[title={Equality Filter — The Filter Glyph}]
-    \nxEachLabel{ArrowDark}{Secondary}{{1}{43}}{%
-        {Purpose}/{Filters an array of strings by equality comparison against values \(D1\) and \(D2\)},%
-        {Input}/{\(D1, D2\): comparison values; \(V1\): candidate array; \(V2\): output array; \(B\): cleanup toggle},%
-        {Mechanism}/{Iterates over \(V1\), applies \texttt{\_\_nx\_equality(D1, D2, V1[i])}, appends matches to \(V2\)},%
-        {Cleanup}/{If \(B\) is true, deletes \(V1\) after processing},%
-        {Return}/{Count of matches stored in \(V2\)},%
-        {Use Case}/{Used to filter candidate sets by strict equality, often in parsing or validation overlays}
-    }
+	\nxEachArw{ArrowDark}{Secondary}{1}{%
+		{Purpose}/{Filters an array of strings by equality comparison against values \(D1\) and \(D2\)},%
+		{Input}/{\(D1, D2\): comparison values; \(V1\): candidate array; \(V2\): output array; \(B\): cleanup toggle},%
+		{Mechanism}/{Iterates over \(V1\), applies \texttt{\_\_nx\_equality(D1, D2, V1[i])}, appends matches to \(V2\)},%
+		{Cleanup}/{If \(B\) is true, deletes \(V1\) after processing},%
+		{Return}/{Count of matches stored in \(V2\)},%
+		{Use Case}/{Used to filter candidate sets by strict equality, often in parsing or validation overlays}
+	}
 \end{NxLightListBox}
 
 \begin{NxCodeBox}{awk}{title={\textbf{Filter exact matches}
-        \begin{NxDarkList}
-            \nxEachLabel{CodePrimary}{Tertiary}{{1}{43}}{%
-                {Input}/{\texttt{D1="foo"; D2="bar"; V1[0]=3; V1[1]="foo"; V1[2]="baz"; V1[3]="bar"}},%
-                {Expected Result}/{\texttt{V2[0]=2; V2[1]="foo"; V2[2]="bar"}}
-            }
-        \end{NxDarkList}
+		\begin{NxDarkList}
+			\nxEachArw{CodePrimary}{Tertiary}{1}{%
+				{Input}/{\texttt{D1=\nxSQ{foo}; D2=\nxSQ{bar}; V1[0]=3; V1[1]=\nxSQ{foo}; V1[2]=\nxSQ{baz}; V1[3]=\nxSQ{bar}}},%
+				{Expected Result}/{\texttt{V2[0]=2; V2[1]=\nxSQ{foo}; V2[2]=\nxSQ{bar}}}
+			}
+		\end{NxDarkList}
 }}
 V1[0]=3; V1[1]="foo"; V1[2]="baz"; V1[3]="bar"
 print nx_filter("foo", "bar", V1, V2, 0)
 \end{NxCodeBox}
 
 \begin{NxCodeBox}{awk}{title={\textbf{Cleanup toggle example}
-        \begin{NxDarkList}
-            \nxEachLabel{CodePrimary}{Tertiary}{{1}{43}}{%
-                {Input}/{Same as previous example},%
-                {Toggle}/{\texttt{B=true} → deletes V1 after processing},%
-                {Expected Result}/{\texttt{V1} emptied; \texttt{V2} contains matches}
-            }
-        \end{NxDarkList}
+		\begin{NxDarkList}
+			\nxEachArw{CodePrimary}{Tertiary}{1}{%
+				{Input}/{Same as previous example},%
+				{Toggle}/{\texttt{B=true} \nxArw{2} deletes V1 after processing},%
+				{Expected Result}/{\texttt{V1} emptied; \texttt{V2} contains matches}
+			}
+		\end{NxDarkList}
 }}
 print nx_filter("foo", "bar", V1, V2, 1)
 \end{NxCodeBox}
@@ -740,66 +758,66 @@ print nx_filter("foo", "bar", V1, V2, 1)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \nxSections{Option Resolver}{2}
 \begin{NxCodeBox}{awk}{title={nx\_option(D, V1, V2, B1, B2)}}
-function nx_option(D, V1, V2, B1, B2,   i, v)
+function nx_option(D, V1, V2, B1, B2,		i, v)
 {
-    # D: delimiter or option key
-    # V1: input array of candidate strings (V1[0] = count)
-    # V2: output array (collected matches)
-    # B1: toggle → passed to nx_boundary (prefix/suffix match)
-    # B2: toggle → passed to nx_length (max/min length)
+	# D: delimiter or option key
+	# V1: input array of candidate strings (V1[0] = count)
+	# V2: output array (collected matches)
+	# B1: toggle \nxArw{2} passed to nx_boundary (prefix/suffix match)
+	# B2: toggle \nxArw{2} passed to nx_length (max/min length)
 
-    if (length(V1) && 0 in V1 && D != "") {
-        # Step 1: boundary filter
-        if (nx_boundary(D, V1, v, B1) > 1) {
-            # Step 2: length + equality filter
-            if (nx_filter(nx_append_str("0", nx_length(v, B2)), "=_", v, V2, 1) == 1) {
-                i = V2[1]
-                delete V2
-                return i
-            }
-        } else {
-            # Single boundary match → return directly
-            i = v[1]
-            delete v
-            return i
-        }
-    }
+	if (length(V1) && 0 in V1 && D != "") {
+		# Step 1: boundary filter
+		if (nx_boundary(D, V1, v, B1) > 1) {
+			# Step 2: length + equality filter
+			if (nx_filter(nx_append_str("0", nx_length(v, B2)), "=_", v, V2, 1) == 1) {
+				i = V2[1]
+				delete V2
+				return i
+			}
+		} else {
+			# Single boundary match \nxArw{2} return directly
+			i = v[1]
+			delete v
+			return i
+		}
+	}
 }
 \end{NxCodeBox}
 
 \begin{NxLightListBox}[title={Option Resolver — The Option Glyph}]
-    \nxEachLabel{ArrowDark}{Secondary}{{1}{43}}{%
-        {Purpose}/{Resolves a candidate option string from array \(V1\) using boundary and equality filters},%
-        {Input}/{\(D\): delimiter; \(V1\): candidate array; \(V2\): output array; \(B1\): boundary toggle; \(B2\): length toggle},%
-        {Mechanism}/{First applies \texttt{nx\_boundary} to filter by prefix/suffix, then \texttt{nx\_length} + \texttt{nx\_filter} to refine},%
-        {Comparison}/{If multiple boundary matches, equality filter ensures only one survives; otherwise first match is returned},%
-        {Cleanup}/{Deletes temporary arrays \texttt{v} or \texttt{V2} after use},%
-        {Return}/{Resolved option string, or nothing if no match},%
-        {Use Case}/{Option parsing in overlays, resolving ambiguous candidates into a single canonical choice}
-    }
+	\nxEachArw{ArrowDark}{Secondary}{1}{%
+		{Purpose}/{Resolves a candidate option string from array \(V1\) using boundary and equality filters},%
+		{Input}/{\(D\): delimiter; \(V1\): candidate array; \(V2\): output array; \(B1\): boundary toggle; \(B2\): length toggle},%
+		{Mechanism}/{First applies \texttt{nx\_boundary} to filter by prefix/suffix, then \texttt{nx\_length} + \texttt{nx\_filter} to refine},%
+		{Comparison}/{If multiple boundary matches, equality filter ensures only one survives; otherwise first match is returned},%
+		{Cleanup}/{Deletes temporary arrays \texttt{v} or \texttt{V2} after use},%
+		{Return}/{Resolved option string, or nothing if no match},%
+		{Use Case}/{Option parsing in overlays, resolving ambiguous candidates into a single canonical choice}
+	}
 \end{NxLightListBox}
 
 \begin{NxCodeBox}{awk}{title={\textbf{Resolve single option directly}
-        \begin{NxDarkList}
-            \nxEachLabel{CodePrimary}{Tertiary}{{1}{43}}{%
-                {Input}/{\texttt{D="opt"; V1[0]=1; V1[1]="optA"}},%
-                {Boundary}/{Only one match},%
-                {Expected Result}/{Returns \texttt{"optA"}}
-            }
-        \end{NxDarkList}
+		\begin{NxDarkList}
+			\nxEachArw{CodePrimary}{Tertiary}{1}{%
+				{Input}/{\texttt{D=\nxSQ{opt}; V1[0]=1; V1[1]=\nxSQ{optA}}},%
+				{Boundary}/{Only one match},%
+				{Expected Result}/{Returns \texttt{\nxSQ{optA}}}
+			}
+		\end{NxDarkList}
 }}
 V1[0]=1; V1[1]="optA"
 print nx_option("opt", V1, V2, 1, 1)
 \end{NxCodeBox}
 
 \begin{NxCodeBox}{awk}{title={\textbf{Resolve multiple options with filter}
-        \begin{NxDarkList}
-            \nxEachLabel{CodePrimary}{Tertiary}{{1}{43}}{%
-                {Input}/{\texttt{D="opt"; V1[0]=2; V1[1]="optA"; V1[2]="optB"}},%
-                {Boundary}/{Two matches → triggers filter},%
-                {Expected Result}/{Returns whichever survives equality filter (e.g. \texttt{"optA"})}
-            }
-        \end{NxDarkList}
+		\begin{NxDarkList}
+			\nxEachArw{CodePrimary}{Tertiary}{1}{%
+				{Input}/{\texttt{D=\nxSQ{opt}; V1[0]=2; V1[1]=\nxSQ{optA}; V1[2]=\nxSQ{optB}}},%
+				{Boundary}/{Two matches \nxArw{2} triggers filter},%
+				{Expected Result}/{Returns whichever survives equality filter (e.g. \texttt{\nxSQ{optA}})}
+			}
+		\end{NxDarkList}
 }}
 V1[0]=2; V1[1]="optA"; V1[2]="optB"
 print nx_option("opt", V3, V2, 1, 1)
@@ -819,4 +837,7 @@ print nx_option("opt", V3, V2, 1, 1)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\end{comment}
 

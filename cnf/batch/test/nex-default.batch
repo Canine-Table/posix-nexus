@@ -1,0 +1,2 @@
+netns add nex-a
+netns add nex-b

@@ -1,0 +1,28 @@
+link add bridge0 type bridge \
+vlan_default_pvid 999 \
+vlan_filtering 1 \
+vlan_protocol "802.1Q" \
+mcast_igmp_version 3 \
+mdb_offload_fail_notification 1 \
+vlan_stats_per_port 1 \
+mcast_stats_enabled 1 \
+mcast_igmp_version 3 \
+mcast_mld_version 1 \
+mcast_mld_version 2 \
+nf_call_iptables 1 \
+nf_call_ip6tables 1 \
+nf_call_arptables 1 \
+vlan_stats_enabled 1
+
+link add nexus1 type veth peer name nexus0
+link set nexus1 netns nex-b
+link set nexus0 master bridge0
+link set bridge0 up
+link set nexus0 up
+
+link add link bridge0 name bridge0.176 type vlan id 176
+address add 172.16.176.2/20 label "bridge0:a_gw" dev bridge0.176
+link set bridge0.176 group 3
+link set bridge0.176 up
+route add default via 172.16.176.1 dev bridge0.176
+

@@ -3,17 +3,6 @@
 #nx_include nex-int.awk
 #nx_include nex-math-extras.awk
 
-function nx_reverse_str(D,	i, v)
-{
-	if ((i = split(D, v, "")) > 1) {
-		D = ""
-		do {
-			D = D v[i]
-		} while (--i)
-	}
-	delete v
-	return D
-}
 
 function nx_same_length(N1, N2, V, B1, B2,		k, n, n1, n2, l, l1, l2, b, b1, b2)
 {
@@ -37,6 +26,43 @@ function nx_same_length(N1, N2, V, B1, B2,		k, n, n1, n2, l, l1, l2, b, b1, b2)
 	if (b)
 		V[k] = nx_slice_str(n, l, "", !B1)
 	return nx_slice_str(n, l, "", B1)
+}
+
+function nx_reap_str(D1, N1, D2, N2)
+{
+	if (int(N1) != N1 || N1 == 0) {
+		gsub(D2, "", D1)
+	} else {
+		N1 = nx_absolute(N1)
+		if (N2) {
+			D1 = nx_reverse_str(D1)
+			D2 = nx_reverse_str(D2)
+			while (sub(D2, "", D1) && N1 > 1)
+				N1--
+			D1 = nx_reverse_str(D1)
+		} else {
+			while (sub(D2, "", D1) && N1 > 1)
+				N1--
+		}
+	}
+	return D1
+}
+
+function nx_reap_str_match(D1, N1, D2, N2)
+{
+	if (int(N1) != N1 || N1 == 0)
+		N1 = -1
+	if (N2) {
+		D1 = nx_reverse_str(D1)
+		D2 = nx_reverse_str(D2)
+		while (match(D1, D2) && (N1-- > 0 || N1 < -1))
+			D1 = substr(D1, RSTART + RLENGTH)
+		D1 = nx_reverse_str(D1)
+	} else {
+		while (match(D1, D2) &&  (N1-- > 0 || N1 < -1))
+			D1 = substr(D1, RSTART + RLENGTH)
+	}
+	return D1
 }
 
 function nx_slice_str(D, N, B1, B2,	s, e, l)

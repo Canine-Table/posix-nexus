@@ -1,4 +1,0 @@
-#vlan add dev bridge0 vid '208' pvid untagged master
-vlan add dev nexus1 vid 208
-vlan add dev nexus2 vid 208
-

@@ -30,7 +30,7 @@ nx_cfg_export()
 
 nx_cfg_gcc()
 {
-	test -n "$G_NEX_CC" -a "$(nx_fs_path -b "$G_NEX_CC")" = 'gcc' && export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01'
+	test -n "$CC" -a "$(nx_fs_path -b "$CC")" = 'gcc' && export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01'
 }
 
 

@@ -76,33 +76,36 @@ function nx_parr_stk(V, N, D)
 	return -1
 }
 
-function nx_dfs(V, trk, stk)
+function nx_dfs(V,
+	sky, srt,
+	si, sj, sk, vi)
 {
 	if (! (".0" in V && int(V[".0"]) > 0))
 		return -1
-	stk[++stk[0]] = 1
-	stk[++stk[0]] = V[".0"]
-	V[0] = 0
+	si = 1
+	sj = V[".0"]
+	sk = 2
+	vi = 0
 	do {
-		for (; stk[1] <= stk[2]; ++stk[1]) {
-			trk["ky"] = trk["rt"] "." stk[1]
-			V[++V[0]] = trk["ky"]
-			if (trk["ky"] ".0" in V && int(V[trk["ky"] ".0"]) > 0) {
-				trk["rt"] = trk["ky"]
-				stk[++stk[0]] = stk[1]
-				stk[++stk[0]] = stk[2]
-				stk[1] = 0
-				stk[2] = V[trk["rt"] ".0"]
+		for (; si <= sj; ++si) {
+			sky = srt "." si
+			V[++vi] = sky
+			if (sky ".0" in V && int(V[sky ".0"]) > 0) {
+				srt = sky
+				stk[++sk] = si
+				stk[++sk] = sj
+				si = 0
+				sj = V[srt ".0"]
 			}
 		}
-		if (stk[1] > 0 && sub(/[^.]+$/, "", trk["rt"])) {
-			sub(/[.]$/, "", trk["rt"])
-			stk[2] = stk[stk[0]--]
-			stk[1] = stk[stk[0]--] + 1
+		if (si > 0 && sub(/[^.]+$/, "", srt)) {
+			sub(/[.]$/, "", srt)
+			sj = stk[sk--]
+			si = stk[sk--] + 1
 		}
-	} while (stk[0] > 2 || stk[1] <= stk[2])
-	delete trk
+	} while (sk > 2 || si <= sj)
 	delete stk
+	V[0] = vi
+	return vi
 }
-
 

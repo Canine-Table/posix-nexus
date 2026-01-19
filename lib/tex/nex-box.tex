@@ -477,6 +477,7 @@
 \nxThemedItems{Rocket}{\faRocket}
 \nxThemedItems{BoxOpen}{\faBoxOpen}
 \nxThemedItems{Brain}{\faBrain}
+\nxThemedItems{Bug}{\faBug}
 \nxThemedItems{Tools}{\faTools}
 \nxThemedItems{Toolbox}{\faToolbox}
 \nxThemedItems{Globe}{\faGlobe}
@@ -512,6 +513,10 @@
 \nxThemedItems{VirusSlash}{\faVirusSlash}
 \nxThemedItems{Wifi}{\faWifi}
 \nxThemedItems{DB}{\faDatabase}
+\nxThemedItems{ClipList}{\faClipboardList}
+\nxThemedItems{ListUl}{\faListUl}
+\nxThemedItems{ListOl}{\faListOl}
+\nxThemedItems{List}{\faList}
 
 \def\nxIconList[#1]{%
 	\pgfkeys{/nx/list box, #1}
@@ -569,6 +574,19 @@
 \def\nxEachLabel#1#2#3#4{
 	\foreach \x/\y in {#4} {
 		\expandafter\csname nx#1Item\expandafter\endcsname\expandafter\csname nx#2Label\expandafter\endcsname#3{\x}\y
+	}
+}
+
+\def\nxBox#1{%
+	\edef\nx@tmpa{nx\nxTitle{#1}{ }{ }ArwRay}
+	\expandafter\def\csname\nx@tmpa\endcsname##1##2{{\textcolor{nex.#1.back}{\bf\nxEm{##1}{##2}}$\,$\tikz[baseline=-0.5ex]\draw pic [thick] {nxArwRay=#1};~}}
+}
+
+\nxThemed{nxBox}
+
+\def\nxEachArw#1#2#3#4{
+	\foreach \x/\y in {#4} {
+		\expandafter\csname nx#1Item\expandafter\endcsname\expandafter\csname nx#2ArwRay\expandafter\endcsname#3{\x}\y
 	}
 }
 

@@ -3,19 +3,19 @@
 #nx_include nex-int.awk
 #nx_include nex-log.awk
 
-function nx_append_str(D1, N, D2, B,	s)
+function nx_append_str(D1, N1, D2, N2, D3, D4)
 {
-	if (nx_natural(N) && D1 != "") {
-		if (D2 != "")
-			s = D2
-		do {
-			if (B)
-				s = D1 s
-			else
-				s = s D1
-		} while (--N)
-		return s
+	if (! nx_natural(N1) || D1 == "")
+		return D2
+	if (N2) {
+		while (N1--)
+			D2 = nx_join_str(D1, D2, D3, D4)
+	} else {
+		while (N1--)
+			D2 = nx_join_str(D2, D1, D3, D4)
 	}
+	return D2
+
 }
 
 function nx_count_str(D, S)
@@ -23,13 +23,13 @@ function nx_count_str(D, S)
 	return gsub(__nx_else(S, "."), "&", D)
 }
 
-function nx_join_str(D1, D2, S, D3)
+function nx_join_str(D1, D2, D3, D4)
 {
-	if (length(D3))
-		D3 = __nx_if(D3, "\x27", "\x22")
-	if (D1 && D2)
-		D1 = D1 S
-	return D1 D3 D2 D3
+	if (D4 != "")
+		D3 = __nx_if(D4, "\x27", "\x22")
+	if (D1 != "" && D2 != "")
+		D1 = D1 D3
+	return D1 D4 D2 D4
 }
 
 function nx_trim_str(D, S)
@@ -38,7 +38,6 @@ function nx_trim_str(D, S)
 	gsub("(^[" S "]+|[ " S "]+$)", "", D)
 	return D
 }
-
 
 function nx_cut_str(D1, D2, B)
 {
@@ -64,5 +63,22 @@ function nx_pair_str(D, V, S)
 	} else {
 		V[++V[0]] = "<nx:false/>"
 	}
+}
+
+function nx_reverse_str(D,
+	s, i,
+	v)
+{
+	if (D == "")
+		return ""
+	D = split(D,  v, "") + 1
+	D = int(D / 2 + 0.5)
+	i = D--
+	s = v[i]
+	do {
+		s = v[++i] s v[D]
+	} while (--D > 0)
+	delete v
+	return s
 }
 

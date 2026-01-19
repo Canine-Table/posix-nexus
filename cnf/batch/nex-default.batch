@@ -1,5 +1,5 @@
 netns add nex-posix-128
-link add nexus1 type veth peer name nexus0
+link add name nexus1 type veth peer name nexus0
 
 link property add dev nexus0 altname nex_gateway
 link set nexus0 alias "Virtual wired ethernet device within the nex-posix-128 namespace refered to by nexus0."
@@ -12,17 +12,3 @@ address add 172.16.128.1/17 label "nexus0:lab" dev nexus0
 link set nexus0 up
 
 netns add nex-qemu-176
-netns add nex-pod-208
-netns add nex-vpn-192
-netns add nex-iscsi-224
-netns add nex-srv-240
-
-netns add nex-208-pgadmin
-netns add nex-208-phpmyadmin
-
-netns add nex-176-questing
-netns add nex-176-wsc2025
-netns add nex-176-gentoo
-netns add nex-176-debian
-netns add nex-176-lfs
-
