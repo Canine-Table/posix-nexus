@@ -14,10 +14,12 @@ M.int = M.module.load['nex-int']
 M.data = M.module.load['nex-data']
 M.str = M.module.load['nex-str']
 M.bool = M.module.load['nex-bool']
+--M.bit = M.module.load['nex-bit']
 
 M.tex = {}
 M.tex.var = {}
 M.tex.unicode = M.module.load['luatex/nex-unicode']
+--M.tex.oop = M.module.load['luatex/nex-oop']
 M.tex.ref = M.module.load['luatex/nex-ref']
 M.tex.var.section = M.tex.ref.sec:new()
 M.tex.loaded = function()

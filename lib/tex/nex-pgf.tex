@@ -231,7 +231,22 @@
 
 	}
 }
+
+
+\pgfooclass{NxLuaObject}{
+	% This is lua object base class
+	\attribute self;
+
+	\method init(#1) { % The constructor
+		\edef\self{\pgfoovalueof{pgfid}}%
+	}
+
+	\method apply(#1,#2) { % Causes the stamp to be shown at coordinate (#1,#2)
+
+	}
+}
+
+
 \end{comment}
+
 \makeatother
-
-
