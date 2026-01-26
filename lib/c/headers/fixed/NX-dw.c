@@ -32,15 +32,13 @@ unsigned short NX_set_s1dBBBBF(
 	return r->h.h;
 }
 
-
 unsigned short NX_set_s1dSBBF(
 	NX_dwwS *r,
 	const unsigned short a,
 	const unsigned char b,
 	const unsigned char c
 ) {
-	return 
-NX_set_s1dSSF(r, a, NX
+	return NX_set_s1dSSF(r, a, NX_get_vBBF(b, c));
 }
 
 unsigned short NX_set_s1dSSF(
@@ -66,5 +64,15 @@ unsigned short NX_set_s1dLF(
 	NX_set_b1wVF(&r->h, hi);
 
 	return r->h.h;
+}
+
+unsigned long NX_get_lVVF(const unsigned short a, const unsigned short b)
+{
+    return ((unsigned long)a << (CHAR_BIT * 2)) | (unsigned long)b;
+}
+
+unsigned long NX_get_l1DF(const NX_dwwS *r)
+{
+	return NX_get_lVVF(NX_get_v1WF(&r->l), NX_get_v1WF(&r->h));
 }
 

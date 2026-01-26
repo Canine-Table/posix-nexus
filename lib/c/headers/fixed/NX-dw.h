@@ -2,8 +2,8 @@
 #define NX_dw_H
 
 typedef struct {
-	NX_wbbS h;
 	NX_wbbS l;
+	NX_wbbS h;
 } NX_dwwS;
 
 unsigned short NX_set_s1dBBBBF(

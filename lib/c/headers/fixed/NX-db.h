@@ -2,11 +2,11 @@
 #define NX_db_H
 
 typedef struct {
-	unsigned char h;
 	unsigned char l;
+	unsigned char h;
 } NX_wbbS;
 
-
+/*
 typedef struct {
 	NX_dwwS h;
 	NX_dwwS l;
@@ -36,7 +36,7 @@ typedef struct {
 	NX_pssS h;
 	NX_pssS l;
 } NX_xppS;
-
+*/
 unsigned char NX_set_b1wBBF(NX_wbbS*, const unsigned char, const unsigned char);
 unsigned char NX_set_b1wVF(NX_wbbS*, const unsigned short);
 unsigned char NX_add_b1w1W1WF(NX_wbbS*, const NX_wbbS*, const NX_wbbS*);
