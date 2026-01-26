@@ -1,0 +1,37 @@
+
+\nxSections{Prefix}{3}
+
+\begin{NxLightBox}[title={Prefix Token Summary}]
+	\begin{tabularx}{\linewidth}{|l|X|}
+		\hline
+		\textbf{Prefix} & \textbf{Ordering Rule} \\
+		\hline
+		NX & unsigned > signed > auto \\
+		\hline
+		nX & auto > unsigned > signed \\
+		\hline
+		nx & auto > signed > unsigned \\
+		\hline
+		Nx & signed > unsigned > auto \\
+		\hline
+	\end{tabularx}
+\end{NxLightBox}
+
+\begin{NxLightListBox}[title={Prefix Token Conductor — The Permutation Glyph}]
+	\nxEachArw{ArrowDark}{Secondary}{1}{%
+		{Purpose}/{Define the permutation ordering of type-groups (U, S, A) for the identifier},%
+		{Tokens}/{\nxLnArcBox[]{\nxListDark}
+			\begin{NxLightList}
+				\nxEachArw{CodeSuccess}{Secondary}{1}{%
+					{"NX"}/{U > S > A},%
+					{"nX"}/{A > U > S},%
+					{"nx"}/{A > S > U},%
+					{"Nx"}/{S > U > A}%
+				}
+			\end{NxLightList}
+		},%
+		{Invariant}/{Auto (A) is never allowed in the middle position},%
+		{Use Case}/{Determines which type-group is selected first when resolving the identifier’s type signature}%
+	}
+\end{NxLightListBox}
+

@@ -1,0 +1,143 @@
+/* fracture-motion.css */
+/* Motion is not a feature. It is a symptom. */
+
+:root {
+	--entropy-angle: 0deg;
+	animation: entropy-spin 30s infinite linear;
+}
+
+body::before {
+	content: "";
+	position: fixed;
+	inset: 0;
+	background: repeating-linear-gradient(
+		45deg,
+		rgba(255,255,255,0.03) 0px,
+		rgba(255,255,255,0.03) 2px,
+		transparent 2px,
+		transparent 4px
+	);
+	mix-blend-mode: soft-light;
+	pointer-events: none;
+}
+
+@keyframes entropy-spin {
+	to { --entropy-angle: 360deg; }
+}
+
+/* Glitch wrapper: apply to anything you want to look wrong */
+.glitch {
+	position: relative;
+	animation:
+		glitch-skew 2.5s infinite steps(23),
+		glitch-shift 1.7s infinite alternate ease-in-out;
+}
+
+@keyframes glitch-skew {
+	0%	 { transform: skew(0deg); }
+	20%	{ transform: skew(4deg); }
+	40%	{ transform: skew(-6deg); }
+	60%	{ transform: skew(9deg); }
+	80%	{ transform: skew(-3deg); }
+	100% { transform: skew(0deg); }
+}
+
+@keyframes glitch-shift {
+	0%	 { transform: translate(0,0); }
+	25%	{ transform: translate(-2px, 1px); }
+	50%	{ transform: translate(3px, -2px); }
+	75%	{ transform: translate(-1px, 3px); }
+	100% { transform: translate(0,0); }
+}
+
+/* RGB split effect using pseudo-elements */
+.glitch::before,
+.glitch::after {
+	content: attr(data-glitch);
+	position: absolute;
+	top: 0;
+	left: 0;
+	pointer-events: none;
+	mix-blend-mode: screen;
+}
+
+.glitch::before {
+	color: #ff0066;
+	transform: translate(-2px, 0);
+	animation: glitch-before 0.9s infinite steps(11);
+}
+
+.glitch::after {
+	color: #00e5ff;
+	transform: translate(2px, 0);
+	animation: glitch-after 1.1s infinite steps(13);
+}
+
+@keyframes glitch-before {
+	0%	 { clip-path: inset(0 0 80% 0); }
+	50%	{ clip-path: inset(20% 0 40% 0); }
+	100% { clip-path: inset(60% 0 0 0); }
+}
+
+@keyframes glitch-after {
+	0%	 { clip-path: inset(60% 0 0 0); }
+	50%	{ clip-path: inset(10% 0 70% 0); }
+	100% { clip-path: inset(0 0 80% 0); }
+}
+
+/* Buttons that look like they escaped a reactor */
+button, .btn {
+	position: relative;
+	padding: 0.75rem 1.5rem;
+	border: 1px solid rgba(255,255,255,0.4);
+	background: radial-gradient(circle at 50% 0%, #ff3c00 0, #1a1a2e 60%, #000 100%);
+	color: #fff;
+	text-transform: uppercase;
+	letter-spacing: 0.2em;
+	cursor: pointer;
+	overflow: hidden;
+	transition: transform 0.1s ease-out, box-shadow 0.1s ease-out;
+	box-shadow: 0 0 10px rgba(255,0,102,0.6);
+}
+
+button::before,
+button::after,
+.btn::before,
+.btn::after {
+	content: "";
+	position: absolute;
+	inset: -50%;
+	background: conic-gradient(
+		from var(--entropy-angle),
+		rgba(255,0,102,0.4),
+		rgba(0,229,255,0.4),
+		rgba(255,204,0,0.4),
+		rgba(255,0,102,0.4)
+	);
+	mix-blend-mode: screen;
+	opacity: 0;
+	transition: opacity 0.2s ease-out;
+}
+
+button:hover,
+.btn:hover {
+	transform: translateY(-2px) scale(1.02);
+	box-shadow: 0 0 20px rgba(255,204,0,0.9);
+}
+
+button:hover::before,
+button:hover::after,
+.btn:hover::before,
+.btn:hover::after {
+	opacity: 1;
+}
+
+/* Make scroll feel like a malfunction */
+html {
+	scroll-behavior: smooth;
+}
+
+body {
+	background-attachment: fixed;
+}
+

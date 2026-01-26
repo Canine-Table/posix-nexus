@@ -4,6 +4,6 @@ from flask import render_template
 main = app1.blueprint("main", "/")
 
 @main.route('/')
-def main():
+def index():
     return render_template('index.html')
 

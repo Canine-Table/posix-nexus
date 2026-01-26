@@ -1,2 +1,0 @@
-netns delete nex-a
-netns delete nex-b

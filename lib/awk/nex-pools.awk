@@ -1,38 +1,5 @@
 #nx_include nex-misc.awk
 
-# D1:	the data to add
-# D2	the pool size
-# D3:	header size
-#
-# D2 == number	-> D1 is size of new blk
-
-# [0] = pool size (defaults to 64 cannot be lower can be greater)
-# [1] = header size (defaults to 8, if > half the pool size, the header is half the pool)
-
-# P defined as pool and B defined as block size
-# if V[P + 0] % B == 1 then
-#	next pool pointer
-# else if V[P + 0] < 0 then
-#	next freed pool pointer
-# else
-#	current top index of the pool which is not full
-# end
-
-# V[P + 1]
-# if V[P + 1] < 0 then
-#	if V[P + 0] > 0 then
-#		V[P + 1] == top most pool in the chain
-#	else
-#		previous freed pool
-#	end
-#
-# else
-#	previous pool
-# end
-
-# V[P + 2] == cursor pool index for that pool still a TODO
-# V[P + 4] == iterator pool index for that pool
-
 function nx_blk_flags(N, V, n, m, b, p)
 {
 	n = 1

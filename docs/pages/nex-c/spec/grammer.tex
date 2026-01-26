@@ -1,0 +1,93 @@
+\def\nxGram#1{\nxSpec{grammer/#1}}
+\nxSections{Grammer}{2}
+
+\begin{center}
+	\begin{bnf}(
+	prod-delim = ;;;,
+	new-line-delim = !,
+	single-line-delim = ?,
+	comment = //,
+	relation = {:::=},
+	relation-sym-map = { {:::=} = $\Coloneqq$ },
+)[
+	colspec = lrcll
+]
+		<symbol> :::=
+			! <prefix-token> <name> <order> <terminator>
+		;;;
+		<prefix-token> :::=
+			! "NX" | "nX" | "nx" | "Nx"
+		;;;
+		<order> :::=
+			! <order-usa> :in: "NX"
+			! <order-aus> :in: "nX"
+			! <order-asu> :in: "nx"
+			! <order-sua> :in: "Nx"
+		;;;
+		<name> :::=
+			! <letter>
+			! <letter> <name>
+		;;;
+		<letter> :::=
+			! "a" | "b" | "c" | "d" | "e" | "f" | "g" | "h" | "i" | "j"
+			! "k" | "l" | "m" | "n" | "o" | "p" | "q" | "r" | "s" | "t"
+			! "u" | "v" | "w" | "x" | "y" | "z"
+			! "A" | "B" | "C" | "D" | "E" | "F" | "G" | "H" | "I" | "J"
+			! "K" | "L" | "M" | "N" | "O" | "P" | "Q" | "R" | "S" | "T"
+			! "U" | "V" | "W" | "X" | "Y" | "Z"
+		;;;
+		<order-usa> :::=
+			! <unsigned> | <signed> | <auto>
+		;;;
+		<order-aus> :::=
+			! <auto> | <unsigned> | <signed>
+		;;;
+		<order-asu> :::=
+			! <auto> | <signed> | <unsigned>
+		;;;
+		<order-sua> :::=
+			! <signed> | <unsigned> | <auto>
+		;;;
+		<int> :::=
+			! v | V : short
+			! i | I : int
+			! l | L : long
+		;;;
+		<float> :::=
+			! f | F : float
+			! e | E : double
+		;;;
+		<auto> :::=
+			! <size>
+		;;;
+		<signed> :::=
+			! <float>
+			! <int>
+			! <auto>
+		;;;
+		<unsigned> :::=
+			! <int>
+			! <auto>
+		;;;
+		<size> :::=
+			! b | B : 1 byte
+			! w | W : 2 bytes
+			! d | D : 4 bytes
+			! a | A : 8 bytes
+			! o | O : 16 bytes
+			! h | H : 32 bytes
+			! s | S : 64 bytes
+			! p | P : 128 bytes
+			! x | X : 256 bytes
+		;;;
+		<terminator> :::=
+			! "F" | "E" | "M" | "H" | "S" | "U" | "C" | "G" | "T"
+		;;;
+	\end{bnf}
+\end{center}
+
+
+
+
+\nxGram{prefix}
+\nxGram{grouping}

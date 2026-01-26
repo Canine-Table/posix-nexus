@@ -1,0 +1,23 @@
+\documentclass[a4paper,12pt]{article}
+\newif\ifnxBIB
+\nxBIBfalse
+\newif\ifnxGLS
+\nxGLSfalse
+\input{../lib/tex/nex-preamble.tex}
+\nxHyper[]%
+\nxSnowFade%
+\nxNoParIndent
+\def\nxInput#1{\input{./pages/nex-c/#1.tex}}%
+
+\begin{document}
+	\nxCoverPage[%
+		title={C89},%
+		ref={\nxGithubLight}%
+	]
+	\nxRomanFooter
+	\nxToc{Contents}
+	\newpage
+	\nxSnowFlakeHeader{C89}
+	\nxInput{spec}
+\end{document}
+

@@ -1,5 +1,4 @@
 vlan add dev nexus0 vid 176
 vlan add dev bridge0 vid 176 self
 vlan add dev questing vid 176 pvid untagged
-vlan add dev wdc2019 vid 176 pvid untagged
 vlan add dev wdc2022 vid 176 pvid untagged

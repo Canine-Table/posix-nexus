@@ -1,0 +1,13 @@
+@import url("ambient-noise.css");
+@import url("entropy-core.css");
+@import url("fracture-motion.css");
+
+.zero {
+	display: none;
+}
+.container {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+

@@ -18,9 +18,87 @@
 	\newpage
 	\nxSnowFlakeHeader{\LaTeX}
 	%hello world
-	\directlua{tex.print(nex.bit.str(391))}
 	%\nxLoadedLua{}
 	%\nxInput{testa}
+
+\begin{tikzpicture}
+	% Outer rectangle
+	\node[
+		draw,
+		minimum width=\textwidth,
+		minimum height=\textheight,
+		fill=blue,
+		fill opacity=0.5
+	] (outer) {};
+
+% Margin
+\def\m{5mm}
+
+% Example: anchor inner rectangle to outer.north west
+\path let
+  \p1 = (outer.west),
+  \p2 = (outer.east)
+in
+  coordinate (innerNW) at ($(\p1)+( \m,-\m)$)
+  coordinate (innerNE) at ($(\p2)-(\m,-\m)$); % inner size
+
+\node[fill=green, fit={(innerNW) (innerNE)}] (nav) {Navbar};
+
+\end{tikzpicture}
+
+
+\begin{comment}
+
+\begin{tikzpicture}
+
+  % Outer rectangle
+  \node[draw, minimum width=6cm, minimum height=4cm] (outer) {};
+
+  % Inner rectangle inset by 5mm
+  \node[draw, fit=(outer), inner sep=5mm] (inner) {};
+\end{tikzpicture}
+
+\begin{tikzpicture}
+
+% Outer rectangle
+\node[
+  draw,
+  minimum width=10cm,
+  minimum height=5cm
+] (outer) {};
+
+% Compute inner usable area (outer minus 5mm margin)
+\path let
+  \p1 = (outer.north west),
+  \p2 = (outer.south east)
+in
+  coordinate (UL) at ($(\p1)+(5mm,-5mm)$)
+  coordinate (LR) at ($(\p2)+(-5mm,5mm)$);
+
+% Now compute midline for two children with 5mm spacing
+\path let
+  \p3 = (UL),
+  \p4 = (LR)
+in
+  coordinate (midL) at ($(\p3)!0.5!(\p4)$)
+  coordinate (midR) at ($(\p3)!0.5!(\p4)$);
+
+% Child widths
+\path let
+  \p3 = (UL),
+  \p4 = (LR)
+in
+  coordinate (C1L) at (\p3)
+  coordinate (C1R) at ($(\p3)!0.5!(\p4)+( -2.5mm,0)$) % half minus 5mm/2
+  coordinate (C2L) at ($(\p3)!0.5!(\p4)+( 2.5mm,0)$)
+  coordinate (C2R) at (\p4);
+
+% Draw children
+\draw (C1L) rectangle (C1R);
+\draw (C2L) rectangle (C2R);
+
+\end{tikzpicture}
+\end{comment}
 
 \end{document}
 

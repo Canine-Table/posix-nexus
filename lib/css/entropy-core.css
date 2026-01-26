@@ -1,0 +1,118 @@
+/* entropy-core.css */
+/* If you're reading this, I'm sorry. Blame entropy. */
+
+:root {
+	--entropy: 0deg;
+	--void-black: #000000;
+	--signal-white: #ffffff;
+	--noise-indigo: #1a1a2e;
+	--fracture-magenta: #ff0066;
+	--collapse-orange: #ff3c00;
+	--plasma-cyan: #00e5ff;
+	--ghost-mint: #a0ffe6;
+	--harmonic-lavender: #c0c0ff;
+	--entropy: 0deg;
+	animation: mutate 20s infinite linear;
+}
+
+@keyframes mutate {
+	to { --entropy: 360deg; }
+}
+
+.entropic {
+	filter: hue-rotate(var(--entropy));
+}
+
+/* Global destabilization */
+html, body {
+	margin: 15;
+	padding: 0;
+	background: radial-gradient(circle at 50% 50%, #050505 0%, #000 60%, #000 100%);
+	color: var(--signal-white);
+	font-family: "Courier New", monospace;
+	overflow-x: hidden;
+	animation: global-breath 13.37s infinite alternate ease-in-out;
+	filter: contrast(140%) brightness(90%);
+}
+
+@keyframes global-breath {
+	0%	 { filter: contrast(100%) brightness(100%); }
+	25%  { filter: contrast(180%) brightness(70%); }
+	50%  { filter: contrast(220%) brightness(60%); }
+	75%  { filter: contrast(150%) brightness(110%); }
+	100% { filter: contrast(120%) brightness(95%); }
+}
+
+/* Headings as radioactive sigils */
+h1, h2, h3, h4, h5, h6 {
+	letter-spacing: 0.15em;
+	text-transform: uppercase;
+	text-shadow:
+		0 0 4px var(--fracture-magenta),
+		0 0 8px var(--plasma-cyan),
+		0 0 16px var(--collapse-orange),
+		0 0 32px var(--noise-indigo);
+}
+
+/* Links: they should not feel safe */
+a {
+	color: var(--plasma-cyan);
+	text-decoration: none;
+	position: relative;
+	transition: color 0.2s ease, text-shadow 0.2s ease;
+}
+
+a::after {
+	content: "";
+	position: absolute;
+	left: 0;
+	bottom: -0.2em;
+	width: 100%;
+	height: 1px;
+	background: linear-gradient(90deg, var(--fracture-magenta), var(--plasma-cyan), var(--collapse-orange));
+	transform-origin: left;
+	transform: scaleX(0);
+	transition: transform 0.25s ease-out;
+}
+
+a:hover {
+	color: var(--collapse-orange);
+	text-shadow: 0 0 8px var(--fracture-magenta);
+}
+
+a:hover::after {
+	transform: scaleX(1);
+}
+
+/* Sections as unstable plates of reality */
+section {
+	padding: 3rem 5vw;
+	border-top: 1px solid rgba(255,255,255,0.08);
+	border-bottom: 1px solid rgba(255,255,255,0.08);
+	background:
+		radial-gradient(circle at 10% 0%, rgba(255,0,102,0.08) 0, transparent 50%),
+		radial-gradient(circle at 90% 100%, rgba(0,229,255,0.08) 0, transparent 50%);
+	backdrop-filter: blur(2px);
+}
+
+/* Paragraphs: slightly drifting, never fully still */
+p {
+	line-height: 1.6;
+	transform: translateY(0);
+	animation: text-drift 20s infinite ease-in-out alternate;
+}
+
+@keyframes text-drift {
+	0%	 { transform: translateY(0px); }
+	50%  { transform: translateY(-2px); }
+	100% { transform: translateY(1px); }
+}
+
+img, video, canvas {
+	filter:
+		hue-rotate(90deg)
+		saturate(300%)
+		contrast(180%)
+		blur(1px)
+		drop-shadow(0 0 10px #ff0066);
+}

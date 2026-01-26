@@ -1,0 +1,176 @@
+\nxSections{Grouping}{3}
+
+\begin{NxLightBox}[title={Order Group Summary}]
+	\begin{tabularx}{\linewidth}{|l|X|}
+		\hline
+		\textbf{Order Group} & \textbf{Resolution Priority} \\
+		\hline
+		\texttt{<order-usa>} & unsigned > signed > auto \\
+		\hline
+		\texttt{<order-aus>} & auto > unsigned > signed \\
+		\hline
+		\texttt{<order-asu>} & auto > signed > unsigned \\
+		\hline
+		\texttt{<order-sua>} & signed > unsigned > auto \\
+		\hline
+	\end{tabularx}
+\end{NxLightBox}
+
+\begin{NxLightListBox}[title={Order Group Conductor — The Resolution Glyph}]
+	\nxEachArw{ArrowDark}{Secondary}{1}{%
+		{Purpose}/{Define the priority sequence for resolving type-groups (unsigned, signed, auto)},%
+		{Groups}/{\nxLnArcBox[]{\nxListDark}
+			\begin{NxLightList}
+				\nxEachArw{CodeSuccess}{Secondary}{1}{%
+					{<order-usa>}/{unsigned > signed > auto},%
+					{<order-aus>}/{auto > unsigned > signed},%
+					{<order-asu>}/{auto > signed > unsigned},%
+					{<order-sua>}/{signed > unsigned > auto}%
+				}
+			\end{NxLightList}
+		},%
+		{Invariant}/{Auto is never permitted in the middle position; only four permutations are valid},%
+		{Use Case}/{Selected by prefix-token to determine which type-group is attempted first during type resolution}%
+	}
+\end{NxLightListBox}
+
+\begin{NxLightBox}[title={Type Group Summary}]
+	\begin{tabularx}{\linewidth}{|l|X|}
+		\hline
+		\textbf{Group} & \textbf{Description} \\
+		\hline
+		\texttt{<signed>} & Accepts floats, ints, or auto-sized types \\
+		\hline
+		\texttt{<unsigned>} & Accepts ints or auto-sized types \\
+		\hline
+		\texttt{<auto>} & Resolves to a size token (b, w, d, a, o, h, s, p, x) \\
+		\hline
+		\texttt{<int>} & v/V = short, i/I = int, l/L = long \\
+		\hline
+		\texttt{<float>} & f/F = float, e/E = double \\
+		\hline
+	\end{tabularx}
+\end{NxLightBox}
+
+\begin{NxLightListBox}[title={Type Group Conductor — The Resolution Families}]
+	\nxEachArw{ArrowDark}{Secondary}{1}{%
+		{Purpose}/{Define the semantic families of types that can be selected by the prefix ordering},%
+		{Groups}/{\nxLnArcBox[]{\nxListDark}
+			\begin{NxLightList}
+				\nxEachArw{CodeSuccess}{Secondary}{1}{%
+					{<signed>}/{Accepts \emph{float}, \emph{int}, or \emph{auto} types},%
+					{<unsigned>}/{Accepts \emph{int} or \emph{auto} types},%
+					{<auto>}/{Resolves to a physical width token (b–x)},%
+					{<int>}/{v/V = short; i/I = int; l/L = long},%
+					{<float>}/{f/F = float; e/E = double}%
+				}
+			\end{NxLightList}
+		},%
+		{Invariant}/{Signed types include floats; unsigned types do not; auto defers to size resolution},%
+		{Use Case}/{These groups form the selectable branches inside each <order-*> permutation}%
+	}
+\end{NxLightListBox}
+
+
+\begin{NxLightBox}[title={Size Token Summary}]
+	\begin{tabularx}{\linewidth}{|l|X|}
+		\hline
+		\textbf{Token} & \textbf{Width} \\
+		\hline
+		b / B & 1 byte \\
+		\hline
+		w / W & 2 bytes \\
+		\hline
+		d / D & 4 bytes \\
+		\hline
+		a / A & 8 bytes \\
+		\hline
+		o / O & 16 bytes \\
+		\hline
+		h / H & 32 bytes \\
+		\hline
+		s / S & 64 bytes \\
+		\hline
+		p / P & 128 bytes \\
+		\hline
+		x / X & 256 bytes \\
+		\hline
+	\end{tabularx}
+\end{NxLightBox}
+
+
+\begin{NxLightListBox}[title={Size Token Conductor — The Physical Width Ladder}]
+	\nxEachArw{ArrowDark}{Secondary}{1}{%
+		{Purpose}/{Define the primitive physical widths used by <auto> and symbolic-width constructions},%
+		{Width}/{\nxLnArcBox[]{\nxListDark}
+			\begin{NxLightList}
+				\nxEachArw{CodeSuccess}{Secondary}{1}{%
+					{b/B}/{1 byte},%
+					{w/W}/{2 bytes},%
+					{d/D}/{4 bytes},%
+					{a/A}/{8 bytes},%
+					{o/O}/{16 bytes},%
+					{h/H}/{32 bytes},%
+					{s/S}/{64 bytes},%
+					{p/P}/{128 bytes},%
+					{x/X}/{256 bytes}%
+				}
+			\end{NxLightList}
+		},%
+		{Invariant}/{This ladder represents the complete set of primitive machine widths; symbolic widths must be composed from these atoms},%
+		{Use Case}/{Used by <auto> to resolve size, and by symbolic-width forms such as x08x to construct larger composite widths}%
+	}
+\end{NxLightListBox}
+
+\begin{NxLightBox}[title={Terminator Summary}]
+	\begin{tabularx}{\linewidth}{|l|X|}
+		\hline
+		\textbf{Terminator} & \textbf{Meaning} \\
+		\hline
+		F & Function \\
+		\hline
+		E & Enum \\
+		\hline
+		S & Struct \\
+		\hline
+		H & Header guard \\
+		\hline
+		U & Union \\
+		\hline
+		G & Guard (used in .c files; .h uses H) \\
+		\hline
+		C & Constant \\
+		\hline
+		M & Macro \\
+		\hline
+		T & Typedef (fallback category) \\
+		\hline
+	\end{tabularx}
+\end{NxLightBox}
+
+\begin{NxLightBox}[title={Terminator Summary}]
+	\begin{tabularx}{\linewidth}{|l|X|}
+		\hline
+		\textbf{Terminator} & \textbf{Meaning} \\
+		\hline
+		F & Function \\
+		\hline
+		E & Enum \\
+		\hline
+		S & Struct \\
+		\hline
+		H & Header guard \\
+		\hline
+		U & Union \\
+		\hline
+		G & Guard (used in .c files; .h uses H) \\
+		\hline
+		C & Constant \\
+		\hline
+		M & Macro \\
+		\hline
+		T & Typedef (fallback category) \\
+		\hline
+	\end{tabularx}
+\end{NxLightBox}
+

@@ -130,13 +130,10 @@ link set nexus0 master bridge0
 link set nexus0 up
 
 # Create TAP device for QEMU
-tuntap add dev questing mode tap user root group root
+tuntap add dev questing mode tap user user group user
 link set questing master bridge0
 link set questing up
-tuntap add dev wdc2019 mode tap user root group root
-link set wdc2019 master bridge0
-link set wdc2019 up
-tuntap add dev wdc2022 mode tap user root group root
+tuntap add dev wdc2022 mode tap user user group user
 link set wdc2022 master bridge0
 link set wdc2022 up
 
@@ -146,7 +143,6 @@ cat > nex-br-qemu-176.batch << 'EOF'
 vlan add dev nexus0 vid 176
 vlan add dev bridge0 vid 176 self
 vlan add dev questing vid 176 pvid untagged
-vlan add dev wdc2019 vid 176 pvid untagged
 vlan add dev wdc2022 vid 176 pvid untagged
 EOF
 

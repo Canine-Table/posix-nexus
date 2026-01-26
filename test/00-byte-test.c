@@ -1,6 +1,6 @@
 #include "headers/nex-bw.h"
 //#include "headers/nex-vm.h"
-#include "headers/NX-db.h"
+#include "headers/nex-byte.h"
 #include <stdio.h>
 #include <limits.h>
 
@@ -107,44 +107,6 @@ int main(int argc, const char *argv[])
 	NX_clamp_b1w1W1W1WF(&resD, &resA, &resB, &resC);
 	printf("clamp(999,42,42): %hu\n", NX_get_v1WF(&resD));
 
-
-	/*
-	unsigned long myVar = 4;
-	myVar = NX_bwOn_lLLF(myVar,3);
-	printf("is bit 3 on?: %lu\n", NX_bwIs_lLLF(myVar, 3));
-	myVar = NX_bwOff_lLLF(myVar,2);
-	printf("is bit 2 on?: %lu\n", NX_bwIs_lLLF(myVar, 2));
-	myVar = NX_bwFlip_lLLF(myVar,2);
-	printf("is bit 2 on?: %lu\n", NX_bwIs_lLLF(myVar, 2));
-	myVar = NX_bwFlip_lLLF(myVar,2);
-	printf("is bit 2 on?: %lu\n", myVar);
-	printf("is bit 2 on?: %lu\n", NX_bwIs_lLLF(myVar, 2));
-
-	// rotate
-	myVar = NX_bwRight_lLLF(myVar,5);
-	printf("is bit 2 on?: %lu\n", myVar);
-	myVar = NX_bwRight_lLLF(myVar,5);
-	printf("is bit 2 on?: %lu\n", myVar);
-	myVar = NX_bwLeft_lLLF(myVar,10);
-	printf("is bit 2 on?: %lu\n", myVar);
-
-	myVar = NX_bwLeft_lLLF(myVar,10);
-	printf("is bit 2 on?: %lu\n", myVar);
-	
-	myVar = 10;
-	myVar = NX_bwNextBit_lLF(myVar + 1);
-	printf("is bit 2 on?: %lu\n", myVar);
-	myVar = NX_bwNextBit_lLF(myVar + 1);
-	printf("is bit 2 on?: %lu\n", myVar);
-	myVar = NX_bwNextBit_lLF(myVar + 1);
-	printf("is bit 2 on?: %lu\n", myVar);
-	myVar = NX_bwNextBit_lLF(myVar + 1);
-	printf("is bit 2 on?: %lu\n", myVar);
-
-	*/
 	return(1);
 }
 
-
-/*
-*/
