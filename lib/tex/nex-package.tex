@@ -2,12 +2,26 @@
 \usepackage{eso-pic} % Enables color for text and backgrounds; eso-pic allows background overlays
 \usepackage[twoside]{fancyhdr} % Customizes headers and footers for a professional document layout
 \usepackage{forest}
+%\usepackage[a-3b]{pdfx}
 
-\usepackage[
-	margin=2cm, % Sets uniform margins around the page
-	top=3cm, % Adds additional space at the top
-	bottom=3cm % Adds additional space at the bottom
-]{geometry} % Controls page dimensions
+
+\ifnxLandscape
+	\usepackage[%
+		landscape,%
+		a3paper,%
+		margin=0cm,%
+		top=0cm,%
+		bottom=0cm%
+	]{geometry}
+\else
+	\usepackage[%
+		portrait,%
+		margin=2cm,% Sets uniform margins around the page
+		top=3cm,% Adds additional space at the top
+		bottom=3cm% Adds additional space at the bottom
+	]{geometry}% Controls page dimensions
+\fi
+
 
 \usepackage[colorlinks]{hyperref} % Makes references and URLs clickable within the document
 \usepackage{graphicx}
@@ -38,11 +52,6 @@
 %\usepackage[utf8]{inputenc}
 \usepackage[english]{babel}
 \usepackage{simplebnf}
-
-\usepackage[
-	math-style=ISO,
-	warnings-off={mathtools-colon, mathtools-overbracket},
-]{unicode-math}
 
 \usepackage[
 	most,%

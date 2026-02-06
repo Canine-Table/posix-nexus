@@ -1,0 +1,52 @@
+.nx-tooltip {
+	position: absolute;
+	z-index: 9999;
+
+	/* Geometry */
+	padding: var(--nx-space-1) var(--nx-space-2);
+	border-radius: 4px;
+	max-width: 18rem;
+
+	/* Zero’s palette */
+	background: var(--c-collapse-1);
+	color: var(--c-zero-0);
+	font-family: var(--zero-font);
+	font-size: 0.85rem;
+	line-height: 1.4;
+
+	/* Concave interior */
+	box-shadow:
+		inset 0 0 8px rgba(0,0,0,0.25),
+		0 2px 6px rgba(0,0,0,0.35);
+
+	/* Subtle fade-in */
+	opacity: 0;
+	transform: translateY(4px);
+	transition:
+		opacity 0.2s ease,
+		transform 0.2s cubic-bezier(.25,.8,.25,1);
+
+	pointer-events: none;
+}
+
+
+.nx-tooltip::after {
+	content: "";
+	position: absolute;
+	bottom: 100%;
+	left: 1rem;
+
+	border-width: 6px;
+	border-style: solid;
+	border-color: transparent transparent var(--c-collapse-1) transparent;
+}
+
+[data-nx-tooltip] {
+  position: relative;
+}
+
+[data-nx-tooltip]:hover .nx-tooltip {
+  opacity: 1;
+  transform: translateY(0);
+}
+

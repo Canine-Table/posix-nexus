@@ -1,4 +1,4 @@
-function! PlugUpdateUpgrade()
+function! NxPlugUpdateUpgrade()
 	execute 'PlugUpdate'
 	execute 'PlugUpgrade'
 endfunction
@@ -45,9 +45,11 @@ call plug#begin(g:nex_vim_config . 'plugged')
 	Plug 'preservim/vim-markdown'
 	Plug 'iamcco/markdown-preview.nvim'
 	Plug 'godlygeek/tabular'
-	Plug 'github/copilot.vim'
 	Plug 'nordtheme/vim'
 	Plug 'tpope/vim-fugitive'
+	Plug 'mattn/emmet-vim'
+	Plug 'vim-airline/vim-airline'
+	Plug 'vim-airline/vim-airline-themes'
 
 call plug#end()
 

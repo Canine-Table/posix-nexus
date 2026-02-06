@@ -1,0 +1,179 @@
+/* Open state of the dialog  */
+dialog.nx-dialog-box:open {
+  opacity: 1;
+  transform: scaleY(1);
+}
+
+/* Closed state of the dialog   */
+dialog.nx-dialog-box {
+  opacity: 0;
+  transform: scaleY(0);
+  transition:
+    opacity 0.7s ease-out,
+    transform 0.7s ease-out,
+    overlay 0.7s ease-out allow-discrete,
+    display 0.7s ease-out allow-discrete;
+  /* Equivalent to
+  transition: all 0.7s allow-discrete; */
+}
+
+/* Transition the :backdrop when the dialog modal is promoted to the top layer */
+dialog.nx-dialog-box::backdrop {
+  background-color: transparent;
+  transition:
+    display 0.7s allow-discrete,
+    overlay 0.7s allow-discrete,
+    background-color 0.7s;
+  /* Equivalent to
+  transition: all 0.7s allow-discrete; */
+  animation: backdrop-fade-in 0.7s ease-out forwards;
+}
+
+dialog.nx-dialog-box:open::backdrop {
+  background-color: rgb(0 0 0 / 25%);
+}
+
+dialog.nx-dialog-box[open] {
+	background-image: linear-gradient(
+		45deg,
+		magenta,
+		rebeccapurple,
+		dodgerblue,
+		green
+	);
+	border: 1px solid rgba(255,255,255,0.12);
+	border-radius: 6px;
+	border-style: inset;
+	max-width: 75vw;
+	width: 100%;
+	color: var(--c-zero-0);
+	box-shadow:
+		0 0 24px rgba(0,0,0,0.45),
+		inset 0 0 18px rgba(0,0,0,0.35);
+	z-index: 998;
+	position: absolute;
+	overflow: hidden;
+
+	/* Subtle inward collapse */
+	animation: nx-dialog-collapse 0.35s cubic-bezier(.25,.8,.25,1);
+}
+
+@keyframes nx-dialog-collapse {
+	from { transform: scale(1.06) translateY(-6px); opacity: 0; }
+	to	 { transform: scale(1) translateY(0); opacity: 1; }
+}
+
+.nx-dialog-actions {
+	display: flex;
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	padding: var(--nx-space-2) var(--nx-space-2);
+	width: 100%;
+	justify-content: flex-end;
+	box-sizing: border-box;
+	gap: var(--nx-space-2);
+}
+
+.nx-dialog-title {
+	position: absolute;
+	display: flex;
+	justify-content: center;
+	top: 0;
+	left: 0;
+	width: 100%;
+	border: 1px solid rgba(255,255,255,0.12);
+	padding: var(--nx-space-1) var(--nx-space-2);
+	border-style: none none inset none;
+	text-shadow: none;
+	background: var(--c-collapse-2); /* optional: gives it a header-bar feel */
+	box-sizing: border-box;
+}
+
+.nx-dialog-close {
+	position: absolute;
+	right: 0;
+	padding: var(--nx-space-2) var(--nx-space-3);
+	cursor: pointer;
+	color: var(--c-zero-1);
+	background: transparent;
+	border: none;
+	mask: var(--nx-close) center / contain no-repeat;
+	background-color: currentColor;
+	/* Nabla’s inverse: a quiet cancellation */
+	opacity: 0.65;
+	transition:
+		opacity 0.25s ease,
+		transform 0.25s cubic-bezier(.25,.8,.25,1);
+}
+
+.nx-dialog-close:hover {
+	opacity: 1;
+	transform: scale(1.05);
+}
+
+.nx-dialog-close:active {
+	transform: scale(0.95);
+}
+
+.nx-dialog-body {
+	position: absolute;
+	padding: var(--nx-space-3);
+	margin: var(--nx-space-4) 0 var(--nx-space-4) 0;
+
+	color: var(--c-zero-0);
+	font-family: var(--zero-font);
+	line-height: 1.6;
+	border-radius: 6px;
+
+	/* Subtle inward pull to match the vessel aesthetic */
+	background: var(--c-collapse-1);
+	box-shadow:
+		inset 0 0 12px rgba(0,0,0,0.25),
+		inset 0 0 24px rgba(0,0,0,0.15);
+	position: relative;
+}
+
+
+
+
+/* Animation keyframes */
+
+@keyframes fade-in {
+  0% {
+    opacity: 0;
+    transform: scaleY(0);
+    display: none;
+  }
+
+  100% {
+    opacity: 1;
+    transform: scaleY(1);
+    display: block;
+  }
+}
+
+@keyframes fade-out {
+  0% {
+    opacity: 1;
+    transform: scaleY(1);
+    display: block;
+  }
+
+  100% {
+    opacity: 0;
+    transform: scaleY(0);
+    display: none;
+  }
+}
+
+@keyframes backdrop-fade-in {
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 0.25;
+  }
+}
+

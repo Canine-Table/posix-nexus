@@ -1,0 +1,54 @@
+.nx-button {
+	display: inline-block;
+	padding: var(--nx-space-2) var(--nx-space-3);
+	border: 1px solid rgba(255,255,255,0.18);
+	border-radius: 4px;
+	border-style: inset;
+
+	/* Zero’s palette for the resting state */
+	background: var(--c-collapse-1);
+	color: var(--c-zero-0);
+	letter-spacing: 0.12em;
+
+	cursor: pointer;
+	position: relative;
+	overflow: hidden;
+
+	/* Subtle inward pull */
+	transition:
+		background 0.25s ease,
+		color 0.25s ease,
+		border-color 0.25s ease,
+		transform 0.2s cubic-bezier(.25,.8,.25,1);
+}
+
+/* Hover: Nabla awakens */
+.nx-button:hover {
+	background: var(--c-collapse-2);
+	border-color: var(--c-zero-1);
+	transform: translateY(-1px);
+}
+
+/* Active: the collapse event */
+.nx-button:active {
+	background: var(--c-collapse-3);
+	color: var(--signal-white);
+	transform: translateY(0) scale(0.98);
+}
+
+/* Nabla pulse — optional but very on‑brand */
+.nx-button::after {
+	content: "∇";
+	position: absolute;
+	right: var(--nx-space-2);
+	top: 50%;
+	transform: translateY(-50%) rotate(var(--entropy));
+	opacity: 0.25;
+	pointer-events: none;
+	transition: opacity 0.3s ease;
+}
+
+.nx-button:hover::after {
+	opacity: 0.45;
+}
+

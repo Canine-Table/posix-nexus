@@ -1,0 +1,2 @@
+vlan add dev nexus0 vid 208
+vlan add dev bridge0 vid 208 self

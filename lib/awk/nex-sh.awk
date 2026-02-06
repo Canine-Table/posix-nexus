@@ -217,9 +217,3 @@ function nx_sh_optargs(D1, N, D2, D3, D4, args, trk, stk, kwdas, kwds, grp, grps
 	return D1
 }
 
-
-#nx_sh_look(V, D)
-#{
-
-#}
-

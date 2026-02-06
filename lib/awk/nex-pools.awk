@@ -1,4 +1,5 @@
 #nx_include nex-misc.awk
+#nx_include nex-int-extras.awk
 
 function nx_blk_flags(N, V, n, m, b, p)
 {
@@ -29,24 +30,28 @@ function nx_blk_flags(N, V, n, m, b, p)
 function nx_blk_init(V, N1, N2,
 	dir, blk, hdr, tp, pl, sn)
 {
+	# this one isnt a test param, remove it and you will break everything
 	sn = 1
 
 	if (N1 < 0) {
 		sn = -sn
 		N1 = -N1
-		if (N2 > 0)
+		if (N2 < 0)
 			N2 = -N2
 	} else if (N2 < 0) {
 		N2 = -N2
 	}
 
- 	N1 = __nx_if((N1 = nx_blk_flags(N1) * 2) > 64, N1, 64)
+	# Mi pool size = 4, 2 header slots, 2 body slots
+ 	N1 = __nx_if((N1 = nx_blk_flags(N1) * 2) > 2, N1, 4)
  	hdr = N2 / 2
- 	if ((N2 = int(N2)) > hdr)
+ 	if ((N2 = int(N2)) >= N1)
  		N2 = hdr
- 	else if (N2 < 8)
- 		N2 = 8
+ 	else if (N2 < 2)
+ 		N2 = 2
 
+	N1 = N1 * sn
+	N2 = N2 * sn
 	if (sn == 1) {
 		blk = 0
 		hdr = 1
@@ -60,11 +65,12 @@ function nx_blk_init(V, N1, N2,
 		dir = -4
 		pl = -N1
 	}
-	V[blk] = pl # set the pool size
+	V[blk] = N1 # set the pool size
 	V[hdr] = N2 # set the header size
+	pl = N1 * nx_ceiling(8 / N1) * sn
 	V[tp] = pl
 	V[dir] = sn
-	V[pl] = pl + N2
+	V[pl + sn] = pl + N2 - sn
 	return pl
 }
 
@@ -114,7 +120,6 @@ function _nx_blk_realloc(V, N1, N2, N3, N4, N5,
 		}
 		delete V[cur]
 	} else { # new pool needed
-		print "aa"
 		N1 = V[N3] + N1
 		cur = N1
 		V[N3] = N1
@@ -122,7 +127,16 @@ function _nx_blk_realloc(V, N1, N2, N3, N4, N5,
 	V[cur + N5] = cur + N2
 	return cur
 }
+
 #################################################################
+
+function nx_blk_free(V, N)
+{
+	if (N < 0)
+		return nx_blk_Pfree(V, N)
+	return nx_blk_pfree(V, N)
+}
+
 function nx_blk_pfree(V, N)
 {
 	return _nx_blk_free(V, N, V[0], V[1], 3, V[4])
@@ -191,20 +205,82 @@ function nx_blk_ppush(V, N, D)
 # N3:	top ptr
 # N4:	free list index ptr
 function _nx_blk_push(V, N1, N2, N3, D,
-	pl, cur, tp)
+	pl, tp)
 {
-	pl = N1
-	tp = V[N1] + N3
+	pl = N1 - N1 % N2
+	tp = V[pl + N3] + N3
 	if (!(tp % N2)) { # zero
-		pl = nx_blk_realloc(V, N1)
+		# it works, just trust me bro
+		pl = nx_blk_realloc(V, tp)
 		tp = V[pl + N3]
 		V[N1 + N3] = pl
 		V[pl] = N1
 	}
-	V[pl] = tp
+	V[pl + N3] = tp
 	V[tp] = D
 	return pl
 }
+
+function nx_blk_pop(V, N)
+{
+	if (N < 0)
+		return nx_blk_Ppop(V, N, D)
+	return nx_blk_ppop(V, N, D)
+}
+
+function nx_blk_Ppop(V, N)
+{
+	return _nx_blk_pop(V, N, V["-0"], V[-4], V[-1])
+}
+
+function nx_blk_ppop(V, N)
+{
+	return _nx_blk_pop(V, N, V[0], V[4], V[1])
+}
+
+
+# N1: The index the caller is trying to pop from
+#	- determine which pool this index belongs to
+#	- compute the pool base
+#	- compute the offset inside the pool
+#	- determine whether the pool is empty after the pop
+# N2: The pool size (blk)
+#	- defines the width of each pool
+#	- compute the pool base via N1 - N1 % N2
+#	- compute the offset inside the pool via tp % N2
+#	- detect header crossing and pool emptiness
+#	- ensure top‑pointer movement stays inside the pool
+# N3 — top ptr (directional top‑pointer offset)
+# N4 — hdr (header size)
+function _nx_blk_pop(V, N1, N2, N3, N4,
+	pl, cur, tp, hdr, pp)
+{
+	pl = N1 - N1 % N2
+	pp = V[pl + N3]
+	tp = pp
+	hdr = N4 * N3
+	cur = (tp % N2) * N3
+	if (cur < hdr) {
+		if (pl in V) {
+			cur = V[pl]
+			tp = V[cur + N3] - N3
+		} else {
+			cur = cur * N3
+		}
+		nx_blk_free(V, pl)
+		pl = cur
+	} else {
+		tp = tp - N3
+	}
+	delete V[pp]
+	V[pl + N3] = tp
+	return tp
+}
+
+
+# function nx_blk_peek(V, N,
+# function nx_blk_fwd_piter(V, N,
+# function nx_blk_rvs_piter(V, N,
 
 # 
 # function nx_blk_rvs_piter(V, N,

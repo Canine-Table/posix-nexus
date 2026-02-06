@@ -84,9 +84,9 @@ class NxFlaskBase:
         bp = Blueprint(
             name,
             self.app.import_name,
-            template_folder=self.templates,
-            static_folder=self.static,
-            static_url_path=self.url(url_prefix)
+            template_folder=url_prefix + self.templates,
+            static_folder=url_prefix + self.static,
+            static_url_path=url_prefix + self.static
         )
 
         self.bp[name] = bp
@@ -103,13 +103,14 @@ class NxFlaskBase:
     # Start Server
     # -------------------------
 
-    def start(self):
+    def start(self, ssl_context=None):
         if self.pkgs:
             self.app.jinja_env = NxJinjaBase(loader = ChoiceLoader(self.pkgs))
         self.app.run(
             debug = self.debug,
             host = self.host,
-            port = self.port
+            port = self.port,
+            ssl_context=ssl_context
         )
         return self.app
 

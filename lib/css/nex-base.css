@@ -1,0 +1,120 @@
+:root {
+	--sm: 576px;
+	--md: 768px;
+	--lg: 992px;
+	--xl: 1200px;
+	--zero-font: "Linux Libertine", "Linux Libertine O", serif;
+	--zero-header: "Linux Biolinum", sans-serif;
+	--zero-chaos-duration: 6s;
+	--zero-chaos-ease: cubic-bezier(0.25, 0.1, 0.25, 1);
+
+	--nx-close: url('data:image/svg+xml;utf8,<svg role="close" aria-label="Close" xmlns="http://www.w3.org/2000/svg" fill="white" viewBox="0 0 16 16"><path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708"/></svg>');
+	--nx-check: url('data:image/svg+xml;utf8,<svg role="alert" aria-label="Check Mark" xmlns="http://www.w3.org/2000/svg" fill="white" viewBox="0 0 16 16"><path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/></svg>');
+	--nx-warn: url('data:image/svg+xml;utf8,<svg role="alert" aria-label="Warning" xmlns="http://www.w3.org/2000/svg" fill="white" viewBox="0 0 16 16"><path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/></svg>');
+	--nx-info: url('data:image/svg+xml;utf8,<svg role="alert" aria-label="Information" xmlns="http://www.w3.org/2000/svg" fill="white" viewBox="0 0 16 16"><path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z"/></svg>');
+
+	--zero-glow:
+		0 0 4px var(--fracture-magenta),
+		0 0 8px var(--plasma-cyan),
+		0 0 16px var(--collapse-orange),
+		0 0 32px var(--noise-indigo);
+
+	/* Spacing scale (Divergence) */
+	--nx-space-1: 0.25rem;
+
+	--nx-space-2: 0.5rem;
+	--nx-space-3: 1rem;
+	--nx-space-4: 2rem;
+	--nx-space-5: 3rem;
+
+	/* Layout widths (Dimensionality) */
+	--nx-max-width: 72rem;
+	--nx-max-width-wide: 96rem;
+
+	/* Breakpoints */
+	--nx-bp-sm: 40rem;
+	--nx-bp-md: 56rem;
+	--nx-bp-lg: 72rem;
+
+	/* Collapse */
+	--c-collapse-0: #0A0A0C;
+	--c-collapse-1: #1A1A1F;
+	--c-collapse-2: #2B1F33;
+	--c-collapse-3: #3A3A42;
+
+	/* Tension */
+	--c-tension-0: #5A0A0A;
+	--c-tension-1: #7A1E13;
+	--c-tension-2: #A3421C;
+	--c-tension-3: #B85A2A;
+
+	/* Forking */
+	--c-fork-0: #D6A32A;
+	--c-fork-1: #E8C84A;
+	--c-fork-2: #F2E56C;
+	--c-fork-3: #FFFFF2;
+
+	/* Return */
+	--c-zero-0: #C7C7D1;
+	--c-zero-1: #9A9AA5;
+	--c-zero-2: #6F7A88;
+	--c-zero-3: #1A1A1F;
+
+	--entropy: 0deg;
+	--void-black: #000000;
+	--signal-white: #ffffff;
+	--noise-indigo: #1a1a2e;
+	--fracture-magenta: #ff0066;
+	--collapse-orange: #ff3c00;
+	--plasma-cyan: #00e5ff;
+	--ghost-mint: #a0ffe6;
+	--harmonic-lavender: #c0c0ff;
+	--collapsing‑red: #C04000;
+}
+
+* {
+	font-family: var(--zero-font);
+}
+
+/* If you're reading this, I'm sorry. Blame entropy. */
+/* Headings as radioactive sigils */
+h1, h2, h3, h4, h5, h6,
+.nx-legend,
+.nx-button,
+.nx-dialog-title {
+	font-family: var(--zero-header);
+	letter-spacing: 0.15em;
+	text-transform: uppercase;
+	text-shadow: var(--zero-glow);
+	color: var(--c-zero-0);
+}
+
+@keyframes global-breath {
+	0%	 { filter: contrast(100%) brightness(100%); }
+	25%  { filter: contrast(180%) brightness(70%); }
+	50%  { filter: contrast(220%) brightness(60%); }
+	75%  { filter: contrast(150%) brightness(110%); }
+	100% { filter: contrast(120%) brightness(95%); }
+}
+
+@keyframes mutate {
+	to { --entropy: 360deg; }
+}
+
+body {
+	padding: 0;
+	background: radial-gradient(
+		circle at center,
+		var(--c-collapse-2) 0%,
+		var(--c-collapse-1) 35%,
+		var(--c-collapse-0) 100%
+	);
+	color: var(--c-zero-0);
+	overflow-x: hidden;
+	/*filter: contrast(140%) brightness(90%);
+	animation:
+		global-breath 13.37s infinite alternate ease-in-out,
+		mutate 20s infinite linear;
+		*/
+}
+

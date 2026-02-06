@@ -1,0 +1,24 @@
+\documentclass{article}
+\newif\ifnxBIB
+\nxBIBfalse
+
+\newif\ifnxGLS
+\nxGLSfalse
+
+\newif\ifnxLandscape
+\nxLandscapetrue
+
+\input{../lib/tex/nex-preamble.tex}
+%\nxHyper[]%
+%\def\nxInput#1{\input{./pages/nex-awk/#1.tex}}%
+\pagestyle{empty}
+\begin{document}
+	\begin{tcbposter}[
+		coverage = {spread},
+		poster = {showframe,columns=4,rows=5}
+	]
+		poster
+	\end{tcbposter}
+
+\end{document}
+

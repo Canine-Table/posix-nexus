@@ -1,0 +1,26 @@
+
+
+.nex-canvas {
+    background-image: url("https://cdn.wallpapersafari.com/98/65/JT1jNk.jpg");
+    background-repeat: no-repeat;
+    background-position: center;
+    justify-content: center;
+    background-size: cover;
+    align-items: center;
+    position: relative;
+    display: flex;
+    height: 50vh;
+    width: 90vw;
+}
+
+.nex-canvas-item {
+	background-image: url("https://pngimg.com/uploads/mysql/mysql_PNG4.png");
+	background-position: center;
+	background-repeat: no-repeat;
+	height: 64px;
+	width: 64px;
+	position: absolute;
+	background-size: 32px;
+	z-index: 100;
+}
+

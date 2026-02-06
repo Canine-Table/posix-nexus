@@ -167,7 +167,7 @@ function! s:NxColorTheme()
 	try
 		colorscheme nord
 	catch /^Vim\%((\a\+)\)\=:E185/
-		call PlugUpdateUpgrade()
+		call NxPlugUpdateUpgrade()
 		try
 			colorscheme dracula-soft
 		catch /^Vim\%((\a\+)\)\=:E185/

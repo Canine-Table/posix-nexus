@@ -3,11 +3,19 @@ ${AWK:-$(nx_cmd_awk)} "
 	$(nx_data_include -i "${NEXUS_LIB}/awk/nex-pools.awk")
 "'
 	BEGIN {
-		n = nx_blk_init(stk, 64, 8)
+		n = nx_blk_init(stk, -4, -2)
 		n = nx_blk_push(stk, n, "hello")
 		n = nx_blk_push(stk, n, "hello")
 		n = nx_blk_push(stk, n, "world")
 		n = nx_blk_push(stk, n, "world")
+		n = nx_blk_push(stk, n, "world")
+		n = nx_blk_push(stk, n, "world")
+		
+
+		n = nx_blk_pop(stk, n)
+		n = nx_blk_pop(stk, n)
+		n = nx_blk_pop(stk, n)
+		n = nx_blk_pop(stk, n)
 
 		#p = nx_blk_ppush(stk, n, "hello")
 		#n = nx_blk_ppush(stk, p, "world")

@@ -26,12 +26,17 @@ link set bridge0 alias "Logical software bridge device aggregating multiple inte
 link set bridge0 group 1
 link set bridge0 up
 
+
+
 link add link bridge0 name bridge.176 type vlan id 176
 address add 172.16.176.1/20 label "vlan176:qemu" dev bridge.176
 link set bridge.176 group 3
 link set bridge.176 up
 
 link set nexus0 name nexus
+
+
+# qemu ###############################################################
 link add vlan176 type veth peer name nexus0
 link property add dev vlan176 altname qemu_net
 link set vlan176 alias "Virtual wired ethernet device connecting the qemu network on vlan 176 to the backbone switch."
@@ -45,6 +50,29 @@ link set nexus0 group 3
 link set nexus0 up
 
 link set nexus0 netns nex-qemu-176
+
+
+# pods ###############################################################
+link add link bridge0 name bridge.208 type vlan id 208
+address add 172.16.208.1/20 label "vlan208:pods" dev bridge.208
+link set bridge.208 group 3
+link set bridge.208 up
+
+link add vlan208 type veth peer name nexus0
+link property add dev vlan208 altname pod_net
+link set vlan208 alias "Virtual wired ethernet device connecting the podman network on vlan 208 to the backbone switch."
+link set vlan208 group 3
+link set vlan208 up
+link set vlan208 master bridge0
+
+link property add dev nexus0 altname pod_gw
+link set nexus0 alias "Virtual wired ethernet device refered to by nexus0 for the podman pods and containers."
+link set nexus0 group 3
+link set nexus0 up
+
+link set nexus0 netns nex-pod-208
+
+######################################################################
 
 link set nexus name nexus0
 address add 172.16.128.2/17 label "nexus0:gateway" dev nexus0

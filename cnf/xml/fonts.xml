@@ -1,0 +1,69 @@
+<?xml version="1.0"?>
+<!DOCTYPE fontconfig SYSTEM "fonts.dtd">
+<fontconfig>
+
+	<!-- Serif -->
+	<alias>
+		<family>serif</family>
+		<prefer>
+			<family>Linux Libertine O</family>
+			<family>Libertinus Serif</family>
+		</prefer>
+	</alias>
+
+	<!-- Sans -->
+	<alias>
+		<family>sans-serif</family>
+		<prefer>
+			<family>Linux Biolinum O</family>
+			<family>Libertinus Sans</family>
+		</prefer>
+	</alias>
+
+	<!-- Monospace -->
+	<alias>
+		<family>monospace</family>
+		<prefer>
+			<family>Libertinus Mono</family>
+		</prefer>
+	</alias>
+
+	<rejectfont>
+		<pattern>
+			<family>Noto Sans</family>
+		</pattern>
+	</rejectfont>
+
+	<rejectfont>
+		<pattern>
+			<family>Noto Serif</family>
+		</pattern>
+	</rejectfont>
+
+	<rejectfont>
+		<pattern>
+			<family>DejaVu Sans</family>
+		</pattern>
+	</rejectfont>
+
+	<rejectfont>
+		<pattern>
+			<family>DejaVu Serif</family>
+		</pattern>
+	</rejectfont>
+
+	<rejectfont>
+		<pattern>
+			<family>Cantarell</family>
+		</pattern>
+	</rejectfont>
+
+	<match target="font">
+		<edit name="antialias" mode="assign"><bool>true</bool></edit>
+		<edit name="hinting" mode="assign"><bool>true</bool></edit>
+		<edit name="hintstyle" mode="assign"><const>hintslight</const></edit>
+		<edit name="rgba" mode="assign"><const>rgb</const></edit>
+		<edit name="lcdfilter" mode="assign"><const>lcddefault</const></edit>
+	</match>
+</fontconfig>
+

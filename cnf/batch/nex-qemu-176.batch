@@ -29,4 +29,3 @@ link set questing up
 tuntap add dev wdc2022 mode tap user user group user
 link set wdc2022 master bridge0
 link set wdc2022 up
-

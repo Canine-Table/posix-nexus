@@ -11,4 +11,6 @@ test "$(id -u)" -eq 0 || {
 }
 
 nx_ip_s_phy
+. "$NEXUS_CNF/batch/nex-ns.sh"
+
 

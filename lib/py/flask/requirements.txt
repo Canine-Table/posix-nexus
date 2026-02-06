@@ -1,3 +1,4 @@
+cryptography
 asttokens
 backcall
 bcrypt
@@ -63,4 +64,6 @@ pyScss
 Flask-Scss
 Flask-SQLAlchemy
 Flask-Webpack
+svg2tikz
+python-ffmpeg
 
