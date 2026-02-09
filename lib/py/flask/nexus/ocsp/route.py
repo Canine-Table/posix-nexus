@@ -1,70 +1,73 @@
-from nexus import app1
-from flask import render_template
-
-"""
-from flask import Blueprint, request, Response
-from cryptography import x509
+from flask import request, Response
 from cryptography.x509 import ocsp
-from cryptography.hazmat.primitives import hashes, serialization
-from datetime import datetime, timezone, timedelta
+from cryptography import x509
+from cryptography.hazmat.primitives import serialization
+from pathlib import Path
 import os
-"""
 
-# ----------------------------------------
+from nexus.modules.nx_flask import NxFlaskBase, NxFlaskBlueprint
+from nexus.modules.nx_pki import NxPKIOCSPService, NxPKISerializer, NxPKIOCSPResolver
+from nexus.modules.nx_sqlalchemy import NxSQLSession, NxPKIOCSPStatus
+
+# -------------------------------------------------------------------
+# One-time responder cert/key load
+# -------------------------------------------------------------------
+env_root = Path(os.environ["NEXUS_ENV"])
+resolver = NxPKIOCSPResolver(env_root)
+
+RESPONDER_CERT, RESPONDER_KEY = resolver.load_responder_credentials(
+    "python-flask-ocsp-cert.pem",
+    "python-flask-ocsp-key.pem"
+)
+
+
+# -------------------------------------------------------------------
 # Blueprint
-# ----------------------------------------
-#, methods=["POST"]
+# -------------------------------------------------------------------
+ocsp_bp = NxFlaskBlueprint(__file__, "/ocsp")
 
-ocsp_bp = app1.blueprint("ocsp_bp", "/ocsp/")
-@ocsp_bp.route("/ocsp")
-def index_s():
-    return render_template('index.html')
-
-
-# ----------------------------------------
-# OCSP Endpoint
-# ----------------------------------------
-"""
-@ocsp_bp.route("/", methods=["POST"])
+# -------------------------------------------------------------------
+# OCSP RESPONSE ENDPOINT
+# -------------------------------------------------------------------
+@ocsp_bp.post("")
 def ocsp_responder():
-    req_bytes = request.get_data()
+    der = request.data
 
-    # Parse OCSP request
-    ocsp_req = ocsp.load_der_ocsp_request(req_bytes)
+    try:
+        req = ocsp.load_der_ocsp_request(der)
+    except Exception:
+        return Response("invalid OCSP request", status=400)
 
-    # Build OCSP response
-    builder = ocsp.OCSPResponseBuilder()
-
-    builder = builder.add_response(
-        cert=LEAF_CERT,
-        issuer=ISSUER_CERT,
-        algorithm=hashes.SHA1(),
-        cert_status=ocsp.OCSPCertStatus.GOOD,
-        this_update=datetime.now(timezone.utc),
-        next_update=datetime.now(timezone.utc) + timedelta(days=1),
-        revocation_time=None,
-        revocation_reason=None,
+    # DB lookup
+    serial_hex = format(req.serial_number, "x")
+    session = NxSQLSession()
+    status, rev_time, rev_reason = NxPKIOCSPStatus.lookup_ocsp_status(
+        session,
+        serial_hex,
     )
 
-    builder = builder.responder_id(
-        ocsp.OCSPResponderEncoding.HASH,
-        ISSUER_CERT
-    )
+    # Load certificate + issuer (for now: same cert, self-signed)
+    with open(env_root / "python-flask-cert.pem", "rb") as f:
+        cert_being_checked = x509.load_pem_x509_certificate(f.read())
 
-    response = builder.sign(
-        private_key=ISSUER_KEY,
-        algorithm=hashes.SHA256()
+    issuer_cert = cert_being_checked  # self-signed; later: real issuer resolution
+
+    # Delegate OCSPResponse construction to nx_pki
+    response_der = NxPKIOCSPService.build_response_der(
+        der_request=der,
+        status=status,
+        rev_time=rev_time,
+        rev_reason=rev_reason,
+        certificate=cert_being_checked,
+        issuer_certificate=issuer_cert,
+        responder_cert=RESPONDER_CERT,
+        responder_key=RESPONDER_KEY,
     )
 
     return Response(
-        response.public_bytes(),
-        mimetype="application/ocsp-response"
+        response_der,
+        status=200,
+        mimetype="application/ocsp-response",
     )
 
-# ----------------------------------------
-# Export for Nexus loader
-# ----------------------------------------
 
-def get_blueprint():
-    return ocsp_bp
-"""

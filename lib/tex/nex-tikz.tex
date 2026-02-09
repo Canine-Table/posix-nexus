@@ -31,6 +31,56 @@
 				}
 				] (0,0) -- (0.55,0);
 	},
+  nxBike/.pic={
+		\begin{pgfscope}
+		{
+			\pgfsetlinewidth{0.8pt}
+		}
+
+			\pgfpathmoveto{\pgfpoint{15mm}{5mm}}
+			\pgfpathlineto{\pgfpoint{8mm}{0mm}}
+			\pgfpathlineto{\pgfpoint{17mm}{-2mm}}
+			\pgfpathlineto{\pgfpoint{14.6mm}{6mm}}
+
+			\pgfpathmoveto{\pgfpoint{13mm}{6mm}}
+			\pgfpathlineto{\pgfpoint{16mm}{6.3mm}}
+
+			\pgfpathmoveto{\pgfpoint{15mm}{5mm}}
+			\pgfpathlineto{\pgfpoint{22.8mm}{6mm}}
+			\pgfpathlineto{\pgfpoint{17mm}{-2mm}}
+
+			\pgfpathmoveto{\pgfpoint{21.8mm}{9mm}}
+			\pgfpathlineto{\pgfpoint{24.5mm}{2mm}}
+			\pgfpathlineto{\pgfpoint{26.5mm}{0mm}}
+
+
+			\pgfpathcircle{\pgfpoint{8mm}{0mm}}{3ex}
+			\pgfpathcircle{\pgfpoint{26.5mm}{0mm}}{3ex}
+			\pgfpathcircle{\pgfpoint{21.8mm}{9mm}}{0.2ex}
+
+			\pgfpathcircle{\pgfpoint{8mm}{0mm}}{1ex}
+			\pgfpathcircle{\pgfpoint{17mm}{-2mm}}{1ex}
+			\pgfusepath{stroke}
+
+			\pgfsetfillcolor{black}
+			\pgfpathcircle{\pgfpoint{21.8mm}{9mm}}{0.2ex}
+			\pgfusepath{fill}
+		\end{pgfscope}
+	},
+	nxPerson/.pic = {
+		\draw[black, line width=0.8pt]
+			(-0.2,-0.2) circle (0.12); % head
+		\draw[black, line width=0.8pt]
+			(-0.2,-0.32) -- (-0.2,-0.8); % torso
+		\draw[black, line width=0.8pt]
+			(-0.2,-0.8) -- (-0.45,-1.3); % left leg
+		\draw[black, line width=0.8pt]
+			(-0.2,-0.8) -- (0.05,-1.3); % right leg
+		\draw[black, line width=0.8pt]
+			(-0.2,-0.45) -- (-0.55,-0.65); % left arm (carrying)
+		\draw[black, line width=0.8pt]
+			(-0.2,-0.45) -- (0.15,-0.65); % right arm (balancing)
+	},
 	nxCol/.style={%
 			text=nex.#1.text,%
 			fill=nex.#1.back,%

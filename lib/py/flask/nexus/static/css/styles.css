@@ -7,7 +7,10 @@
 @import url('./css/nex-dialog.css');
 @import url('./css/nex-spinner.css');
 @import url('./css/nex-tooltip.css');
+:body {
 
+	background: black;
+}
 /*
 	@import url('./css/nex-accordion.css');
 */

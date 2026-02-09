@@ -79,7 +79,6 @@ function! NxConfigureLaTeXMK()
 			\ '-verbose',
 			\ '-file-line-error',
 			\ '-synctex=1',
-			\ '-pdflatex-option=format=linear',
 			\ '-interaction=nonstopmode',
 		\ ],
 		\ 'continuous' : 1,

@@ -1,24 +1,34 @@
 from typing import Optional, Dict, Any, Union
 from cryptography import (
-        x509, ocsp
+        x509
 )
+
 from cryptography.hazmat.primitives import (
         serialization, hashes
 )
-from cryptography.x509 import Certificate
+
+from cryptography.x509 import (
+    Certificate,
+    ocsp
+)
+
 from cryptography.hazmat.primitives.asymmetric import (
         ec, rsa
 )
+
 from cryptography.x509.oid import (
         NameOID, ExtensionOID,
         ObjectIdentifier, ExtendedKeyUsageOID
 )
+
 from datetime import (
         datetime, timedelta, timezone
 )
+
 from cryptography.x509.ocsp import (
         OCSPRequest, OCSPResponse
 )
+
 import ipaddress
 
 class NxPKIBase:
@@ -45,7 +55,7 @@ class NxPKIBase:
         state_or_province_name: str = "Ontario",
         locality_name: str = "Ottawa",
         organization_name: str = "Posix-Nexus",
-        emailAddress: Optional[str] = None,
+        emailAddress: Optional[str] = 'zero@empty.set',
     ) -> Dict[str, Any]:
         return {
             "common_name": common_name,
@@ -373,26 +383,50 @@ class NxPKIOCSP:
     Represents the data needed to build an OCSP request or response.
     """
 
+class NxPKIOCSP:
     def __init__(
         self,
-        *,
-        serial_number: int,
-        issuer_name_hash: bytes,
-        issuer_key_hash: bytes,
-        hash_algorithm: hashes.HashAlgorithm = hashes.SHA1(),
-        cert_status: Optional[str] = None,  # "good", "revoked", "unknown"
-        revocation_time: Optional[datetime] = None,
-        revocation_reason: Optional[int] = None,
+        certificate,
+        issuer_certificate,
+        serial_number,
+        issuer_name_hash,
+        issuer_key_hash,
+        hash_algorithm,
+        cert_status,
+        revocation_time=None,
+        revocation_reason=None,
     ):
+        self.certificate = certificate
+        self.issuer_certificate = issuer_certificate
         self.serial_number = serial_number
         self.issuer_name_hash = issuer_name_hash
         self.issuer_key_hash = issuer_key_hash
         self.hash_algorithm = hash_algorithm
-
-        # Response-only fields
         self.cert_status = cert_status
         self.revocation_time = revocation_time
         self.revocation_reason = revocation_reason
+
+    @classmethod
+    def from_request(
+        cls,
+        req,
+        certificate,
+        issuer_certificate,
+        status,
+        rev_time,
+        rev_reason
+    ):
+        return cls(
+            certificate=certificate,
+            issuer_certificate=issuer_certificate,
+            serial_number=req.serial_number,
+            issuer_name_hash=req.issuer_name_hash,
+            issuer_key_hash=req.issuer_key_hash,
+            hash_algorithm=req.hash_algorithm,
+            cert_status=status,
+            revocation_time=rev_time,
+            revocation_reason=rev_reason,
+        )
 
 
 class NxPKICertificateBuilder:
@@ -615,7 +649,6 @@ class NxPKICertificateEmitter:
 
         return builder
 
-
 class NxPKISerializer:
     """
     Handles serialization of private keys and certificates to PEM files.
@@ -652,6 +685,43 @@ class NxPKISerializer:
 
         with open(path, "wb") as f:
             f.write(pem)
+
+    @staticmethod
+    def save_as(certificate, private_key, cert_path: Path, key_path: Path):
+        NxPKISerializer.save_certificate(certificate, cert_path)
+        NxPKISerializer.save_private_key(private_key, key_path)
+        return cert_path, key_path
+
+    @staticmethod
+    def load_certificate(path: Path):
+        with open(path, "rb") as f:
+            return x509.load_pem_x509_certificate(f.read())
+
+    @staticmethod
+    def load_private_key(path: Path, password: bytes | None = None):
+        with open(path, "rb") as f:
+            return serialization.load_pem_private_key(f.read(), password=password)
+
+    @staticmethod
+    def load_cert_and_key(cert_path: Path, key_path: Path, password=None):
+        cert = NxPKISerializer.load_certificate(cert_path)
+        key  = NxPKISerializer.load_private_key(key_path, password)
+        return cert, key
+
+    @staticmethod
+    def generate_self_signed(common_name: str):
+        profile = NxPKIECDSA(common_name)
+        model = NxPKICertificateBuilder(profile).build()
+        emitter = NxPKICertificateEmitter()
+
+        builder = emitter.emit(model)
+
+        private_key = ec.generate_private_key(ec.SECP256R1())
+        builder = builder.public_key(private_key.public_key())
+
+        certificate = NxPKISigner().sign(builder, private_key)
+
+        return certificate, private_key
 
 
 class NxPKIOCSPEmitter:
@@ -721,34 +791,53 @@ class NxPKIOCSPSerializer:
             f.write(data)
 
 
+class NxPKIOCSPService:
+    @staticmethod
+    def build_response_der(
+        der_request: bytes,
+        status: str,
+        rev_time,
+        rev_reason,
+        certificate: x509.Certificate,
+        issuer_certificate: x509.Certificate,
+        responder_cert: x509.Certificate,
+        responder_key,
+    ) -> bytes:
+        # Parse OCSPRequest
+        req = ocsp.load_der_ocsp_request(der_request)
 
+        # Build OCSP model
+        model = NxPKIOCSP.from_request(
+            req,
+            certificate=certificate,
+            issuer_certificate=issuer_certificate,
+            status=status,
+            rev_time=rev_time,
+            rev_reason=rev_reason,
+        )
 
+        # Emit OCSPResponse
+        emitter = NxPKIOCSPEmitter()
+        response = emitter.emit_response(
+            model,
+            responder_cert,
+            responder_key,
+        )
 
+        return response.public_bytes(serialization.Encoding.DER)
 
+class NxPKIOCSPResolver:
+    def __init__(self, env_root: Path):
+        self.env_root = env_root
 
+    def resolve_subject_and_issuer(self, cert_path: str):
+        cert = resolver.load_certificate(self.env_root, cert_path)
+        issuer = cert  # self-signed for now
+        return cert, issuer
 
-# 1. Build the profile
-ecc = NxPKIECDSA("tufa16.home.lab")
-
-# 2. Build the model
-model = NxPKICertificateBuilder(ecc).build()
-
-# 3. Emit the cryptography builder
-emitter = NxPKICertificateEmitter()
-cert_builder = emitter.emit(model)
-
-# 4. Generate a private key
-private_key = ec.generate_private_key(ec.SECP256R1())
-
-# 5. Attach the public key (required!)
-cert_builder = cert_builder.public_key(private_key.public_key())
-
-# 6. Sign the certificate
-signer = NxPKISigner()
-certificate = signer.sign(cert_builder, private_key)
-
-
-# 6. Save key + cert
-NxPKISerializer.save_private_key(private_key, "private_key.pem")
-NxPKISerializer.save_certificate(certificate, "certificate.pem")
+    def load_responder_credentials(self, cert_file: str, key_file: str):
+        return NxPKISerializer.load_cert_and_key(
+            self.env_root / cert_file,
+            self.env_root / key_file
+        )
 
