@@ -6,7 +6,7 @@ from pathlib import Path
 import os
 
 from nexus.modules.nx_flask import NxFlaskBase, NxFlaskBlueprint
-from nexus.modules.nx_pki import NxPKIOCSPService, NxPKISerializer, NxPKIOCSPResolver
+from nexus.modules.nx_pki import NxPKISerializer, NxPKIOCSPResolver
 from nexus.modules.nx_sqlalchemy import NxSQLSession, NxPKIOCSPStatus
 
 # -------------------------------------------------------------------
@@ -15,11 +15,15 @@ from nexus.modules.nx_sqlalchemy import NxSQLSession, NxPKIOCSPStatus
 env_root = Path(os.environ["NEXUS_ENV"])
 resolver = NxPKIOCSPResolver(env_root)
 
-RESPONDER_CERT, RESPONDER_KEY = resolver.load_responder_credentials(
-    "python-flask-ocsp-cert.pem",
-    "python-flask-ocsp-key.pem"
-)
+RESPONDER_CERT, RESPONDER_KEY = NxPKISerializer.apply_ssl_context(
+            "python-flask-ocsp-cert.pem",
+            "python-flask-ocsp-key.pem",
+            "ocsp.responder.local"
+    )
 
+RESPONDER_CERT, RESPONDER_KEY = resolver.load_responder_credentials(
+        RESPONDER_CERT, RESPONDER_KEY
+    )
 
 # -------------------------------------------------------------------
 # Blueprint
@@ -47,13 +51,11 @@ def ocsp_responder():
     )
 
     # Load certificate + issuer (for now: same cert, self-signed)
-    with open(env_root / "python-flask-cert.pem", "rb") as f:
-        cert_being_checked = x509.load_pem_x509_certificate(f.read())
-
+    cert_being_checked = NxPKISerializer.load_certificate(env_root / "python-flask-cert.pem")
     issuer_cert = cert_being_checked  # self-signed; later: real issuer resolution
 
     # Delegate OCSPResponse construction to nx_pki
-    response_der = NxPKIOCSPService.build_response_der(
+    response_der = NxPKIOCSPResolver.build_response_der(
         der_request=der,
         status=status,
         rev_time=rev_time,

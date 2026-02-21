@@ -1,23 +1,62 @@
+link set nexus0 name nexus
+
+
 link set lo name loopback0
 link property add dev loopback0 altname lo
 link set loopback0 alias "The loopback0 does not traverse wires. It does not blink with LEDs. It does not care for MAC addresses or ARP. It is pure essence—an idea made manifest. A metaphysical interface, looping endlessly, like Ouroboros devouring its own tail."
 link set loopback0 group 772
 link set loopback0 up
 
-link add bridge0 type bridge \
-        vlan_filtering 1 \
-        vlan_default_pvid 208
 
+link add bridge0 type bridge \
+vlan_default_pvid 208 \
+vlan_filtering 1 \
+vlan_protocol "802.1Q" \
+mdb_offload_fail_notification 1 \
+vlan_stats_per_port 1 \
+mcast_stats_enabled 1 \
+mcast_igmp_version 3 \
+mcast_mld_version 1 \
+mcast_mld_version 2 \
+vlan_stats_enabled 1
 link property add dev bridge0 altname backbone208
 link set bridge0 alias "Logical software bridge device aggregating multiple interfaces refered to as bridge0."
 link set bridge0 group 1
 link set bridge0 up
+link add link bridge0 name bridge0.208 type vlan id 208
+address add 172.16.208.2/20 label "bridge0:qemu" dev bridge0.208
+link set bridge0.208 group 3
+link set bridge0.208 up
+route add default via 172.16.208.1 dev bridge0.208
 
-address add 172.16.208.2/20 label "bridge0:pod_gw" dev bridge0
-link set bridge0 group 1
-link set bridge0 up
-route add default via 172.16.208.1 dev bridge0
 
+######( phpmyadmin )###############################
+link add nexus1 type veth peer name nexus0
+link property add dev nexus1 altname pma_net
+link set nexus1 alias "Virtual wired ethernet container holding phpmyadmin which is connected the podman network on vlan 208."
+link set nexus1 group 3
+link set nexus1 up
+link set nexus1 master bridge0
+link property add dev nexus0 altname pma_gw
+link set nexus0 alias "Virtual wired ethernet device refered to by nexus0 for the podman guess phpmyadmin."
 link set nexus0 group 3
-link set nexus0 master bridge0
+link set nexus0 netns nex-pod-208-phpmyadmin
+
+
+######( pgadmin )###############################
+link add nexus2 type veth peer name nexus0
+link property add dev nexus2 altname pg_net
+link set nexus2 alias "Virtual wired ethernet container holding pgadmin which is connected the podman network on vlan 208."
+link set nexus2 group 3
+link set nexus2 up
+link set nexus2 master bridge0
+link property add dev nexus0 altname pg_gw
+link set nexus0 alias "Virtual wired ethernet device refered to by nexus0 for the podman guess phpmyadmin."
+link set nexus0 group 3
+link set nexus0 netns nex-pod-208-pgadmin
+
+
+###################################################
+link set nexus name nexus0
 link set nexus0 up
+link set nexus0 master bridge0

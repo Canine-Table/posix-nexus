@@ -8,171 +8,34 @@
 \newif\ifnxLandscape
 \nxLandscapetrue
 
+
 \input{../lib/tex/nex-preamble.tex}
-\nxHyper[]%
+\nxHyper[
+		title={Resume},%
+		author={Benjamin Stroobach-Wilson}%
+]%
 \def\nxInput#1{\input{./pages/nex-poster/#1.tex}}%
 \pagestyle{empty}
 \begin{document}
-\begin{comment}
-	\pgfsetbaseline{5ex}
-	\begin{pgfscope}
-	{
-		\pgfsetlinewidth{2pt}
-		\pgfpathrectangle{\pgfpointorigin}{\pgfpoint{2ex}{2ex}}
-		\pgfusepath{stroke}
-	}
-		\pgfpathrectangle{\pgfpoint{3ex}{0ex}}{\pgfpoint{2ex}{2ex}}
-		\pgfusepath{stroke}
-	\end{pgfscope}
-	\pgfpathrectangle{\pgfpoint{6ex}{0ex}}{\pgfpoint{2ex}{2ex}}
-	\pgfusepath{stroke}
-	\pgfpathcircle{\pgfpointorigin}{1ex}\pgfusepath{stroke}
-
-
-
-
 	\begin{tcbposter}[
 		coverage = {spread},
-		poster = {showframe,columns=3,rows=2}
+		poster = {columns=12,rows=5}
 	]
-		poster
+		\posterbox[%
+			nxTitle,%
+			nxSkip,%
+			inrB,%
+			crnA,%
+			nxCol = light,%
+			title = {}%
+		]{
+			name = thePython,%
+			column = 1,%
+			span = 4,%
+			below = top %
+		}{
+
+		}
 	\end{tcbposter}
-	\newpage
-	\begin{tcbposter}[
-		coverage = {spread},
-		poster = {showframe,columns=3,rows=2}
-	]
-		poster
-	\end{tcbposter}
-\pgfsetfillcolor{lightgray}
-\foreach \latitude in {-90,-75,...,30}
-{
-\foreach \longitude in {0,20,...,360}
-{
-\pgfpathmoveto{\pgfpointspherical{\longitude}{\latitude}{1}}
-\pgfpathlineto{\pgfpointspherical{\longitude+20}{\latitude}{1}}
-\pgfpathlineto{\pgfpointspherical{\longitude+20}{\latitude+15}{1}}
-\pgfpathlineto{\pgfpointspherical{\longitude}{\latitude+15}{1}}
-\pgfpathclose
-}
-\pgfusepath{fill,stroke}
-}
-
-\begin{tikzpicture}[scale=1.1]
-
-  % --- FROZEN PLANET BACKDROP ---
-  \shade[ball color=blue!50!black] (0,0) circle (3cm);
-
-  % Ice cracks (symbolic)
-  \draw[white, line width=0.6pt, opacity=0.7]
-    (-1.2,0.8) -- (-0.4,0.2) -- (-1.0,-0.4);
-  \draw[white, line width=0.6pt, opacity=0.7]
-    (0.8,1.0) -- (0.2,0.3) -- (1.1,-0.2);
-
-  % Horizon line
-  \draw[white, opacity=0.4, line width=0.4pt]
-    (-3.2,-0.2) -- (3.2,-0.2);
-
-  % --- RIDER + BIKE (as pics) ---
-  % Person first (so bike overlaps correctly)
-  \pic[scale=1.2,rotate=35] at (-0.2,-0.4) {nxPerson};
-
-  % Bike carried on shoulder
-  \pic[scale=0.8,rotate=35] at (0.1,0.2) {nxBike};
-
-  % --- TITLE ---
-  \node[white, font=\large\bfseries] at (3,6,3.6)
-    {THE FROZEN WORLD};
-
-\end{tikzpicture}
-
-\begin{tikzpicture}[scale=1.1]
-
-  % --- BACKDROP: DARKENED FROZEN PLANET ---
-  \shade[ball color=blue!10!black] (0,0) circle (3cm);
-
-  % Subtle radial glow behind Nabla
-  \shade[inner color=white!40, outer color=transparent!0]
-    (0,2.2) circle (1.2cm);
-
-  % --- NABLA SYMBOL (cosmic, authoritative) ---
-  \node[white, font=\bfseries\fontsize{48}{48}\selectfont]
-    at (0,2.2) {$\nabla$};
-
-  % Light rays (symbolic decree)
-  \foreach \a in {80,90,100} {
-    \draw[white, opacity=0.4, line width=0.6pt]
-      (0,2.2) -- ++(\a:2.8);
-  }
-
-  % --- RIDER + BIKE (unchanged, tiny, unimpressed) ---
-  \pic[scale=1.2,rotate=35] at (-0.2,-0.4) {nxPerson};
-  \pic[scale=0.8,rotate=35] at (0.1,0.2) {nxBike};
-
-  % --- TEXT: THE DECREE ---
-  \node[white, font=\large\bfseries] at (0,-3.6)
-    {NABLA'S DECREE};
-
-  % Subtext: the absurd command
-  \node[white, opacity=0.8, font=\small\bfseries] at (0,-4.2)
-    {``LET THERE BE CYCLING.''};
-
-\end{tikzpicture}
-
-\end{comment}
-
-\begin{tikzpicture}[scale=1.1]
-
-  % --- BACKDROP: FROZEN GROUND + DISTANT HORIZON ---
-  \shade[bottom color=blue!5!black, top color=blue!20!black]
-    (-3,-1.5) rectangle (3,1.5);
-
-  % Horizon line
-  \draw[white, opacity=0.4, line width=0.4pt]
-    (-3,0.2) -- (3,0.2);
-
-  % Distant ice cliffs (simple silhouettes)
-  \draw[white, opacity=0.25, line width=0.6pt]
-    (-2.8,0.2) -- (-2.0,0.6) -- (-1.2,0.2);
-  \draw[white, opacity=0.25, line width=0.6pt]
-    (1.2,0.2) -- (2.0,0.7) -- (2.8,0.2);
-
-  % --- RIDER + BIKE (entering from left) ---
-  % Person trudging forward
-  \pic[scale=1.3,rotate=10] at (-1.4,-0.4) {nxPerson};
-
-  % Bike carried awkwardly
-  \pic[scale=0.9,rotate=25] at (-0.9,0.3) {nxBike};
-
-  % Footprints in snow
-  \foreach \x in {-1.6,-1.3,-1.0,-0.7} {
-    \draw[white, opacity=0.35, line width=0.5pt]
-      (\x,-0.8) -- ++(0.15,0.05);
-  }
-
-  % --- WIND / SNOW MOTION LINES ---
-  \foreach \y in {0.8,0.4,0.0,-0.4} {
-    \draw[white, opacity=0.25, line width=0.4pt]
-      (-2.8,\y) -- ++(1.2,0.1);
-  }
-
-  % --- TITLE ---
-  \node[white, font=\large\bfseries] at (0,-3.2)
-    {THE RIDER ARRIVES};
-
-  % Subtext
-  \node[white, opacity=0.8, font=\small\bfseries] at (0,-3.8)
-    {He carries the bike. The bike carries nothing.};
-
-\end{tikzpicture}
-
-
-	%\begin{tikzpicture}
-	%\pic at (53,5) {nxBike};
-	%	(5,5) \draw[line width=0.8pt] (5mm,5mm) -- (10mm,7mm);
-		%-- (1,0) -- cycle;
-	%\draw
-
-	%\end{tikzpicture}
 \end{document}
 

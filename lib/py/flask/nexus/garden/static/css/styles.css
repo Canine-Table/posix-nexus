@@ -1,0 +1,108 @@
+@import url('./css/nex-reset.css');
+
+:root {
+	font-size: 16pt;
+  --nx-sm: 576px;
+  --nx-md: 768px;
+  --nx-lg: 992px;
+  --nx-xl: 1200px;
+  --nx-xxl: 1400px;
+}
+
+
+@media (min-width: var(--nx-sm)) {
+
+}
+
+@media (min-width: var(--nx-md)) {
+
+}
+
+@media (min-width: var(--nx-lg)) {
+
+}
+@media (min-width: var(--nx-xl)) {
+
+}
+
+@media (min-width: var(--nx-xxl)) {
+
+}
+
+header#nx-header {
+
+	nav#nx-nav {
+		width: 100%;
+		position: absolute;
+		margin: 0;
+		padding: 0;
+
+		div#nx-nav-body {
+
+			ul#nx-nav-ul {
+				display: flex;
+				align-items: center;
+				flex-wrap: wrap;
+				justify-content: space-evenly;
+				margin: 0;
+				padding: 0;
+
+				li.nx-nav-li {
+					list-style-type: none;
+					cursor: pointer;
+					margin: 1px;
+					padding: 1px;
+
+					a.nx-nav-a {
+						text-decoration: none;
+					}
+				}
+			}
+		}
+	}
+}
+
+footer#nx-footer {
+	width: 100%;
+	background: gray;
+	content: 'hello world';
+	margin: 0;
+	padding: 0;
+	bottom: 0;
+	left: 0;
+}
+
+
+/*
+header#nx-header > nav#nx-nav {
+	width: 100%;
+	position: absolute;
+	background: gray;
+	margin: 0;
+	padding: 0;
+}
+
+header#nx-header > nav#nx-nav > ul#nx-nav-ul {
+	display: flex;
+	align-items: center;
+	flex-wrap: wrap;
+	justify-content: space-evenly;
+	margin: 0;
+	padding: 0;
+}
+
+header#nx-header > nav#nx-nav > ul#nx-nav-ul > li.nx-nav-li {
+	list-style-type: none;
+	cursor: pointer;
+	margin: 1px;
+	padding: 1px;
+}
+
+header#nx-header > nav#nx-nav > div#nx-nav-body  > ul#nx-nav-ul > li.nx-nav-li > a.nx-nav-a {
+	text-decoration: none;
+}
+
+header#nx-header > nav#nx-nav.nx-hamburger > ul#nx-nav-ul > li.nx-nav-li {
+	opacity: 0;
+}
+*/

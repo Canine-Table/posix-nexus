@@ -1,0 +1,72 @@
+
+.nx-table {
+	width: 100%;
+	border-collapse: collapse;
+	margin: 2rem 0;
+	background: rgba(255,255,255,0.03);
+	border: 1px solid rgba(255,255,255,0.12);
+	border-radius: 6px;
+	overflow: hidden;
+	font-size: 0.95rem;
+	letter-spacing: 0.02em;
+}
+
+.nx-table thead th {
+	background: rgba(255,255,255,0.08);
+	color: var(--c-zero-0);
+	text-align: left;
+	padding: 0.75rem 1rem;
+	font-weight: 600;
+	border-bottom: 1px solid rgba(255,255,255,0.15);
+}
+
+.nx-table tbody tr {
+	border-bottom: 1px solid rgba(255,255,255,0.08);
+	transition: background 0.2s ease;
+}
+
+.nx-table tbody tr:hover {
+	background: rgba(255,255,255,0.05);
+}
+
+.nx-table td {
+    padding: 0.75rem 1rem;
+    color: var(--c-zero-1);
+}
+
+.nx-table tfoot td {
+	background: rgba(255,255,255,0.06);
+	padding: 0.75rem 1rem;
+	border-top: 1px solid rgba(255,255,255,0.15);
+	color: var(--c-zero-0);
+	font-weight: 500;
+}
+
+.nx-table th {
+	text-transform: uppercase;
+	letter-spacing: 0.05em;
+}
+
+.nx-table tr.nx-focus {
+	background: rgba(255,255,255,0.12);
+}
+
+.nx-table::before {
+	content: "";
+	position: absolute;
+	inset: 0;
+	background: conic-gradient(
+			from 180deg at 50% 50%,
+			rgba(255,255,255,0.08),
+			rgba(255,255,255,0.02),
+			rgba(255,255,255,0.08)
+	);
+	opacity: 0.1;
+	mix-blend-mode: overlay;
+	pointer-events: none;
+}
+
+.nx-table-wrapper {
+	position: relative;
+}
+

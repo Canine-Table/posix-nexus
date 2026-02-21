@@ -9,7 +9,6 @@ import os
 
 from .nx_pki import NxPKISerializer
 
-
 class NxFlaskBase:
     app: Flask
     host: str
@@ -52,27 +51,9 @@ class NxFlaskBase:
         for top in tree.values():
             walk(top)
 
-    @classmethod
-    def apply_ssl_context(cls, cert_filename: str, key_filename: str, hostname: str = 'localhost'):
-        env_root = Path(os.environ["NEXUS_ENV"])
-
-        cert_path = env_root / cert_filename
-        key_path  = env_root / key_filename
-
-        # If certs already exist, do nothing
-        if cert_path.exists() and key_path.exists():
-            return cert_path, key_path
-
-        # Otherwise generate them
-        certificate, private_key = NxPKISerializer.generate_self_signed(hostname)
-
-        NxPKISerializer.save_as(certificate, private_key, cert_path, key_path)
-
-        return cert_path, key_path
-
     def start(self) -> None:
 
-        cert_path, key_path = NxFlaskBase.apply_ssl_context(
+        cert_path, key_path = NxPKISerializer.apply_ssl_context(
             "python-flask-cert.pem",
             "python-flask-key.pem",
             self.hostname

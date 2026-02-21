@@ -12,7 +12,6 @@ class NxPath:
     ) -> None:
 
         root = Path(os.path.dirname(project))
-        print(root)
         if NxPath._modules is None:
             if not (name == '__main__' and root):
                 raise ValueError("__name__ must be '__main__' and __file__ must exist")
@@ -51,7 +50,6 @@ class NxPath:
     def _scan_modules(cls, root: Path):
 
         tree = {}
-        print(root)
         modules = { "root": root, "tree": tree }
         for d in [ f for f in root.rglob("__init__.py") if 'site-packages' not in f.parts ]:
             rel = d.relative_to(root).parent

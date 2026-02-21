@@ -1,17 +1,14 @@
 
 @charset 'UTF-8';
-@import url('css/nex-base.css');
+@import url('./css/nex-reset.css');
+/*@import url('css/nex-base.css');
 @import url('./css/nex-fieldset.css');
 @import url('./css/nex-legend.css');
 @import url('./css/nex-button.css');
 @import url('./css/nex-dialog.css');
 @import url('./css/nex-spinner.css');
 @import url('./css/nex-tooltip.css');
-:body {
-
-	background: black;
-}
-/*
-	@import url('./css/nex-accordion.css');
-*/
+@import url('./css/nex-accordion.css');
+@import url('./css/nex-table.css');*/
+@import url('./css/nex-nav.css');
 

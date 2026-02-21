@@ -1,0 +1,21 @@
+table inet nat {
+	chain PREROUTING {
+		type nat hook prerouting priority -100; policy accept
+		#ip saddr 172.16.128.1 tcp dport 6580 dnat to 172.16.208.4:80
+		#log prefix "[DEBUG]: inet PREROUTING chain of the nat table was accepted:" level debug counter
+	}
+	#chain INPUT {
+	#	type nat hook input priority 0; policy accept
+		#log prefix "[DEBUG]: inet INPUT chain of the nat table was accepted:" level debug counter
+	#}
+	#chain OUTPUT {
+	#	type nat hook output priority 0; policy accept
+		#log prefix "[DEBUG]: inet OUTPUT chain of the nat table was accepted:" level debug counter
+	#}
+	chain POSTROUTING {
+		type nat hook postrouting priority 100; policy accept
+		oifname "nexus0" masquerade
+		#log prefix "[DEBUG]: inet POSTROUTING chain of the nat table was not masqueraded:" level debug counter
+	}
+}
+

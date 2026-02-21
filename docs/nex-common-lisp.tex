@@ -1,0 +1,24 @@
+\documentclass[a4paper,12pt]{article}
+\newif\ifnxBIB
+\nxBIBfalse
+\newif\ifnxGLS
+\nxGLSfalse
+\newif\ifnxLandscape
+\nxLandscapefalse
+\input{../lib/tex/nex-preamble.tex}
+\nxHyper[]%
+\nxSnowFade%
+\nxNoParIndent
+\def\nxInput#1{\input{./pages/nex-common-lisp/#1.tex}}%
+\begin{document}
+	\nxCoverPage[%
+		title={Common Lisp},%
+		ref={\nxGithubLight}%
+	]
+	\nxRomanFooter
+	\nxToc{Contents}
+	\newpage
+	\nxSnowFlakeHeader{COMMON LISP}
+	\nxInput{format}
+\end{document}
+

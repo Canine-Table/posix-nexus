@@ -1,3 +1,10 @@
 vlan add dev vlan176 vid 176
+vlan add dev vlan192 vid 192
 vlan add dev vlan208 vid 208
-vlan add dev bridge0 vid 176,208,176,224,240 self
+vlan add dev vlan224 vid 224
+vlan add dev vlan240 vid 240
+vlan add dev bridge0 vid 176 self
+vlan add dev bridge0 vid 192 self
+vlan add dev bridge0 vid 208 self
+vlan add dev bridge0 vid 224 self
+vlan add dev bridge0 vid 240 self

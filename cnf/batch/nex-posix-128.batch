@@ -1,8 +1,12 @@
+link set nexus0 name nexus
+
+
 link set lo name loopback0
 link property add dev loopback0 altname lo
 link set loopback0 alias "The loopback0 does not traverse wires. It does not blink with LEDs. It does not care for MAC addresses or ARP. It is pure essence—an idea made manifest. A metaphysical interface, looping endlessly, like Ouroboros devouring its own tail."
 link set loopback0 group 772
 link set loopback0 up
+
 
 link add bridge0 type bridge \
 vlan_default_pvid 999 \
@@ -15,25 +19,10 @@ mcast_igmp_version 3 \
 mcast_mld_version 1 \
 mcast_mld_version 2 \
 vlan_stats_enabled 1
-
-
-#nf_call_iptables 1 \
-#nf_call_ip6tables 1 \
-#nf_call_arptables 1 \
-
 link property add dev bridge0 altname backbone128
 link set bridge0 alias "Logical software bridge device aggregating multiple interfaces refered to as bridge0."
 link set bridge0 group 1
 link set bridge0 up
-
-
-
-link add link bridge0 name bridge.176 type vlan id 176
-address add 172.16.176.1/20 label "vlan176:qemu" dev bridge.176
-link set bridge.176 group 3
-link set bridge.176 up
-
-link set nexus0 name nexus
 
 
 # qemu ###############################################################
@@ -43,42 +32,88 @@ link set vlan176 alias "Virtual wired ethernet device connecting the qemu networ
 link set vlan176 group 3
 link set vlan176 up
 link set vlan176 master bridge0
-
 link property add dev nexus0 altname qemu_gw
 link set nexus0 alias "Virtual wired ethernet device refered to by nexus0 for the qemu virtual machines."
 link set nexus0 group 3
 link set nexus0 up
-
 link set nexus0 netns nex-qemu-176
+link add link bridge0 name bridge0.176 type vlan id 176
+address add 172.16.176.1/20 label "vlan176:qemu" dev bridge0.176
+link set bridge0.176 group 3
+link set bridge0.176 up
+
+
+# vpn ###############################################################
+link add vlan192 type veth peer name nexus0
+link property add dev vlan192 altname vpn_net
+link set vlan192 alias "Virtual wired ethernet device connecting the vpn network on vlan 192 to the backbone switch."
+link set vlan192 group 3
+link set vlan192 up
+link set vlan192 master bridge0
+link property add dev nexus0 altname vpn_gw
+link set nexus0 alias "Virtual wired ethernet device refered to by nexus0 for the wiregard and openvpn."
+link set nexus0 group 3
+link set nexus0 netns nex-vpn-192
+link add link bridge0 name bridge0.192 type vlan id 192
+address add 172.16.192.1/20 label "vlan192:vpn" dev bridge0.192
+link set bridge0.192 group 3
+link set bridge0.192 up
 
 
 # pods ###############################################################
-link add link bridge0 name bridge.208 type vlan id 208
-address add 172.16.208.1/20 label "vlan208:pods" dev bridge.208
-link set bridge.208 group 3
-link set bridge.208 up
-
 link add vlan208 type veth peer name nexus0
 link property add dev vlan208 altname pod_net
 link set vlan208 alias "Virtual wired ethernet device connecting the podman network on vlan 208 to the backbone switch."
 link set vlan208 group 3
 link set vlan208 up
 link set vlan208 master bridge0
-
 link property add dev nexus0 altname pod_gw
 link set nexus0 alias "Virtual wired ethernet device refered to by nexus0 for the podman pods and containers."
 link set nexus0 group 3
-link set nexus0 up
-
 link set nexus0 netns nex-pod-208
+link add link bridge0 name bridge0.208 type vlan id 208
+address add 172.16.208.1/20 label "vlan208:pod" dev bridge0.208
+link set bridge0.208 group 3
+link set bridge0.208 up
+
+
+# iscsi ###############################################################
+link add vlan224 type veth peer name nexus0
+link property add dev vlan224 altname iscsi_net
+link set vlan224 alias "Virtual wired ethernet device connecting the iscsi storage network on vlan 224 to the backbone switch."
+link set vlan224 group 3
+link set vlan224 up
+link set vlan224 master bridge0
+link property add dev nexus0 altname iscsi_gw
+link set nexus0 alias "Virtual wired ethernet device refered to by nexus0 for the iscsi storage network"
+link set nexus0 group 3
+link set nexus0 netns nex-iscsi-224
+link add link bridge0 name bridge0.224 type vlan id 224
+address add 172.16.224.1/20 label "vlan224:iscsi" dev bridge0.224
+link set bridge0.224 group 3
+link set bridge0.224 up
+
+
+# services ###############################################################
+link add vlan240 type veth peer name nexus0
+link property add dev vlan240 altname srv_net
+link set vlan240 alias "Virtual wired ethernet device connecting the management and services network on vlan 240 to the backbone switch."
+link set vlan240 group 3
+link set vlan240 up
+link set vlan240 master bridge0
+link property add dev nexus0 altname srv_gw
+link set nexus0 alias "Virtual wired ethernet device refered to by nexus0 for services and managment."
+link set nexus0 group 3
+link set nexus0 netns nex-srv-240
+link add link bridge0 name bridge0.240 type vlan id 240
+address add 172.16.240.1/20 label "vlan240:srv" dev bridge0.240
+link set bridge0.240 group 3
+link set bridge0.240 up
+
 
 ######################################################################
-
 link set nexus name nexus0
 address add 172.16.128.2/17 label "nexus0:gateway" dev nexus0
 link set nexus0 group 3
 link set nexus0 up
 route add default via 172.16.128.1 dev nexus0
-
-link set bridge0 up
-

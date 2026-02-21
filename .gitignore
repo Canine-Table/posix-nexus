@@ -34,41 +34,6 @@ buildNumber.properties
 build/
 !gradle/wrapper/gradle-wrapper.jar
 
-##############################
-## IntelliJ IDEA
-##############################
-.idea/
-*.iml
-*.ipr
-*.iws
-out/
-
-##############################
-## Eclipse
-##############################
-.project
-.classpath
-.settings/
-bin/
-tmp/
-.metadata
-
-##############################
-## NetBeans
-##############################
-nbproject/private/
-build/
-nbbuild/
-dist/
-nbdist/
-nbactions.xml
-nb-configuration.xml
-
-##############################
-## VS Code
-##############################
-.vscode/
-*.code-workspace
 
 ##############################
 ## OS-specific
@@ -77,6 +42,7 @@ nb-configuration.xml
 Thumbs.db
 
 # LaTeX auxiliary files
+**/auxiliary
 *.aux
 *.lof
 *.log

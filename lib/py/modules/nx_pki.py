@@ -30,6 +30,8 @@ from cryptography.x509.ocsp import (
 )
 
 import ipaddress
+from pathlib import Path
+import os
 
 class NxPKIBase:
     """
@@ -330,6 +332,7 @@ class NxPKIOCSPEmitter:
             algorithm=hashes.SHA256(),
         )
 
+
 class NxPKIExtensions:
     san: NxPKISAN
     policies: List[NxPKIPolicy]
@@ -383,7 +386,6 @@ class NxPKIOCSP:
     Represents the data needed to build an OCSP request or response.
     """
 
-class NxPKIOCSP:
     def __init__(
         self,
         certificate,
@@ -723,6 +725,29 @@ class NxPKISerializer:
 
         return certificate, private_key
 
+    @staticmethod
+    def apply_ssl_context(
+        cert_filename: str,
+        key_filename: str,
+        hostname: str = 'localhost',
+        environ: Path = Path(os.environ["NEXUS_ENV"])
+    ):
+        cert_path = environ / cert_filename
+        key_path  = environ / key_filename
+
+        # If certs already exist, do nothing
+        if cert_path.exists() and key_path.exists():
+            return cert_path, key_path
+
+        # Otherwise generate them
+        certificate, private_key = NxPKISerializer.generate_self_signed(hostname)
+
+        print(key_path)
+
+        NxPKISerializer.save_as(certificate, private_key, cert_path, key_path)
+
+        return cert_path, key_path
+
 
 class NxPKIOCSPEmitter:
     """
@@ -743,7 +768,7 @@ class NxPKIOCSPEmitter:
     def emit_response(self, model: NxPKIOCSP, responder_cert, responder_key):
         builder = ocsp.OCSPResponseBuilder()
 
-        # Map cert_status string → cryptography enum
+        # Map cert_status string -> cryptography enum
         if model.cert_status == "good":
             status = ocsp.OCSPCertStatus.GOOD
         elif model.cert_status == "revoked":
@@ -779,19 +804,38 @@ class NxPKIOCSPSerializer:
     """
 
     @staticmethod
-    def save_request(request: OCSPRequest, path: str):
+    def save_request(
+        request: NxPKIOCSPResolver,
+        path: str
+    ):
         data = request.public_bytes(serialization.Encoding.DER)
         with open(path, "wb") as f:
             f.write(data)
 
     @staticmethod
-    def save_response(response: OCSPResponse, path: str):
+    def save_response(
+        response: NxPKIOCSPResolver,
+        path: str
+    ) -> None:
         data = response.public_bytes(serialization.Encoding.DER)
         with open(path, "wb") as f:
             f.write(data)
 
+class NxPKIOCSPResolver:
+    def __init__(self, env_root: Path = Path(os.environ["NEXUS_ENV"])):
+        self.env_root = env_root
 
-class NxPKIOCSPService:
+    def resolve_subject_and_issuer(self, cert_path: str):
+        cert = NxPKISerializer.load_certificate(self.env_root / cert_path)
+        issuer = cert  # self-signed for now
+        return cert, issuer
+
+    def load_responder_credentials(self, cert_file: str, key_file: str):
+        return NxPKISerializer.load_cert_and_key(
+            self.env_root / cert_file,
+            self.env_root / key_file
+        )
+
     @staticmethod
     def build_response_der(
         der_request: bytes,
@@ -825,19 +869,4 @@ class NxPKIOCSPService:
         )
 
         return response.public_bytes(serialization.Encoding.DER)
-
-class NxPKIOCSPResolver:
-    def __init__(self, env_root: Path):
-        self.env_root = env_root
-
-    def resolve_subject_and_issuer(self, cert_path: str):
-        cert = resolver.load_certificate(self.env_root, cert_path)
-        issuer = cert  # self-signed for now
-        return cert, issuer
-
-    def load_responder_credentials(self, cert_file: str, key_file: str):
-        return NxPKISerializer.load_cert_and_key(
-            self.env_root / cert_file,
-            self.env_root / key_file
-        )
 
