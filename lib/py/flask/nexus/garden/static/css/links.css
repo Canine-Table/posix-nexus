@@ -1,0 +1,15 @@
+/* ----------------------------- */
+/* LINKS												 */
+/* ----------------------------- */
+
+a {
+	color: var(--dried-thyme);
+	text-decoration: none;
+	border-bottom: 1px dotted var(--dried-thyme);
+}
+
+a:hover {
+	color: var(--blush);
+	border-bottom-color: var(--blush);
+}
+

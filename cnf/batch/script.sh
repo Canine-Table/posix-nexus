@@ -1,93 +1,24 @@
-#######( cleanup )#################################
-
+#!/bin/sh
 test -d "$NEXUS_CNF" || exit 1
 
+
+#######( cleanup )#################################
 cat > "$NEXUS_CNF/batch/clean.batch" <<- 'EOF'
 	link delete nexus0 type veth
 	netns delete nex-posix-128
 	netns delete nex-qemu-176
 	netns delete nex-pod-208
-	netns delete nex-pod-208-phpmyadmin
+	netns delete nex-pod-208-adminer
 	netns delete nex-pod-208-pgadmin
+	netns delete nex-pod-208-ri
+	netns delete nex-pod-208-jellyfin
+	netns delete nex-pod-208-nextcloud
+	netns delete nex-pod-208-cups
 
 	netns delete nex-vpn-192
 	netns delete nex-iscsi-224
 	netns delete nex-srv-240
 EOF
-
-cat > "$NEXUS_CNF/batch/nex-dnsmasq.conf" <<- 'EOF'
-
-	cache-size=10000
-	port=0
-
-	############################################
-	# VLAN 176 — DHCP = upper /21
-	############################################
-	interface=bridge0.176
-	dhcp-range=bridge0.176,172.16.184.1,172.16.191.254,12h
-	dhcp-option=bridge0.176,3,172.16.176.1
-	dhcp-option=bridge0.176,6,172.16.128.1,172.31.0.120,172.31.0.1
-	dhcp-option=bridge0.176,42,172.16.128.1
-	dhcp-option=bridge0.176,66,172.16.128.1
-	dhcp-option=bridge0.176,15,tufa16.home.lab
-	dhcp-option=bridge0.176,119,tufa16.home.lab,nex-qemu-176.tufa16.home.lab
-
-
-	############################################
-	# VLAN 192 — DHCP = upper /21
-	############################################
-	interface=bridge0.192
-	dhcp-range=bridge0.192,172.16.200.1,172.16.207.254,12h
-	dhcp-option=bridge0.192,3,172.16.192.1
-	dhcp-option=bridge0.192,6,172.16.128.1,172.31.0.120,172.31.0.1
-	dhcp-option=bridge0.192,42,172.16.128.1
-	dhcp-option=bridge0.192,66,172.16.128.1
-	dhcp-option=bridge0.192,15,tufa16.home.lab
-	dhcp-option=bridge0.192,119,tufa16.home.lab,nex-vpn-192.tufa16.home.lab
-
-
-	############################################
-	# VLAN 208 — DHCP = upper /21
-	############################################
-	interface=bridge0.208
-	dhcp-range=bridge0.208,172.16.216.1,172.16.223.254,12h
-	dhcp-option=bridge0.208,3,172.16.208.1
-	dhcp-option=bridge0.208,6,172.16.128.1,172.31.0.120,172.31.0.1
-	dhcp-option=bridge0.208,42,172.16.128.1
-	dhcp-option=bridge0.208,66,172.16.128.1
-	dhcp-option=bridge0.208,15,tufa16.home.lab
-	dhcp-option=bridge0.208,119,tufa16.home.lab,nex-pod-208.tufa16.home.lab
-	
-	############################################
-	# VLAN 224 — DHCP = upper /21
-	############################################
-	interface=bridge0.224
-	dhcp-range=bridge0.224,172.16.232.1,172.16.239.254,12h
-	dhcp-option=bridge0.224,3,172.16.224.1
-	dhcp-option=bridge0.224,6,172.16.128.1,172.31.0.120,172.31.0.1
-	dhcp-option=bridge0.224,42,172.16.128.1
-	dhcp-option=bridge0.224,66,172.16.128.1
-	dhcp-option=bridge0.224,15,tufa16.home.lab
-	dhcp-option=bridge0.224,119,tufa16.home.lab,nex-iscsi-224.tufa16.home.lab
-
-	############################################
-	# VLAN 240 — DHCP = upper /21
-	############################################
-	interface=bridge0.240
-	dhcp-range=bridge0.240,172.16.248.1,172.16.255.254,12h
-	dhcp-option=bridge0.240,3,172.16.240.1
-	dhcp-option=bridge0.240,6,172.16.128.1,172.31.0.120,172.31.0.1
-	dhcp-option=bridge0.240,42,172.16.128.1
-	dhcp-option=bridge0.240,66,172.16.128.1
-	dhcp-option=bridge0.240,15,tufa16.home.lab
-	dhcp-option=bridge0.240,119,tufa16.home.lab,nex-srv-240.tufa16.home.lab
-
-	dhcp-sequential-ip
-	log-dhcp
-	dhcp-authoritative
-	bind-dynamic
-EOF
-
 
 #######( main )#################################
 cat > "$NEXUS_CNF/batch/nex-ns.sh" <<- 'EOF'
@@ -103,39 +34,13 @@ cat > "$NEXUS_CNF/batch/nex-ns.sh" <<- 'EOF'
 	nsenter --net=/var/run/netns/nex-pod-208 -- ip -batch "$NEXUS_CNF/batch/nex-pod-208.batch"
 	nsenter --net=/var/run/netns/nex-pod-208 -- bridge -batch "$NEXUS_CNF/batch/nex-br-pod-208.batch"
 
-	nsenter --net=/var/run/netns/nex-pod-208-phpmyadmin -- ip -batch "$NEXUS_CNF/batch/nex-pod-208-phpmyadmin.batch"
+	nsenter --net=/var/run/netns/nex-pod-208-adminer -- ip -batch "$NEXUS_CNF/batch/nex-pod-208-adminer.batch"
 	nsenter --net=/var/run/netns/nex-pod-208-pgadmin -- ip -batch "$NEXUS_CNF/batch/nex-pod-208-pgadmin.batch"
-
+	nsenter --net=/var/run/netns/nex-pod-208-ri -- ip -batch "$NEXUS_CNF/batch/nex-pod-208-ri.batch"
+	nsenter --net=/var/run/netns/nex-pod-208-jellyfin -- ip -batch "$NEXUS_CNF/batch/nex-pod-208-jellyfin.batch"
+	nsenter --net=/var/run/netns/nex-pod-208-nextcloud -- ip -batch "$NEXUS_CNF/batch/nex-pod-208-nextcloud.batch"
+	nsenter --net=/var/run/netns/nex-pod-208-cups -- ip -batch "$NEXUS_CNF/batch/nex-pod-208-cups.batch"
 EOF
-
-: <<- 'EOF'
-	h_nx_cmd dnsmasq && (
-		h_nx_cmd pidof && for i in $(ip netns exec nex-posix-128 ps -fp $(pidof dnsmasq) 2>/dev/null | sed -n '2,$p' | awk '{print $2}'); do
-			kill -9 $i
-		done
-		ip netns exec nex-posix-128 sh -c '
-			while $(ip -4 address show dev bridge0.176 | grep -q "inet " && exit 1 || exit 0); do
-				sleep 0.1 || sleep 1
-			done
-			while $(ip -4 address show dev bridge0.192 | grep -q "inet " && exit 1 || exit 0); do
-				sleep 0.1 || sleep 1
-			done
-			while $(ip -4 address show dev bridge0.224 | grep -q "inet " && exit 1 || exit 0); do
-				sleep 0.1 || sleep 1
-			done
-			while $(ip -4 address show dev bridge0.240 | grep -q "inet " && exit 1 || exit 0); do
-				sleep 0.1 || sleep 1
-			done
-		'
-		ip netns exec nex-posix-128 dnsmasq \
-				--conf-file="$NEXUS_CNF/batch/nex-dnsmasq.conf" \
-				--user=dnsmasq \
-				--log-facility="$NEXUS_ENV/log/nex-dnsmasq.log"
-	)
-
-EOF
-
-
 
 #######( default )#################################
 cat > "$NEXUS_CNF/batch/nex-default.batch" <<- 'EOF'
@@ -154,11 +59,15 @@ cat > "$NEXUS_CNF/batch/nex-default.batch" <<- 'EOF'
 
 	netns add nex-qemu-176
 	netns add nex-pod-208
-	netns add nex-pod-208-phpmyadmin
+	netns add nex-pod-208-adminer
 	netns add nex-pod-208-pgadmin
+	netns add nex-pod-208-ri
+	netns add nex-pod-208-jellyfin
+	netns add nex-pod-208-nextcloud
+	netns add nex-pod-208-cups
 
 	netns add nex-vpn-192
-	netns add  nex-iscsi-224
+	netns add nex-iscsi-224
 	netns add nex-srv-240
 EOF
 
@@ -387,17 +296,17 @@ cat > "$NEXUS_CNF/batch/nex-pod-208.batch" <<- 'EOF'
 	route add default via 172.16.208.1 dev bridge0.208
 
 
-	######( phpmyadmin )###############################
+	######( adminer )###############################
 	link add nexus1 type veth peer name nexus0
-	link property add dev nexus1 altname pma_net
-	link set nexus1 alias "Virtual wired ethernet container holding phpmyadmin which is connected the podman network on vlan 208."
+	link property add dev nexus1 altname admr_net
+	link set nexus1 alias "Virtual wired ethernet container holding adminer which is connected the podman network on vlan 208."
 	link set nexus1 group 3
 	link set nexus1 up
 	link set nexus1 master bridge0
-	link property add dev nexus0 altname pma_gw
-	link set nexus0 alias "Virtual wired ethernet device refered to by nexus0 for the podman guess phpmyadmin."
+	link property add dev nexus0 altname admr_gw
+	link set nexus0 alias "Virtual wired ethernet device refered to by nexus0 for the podman guess adminer."
 	link set nexus0 group 3
-	link set nexus0 netns nex-pod-208-phpmyadmin
+	link set nexus0 netns nex-pod-208-adminer
 
 
 	######( pgadmin )###############################
@@ -413,6 +322,58 @@ cat > "$NEXUS_CNF/batch/nex-pod-208.batch" <<- 'EOF'
 	link set nexus0 netns nex-pod-208-pgadmin
 
 
+	######( redisinsight )###############################
+	link add nexus3 type veth peer name nexus0
+	link property add dev nexus3 altname vk_net
+	link set nexus3 alias "Virtual wired ethernet container holding redisinsight with valkey which is connected the podman network on vlan 208."
+	link set nexus3 group 3
+	link set nexus3 up
+	link set nexus3 master bridge0
+	link property add dev nexus0 altname vk_gw
+	link set nexus0 alias "Virtual wired ethernet device refered to by nexus0 for the podman guess redisinsight with valkey."
+	link set nexus0 group 3
+	link set nexus0 netns nex-pod-208-ri
+
+
+	######( jellyfin )###############################
+	link add nexus4 type veth peer name nexus0
+	link property add dev nexus4 altname jfn_net
+	link set nexus4 alias "Virtual wired ethernet container holding jellyfin which is connected the podman network on vlan 208."
+	link set nexus4 group 3
+	link set nexus4 up
+	link set nexus4 master bridge0
+	link property add dev nexus0 altname jfn_gw
+	link set nexus0 alias "Virtual wired ethernet device refered to by nexus0 for the podman guess jellyfin."
+	link set nexus0 group 3
+	link set nexus0 netns nex-pod-208-jellyfin
+
+
+	######( nextcloud )###############################
+	link add nexus5 type veth peer name nexus0
+	link property add dev nexus5 altname nxtcld_net
+	link set nexus5 alias "Virtual wired ethernet container holding nextcloud which is connected the podman network on vlan 208."
+	link set nexus5 group 3
+	link set nexus5 up
+	link set nexus5 master bridge0
+	link property add dev nexus0 altname nxtcld_gw
+	link set nexus0 alias "Virtual wired ethernet device refered to by nexus0 for the podman guess nextcloud."
+	link set nexus0 group 3
+	link set nexus0 netns nex-pod-208-nextcloud
+
+
+	######( cups )###############################
+	link add nexus6 type veth peer name nexus0
+	link property add dev nexus6 altname cups_net
+	link set nexus6 alias "Virtual wired ethernet container holding cups which is connected the podman network on vlan 208."
+	link set nexus6 group 3
+	link set nexus6 up
+	link set nexus6 master bridge0
+	link property add dev nexus0 altname cups_gw
+	link set nexus0 alias "Virtual wired ethernet device refered to by nexus0 for the podman guess cups."
+	link set nexus0 group 3
+	link set nexus0 netns nex-pod-208-cups
+
+
 	###################################################
 	link set nexus name nexus0
 	link set nexus0 up
@@ -422,12 +383,17 @@ EOF
 cat > "$NEXUS_CNF/batch/nex-br-pod-208.batch" <<- 'EOF'
 	vlan add dev nexus0 vid 208
 	vlan add dev nexus1 vid 208 pvid untagged
+	vlan add dev nexus2 vid 208 pvid untagged
+	vlan add dev nexus3 vid 208 pvid untagged
+	vlan add dev nexus4 vid 208 pvid untagged
+	vlan add dev nexus5 vid 208 pvid untagged
+	vlan add dev nexus6 vid 208 pvid untagged
 	vlan add dev bridge0 vid 208 self
 EOF
 
 
-######( phpmyadmin )###############################
-cat > "$NEXUS_CNF/batch/nex-pod-208-phpmyadmin.batch" <<- 'EOF'
+######( adminer )###############################
+cat > "$NEXUS_CNF/batch/nex-pod-208-adminer.batch" <<- 'EOF'
 	link set lo name loopback0
 	link property add dev loopback0 altname lo
 	link set loopback0 alias "The loopback0 does not traverse wires. It does not blink with LEDs. It does not care for MAC addresses or ARP. It is pure essence—an idea made manifest. A metaphysical interface, looping endlessly, like Ouroboros devouring its own tail."
@@ -435,7 +401,7 @@ cat > "$NEXUS_CNF/batch/nex-pod-208-phpmyadmin.batch" <<- 'EOF'
 	link set loopback0 up
 
 	###################################################
-	address add 172.16.208.4/20 label "nexus0:pma" dev nexus0
+	address add 172.16.208.4/20 label "nexus0:admr" dev nexus0
 	link set nexus0 up
 	route add default via 172.16.208.1 dev nexus0
 EOF
@@ -451,6 +417,64 @@ cat > "$NEXUS_CNF/batch/nex-pod-208-pgadmin.batch" <<- 'EOF'
 
 	###################################################
 	address add 172.16.208.3/20 label "nexus0:pg" dev nexus0
+	link set nexus0 up
+	route add default via 172.16.208.1 dev nexus0
+EOF
+
+
+######( redisinsight )###############################
+cat > "$NEXUS_CNF/batch/nex-pod-208-ri.batch" <<- 'EOF'
+	link set lo name loopback0
+	link property add dev loopback0 altname lo
+	link set loopback0 alias "The loopback0 does not traverse wires. It does not blink with LEDs. It does not care for MAC addresses or ARP. It is pure essence—an idea made manifest. A metaphysical interface, looping endlessly, like Ouroboros devouring its own tail."
+	link set loopback0 group 772
+	link set loopback0 up
+
+	###################################################
+	address add 172.16.208.5/20 label "nexus0:vk" dev nexus0
+	link set nexus0 up
+	route add default via 172.16.208.1 dev nexus0
+EOF
+
+
+######( jellyfin )###############################
+cat > "$NEXUS_CNF/batch/nex-pod-208-jellyfin.batch" <<- 'EOF'
+	link set lo name loopback0
+	link property add dev loopback0 altname lo
+	link set loopback0 alias "The loopback0 does not traverse wires. It does not blink with LEDs. It does not care for MAC addresses or ARP. It is pure essence—an idea made manifest. A metaphysical interface, looping endlessly, like Ouroboros devouring its own tail."
+	link set loopback0 group 772
+	link set loopback0 up
+
+	###################################################
+	address add 172.16.208.6/20 label "nexus0:jfn" dev nexus0
+	link set nexus0 up
+	route add default via 172.16.208.1 dev nexus0
+EOF
+
+######( nextcloud )###############################
+cat > "$NEXUS_CNF/batch/nex-pod-208-nextcloud.batch" <<- 'EOF'
+	link set lo name loopback0
+	link property add dev loopback0 altname lo
+	link set loopback0 alias "The loopback0 does not traverse wires. It does not blink with LEDs. It does not care for MAC addresses or ARP. It is pure essence—an idea made manifest. A metaphysical interface, looping endlessly, like Ouroboros devouring its own tail."
+	link set loopback0 group 772
+	link set loopback0 up
+
+	###################################################
+	address add 172.16.208.7/20 label "nexus0:nxtcld" dev nexus0
+	link set nexus0 up
+	route add default via 172.16.208.1 dev nexus0
+EOF
+
+######( cups )###############################
+cat > "$NEXUS_CNF/batch/nex-pod-208-cups.batch" <<- 'EOF'
+	link set lo name loopback0
+	link property add dev loopback0 altname lo
+	link set loopback0 alias "The loopback0 does not traverse wires. It does not blink with LEDs. It does not care for MAC addresses or ARP. It is pure essence—an idea made manifest. A metaphysical interface, looping endlessly, like Ouroboros devouring its own tail."
+	link set loopback0 group 772
+	link set loopback0 up
+
+	###################################################
+	address add 172.16.208.8/20 label "nexus0:cups" dev nexus0
 	link set nexus0 up
 	route add default via 172.16.208.1 dev nexus0
 EOF

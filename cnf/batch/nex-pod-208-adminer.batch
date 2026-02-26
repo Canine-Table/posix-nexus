@@ -5,6 +5,6 @@ link set loopback0 group 772
 link set loopback0 up
 
 ###################################################
-address add 172.16.208.4/20 label "nexus0:pma" dev nexus0
+address add 172.16.208.4/20 label "nexus0:admr" dev nexus0
 link set nexus0 up
 route add default via 172.16.208.1 dev nexus0

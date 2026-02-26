@@ -1,0 +1,50 @@
+
+/* ----------------------------- */
+/* STRUCTURAL ELEMENTS					 */
+/* ----------------------------- */
+
+html, body {
+	height: 100%;									/* allow body to fill the full viewport height */
+	margin: 0;										/* remove default browser margins */
+}
+
+body {
+	display: flex;								/* enable vertical layout */
+	flex-direction: column;				/* stack elements top → bottom */
+	background-color: var(--champagne);				 /* page background color */
+	margin: 0;													 /* remove default browser margin */
+	padding: 0;													 /* remove default padding (rare but explicit) */
+	color: var(--antique-rose);					 /* default text color for the whole page */
+}
+
+header, footer, section, article, aside {
+	background: var(--champagne);				 /* soft background for layout blocks */
+	padding: 1em;												 /* internal spacing */
+	border: 1px solid var(--bisque);		 /* subtle outline */
+	margin: 1em 0;											 /* vertical spacing between sections */
+}
+
+footer#footer {
+	display: block;
+	flex: 0;
+	text-align: center;
+}
+
+hr {
+	border: none;												 /* remove default 3D line */
+	border-top: 1px solid var(--bisque); /* simple horizontal line */
+	margin: 2em 0;											 /* space above and below the line */
+}
+
+.wrapper {
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+	width: 100%;
+	margin-left: auto;
+	margin-right: auto;
+	padding: 1rem;
+	gap: 1rem;
+}
+
+

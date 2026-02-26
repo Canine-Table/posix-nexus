@@ -79,54 +79,160 @@
             nyxt/mode/message:message-mode nyxt/mode/keyscheme:keyscheme-mode
             nyxt/mode/macro-edit:macro-edit-mode
             nyxt/mode/no-procrastinate:no-procrastinate-mode
-            nyxt/mode/no-image:no-image-mode
-	    nyxt/mode/no-webgl:no-webgl-mode
             nyxt/mode/passthrough:passthrough-mode
             nyxt/mode/repl:repl-mode
 	    nyxt/mode/small-web:small-web-mode
             nyxt/mode/style:style-mode
 	    nyxt/mode/tts:tts-mode
-            nyxt/mode/user-script:user-script-mode nyxt/mode/vi:vi-insert-mode
-            nyxt/mode/visual:visual-mode
+            nyxt/mode/user-script:user-script-mode
 	    nyxt/mode/watch:watch-mode
             nyxt/mode/bookmark-frequent-visits:bookmark-frequent-visits-mode
             nyxt/mode/certificate-exception:certificate-exception-mode
-            nyxt/mode/vi:vi-normal-mode
+
 	    nyxt/mode/autofill:autofill-mode
             nyxt/mode/spell-check:spell-check-mode
-            nyxt/mode/search-buffer:search-buffer-mode
-	    nyxt/mode/hint:hint-mode
             nyxt/mode/document:document-mode
 	    nyxt/mode/password:password-mode
             nyxt/mode/cruise-control:cruise-control-mode
             nyxt/mode/buffer-listing:buffer-listing-mode
 	    nyxt/mode/download:download-mode
 	    nyxt/mode/expedition:expedition-mode
-	    nyxt/mode/preview:preview-mode
             nyxt/web-extensions:extension
             nyxt/mode/reduce-bandwidth:reduce-bandwidth-mode
 	    nyxt/mode/list-history:list-history-mode
+            nyxt/mode/hint-prompt-buffer:hint-prompt-buffer-mode
+
+            nyxt/mode/record-input-field:record-input-field-mode
+            nyxt/mode/reading-line:reading-line-mode
+            nyxt/mode/prompt-buffer:prompt-buffer-mode
+
+	    nyxt/mode/reduce-tracking:reduce-tracking-mode
+            nyxt/mode/file-manager:file-manager-mode
+            nyxt/mode/editor:editor-mode
+
+	    nyxt/mode/process:process-mode
+            nyxt/mode/editor:plaintext-editor-mode
+
+
+
+            nyxt/mode/visual:visual-mode
             nyxt/mode/no-script:no-script-mode
+
+            nyxt/mode/hint:hint-mode
+
+            nyxt/mode/no-image:no-image-mode
+            nyxt/mode/history-tree:history-tree-mode
+            nyxt/mode/history:history-mode
+	    nyxt/mode/bookmark:bookmark-mode
+	    nyxt/mode/annotate:annotate-mode
+	    nyxt/mode/preview:preview-mode
+
+	    nyxt/mode/vi:vi-normal-mode
+            nyxt/mode/vi:vi-insert-mode
+            nyxt/mode/blocker:blocker-mode
+            nyxt/mode/no-sound:no-sound-mode
+            nyxt/mode/no-webgl:no-webgl-mode
 |#
 
 
 (defmethod customize-instance ((buffer buffer) &key)
   (setf (slot-value buffer 'default-modes)
-          '(nyxt/mode/process:process-mode
-            nyxt/mode/prompt-buffer:prompt-buffer-mode
-            nyxt/mode/record-input-field:record-input-field-mode
-            nyxt/mode/reading-line:reading-line-mode
-            nyxt/mode/bookmark:bookmark-mode
-	    nyxt/mode/annotate:annotate-mode
-            nyxt/mode/reduce-tracking:reduce-tracking-mode
-	    nyxt/mode/blocker:blocker-mode
-            nyxt/mode/history-tree:history-tree-mode
-            nyxt/mode/history:history-mode
-	    nyxt/mode/file-manager:file-manager-mode
-            nyxt/mode/hint-prompt-buffer:hint-prompt-buffer-mode
-            nyxt/mode/editor:editor-mode
-            nyxt/mode/no-sound:no-sound-mode
-            nyxt/mode/editor:plaintext-editor-mode
+          '(nyxt/mode/search-buffer:search-buffer-mode
             nyxt/mode/style:dark-mode base-mode)))
 
+#|
+(define-configuration buffer
+  ((default-modes
+    (remove 'nyxt/mode/record-input-field:record-input-field-mode
+            %slot-value%))))
 
+
+(define-key *leader-map* "" (lambda () (echo "Leader…")))
+(define-key *leader-map* "s" 'search-engine-query)
+(define-key *leader-map* "S" 'search-new-buffer)
+(define-key *leader-map* "/" 'incremental-search)
+(define-key *leader-map* "f" 'search-buffer)
+
+
+(define-configuration nyxt/mode/vi:vi-insert-mode
+  ((keymap
+    (let ((map %slot-value%))
+      ;; C-Space becomes your insert-mode leader
+      (define-key map "SPC"
+        (lambda ()
+          (nyxt/mode/vi:vi-normal-mode-on)
+          (funcall (keymap-dispatch *leader-map*))
+          (nyxt/mode/vi:vi-insert-mode-on)))
+      map))))
+
+(define-configuration base-mode
+  ((default-map
+    (let ((map %slot-value%))
+      ;; Remove the old binding
+      (undefine-key map "C-l")
+
+      ;; Assign C-l to something new
+      (define-key map "C-l" )
+
+      map))))
+
+
+
+(define-configuration nyxt/mode/vi:vi-insert-mode
+  ((keymap
+    (let ((map %slot-value%))
+      (define-key map "," *insert-leader-map*)
+      map))))
+
+
+
+(defvar *leader-map* (make-keymap "leader-map"))
+(define-key *leader-map* "o" 'switch-buffer)
+|#
+
+
+
+(define-configuration nyxt/mode/vi:vi-insert-mode
+  ((override-map
+    (let ((map (make-keymap "vi-insert-override")))
+      ;; Reassign C-l to whatever you want
+      (define-key map "C-l" 'search-engine-query)
+      map))))
+
+
+(define-configuration nyxt/mode/search-buffer:search-buffer-mode
+  ((default-search-engine "duckduckgo")))
+
+(define-configuration browser
+  ((default-search-engine "duckduckgo")))
+
+(define-configuration browser
+  ((search-engines
+    (list
+     (make-instance 'search-engine
+       :name "duckduckgo"
+       :shortcut "ddg"
+       :url "https://duckduckgo.com/?q=~a")))))
+
+#|
+(define-mode strict-testing-mode ()
+  "Toggle a cluster of privacy/testing modes."
+  ((enter-hook
+    (lambda (mode)
+      (nyxt/mode/no-script:no-script-mode-on)
+      (nyxt/mode/blocker:blocker-mode-on)
+      (nyxt/mode/reduce-tracking:reduce-tracking-mode-on)
+      (nyxt/mode/no-webgl:no-webgl-mode-on)))
+   (exit-hook
+    (lambda (mode)
+      (nyxt/mode/no-script:no-script-mode-off)
+      (nyxt/mode/blocker:blocker-mode-off)
+      (nyxt/mode/reduce-tracking:reduce-tracking-mode-off)
+      (nyxt/mode/no-webgl:no-webgl-mode-off)))))
+
+(define-configuration buffer
+  ((keymap
+    (let ((map %slot-value%))
+      (define-key map "C-M-s" 'strict-testing-mode)
+      map))))
+|#

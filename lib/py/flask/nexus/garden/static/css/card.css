@@ -1,0 +1,30 @@
+
+.card {
+	background: var(--champagne);								 /* soft background */
+	border: 1px solid var(--bisque);						  /* subtle outline */
+	border-radius: 0.5rem;												/* gentle rounding */
+	padding: 1rem;																/* internal spacing */
+	display: flex;
+	flex-direction: column;
+	gap: 0.75rem;																 /* spacing between image + text */
+	box-shadow: 0 2px 4px rgba(0,0,0,0.05);		   /* soft depth */
+	width: 100%;
+}
+
+.card-text {
+	color: var(--antique-rose);
+	line-height: 1.4;
+}
+
+.card-img {
+	width: auto;
+	height: 12rem;																/* consistent height */
+	object-fit: cover;														/* crop nicely */
+	background-repeat: no-repeat;	 /* ← stops tiling */
+	background-size: cover;		   /* ← fills the box */
+	background-position: center;	  /* ← centers placeholder */
+	border-radius: 0.25rem;										   /* soften edges */
+	background: var(--blush);										 /* placeholder color */
+}
+
+

@@ -13,9 +13,13 @@ route replace 172.16.128.0/17 via 172.16.128.2 dev nexus0
 
 netns add nex-qemu-176
 netns add nex-pod-208
-netns add nex-pod-208-phpmyadmin
+netns add nex-pod-208-adminer
 netns add nex-pod-208-pgadmin
+netns add nex-pod-208-ri
+netns add nex-pod-208-jellyfin
+netns add nex-pod-208-nextcloud
+netns add nex-pod-208-cups
 
 netns add nex-vpn-192
-netns add  nex-iscsi-224
+netns add nex-iscsi-224
 netns add nex-srv-240

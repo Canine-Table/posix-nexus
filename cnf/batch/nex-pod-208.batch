@@ -30,17 +30,17 @@ link set bridge0.208 up
 route add default via 172.16.208.1 dev bridge0.208
 
 
-######( phpmyadmin )###############################
+######( adminer )###############################
 link add nexus1 type veth peer name nexus0
-link property add dev nexus1 altname pma_net
-link set nexus1 alias "Virtual wired ethernet container holding phpmyadmin which is connected the podman network on vlan 208."
+link property add dev nexus1 altname admr_net
+link set nexus1 alias "Virtual wired ethernet container holding adminer which is connected the podman network on vlan 208."
 link set nexus1 group 3
 link set nexus1 up
 link set nexus1 master bridge0
-link property add dev nexus0 altname pma_gw
-link set nexus0 alias "Virtual wired ethernet device refered to by nexus0 for the podman guess phpmyadmin."
+link property add dev nexus0 altname admr_gw
+link set nexus0 alias "Virtual wired ethernet device refered to by nexus0 for the podman guess adminer."
 link set nexus0 group 3
-link set nexus0 netns nex-pod-208-phpmyadmin
+link set nexus0 netns nex-pod-208-adminer
 
 
 ######( pgadmin )###############################
@@ -54,6 +54,58 @@ link property add dev nexus0 altname pg_gw
 link set nexus0 alias "Virtual wired ethernet device refered to by nexus0 for the podman guess phpmyadmin."
 link set nexus0 group 3
 link set nexus0 netns nex-pod-208-pgadmin
+
+
+######( redisinsight )###############################
+link add nexus3 type veth peer name nexus0
+link property add dev nexus3 altname vk_net
+link set nexus3 alias "Virtual wired ethernet container holding redisinsight with valkey which is connected the podman network on vlan 208."
+link set nexus3 group 3
+link set nexus3 up
+link set nexus3 master bridge0
+link property add dev nexus0 altname vk_gw
+link set nexus0 alias "Virtual wired ethernet device refered to by nexus0 for the podman guess redisinsight with valkey."
+link set nexus0 group 3
+link set nexus0 netns nex-pod-208-ri
+
+
+######( jellyfin )###############################
+link add nexus4 type veth peer name nexus0
+link property add dev nexus4 altname jfn_net
+link set nexus4 alias "Virtual wired ethernet container holding jellyfin which is connected the podman network on vlan 208."
+link set nexus4 group 3
+link set nexus4 up
+link set nexus4 master bridge0
+link property add dev nexus0 altname jfn_gw
+link set nexus0 alias "Virtual wired ethernet device refered to by nexus0 for the podman guess jellyfin."
+link set nexus0 group 3
+link set nexus0 netns nex-pod-208-jellyfin
+
+
+######( nextcloud )###############################
+link add nexus5 type veth peer name nexus0
+link property add dev nexus5 altname nxtcld_net
+link set nexus5 alias "Virtual wired ethernet container holding nextcloud which is connected the podman network on vlan 208."
+link set nexus5 group 3
+link set nexus5 up
+link set nexus5 master bridge0
+link property add dev nexus0 altname nxtcld_gw
+link set nexus0 alias "Virtual wired ethernet device refered to by nexus0 for the podman guess nextcloud."
+link set nexus0 group 3
+link set nexus0 netns nex-pod-208-nextcloud
+
+
+######( cups )###############################
+link add nexus6 type veth peer name nexus0
+link property add dev nexus6 altname cups_net
+link set nexus6 alias "Virtual wired ethernet container holding cups which is connected the podman network on vlan 208."
+link set nexus6 group 3
+link set nexus6 up
+link set nexus6 master bridge0
+link property add dev nexus0 altname cups_gw
+link set nexus0 alias "Virtual wired ethernet device refered to by nexus0 for the podman guess cups."
+link set nexus0 group 3
+link set nexus0 netns nex-pod-208-cups
 
 
 ###################################################

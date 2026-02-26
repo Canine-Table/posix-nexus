@@ -14,7 +14,9 @@ table inet nat {
 	#}
 	chain POSTROUTING {
 		type nat hook postrouting priority 100; policy accept
-		oifname "nexus0" masquerade
+		#iifname "nexus0" 
+		masquerade
+		#oifname "nexus0" masquerade
 		#log prefix "[DEBUG]: inet POSTROUTING chain of the nat table was not masqueraded:" level debug counter
 	}
 }

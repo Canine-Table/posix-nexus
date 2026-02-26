@@ -1,0 +1,23 @@
+/* ----------------------------- */
+/* TABLES												 */
+/* ----------------------------- */
+
+table {
+	width: 100%;
+	border-collapse: collapse;
+	margin: 1em 0;
+	background: var(--champagne);
+}
+
+th {
+	background: var(--bisque);
+	color: var(--dried-thyme);
+	padding: 0.5em;
+}
+
+td {
+	border: 1px solid var(--bisque);
+	padding: 0.5em;
+}
+
+

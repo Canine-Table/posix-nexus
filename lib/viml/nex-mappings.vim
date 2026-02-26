@@ -11,6 +11,7 @@ let s:comment_prefix = {
 	\ 'typescript': '//',
 	\ 'asm': ';',
 	\ 'nasm': ';',
+	\ 'lisp': ';',
 	\ 'gas': '@',
 \ }
 
@@ -66,6 +67,9 @@ function! NxToggleCommentVisual(sep = ' ') range
 			elseif prefix == '--' && &filetype == 'lua'
 				let col_open = '--[=['
 				let col_close = ']=]'
+			elseif prefix == ';' && &filetype == 'lisp'
+				let col_open = '#|'
+				let col_close = '|#'
 			elseif prefix == '#' && &filetype == 'sh'
 				let comment_suf = NxRandomChars()
 				let col_open = '\r: <<- ' . "'COMMENT_" . comment_suf . "'" . '\r'

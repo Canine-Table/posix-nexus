@@ -1,0 +1,22 @@
+:root { /* Define reusable color variables */
+	--blush: #F0C4CB;
+	--antique-rose: #C87D87;
+	--champagne: #FBEAD6;
+	--dried-thyme: #6B7556;
+	--bisque: #E5BCA9;
+}
+
+* {
+	/* Set the default font for the entire page */
+	font-family: "Cormorant Garamond", serif !important;
+	/* Use the light (300) italic style of the font */
+	font-weight: 300;
+	font-style: italic;
+
+	/* Base font size for all elements */
+	font-size: 16pt;
+
+	/* Make width/height include padding + border (much easier to work with) */
+	box-sizing: border-box;
+}
+
