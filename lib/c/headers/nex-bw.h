@@ -159,7 +159,69 @@ unsigned long NX_bwLeft_lLLF(
 	const unsigned long
 );
 
-int nx_bw_mix(int, int, int);
+unsigned long NX_bwMin_lLLF(
+	const unsigned long,
+	const unsigned long
+);
+
+unsigned long NX_bwMax_lLLF(
+	const unsigned long,
+	const unsigned long
+);
+
+unsigned long NX_bwSigned_lLF(
+	const unsigned long
+);
+
+unsigned long NX_bwSign_lLLF(
+	const unsigned long,
+	const unsigned long
+);
+
+unsigned long NX_bwAbs_lLF(
+	const unsigned long
+);
+
+
+unsigned long NX_bwModBit_lLLF(
+	const unsigned long,
+	const unsigned long
+);
+
+unsigned long NX_bwPow2B_lLLLF(
+	const unsigned long
+);
+
+unsigned long NX_bwSel_lLLLF(
+	const unsigned long,
+	const unsigned long,
+	const unsigned long
+);
+
+unsigned long NX_bwNotZero_lLF(
+	const unsigned long
+);
+
+unsigned long NX_bwZero_lLF(
+	const unsigned long
+);
+
+unsigned long NX_bwClamp_lLLLF(
+	const unsigned long,
+	const unsigned long,
+	const unsigned long
+);
+
+unsigned long NX_bwAvg_lLLF(
+	const unsigned long,
+	const unsigned long
+);
+
+int nx_bw_mix(
+	int,
+	int,
+	int
+);
 
 #endif
 

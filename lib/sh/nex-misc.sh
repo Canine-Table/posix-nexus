@@ -26,3 +26,18 @@ nx_misc_shift()
 	return 1
 }
 
+h_nx_nnn()
+{
+	h_nx_cmd nnn || (
+		cd /tmp
+		git clone https://github.com/jarun/nnn.git
+		cd nnn
+		make O_NERD=1
+		cp nnn "$NEXUS_BIN"
+	)
+
+	test -p "$NEXUS_ENV/proc/nnn-$(id -u).fifo" || mkfifo "$NEXUS_ENV/proc/nnn-$(id -u).fifo"
+	export NNN_FIFO="$NEXUS_ENV/proc/nnn-$(id -u).fifo"
+}
+
+

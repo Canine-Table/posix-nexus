@@ -67,7 +67,6 @@ function! NxEnviron()
 	let tmpa = split(fnamemodify(g:nex_viml_init, ":h") . '/', 'VIMINIT..script ')
 	let g:nex_viml_root = tmpa[1]
 	let g:nex_cwd = tmpa[0]
-	echo "wazha -> " . g:nex_viml_root
 	if ! empty(getenv('NEXUS_LIB')) && isdirectory(getenv('NEXUS_LIB')) && ! exists('g:nex_lua_root')
 		let g:nex_lib_root = getenv('NEXUS_LIB')
 		let tmpa = fnamemodify(g:nex_lib_root . "/lua/vim/nex-init.lua", ":p")

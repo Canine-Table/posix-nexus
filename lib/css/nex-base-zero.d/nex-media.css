@@ -1,0 +1,29 @@
+
+@media (orientation: portrait) {
+	html {
+		touch-action: manipulation;
+	}
+}
+
+@media (max-aspect-ratio: 1/1) {
+	footer.nx-footer {
+		margin-bottom: -2rem;
+	}
+	nav.nx-nav {
+		height: 3.5rem;
+		gap: 1.5rem;				/* larger nav text for tall/narrow screens */
+		padding-left: 1.25rem;
+		padding-right: 1.25rem;
+	}
+}
+
+@media (pointer: coarse) {
+	* {
+		scrollbar-width: none;					/* Firefox */
+	}
+
+	*::-webkit-scrollbar {
+		display: none;									/* Chrome/Safari */
+	}
+}
+

@@ -8,3 +8,9 @@ def main_index():
     print(">>> REGISTERED BLUEPRINTS:", current_app.blueprints)
     return render_template('index.html')
 
+@main_bp.route('/sandbox')
+def sandbox_index():
+    print(">>> TEMPLATE SEARCH PATHS:", current_app.jinja_loader.searchpath)
+    print(">>> REGISTERED BLUEPRINTS:", current_app.blueprints)
+    return render_template('sandbox.html')
+

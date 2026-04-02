@@ -27,49 +27,58 @@ function nx_blk_flags(N, V, n, m, b, p)
 	return m
 }
 
+#'pool' => 0,
+#'head' => 1,
+#'side' => 2,
+#'free' => 3,
+#'top' => 4,
+#'start' => 5,
+#'flags' => 6,
+#'reserved' => 8
+
+
 function nx_blk_init(V, N1, N2,
 	dir, blk, hdr, tp, pl, sn)
 {
-	# this one isnt a test param, remove it and you will break everything
 	sn = 1
 
 	if (N1 < 0) {
-		sn = -sn
+		sn = -1
 		N1 = -N1
-		if (N2 < 0)
-			N2 = -N2
-	} else if (N2 < 0) {
-		N2 = -N2
 	}
 
-	# Mi pool size = 4, 2 header slots, 2 body slots
- 	N1 = __nx_if((N1 = nx_blk_flags(N1) * 2) > 2, N1, 4)
- 	hdr = N2 / 2
- 	if ((N2 = int(N2)) >= N1)
- 		N2 = hdr
- 	else if (N2 < 2)
- 		N2 = 2
+	if (N2 < 0)
+		N2 = -N2
 
-	N1 = N1 * sn
-	N2 = N2 * sn
+	if (N1 < 3)
+		N1 = 3
+
+	if (N1 - N2 < 1)
+		N2 = 2
+
+	pl = N1 * nx_ceiling(8 / N1)
+
 	if (sn == 1) {
 		blk = 0
 		hdr = 1
 		tp = 2
 		dir = 4
-		pl = N1
 	} else {
+		N1 = -N1
+		N2 = -N2
 		blk = "-0"
 		hdr = -1
 		tp = -2
 		dir = -4
-		pl = -N1
+		pl = -pl
 	}
+
 	V[blk] = N1 # set the pool size
 	V[hdr] = N2 # set the header size
-	pl = N1 * nx_ceiling(8 / N1) * sn
+
 	V[tp] = pl
 	V[dir] = sn
+
 	V[pl + sn] = pl + N2 - sn
 	return pl
 }
@@ -200,17 +209,17 @@ function nx_blk_ppush(V, N, D)
 	return _nx_blk_push(V, N, V[0], V[4], D)
 }
 
-# N1:	blk
-# N2:	hdr
-# N3:	top ptr
-# N4:	free list index ptr
+# V:	the slab
+# N1:	passed index ptr
+# N2:	blk
+# N3:	direction ptr
+# D:	the data to push
 function _nx_blk_push(V, N1, N2, N3, D,
 	pl, tp)
 {
 	pl = N1 - N1 % N2
 	tp = V[pl + N3] + N3
 	if (!(tp % N2)) { # zero
-		# it works, just trust me bro
 		pl = nx_blk_realloc(V, tp)
 		tp = V[pl + N3]
 		V[N1 + N3] = pl
@@ -224,8 +233,8 @@ function _nx_blk_push(V, N1, N2, N3, D,
 function nx_blk_pop(V, N)
 {
 	if (N < 0)
-		return nx_blk_Ppop(V, N, D)
-	return nx_blk_ppop(V, N, D)
+		return nx_blk_Ppop(V, N)
+	return nx_blk_ppop(V, N)
 }
 
 function nx_blk_Ppop(V, N)
@@ -258,6 +267,51 @@ function _nx_blk_pop(V, N1, N2, N3, N4,
 	pl = N1 - N1 % N2
 	pp = V[pl + N3]
 	tp = pp
+	hdr = N4 * N3
+	cur = (tp % N2) * N3
+	if (cur < hdr) {
+		if (pl in V) {
+			cur = V[pl]
+			tp = V[cur + N3] - N3
+		} else {
+			cur = cur * N3
+		}
+		nx_blk_free(V, pl)
+		pl = cur
+	} else {
+		tp = tp - N3
+	}
+	delete V[pp]
+	V[pl + N3] = tp
+	return tp
+}
+
+
+
+function nx_blk_peek(V, N)
+{
+	if (N < 0)
+		return nx_blk_Ppeek(V, N)
+	return nx_blk_ppeek(V, N)
+}
+
+function nx_blk_Ppeek(V, N)
+{
+	return _nx_blk_peek(V, N, V["-0"], V[-4], V[-1])
+}
+
+function nx_blk_ppop(V, N)
+{
+	return _nx_blk_peek(V, N, V[0], V[4], V[1])
+}
+
+function _nx_blk_peek(V, N1, N2, N3, N4,
+	pl, cur, tp, hdr, pp)
+{
+	pl = N1 - N1 % N2
+	pp = V[pl + N3]
+	tp = pp
+
 	hdr = N4 * N3
 	cur = (tp % N2) * N3
 	if (cur < hdr) {

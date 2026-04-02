@@ -1,5 +1,5 @@
 from typing import Optional, Any
-from flask import Flask, Blueprint
+from flask import Flask, Blueprint, Response
 from .nx_path import NxPath
 from .nx_inet import NxSocket
 from pathlib import Path
@@ -26,6 +26,21 @@ class NxFlaskBase:
 
         # Create Flask app
         self.app = Flask(name, static_folder=None)
+
+        @self.app.after_request
+        def add_ngrok_header(response):
+            response.headers['ngrok-skip-browser-warning'] = 'true'
+            response.headers['Cache-Control'] = 'no-store'
+            #response.headers['Cross-Origin-Opener-Policy'] = 'same-origin'
+            #response.headers['Cross-Origin-Embedder-Policy'] = 'require-corp'
+            #response.headers['Cross-Origin-Resource-Policy'] = 'cross-origin'
+            #response.headers['Access-Control-Allow-Origin'] = '*'
+            #response.headers['Access-Control-Allow-Headers'] = '*'
+            #response.headers['Access-Control-Allow-Methods'] = '*'
+            #response.headers['Cross-Origin-Embedder-Policy'] = 'credentialless'
+            #response.headers['Service-Worker-Allowed'] = '/'
+            return response
+
         # Restore NxSocket resolution
         self.host = NxSocket.host(host)
         self.port = NxSocket.port(port)

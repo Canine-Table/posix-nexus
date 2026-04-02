@@ -1,0 +1,59 @@
+summary.nx-nabla {
+	list-style: none;
+}
+
+summary.nx-nabla::-webkit-details-marker {
+	display: none;
+}
+
+.nx-accordion details {
+	margin: 0 auto;
+	margin-bottom: calc(var(--nx-space-1) + var(--nx-space-2));
+	margin-left: env(safe-area-inset-left);
+	margin-right: env(safe-area-inset-right);
+	max-width: var(--nx-max-width-wide);
+	border-radius: 4px;
+	background: var(--nx-zero-denim-soft);
+	border: 1px solid var(--nx-zero-boundary-shade);
+	overflow: hidden;
+}
+
+.nx-accordion details summary {
+	cursor: pointer;
+	color: var(--nx-zero-slate);
+	padding: calc(var(--nx-space-1) + var(--nx-space-2)) var(--nx-space-3);
+	letter-spacing: 0.03em;
+}
+
+.nx-accordion details summary:hover {
+	color: var(--nx-zero-witness);
+}
+
+.nx-accordion details[open] summary.nx-nabla::before {
+	color: var(--nx-zero-slate);
+	transform: rotate(0deg);
+}
+
+.nx-accordion details[open] summary.nx-nabla {
+	border-bottom: 1px solid var(--nx-zero-boundary-shade);
+	margin-bottom: var(--nx-space-2);
+}
+
+.nx-accordion details summary.nx-nabla::before {
+	content: "∇";
+	display: inline-block;
+	margin-right: var(--nx-space-2);
+	transform: rotate(-90deg);
+	color: var(--nx-zero-slate-tint);
+	transition: transform 0.3s cubic-bezier(.25,.8,.25,1);
+}
+
+.nx-accordion-body {
+	color: var(--nx-zero-boundary);
+	padding: var(--nx-space-3);
+}
+
+.nx-accordion details[data-accent="bronze"] summary {
+	color: var(--nx-zero-bronze);
+}
+

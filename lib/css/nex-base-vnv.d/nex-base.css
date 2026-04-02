@@ -1,0 +1,413 @@
+:root {
+	--nx-close: url('data:image/svg+xml;utf8,<svg role="close" aria-label="Close" xmlns="http://www.w3.org/2000/svg" fill="white" viewBox="0 0 16 16"><path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708"/></svg>');
+	--nx-check: url('data:image/svg+xml;utf8,<svg role="alert" aria-label="Check Mark" xmlns="http://www.w3.org/2000/svg" fill="white" viewBox="0 0 16 16"><path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/></svg>');
+	--nx-warn: url('data:image/svg+xml;utf8,<svg role="alert" aria-label="Warning" xmlns="http://www.w3.org/2000/svg" fill="white" viewBox="0 0 16 16"><path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/></svg>');
+	--nx-info: url('data:image/svg+xml;utf8,<svg role="alert" aria-label="Information" xmlns="http://www.w3.org/2000/svg" fill="white" viewBox="0 0 16 16"><path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z"/></svg>');
+	--nx-nabla: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width=" 106.56" height="103.08" viewBox="0 0 48 48"><g transform="translate(-2.21,32.78)" fill="currentColor"><path d="m 2.21,-32.45 v 0 q 0,-0.19 0.24,-0.33 v 0 h 35.04 q 0.24,0.14 0.24,0.33 v 0 q 0,0.1 -8.14,16.8 -8.13,16.71 -8.28,16.9 v 0 q -0.24,0.33 -1.34,0.33 -1.11,0 -1.35,-0.33 v 0 q -0.14,-0.19 -8.28,-16.9 -8.13,-16.7 -8.13,-16.8 z m 31.25,3.84 v 0 q 0,-0.05 -12.1,-0.05 -12.1,0 -12.1,0.05 v 0 q 0.1,0.24 6.08,12.51 5.97,12.26 6.02,12.26 v 0 q 12,-24.58 12.1,-24.77 z"/></g></svg>');
+	--nx-colour: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-palette-fill" viewBox="0 0 16 16"><path d="M12.433 10.07C14.133 10.585 16 11.15 16 8a8 8 0 1 0-8 8c1.996 0 1.826-1.504 1.649-3.08-.124-1.101-.252-2.237.351-2.92.465-.527 1.42-.237 2.433.07M8 5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3m4.5 3a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3M5 6.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m.5 6.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3"/></svg>');
+	--nx-hamburger: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-list" viewBox="0 0 16 16"> <path fill-rule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5"/></svg>');
+
+	/* Spacing scale (Divergence) */
+	--nx-space-1: 0.25rem;
+	--nx-space-2: 0.5rem;
+	--nx-space-3: 1rem;
+	--nx-space-4: 2rem;
+	--nx-space-5: 3rem;
+
+	/* Layout widths (Dimensionality) */
+	--nx-max-width: 72rem;
+	--nx-max-width-wide: 96rem;
+	--nx-min-max-width: min(
+		var(--nx-max-width-wide),
+		calc(
+			100vw - (var(--nx-space-3) * 2)
+			+ env(safe-area-inset-left)
+			+ env(safe-area-inset-right)
+		)
+	);
+
+	--nx-min-max-height: min(
+		var(--nx-max-width),
+		calc(
+			100vh - (var(--nx-space-3) * 2)
+			+ env(safe-area-inset-top)
+			+ env(safe-area-inset-bottom)
+		)
+	);
+
+	--nx-top: max(
+		var(--nx-space-3),
+		env(safe-area-inset-top)
+	);
+
+	--nx-right: max(
+		var(--nx-space-3),
+		env(safe-area-inset-right)
+	);
+
+	--nx-bottom: max(
+		var(--nx-space-3),
+		env(safe-area-inset-bottom)
+	);
+
+	--nx-left: max(
+		var(--nx-space-3),
+		env(safe-area-inset-left)
+	);
+
+	/* Breakpoints */
+	--nx-xs: 0px;
+	--nx-sm: 576px;
+	--nx-md: 768px;
+	--nx-lg: 992px;
+	--nx-xl: 1200px;
+	--nx-xxl: 1440px;
+
+	/* fonts */
+	--nx-font-header: "Linux Biolinum", "Linux Biolinum O", sans-serif;
+	--nx-font: "Linux Libertine", "Linux Libertine O", serif;
+
+	--nx-focus-ring-color: var(--nx-zero-witness);
+	--nx-focus-ring-width: 2px;
+	--nx-focus-glow: var(--nx-zero-boundary);
+
+
+	--nx-zero-bronze:          #C9A45A; /* Golden Bronze */
+	--nx-zero-bronze-tint:     rgba(201,164,90,0.15);
+	--nx-zero-bronze-shade:    rgba(201,164,90,0.35);
+	--nx-zero-bronze-soft:     rgba(201,164,90,0.08);
+
+	--nx-zero-slate:    #6A6FD9; /* Medium Slate Blue */
+	--nx-zero-slate-tint:      rgba(106,111,217,0.15);
+	--nx-zero-slate-shade:     rgba(106,111,217,0.35);
+	--nx-zero-slate-soft:      rgba(106,111,217,0.08);
+
+	--nx-zero-denim:    #5E8BCB; /* Dusty Denim */
+	--nx-zero-denim-tint:      rgba(94,139,203,0.15);
+	--nx-zero-denim-shade:     rgba(94,139,203,0.35);
+	--nx-zero-denim-soft:      rgba(94,139,203,0.08);
+
+	--nx-zero-smart:    #4A6FA5; /* Smart Blue */
+	--nx-zero-smart-tint:      rgba(74,111,165,0.15);
+	--nx-zero-smart-shade:     rgba(74,111,165,0.35);
+	--nx-zero-smart-soft:      rgba(74,111,165,0.08);
+
+	--nx-zero-core: #1B1F3A; /* Deep Slate Core */
+	--nx-zero-core-tint:       rgba(27,31,58,0.15);
+	--nx-zero-core-shade:      rgba(27,31,58,0.35);
+	--nx-zero-core-soft:       rgba(27,31,58,0.08);
+	--nx-zero-core-55:         rgba(27,31,58,0.55);
+
+	--nx-zero-drift: #D88878; /* Soft Fawn */
+	--nx-zero-drift-tint:      rgba(216,136,120,0.15);
+	--nx-zero-drift-shade:     rgba(216,136,120,0.35);
+	--nx-zero-drift-soft:      rgba(216,136,120,0.08);
+
+	--nx-zero-glow: #C7C9CC; /* Silver */
+	--nx-zero-glow-tint:       rgba(199,201,204,0.15);
+	--nx-zero-glow-shade:      rgba(199,201,204,0.35);
+	--nx-zero-glow-soft:       rgba(199,201,204,0.08);
+
+	--nx-zero-witness: #7C7FEA; /* Soft Periwinkle */
+	--nx-zero-witness-tint:    rgba(124,127,234,0.15);
+	--nx-zero-witness-shade:   rgba(124,127,234,0.35);
+	--nx-zero-witness-soft:    rgba(124,127,234,0.08);
+
+	--nx-zero-boundary: #D8D9DB; /* Alabaster Grey */
+	--nx-zero-boundary-tint:   rgba(216,217,219,0.15);
+	--nx-zero-boundary-shade:  rgba(216,217,219,0.35);
+	--nx-zero-boundary-soft:   rgba(216,217,219,0.08);
+
+	--nx-bg-primary:	 var(--nx-zero-core);			 /* Deep void background */
+	--nx-bg-secondary: var(--nx-zero-boundary);	/* Panels, cards, surfaces */
+	--nx-bg-tertiary:	var(--nx-zero-witness);	 /* Soft sections, subtle zones */
+	--nx-bg-hover:		 var(--nx-zero-drift);		 /* Hoverable surfaces */
+
+	/* text */
+	--nx-text-primary: var(--nx-zero-glow);
+	--nx-text-secondary: var(--nx-zero-witness);
+	--nx-text-muted: var(--nx-zero-drift);
+	--nx-hover-text:	 var(--nx-zero-glow);
+
+	/* Highlighted / emphasized text */
+	--nx-text-highlight: var(--nx-zero-glow);
+
+	/* Disabled / inactive text */
+	--nx-text-disabled: var(--nx-zero-drift);
+
+	/* Inverse text (text on light surfaces) */
+	--nx-text-inverse: var(--nx-zero-core);
+
+	/* Accent text (subtle emphasis, not primary) */
+	--nx-text-accent: var(--nx-zero-witness);
+
+	/* transitions */
+	--nx-transition-base:
+		background-color 0.15s ease,
+		color 0.15s ease,
+		box-shadow 0.15s ease,
+		border-color 0.15s ease;
+
+	--nx-transition-primary:
+		background-color 0.2s ease,
+		color 0.2s ease,
+		box-shadow 0.25s ease,
+		border-color 0.2s ease;
+
+	--nx-transition-micro:
+		opacity 0.1s ease,
+		transform 0.1s ease;
+}
+
+*::before,
+*::after,
+* {
+	font-family: var(--nx-font);
+	font-size: 16pt;
+	-webkit-tap-highlight-color: transparent;
+	box-sizing: border-box;
+}
+
+*:focus {
+	outline: none;
+}
+
+html {
+	scroll-behavior: smooth;
+	-webkit-text-size-adjust: 100%;
+}
+
+input, textarea {
+	caret-color: var(--nx-text-primary);
+}
+
+body {
+	margin: 0;
+	padding-top: var(--nx-space-3);
+	padding-bottom: 5.5rem;
+
+	background-color: var(--nx-bg-primary);
+	color: var(--nx-text-secondary);
+
+	font-family: var(--nx-font);
+	line-height: 1.6;
+	transition: var(--nx-transition-base);
+
+	/* Zero's spatial law */
+	overflow-x: hidden;
+	background-attachment: fixed;
+
+	/* smooth rendering */
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+
+a {
+	text-decoration: none;
+}
+
+a:hover {
+	color: var(--nx-hover-text);
+}
+
+button,
+a,
+input,
+select,
+textarea {
+	transition: var(--nx-transition-base);
+	color: var(--nx-text-primary);
+	background: none;
+	border: none;
+	color: inherit;
+	font: inherit;
+}
+
+mark,
+.highlight {
+	color: var(--nx-text-highlight);
+	background: transparent;
+}
+
+[disabled],
+.disabled {
+	color: var(--nx-text-disabled);
+	cursor: not-allowed;
+	opacity: 0.6;
+}
+
+.accent {
+	color: var(--nx-text-accent);
+}
+
+.inverse {
+	color: var(--nx-text-inverse);
+}
+
+::selection {
+	background: var(--nx-zero-glow);
+	color: var(--nx-text-inverse);
+}
+
+:focus-visible {
+	outline: var(--nx-focus-ring-width) solid var(--nx-focus-ring-color);
+	outline-offset: 3px;
+	box-shadow: 0 0 0.5rem var(--nx-zero-boundary);
+}
+
+h1, h2, h3, h4, h5, h6,
+.nx-legend,
+.nx-dialog-title {
+	font-family: var(--nx-font-header);
+	letter-spacing: 0.15em;
+	text-transform: uppercase;
+	color: var(--nx-text-primary);
+}
+
+/* Base: Phones -> Bottom Nav */
+nav.nx-nav {
+	position: fixed;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	height: 4.5rem;
+	font-size: 2.5rem;
+	overflow-x: auto;
+	overflow-y: hidden;
+	white-space: nowrap;
+
+	display: flex;
+	justify-content: flex-start;
+	align-items: center;
+	gap: var(--nx-space-3);
+	padding: 0rem;
+	padding-left: var(--nx-space-3);
+	padding-right: var(--nx-space-3);
+
+	background: var(--nx-bg-primary);
+	border-top: 1px solid var(--nx-zero-boundary);
+
+	z-index: 1000;
+}
+
+body > div.nx-page {
+	min-height: calc(100vh - var(--nx-space-3) * 6.5);
+	display: flex;
+	flex-direction: column;
+}
+
+main.nx-main {
+	display: flex;
+	position: relative;
+	flex-direction: column;
+	justify-content: center;
+	min-width: var(--nx-min-max-width);
+	margin: 0 auto;
+	overflow-y: auto;
+	flex: 4;
+}
+
+canvas.nx-gl-canvas {
+	position: absolute;
+	min-height: 50vh;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	z-index: -1;
+}
+
+footer.nx-footer,
+header.nx-header {
+	display: flex;
+	flex: 1;
+	padding-left: calc(var(--nx-space-3) + env(safe-area-inset-left));
+	padding-right: calc(var(--nx-space-3) + env(safe-area-inset-right));
+	text-align: center;
+	align-items: center;
+	gap: var(--nx-space-3);
+	border-color: var(--nx-zero-denim);
+	background: var(--nx-zero-smart); /* Smart Blue */
+	color: var(--nx-text-primary);
+	padding-top: var(--nx-space-3);
+	padding-bottom: var(--nx-space-3);
+}
+
+header.nx-header {
+	margin-bottom: var(--nx-space-3);
+	margin-top: -1rem;
+	justify-content: flex-start;
+	border-bottom: groove;
+}
+
+header.nx-header:has(ul.nx-offcanvas-ul.active) {
+	border: none;
+	position: absolute;
+	flex-direction: row;
+	background: green;
+	width: 100vw;
+	height :100vh;
+}
+
+
+footer.nx-footer {
+	margin-top: var(--nx-space-3);
+	margin-bottom: -1rem;
+	justify-content: space-around;
+	border-top: groove;
+}
+
+div.nx-nav-page {
+	display: none;
+}
+
+div.nx-container,
+div.nx-nav-page.active {
+	display: flex;
+	flex-direction: column;
+	width: 100%;
+	padding: 0;
+	padding-left: var(--nx-space-3);
+	padding-right: var(--nx-space-3);
+	gap: var(--nx-space-3);
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.nx-nav-item {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+
+	width: clamp(2rem, 3vw, 3rem);
+	height: clamp(2rem, 3vw, 3rem);
+
+	padding: 1.5rem;
+	border-radius: 0.5rem;
+	border-style: none;
+
+	color: var(--nx-text-primary);
+	background: transparent;
+	cursor: pointer;
+
+	transition: var(--nx-transition-base);
+}
+
+.nx-nav-item:hover {
+	background: var(--nx-bg-hover);
+	color: var(--nx-hover-text);
+	transition-timing-function: ease;
+	transition-duration: 0.5s;
+	transition-delay: 0.1s;
+}
+
+.nx-nav-item:active {
+	background: var(--nx-zero-boundary);
+}
+
+.nx-nav-item:focus-visible {
+	outline: var(--nx-focus-ring-width) solid var(--nx-focus-ring-color);
+	outline-offset: 3px;
+}
+
+

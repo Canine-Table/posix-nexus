@@ -1,0 +1,53 @@
+
+/* LG: desktop width, still 1 column */
+@media (min-width: 1200px) {
+	body {
+		padding-left: 0;
+		padding-top: 5rem;
+	}
+
+	body > div.nx-page {
+		min-height: calc(100vh - var(--nx-space-3) * 6);
+	}
+
+	main.nx-main {
+		min-width: calc(100vw - var(--nx-space-3));
+	}
+
+
+	header.nx-header:has(ul.nx-offcanvas-ul.active) {
+		height: calc(100vh - 4rem);
+	}
+
+	div.nx-container,
+	div.nx-nav-page.active {
+		max-width: var(--nx-max-width);
+	}
+
+	nav.nx-nav {
+		position: fixed;
+		top: 0;
+		left: 0;
+		right: 0;
+
+		overflow-x: auto;
+		overflow-y: hidden;
+		white-space: nowrap;
+
+		height: 4rem;
+		width: 100%;
+
+		display: flex;
+		flex-direction: row;
+		justify-content: flex-start;
+		align-items: center;
+
+		padding: 0rem;
+		padding-left: var(--nx-space-3);
+		padding-right: var(--nx-space-3);
+
+		border-bottom: 1px solid var(--nx-zero-boundary);
+		border-right: none;
+	}
+}
+

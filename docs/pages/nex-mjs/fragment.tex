@@ -1,0 +1,247 @@
+\nxSections{NxFragment IR Node Schema}{1}
+
+\begin{NxLightBox}[title={IR Node Schema -- Minimal JSON Form}]
+	\begin{NxLightP}
+		Every node processed by \texttt{NxFragment.Batch} is a plain JSON object describing a single structural unit in the DOM tree. The engine recognizes only two fields today: \texttt{twig} and \texttt{leaf}. All other keys are ignored until future directive layers are implemented.
+	\end{NxLightP}
+\end{NxLightBox}
+
+\begin{NxLightListBox}[title={Recognized Fields}]
+	\nxEachArw{ArrowDark}{Secondary}{1}{%
+		{\texttt{twig}}/{The node’s identity. Determines the opcode and optional namespace. May be a string or a two‑element array.},%
+		{\texttt{leaf}}/{Child nodes. If present and non‑primitive, triggers a descent into a new DFS frame.}%
+	}
+\end{NxLightListBox}
+
+\begin{NxLightBox}[title={\texttt{twig} -- Opcode and Namespace}]
+	\begin{NxLightP}
+		The \texttt{twig} field determines what kind of DOM node is created. It may take one of two forms:
+	\end{NxLightP}
+
+	\begin{NxLightList}
+		\nxEachArw{ArrowDark}{Secondary}{1}{%
+			{String}/{A literal opcode such as \texttt{"<>"}, \texttt{"!--"}, \texttt{"</>"}, or an HTML tag name.},%
+			{Array}/{A two‑element tuple \texttt{[tag, namespace]} selecting a namespaced element.}%
+		}
+	\end{NxLightList}
+
+	\begin{NxLightP}
+		If \texttt{twig} is missing or \texttt{null}, the engine treats the node as a text container and coerces its \texttt{leaf} into a text node.
+	\end{NxLightP}
+\end{NxLightBox}
+
+\begin{NxLightBox}[title={\texttt{leaf} -- Structural Children}]
+	\begin{NxLightP}
+		The \texttt{leaf} field defines the node’s children. If \texttt{leaf} is an array or object, the register machine descends into it as a new DFS frame. If \texttt{leaf} is a primitive, it is treated as text content.
+	\end{NxLightP}
+
+	\begin{NxCodeBox}{js}{}
+{ "twig": "div", "leaf": [
+	{ "twig": "<>", "leaf": "hello" },
+	{ "twig": "span", "leaf": "world" }
+]}
+	\end{NxCodeBox}
+
+	\begin{NxLightP}
+		Primitive leaves are coerced into text nodes; non‑primitive leaves trigger structural descent.
+	\end{NxLightP}
+\end{NxLightBox}
+
+\begin{NxLightBox}[title={Normalization Rules}]
+	\begin{NxLightP}
+		Before opcode routing, the engine normalizes nodes as follows:
+	\end{NxLightP}
+
+	\begin{NxLightList}
+		\nxEachArw{ArrowDark}{Secondary}{1}{%
+			{Primitive node}/{Converted into \texttt{\{ twig: null, leaf: String(value) \}}.},%
+			{Missing \texttt{twig}}/{Treated as a text node using the current namespace.},%
+			{Missing \texttt{leaf}}/{Defaults to empty string.},%
+			{Non‑array \texttt{leaf}}/{Wrapped into a single‑element array during descent.}%
+		}
+	\end{NxLightList}
+\end{NxLightBox}
+
+\begin{NxLightBox}[title={Summary}]
+	\begin{NxLightP}
+		At this stage of the engine, the IR schema is intentionally minimal. Only \texttt{twig} and \texttt{leaf} participate in DOM creation and DFS traversal. Future directive layers (\texttt{wood}, \texttt{bark}, \texttt{grow}, \texttt{sap}, \texttt{root}) are reserved but not yet active.
+	\end{NxLightP}
+\end{NxLightBox}
+
+\begin{comment}
+
+\nxSections{NxFragment}{1}
+
+\nxSections{NxFragment.Batch}{2}
+
+\begin{NxLightBox}[title={Register‑Machine DOM Builder}]
+	\begin{NxLightP}
+		Traverse a tree of node descriptors, descend into leaf arrays, and emit DOM nodes in strict depth‑first order using a compact, allocation‑free register machine. The engine guarantees deterministic traversal, stable sibling ordering, and zero recursion.
+	\end{NxLightP}
+\end{NxLightBox}
+
+
+\begin{NxCodeBox}{js}{phantomlabel={func:NxFragment.Batch},
+	title={\textbf{NxFragment.Batch Arguments}
+	\begin{NxDarkList}
+		\nxEachArw{CodeDark}{Tertiary}{1}{%
+			{Input}/{\nxLnArcBox[]{\nxListDark}
+				\begin{NxDarkList}
+					\nxEachArw{ArrowDark}{Tertiary}{1}{%
+						{nodes}/{A single node or an array of root nodes.},%
+						{size}/{Capacity of the register file \nxLnArcBox[]{f[]} (default 2054).}%
+					}
+				\end{NxDarkList}
+			},%
+			{Output}/{A \nxLnArcBox[]{DocumentFragment} containing all rendered DOM nodes in DFS order.}%
+		}
+	\end{NxDarkList}
+}}
+class NxElement {
+	...
+	static batch(nodes, size = 2054) {...}
+	...
+}
+\end{NxCodeBox}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\nxSections{NxFragment.Batch Mechanics}{3}
+
+\begin{NxLightBox}[title={Execution Model -- Four‑Phase Register Machine}]
+	\begin{NxLightP}
+		\texttt{NxFragment.Batch} is a non‑recursive depth‑first DOM builder implemented as a compact register machine. Traversal proceeds through four tightly coupled phases: \emph{Root Initialization}, \emph{Forward Scan}, \emph{Descent}, and \emph{Rewind}. Each phase manipulates the register file \texttt{f[]} and pointer stack \texttt{s[]} to guarantee deterministic DFS order with zero call‑stack usage.
+	\end{NxLightP}
+\end{NxLightBox}
+
+\begin{NxLightListBox}[title={Phase Overview}]
+	\nxEachArw{ArrowDark}{Secondary}{1}{%
+		{Root Initialization}/{Bind the current root node to the shared \texttt{DocumentFragment}, prime the cursor registers, and set \texttt{ptr} to the root array.},%
+		{Forward Scan}/{Increment the cursor \texttt{f[0]} and emit each node via \texttt{\#Fragment}. If a node has a \texttt{leaf}, prepare for descent.},%
+		{Descent}/{Push the current frame onto the register stack, switch \texttt{ptr} to the child array, reset the cursor, and increase depth.},%
+		{Rewind}/{Pop frames until a parent frame still has unvisited siblings. If none remain, return to root level and advance to the next root.}%
+	}
+\end{NxLightListBox}
+
+\begin{NxLightBox}[title={Detailed Register Semantics}]
+	\begin{NxLightP}
+		The register file \texttt{f[]} is both a fixed register set and a LIFO frame stack. The first six registers have fixed meaning:
+	\end{NxLightP}
+
+	\begin{NxLightList}
+		\nxEachArw{ArrowDark}{Secondary}{1}{%
+			{f[0] -- Cursor}/{Index of the \emph{last processed} element in the current \texttt{ptr} array. The forward loop always advances via \texttt{++f[0]}.},%
+			{f[1] -- Frame End}/{Exclusive upper bound for the current \texttt{ptr} array. The forward loop runs while \texttt{++f[0] < f[1]}.},%
+			{f[2] -- Frame Pointer}/{Points to the next free slot in \texttt{f[]} for saving/restoring frames. Each descent pushes two integers: \texttt{[cursor, end]}.},%
+			{f[3] -- Depth}/{Number of nested leaf arrays currently active. \texttt{0} means root level; increments on descent, decrements on rewind.},%
+			{f[4] -- Root Index}/{Which root in \texttt{s[]} is currently being processed.},%
+			{f[5] -- Root Count}/{Total number of roots (\texttt{s.length}).}%
+		}
+	\end{NxLightList}
+
+	\begin{NxLightP}
+		Registers \texttt{f[6..size)} form the frame stack. Each descent pushes \texttt{[cursor, end]}, and each rewind pops them in reverse order.
+	\end{NxLightP}
+\end{NxLightBox}
+
+\begin{NxLightBox}[title={Phase 1 -- Root Initialization}]
+	\begin{NxLightP}
+		When \texttt{f[3] === 0}, the machine is at root depth. The current root \texttt{s[f[4]]} is bound to the shared \texttt{DocumentFragment}. The cursor is primed so that the next \texttt{++f[0]} lands exactly on the root index:
+	\end{NxLightP}
+
+	\begin{NxCodeBox}{js}{}
+f[0] = f[4] - 1	  // prepare cursor
+f[1] = f[5]		  // frame end = root count
+ptr  = s			 // ptr = root array
+	\end{NxCodeBox}
+
+	\begin{NxLightP}
+		This establishes the invariant that the forward scan always begins at the correct root without special‑case logic.
+	\end{NxLightP}
+\end{NxLightBox}
+
+\begin{NxLightBox}[title={Phase 2 -- Forward Scan}]
+	\begin{NxLightP}
+		The forward loop is the heart of the machine:
+	\end{NxLightP}
+
+	\begin{NxCodeBox}{js}{}
+while (++f[0] < f[1]) {
+	emit ptr[f[0]] via #Fragment
+	if (ptr[f[0]].leaf is an object) { ... descend ... }
+}
+	\end{NxCodeBox}
+
+	\begin{NxLightList}
+		\nxEachArw{ArrowDark}{Secondary}{1}{%
+			{Cursor discipline}/{\texttt{f[0]} always means “last processed index”; the loop advances via pre‑increment.},%
+			{Leaf detection}/{If a node has a \texttt{leaf}, the machine prepares to descend into a child array.},%
+			{Determinism}/{Sibling order is preserved because the cursor is strictly monotonic within each frame.}%
+		}
+	\end{NxLightList}
+\end{NxLightBox}
+
+\begin{NxLightBox}[title={Phase 3 -- Descent}]
+	\begin{NxLightP}
+		When a node has a \texttt{leaf}, the machine saves the current frame and switches to the child array:
+	\end{NxLightP}
+
+	\begin{NxCodeBox}{js}{}
+f[f[2]++] = f[0]	 // save cursor
+f[f[2]++] = f[1]	 // save frame end
+s.push(ptr)		  // save pointer array
+ptr = leaf[]		 // switch to child array
+++f[3]			   // increase depth
+f[1] = ptr.length	// new frame end
+f[0] = -1			// prepare for next ++f[0] = 0
+	\end{NxCodeBox}
+
+	\begin{NxLightP}
+		This establishes a new frame whose first forward iteration begins at index 0. No recursion is used; all state is explicit.
+	\end{NxLightP}
+\end{NxLightBox}
+
+\begin{NxLightBox}[title={Phase 4 -- Rewind}]
+	\begin{NxLightP}
+		When a frame is exhausted (\texttt{f[0] >= f[1]}), the machine pops frames until it finds a parent with remaining siblings:
+	\end{NxLightP}
+
+	\begin{NxCodeBox}{js}{}
+if (f[3] > 0) do {
+	f[1] = f[--f[2]]   // restore frame end
+	f[0] = f[--f[2]]   // restore cursor
+	ptr  = s.pop()	 // restore pointer array
+} while (--f[3] > 0 && f[0] >= f[1])
+	\end{NxCodeBox}
+
+	\begin{NxLightList}
+		\nxEachArw{ArrowDark}{Secondary}{1}{%
+			{Sibling exhaustion}/{If \texttt{f[0] >= f[1]}, the parent frame has no more siblings; continue rewinding.},%
+			{Stop condition}/{Rewind stops when either depth reaches 0 or a frame has remaining siblings.},%
+			{Correctness}/{This guarantees that every node is visited exactly once in DFS order.}%
+		}
+	\end{NxLightList}
+\end{NxLightBox}
+
+\begin{NxLightBox}[title={Root Advancement}]
+	\begin{NxLightP}
+		After rewinding, if the machine is at shallow depth and no more siblings remain, the next root is selected:
+	\end{NxLightP}
+
+	\begin{NxCodeBox}{js}{}
+if (!(f[3] > 1 || f[0] + 1 < f[1]))
+	++f[4]
+	\end{NxCodeBox}
+
+	\begin{NxLightP}
+		The outer loop continues while \texttt{f[4] < f[5]}. Each root is processed independently but shares the same register machine.
+	\end{NxLightP}
+\end{NxLightBox}
+
+\begin{NxLightBox}[title={Output}]
+	\begin{NxLightP}
+		The function returns a \texttt{DocumentFragment} containing all rendered DOM nodes in strict DFS order, with stable sibling ordering and no recursion.
+	\end{NxLightP}
+\end{NxLightBox}
+
+\end{comment}
+

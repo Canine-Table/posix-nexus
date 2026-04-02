@@ -1,0 +1,26 @@
+\documentclass[a4paper,12pt]{article}
+\newif\ifnxBIB
+\nxBIBfalse
+\newif\ifnxGLS
+\nxGLSfalse
+\newif\ifnxLandscape
+\nxLandscapefalse
+\input{../lib/tex/nex-preamble.tex}
+\nxHyper[]%
+\nxSnowFade%
+\nxNoParIndent
+\def\nxInput#1{\input{./pages/nex-ancient/#1.tex}}%
+
+\begin{document}
+	\nxCoverPage[%
+		title={Ancient},%
+		ref={\nxGithubLight}%
+	]
+	\nxRomanFooter
+	\nxToc{Contents}
+	\newpage
+	\nxSnowFlakeHeader{Ancient}
+	\nxInput{permian}
+	\nxInput{triassic}
+\end{document}
+

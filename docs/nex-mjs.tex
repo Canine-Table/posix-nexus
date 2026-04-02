@@ -1,0 +1,34 @@
+\documentclass[a4paper,12pt]{article}
+\newif\ifnxBIB
+\nxBIBfalse
+\newif\ifnxGLS
+\nxGLSfalse
+\newif\ifnxLandscape
+\nxLandscapefalse
+\input{../lib/tex/nex-preamble.tex}
+\nxHyper[]%
+\nxSnowFade%
+\nxNoParIndent
+\def\nxInput#1{\input{./pages/nex-mjs/#1.tex}}%
+
+\begin{document}
+	\nxCoverPage[%
+		title={Javascript Modules},%
+		ref={\nxGithubLight}%
+	]
+	\nxRomanFooter
+	\nxToc{Contents}
+	\newpage
+	\nxSnowFlakeHeader{Javascript Modules}
+	%\nxInput{math}
+	%\nxInput{json}
+	%\nxInput{log}
+	%\nxInput{misc}
+	%\nxInput{str}
+	%\nxInput{struct}
+	%\nxInput{io}
+	%\nxInput{elements}
+	\nxInput{fragment}
+	\nxInput{gl}
+\end{document}
+

@@ -31,6 +31,46 @@ unsigned long NX_bwOdd_lLF(
 	return (l & 1ul) == 1ul;
 }
 
+unsigned long NX_bwMax_lLLF(
+	const unsigned long a,
+	const unsigned long b
+) {
+	return a ^ ((a ^ b) & -(a < b));
+}
+
+unsigned long NX_bwMin_lLLF(
+	const unsigned long a,
+	const unsigned long b
+) {
+	return b ^ ((a ^ b) & -(a < b));
+}
+
+unsigned long NX_signed_lLF(
+	const unsigned long x
+) {
+	return (x >> NX_top_LC) | -(-x >> NX_top_LC);
+}
+
+unsigned long NX_bwSigned_lLF(
+	const unsigned long x
+) {
+	return (x >> NX_top_LC) | -(-x >> NX_top_LC);
+}
+
+unsigned long NX_bwSign_lLLF(
+	const unsigned long a,
+	const unsigned long b
+) {
+	return !((a ^ b) & (1ul << NX_top_LC));
+}
+
+unsigned long NX_bwAbs_lLF(
+	const unsigned long x
+) {
+	return (x ^ (x >> NX_top_LC)) - (x >> NX_top_LC);
+}
+
+
 unsigned long NX_bwTarget_lLF(
 	const unsigned long l
 ) {
@@ -91,8 +131,7 @@ unsigned long NX_bwMove_lLLLF(
 
 unsigned long NX_bwTwos_lLF(const unsigned long b)
 {
-	unsigned long s = ~b + 1ul;
-	return b == 0ul ? 0ul : s * b;
+	return b & -b;
 }
 
 unsigned long NX_bwOnly_lLLLF(
@@ -133,14 +172,66 @@ unsigned long NX_bwZeros_lLLLF(
 	return l;
 }
 
-unsigned long NX_bwLeading_lLF(const unsigned long b)
-{
-	return NX_bwZeros_lLLLF(b, NX_top_LC, (unsigned long)-1);
+unsigned long NX_bwLeading_lLF(
+		const unsigned long b
+) {
+	return NX_bwZeros_lLLLF(b, NX_top_LC, (unsigned long)-1ul);
 }
 
-unsigned long NX_bwTrailing_lLF(const unsigned long b)
-{
+unsigned long NX_bwTrailing_lLF(
+		const unsigned long b
+) {
 	return NX_bwZeros_lLLLF(b, 0ul, 1ul);
+}
+
+
+unsigned long NX_bwModBit_lLLF(
+	const unsigned long b,
+	const unsigned long s
+) {
+	return b & (s - 1);
+}
+
+unsigned long NX_bwPow2B_lLLLF(
+	const unsigned long x
+) {
+	return !(x & (x - 1)) & !!x;
+}
+
+unsigned long NX_bwSel_lLLLF(
+	const unsigned long c,
+	const unsigned long b,
+	const unsigned long a
+) {
+	return b ^ ((a ^ b) & -c);
+}
+
+unsigned long NX_bwNotZero_lLF(
+	const unsigned long x
+) {
+	return (x | -x) >> NX_top_LC;
+}
+
+unsigned long NX_bwZero_lLF(
+	const unsigned long x
+) {
+	return ((x | -x) >> NX_top_LC) + 1ul;
+}
+
+unsigned long NX_bwClamp_lLLLF(
+	const unsigned long v,
+	const unsigned long h,
+	const unsigned long l
+) {
+	v = v ^ ((v ^ l) & -(v < l));
+	return v ^ ((v ^ h) & -(v > h));
+}
+
+unsigned long NX_bwAvg_lLLF(
+	const unsigned long a,
+	const unsigned long b
+) {
+	return ((a ^ b) >> 1ul) + (a & b);
 }
 
 unsigned long NX_bwModNextBit_lLLF(
@@ -152,8 +243,9 @@ unsigned long NX_bwModNextBit_lLLF(
 		: 1ul + ((b - 1ul) & (NX_bwNextBit_lLF(s) - 1ul));
 }
 
-unsigned long NX_bwNextBit_lLF(const unsigned long b)
-{
+unsigned long NX_bwNextBit_lLF(
+	const unsigned long b
+) {
 	unsigned long v = b - 1ul;
 	for (unsigned int i = 0; i < NX_bitln_IC; ++i)
 		v = NX_bwCascade_lLLF(v, NX_bits_LC[i]);

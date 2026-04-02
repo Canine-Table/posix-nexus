@@ -12,10 +12,10 @@ ${AWK:-$(nx_cmd_awk)} "
 		n = nx_blk_push(stk, n, "world")
 		
 
-		n = nx_blk_pop(stk, n)
-		n = nx_blk_pop(stk, n)
-		n = nx_blk_pop(stk, n)
-		n = nx_blk_pop(stk, n)
+		#n = nx_blk_pop(stk, n)
+		#n = nx_blk_pop(stk, n)
+		#n = nx_blk_pop(stk, n)
+		#n = nx_blk_pop(stk, n)
 
 		#p = nx_blk_ppush(stk, n, "hello")
 		#n = nx_blk_ppush(stk, p, "world")

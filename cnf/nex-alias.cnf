@@ -2,7 +2,7 @@
 
 alias vi='$EDITOR'
 alias pager='$PAGER'
-alias emac='emacs -q --load "$NEXUS_LIB/lisp/el/emacs/nex-init.el"'
+alias emacs='emacs -nw -q --load "$NEXUS_LIB/lisp/el/nex-init.el"'
 
 alias ipa='ip --color=auto address show'
 alias ipn='ip --color=auto neighbor show'

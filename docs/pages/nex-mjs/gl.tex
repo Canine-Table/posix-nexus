@@ -1,0 +1,60 @@
+\nxSections{NxGL Register Map}{1}
+
+\begin{NxLightBox}[title={Overview}]
+	\begin{NxLightP}
+		NxGL exposes a fixed register file backed by a single \texttt{ArrayBuffer}.  
+		Registers are addressed numerically but may be assigned semantic meaning  
+		through this declarative map. The engine treats these bindings as stable  
+		ABI contracts during buffer setup and draw execution.
+	\end{NxLightP}
+\end{NxLightBox}
+
+\begin{NxLightListBox}[title={Register Classes}]
+	\nxEachArw{ArrowDark}{Secondary}{1}{%
+		{Scratch}/{\texttt{0–9}. Volatile temporaries. Never preserved across ops.},%
+		{Engine}/{\texttt{10–20}. Fixed internal state used by NxGL.},%
+		{Canvas}/{\texttt{21–23}. Dimensions and aspect ratio.},%
+		{VAO}/{\texttt{25–30}. GL object handles and attribute metadata.}%
+	}
+\end{NxLightListBox}
+
+\begin{NxLightBox}[title={Scratch Registers (\texttt{0–9})}]
+	\begin{NxLightP}
+		Reserved for transient computation.  
+		The engine may overwrite these at any time.  
+		No semantic meaning is attached.
+	\end{NxLightP}
+\end{NxLightBox}
+
+\begin{NxLightBox}[title={Canvas Registers}]
+	\begin{NxLightList}
+		\nxEachArw{ArrowDark}{Secondary}{1}{%
+			{\texttt{21}}/{Canvas width (U32)},%
+			{\texttt{22}}/{Canvas height (U32)},%
+			{\texttt{23}}/{Aspect ratio (F32)}%
+		}
+	\end{NxLightList}
+\end{NxLightBox}
+
+\begin{NxLightBox}[title={VAO Registers}]
+	\begin{NxLightList}
+		\nxEachArw{ArrowDark}{Secondary}{1}{%
+			{\texttt{25}}/{VAO handle},%
+			{\texttt{26}}/{VBO handle (per attribute)},%
+			{\texttt{27}}/{Attribute location},%
+			{\texttt{28}}/{Attribute size},%
+			{\texttt{29}}/{Stride (reserved)},%
+			{\texttt{30}}/{Offset (reserved)}%
+		}
+	\end{NxLightList}
+\end{NxLightBox}
+
+\begin{NxLightBox}[title={Summary}]
+	\begin{NxLightP}
+		This register map defines the minimal ABI required for deterministic  
+		VAO construction and canvas‑bound rendering. Additional semantic  
+		bindings may be introduced in future layers without altering the  
+		scratch or engine register classes.
+	\end{NxLightP}
+\end{NxLightBox}
+

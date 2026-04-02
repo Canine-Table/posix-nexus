@@ -5,6 +5,8 @@ test -d "$NEXUS_CNF" || exit 1
 #######( cleanup )#################################
 cat > "$NEXUS_CNF/batch/clean.batch" <<- 'EOF'
 	link delete nexus0 type veth
+	link delete dummy0 type dummy
+	link delete wireguard0 type wireguard
 	netns delete nex-posix-128
 	netns delete nex-qemu-176
 	netns delete nex-pod-208
@@ -56,6 +58,15 @@ cat > "$NEXUS_CNF/batch/nex-default.batch" <<- 'EOF'
 	address add 172.16.128.1/17 label "nexus0:lab" dev nexus0
 	link set nexus0 up
 	route replace 172.16.128.0/17 via 172.16.128.2 dev nexus0
+
+	# Wireguad setup
+	link add dummy0 type dummy
+	link set dev dummy0 addrgenmode none
+	link property add dev dummy0 altname wg_proxy
+	link set dummy0 group 69
+	link set dummy0 up
+	link set dev dummy0 address de:ad:de:af:be:ef
+	link add dev wireguard0 type wireguard
 
 	netns add nex-qemu-176
 	netns add nex-pod-208
@@ -464,6 +475,7 @@ cat > "$NEXUS_CNF/batch/nex-pod-208-nextcloud.batch" <<- 'EOF'
 	link set nexus0 up
 	route add default via 172.16.208.1 dev nexus0
 EOF
+
 
 ######( cups )###############################
 cat > "$NEXUS_CNF/batch/nex-pod-208-cups.batch" <<- 'EOF'

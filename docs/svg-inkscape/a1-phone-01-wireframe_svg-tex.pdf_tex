@@ -1,0 +1,89 @@
+%% Creator: Inkscape 1.4.3 (0d15f75042, 2025-12-25), www.inkscape.org
+%% PDF/EPS/PS + LaTeX output extension by Johan Engelen, 2010
+%% Accompanies image file 'a1-phone-01-wireframe_svg-tex.pdf' (pdf, eps, ps)
+%%
+%% To include the image in your LaTeX document, write
+%%   \input{<filename>.pdf_tex}
+%%  instead of
+%%   \includegraphics{<filename>.pdf}
+%% To scale the image, write
+%%   \def\svgwidth{<desired width>}
+%%   \input{<filename>.pdf_tex}
+%%  instead of
+%%   \includegraphics[width=<desired width>]{<filename>.pdf}
+%%
+%% Images with a different path to the parent latex file can
+%% be accessed with the `import' package (which may need to be
+%% installed) using
+%%   \usepackage{import}
+%% in the preamble, and then including the image with
+%%   \import{<path to file>}{<filename>.pdf_tex}
+%% Alternatively, one can specify
+%%   \graphicspath{{<path to file>/}}
+%% 
+%% For more information, please see info/svg-inkscape on CTAN:
+%%   http://tug.ctan.org/tex-archive/info/svg-inkscape
+%%
+\begingroup%
+  \makeatletter%
+  \providecommand\color[2][]{%
+    \errmessage{(Inkscape) Color is used for the text in Inkscape, but the package 'color.sty' is not loaded}%
+    \renewcommand\color[2][]{}%
+  }%
+  \providecommand\transparent[1]{%
+    \errmessage{(Inkscape) Transparency is used (non-zero) for the text in Inkscape, but the package 'transparent.sty' is not loaded}%
+    \renewcommand\transparent[1]{}%
+  }%
+  \providecommand\rotatebox[2]{#2}%
+  \newcommand*\fsize{\dimexpr\f@size pt\relax}%
+  \newcommand*\lineheight[1]{\fontsize{\fsize}{#1\fsize}\selectfont}%
+  \ifx\svgwidth\undefined%
+    \setlength{\unitlength}{200.75827771bp}%
+    \ifx\svgscale\undefined%
+      \relax%
+    \else%
+      \setlength{\unitlength}{\unitlength * \real{\svgscale}}%
+    \fi%
+  \else%
+    \setlength{\unitlength}{\svgwidth}%
+  \fi%
+  \global\let\svgwidth\undefined%
+  \global\let\svgscale\undefined%
+  \makeatother%
+  \begin{picture}(1,2.0595694)%
+    \lineheight{1}%
+    \setlength\tabcolsep{0pt}%
+    \put(0,0){\includegraphics[width=\unitlength,page=1]{a1-phone-01-wireframe_svg-tex.pdf}}%
+    \put(0.17001766,1.86977052){\color[rgb]{0.48627451,0.49803922,0.91764706}\transparent{0}\rotatebox{90}{\makebox(0,0)[lt]{\lineheight{33.79999924}\smash{\begin{tabular}[t]{l}\textbf{Maplebrook Public Library }\end{tabular}}}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=2]{a1-phone-01-wireframe_svg-tex.pdf}}%
+    \put(-0.73977706,2.13535687){\color[rgb]{0.48627451,0.49803922,0.91764706}\transparent{0}\makebox(0,0)[lt]{\lineheight{33.79999924}\smash{\begin{tabular}[t]{l}\textbf{www}\end{tabular}}}}%
+    \put(0.04338554,1.7744176){\color[rgb]{0.48627451,0.49803922,0.91764706}\transparent{0}\rotatebox{90}{\makebox(0,0)[lt]{\smash{\begin{tabular}[t]{l}\textbf{[FEATURED]\\}\end{tabular}}}}}%
+    \put(0.10704831,1.43488145){\color[rgb]{0.48627451,0.49803922,0.91764706}\transparent{0}\rotatebox{90}{\makebox(0,0)[lt]{\smash{\begin{tabular}[t]{l}\textbf{[Browse Collection]\\}\end{tabular}}}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=3]{a1-phone-01-wireframe_svg-tex.pdf}}%
+    \put(0.04268623,0.53016534){\color[rgb]{0.48627451,0.49803922,0.91764706}\transparent{0}\rotatebox{90}{\makebox(0,0)[lt]{\smash{\begin{tabular}[t]{l}\textbf{[ Legal | Privacy | Terms]\\}\end{tabular}}}}}%
+    \put(0.16929051,0.97278703){\color[rgb]{0.48627451,0.49803922,0.91764706}\transparent{0}\rotatebox{90}{\makebox(0,0)[lt]{\smash{\begin{tabular}[t]{l}\textbf{[Hours | Location | Contact]\\}\end{tabular}}}}}%
+    \put(0.04805743,0.44015033){\color[rgb]{0.48627451,0.49803922,0.91764706}\transparent{0}\rotatebox{90}{\makebox(0,0)[lt]{\smash{\begin{tabular}[t]{l}\textbf{[Services]\\}\end{tabular}}}}}%
+    \put(0.11190672,0.29431811){\color[rgb]{0.48627451,0.49803922,0.91764706}\transparent{0}\rotatebox{90}{\makebox(0,0)[lt]{\smash{\begin{tabular}[t]{l}\textbf{[computers]\\}\end{tabular}}}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=4]{a1-phone-01-wireframe_svg-tex.pdf}}%
+    \put(0.10547031,0.09281712){\color[rgb]{0.48627451,0.49803922,0.91764706}\transparent{0}\rotatebox{90}{\makebox(0,0)[lt]{\smash{\begin{tabular}[t]{l}\textbf{[Printing]\\}\end{tabular}}}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=5]{a1-phone-01-wireframe_svg-tex.pdf}}%
+    \put(0.50073505,0.0926527){\color[rgb]{0.48627451,0.49803922,0.91764706}\transparent{0}\rotatebox{90}{\makebox(0,0)[lt]{\smash{\begin{tabular}[t]{l}\textbf{[Research Help ]\\}\end{tabular}}}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=6]{a1-phone-01-wireframe_svg-tex.pdf}}%
+    \put(0.55974499,0.29103497){\color[rgb]{0.48627451,0.49803922,0.91764706}\transparent{0}\rotatebox{90}{\makebox(0,0)[lt]{\smash{\begin{tabular}[t]{l}\textbf{[study rooms]\\}\end{tabular}}}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=7]{a1-phone-01-wireframe_svg-tex.pdf}}%
+    \put(0.02847964,1.27781954){\color[rgb]{0.48627451,0.49803922,0.91764706}\transparent{0}\rotatebox{90}{\makebox(0,0)[lt]{\smash{\begin{tabular}[t]{l}\textbf{[New Arrivals]\\}\end{tabular}}}}}%
+    \put(0.0839457,1.13342942){\color[rgb]{0.48627451,0.49803922,0.91764706}\transparent{0}\rotatebox{90}{\makebox(0,0)[lt]{\smash{\begin{tabular}[t]{l}\textbf{[book]\\}\end{tabular}}}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=8]{a1-phone-01-wireframe_svg-tex.pdf}}%
+    \put(0.38770107,1.13270838){\color[rgb]{0.48627451,0.49803922,0.91764706}\transparent{0}\rotatebox{90}{\makebox(0,0)[lt]{\smash{\begin{tabular}[t]{l}\textbf{[book]\\}\end{tabular}}}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=9]{a1-phone-01-wireframe_svg-tex.pdf}}%
+    \put(0.69145644,1.13342942){\color[rgb]{0.48627451,0.49803922,0.91764706}\transparent{0}\rotatebox{90}{\makebox(0,0)[lt]{\smash{\begin{tabular}[t]{l}\textbf{[book]\\}\end{tabular}}}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=10]{a1-phone-01-wireframe_svg-tex.pdf}}%
+    \put(0.0489792,0.86572488){\color[rgb]{0.48627451,0.49803922,0.91764706}\transparent{0}\rotatebox{90}{\makebox(0,0)[lt]{\smash{\begin{tabular}[t]{l}\textbf{[Upcomming]\\}\end{tabular}}}}}%
+    \put(0.09233621,0.71971405){\color[rgb]{0.48627451,0.49803922,0.91764706}\transparent{0}\rotatebox{90}{\makebox(0,0)[lt]{\smash{\begin{tabular}[t]{l}\textbf{[Event]\\}\end{tabular}}}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=11]{a1-phone-01-wireframe_svg-tex.pdf}}%
+    \put(0.69984693,0.71971405){\color[rgb]{0.48627451,0.49803922,0.91764706}\transparent{0}\rotatebox{90}{\makebox(0,0)[lt]{\smash{\begin{tabular}[t]{l}\textbf{[Event]\\}\end{tabular}}}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=12]{a1-phone-01-wireframe_svg-tex.pdf}}%
+    \put(0.39609156,0.70325331){\color[rgb]{0.48627451,0.49803922,0.91764706}\transparent{0}\rotatebox{90}{\makebox(0,0)[lt]{\smash{\begin{tabular}[t]{l}\textbf{[Event]\\}\end{tabular}}}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=13]{a1-phone-01-wireframe_svg-tex.pdf}}%
+  \end{picture}%
+\endgroup%

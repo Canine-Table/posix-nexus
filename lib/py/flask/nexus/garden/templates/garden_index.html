@@ -3,57 +3,10 @@
 	<head>
 		<meta charset="UTF-8"/>
 		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover"/>
-		<link rel="icon" type="image/png" crossorigin=anonymous href="https://github.com/Canine-Table/posix-nexus/blob/main/img/posix-nexus.png?raw=true"/>
-		<title>Garden</title>
+		<title>Creasetta</title>
 		<link rel="stylesheet" href="{{ url_for('nexus_garden.static', filename='css/styles.css') }}"/>
-		<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@1,300&display=swap" rel="stylesheet"/>
 	</head>
 	<body>
-	<header class="nav-inner">
-		<button class="navbar hide" onclick="document.getElementById('main-nav').classList.toggle('hide')"></button>
-		<nav id="main-nav"> <!-- navigation bar: styled by the nav{} rule in our CSS -->
-			<a href="/">Home</a>        <!-- link: inherits color + dotted underline -->
-			<a href="/about">About</a>  <!-- hover switches to blush -->
-			<a href="/contact">Contact</a>
-		</nav>
-	</header>
-	
-	<main class="wrapper">
-
-		<div class="card">
-			<img class="card-img" alt='A picture was meant to be...'/>
-			<div class="card-text">
-				some text was to be...
-			</div>
-		</div>
-
-		<div class="card">
-			<img class="card-img" alt='A picture was meant to be...'/>
-			<div class="card-text">
-				some text was to be...
-			</div>
-		</div>
-
-		<div class="card">
-			<img class="card-img" alt='A picture was meant to be...'/>
-			<div class="card-text">
-				some text was to be...
-			</div>
-		</div>
-
-		<div class="card">
-			<img class="card-img" alt='A picture was meant to be...'/>
-			<div class="card-text">
-				some text was to be...
-			</div>
-		</div>
-
-	</main>
-	<footer id="footer">
-		<p>Copyright &copy; Profcorp, Inc.</p>
-	</footer>
-	<script type="module" src="{{ url_for('nexus_garden.static', filename='mjs/script.mjs') }}"></script>
 	</body>
 </html>
-
 

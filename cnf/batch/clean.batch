@@ -1,4 +1,6 @@
 link delete nexus0 type veth
+link delete dummy0 type dummy
+link delete wireguard0 type wireguard
 netns delete nex-posix-128
 netns delete nex-qemu-176
 netns delete nex-pod-208
