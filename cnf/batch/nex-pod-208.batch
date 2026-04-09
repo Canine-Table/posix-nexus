@@ -103,9 +103,22 @@ link set nexus6 group 3
 link set nexus6 up
 link set nexus6 master bridge0
 link property add dev nexus0 altname cups_gw
-link set nexus0 alias "Virtual wired ethernet device refered to by nexus0 for the podman guess cups."
+link set nexus0 alias "Virtual wired ethernet device refered to by nexus0 for the podman guest cups."
 link set nexus0 group 3
 link set nexus0 netns nex-pod-208-cups
+
+
+######( penpot )###############################
+link add nexus7 type veth peer name nexus0
+link property add dev nexus6 altname pnpt_net
+link set nexus7 alias "Virtual wired ethernet container holding penpot which is connected the podman network on vlan 208."
+link set nexus7 group 3
+link set nexus7 up
+link set nexus7 master bridge0
+link property add dev nexus0 altname pnpt_gw
+link set nexus0 alias "Virtual wired ethernet device refered to by nexus0 for the podman guest penpot."
+link set nexus0 group 3
+link set nexus0 netns nex-pod-208-penpot
 
 
 ###################################################

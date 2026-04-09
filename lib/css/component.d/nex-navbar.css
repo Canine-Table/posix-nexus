@@ -1,0 +1,110 @@
+
+/* Base: Phones -> Bottom Nav */
+body > div.nx-page > nav.nx-nav {
+	position: fixed;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	min-height: calc(var(--nx-space-3) * 4.5);
+	height: calc(var(--nx-space-3) * 4.5);
+	max-height: calc(var(--nx-space-3) * 4.5);
+	min-width: 100vw;
+	width: 100vw;
+	max-width: 100vw;
+	overflow-x: auto;
+	overflow-y: hidden;
+
+	font-size: calc(var(--nx-space-3) * 2.5);
+	overflow-x: auto;
+	overflow-y: hidden;
+	white-space: nowrap;
+	display: flex;
+	justify-content: flex-start;
+	align-items: center;
+	gap: var(--nx-space-3);
+	padding: var(--nx-p-x);
+	background: var(--nx-bg-primary);
+	border-style: none;
+	border-top: 1px groove var(--nx-zero-boundary);
+	z-index: 1000;
+}
+
+body > div.nx-page {
+	min-height: 100vh;
+	display: flex;
+	flex-direction: column;
+}
+
+body > div.nx-page:has(nav.nx-nav) {
+	min-width: 100vw;
+	width: 100vw;
+	max-width: 100vw;
+	min-height: calc(100vh - var(--nx-space-3) * 4.5);
+	height: calc(100vh - var(--nx-space-3) * 4.5);
+	max-height: calc(100vh - var(--nx-space-3) * 4.5);
+	margin: 0 0 calc(var(--nx-space-3) * 4.5) 0;
+	overflow-y: auto;
+	overflow-x: hidden;
+	position: relative;
+}
+
+div.nx-page nav.nx-nav + header.nx-header {
+	justify-content: flex-start;
+	border-bottom: groove;
+}
+
+body > div.nx-page > nav.nx-nav ~ footer.nx-footer {
+	justify-content: space-around;
+	border-top: groove;
+}
+
+div.nx-nav-page {
+	display: none;
+}
+
+.nx-nav-item {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+
+	width: auto;
+	height: clamp(2rem, 3vw, 3rem);
+
+	padding: 1.5rem;
+	border-radius: 0.5rem;
+	border-style: none;
+
+	color: var(--nx-text-primary);
+	background: transparent;
+	cursor: pointer;
+
+	transition: var(--nx-transition-base);
+}
+
+.nx-nav-item:hover {
+	background: var(--nx-bg-hover);
+	color: var(--nx-hover-text);
+	transition-timing-function: ease;
+	transition-duration: 0.5s;
+	transition-delay: 0.1s;
+}
+
+.nx-nav-item:active {
+	background: var(--nx-zero-boundary);
+}
+
+.nx-nav-item:focus-visible {
+	outline: var(--nx-focus-ring-width) solid var(--nx-focus-ring-color);
+	outline-offset: 3px;
+}
+
+
+div.nx-page nav.nx-nav + header.nx-header:has(ul.nx-offcanvas-ul.active) {
+	border: none;
+	position: absolute;
+	flex-direction: row;
+	width: 100vw;
+	height: 100vh;
+}
+
+

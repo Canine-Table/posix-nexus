@@ -1,0 +1,38 @@
+
+/* SM: just width, still 1 column */
+@media (min-width: 992px) {
+	body > div.nx-page:has(nav.nx-nav) {
+		min-width: calc(100vw - var(--nx-space-3) * 4.5);
+		width: calc(100vw - var(--nx-space-3) * 4.5);
+		max-width: calc(100vw - var(--nx-space-3) * 4.5);
+		min-height: 100vh;
+		height: 100vh;
+		max-height: 100vh;
+		margin: 0 0 0 calc(var(--nx-space-3) * 4.5);
+	}
+
+	body > div.nx-page > nav.nx-nav {
+		min-width: calc(var(--nx-space-3) * 4.5);
+		width: calc(var(--nx-space-3) * 4.5);
+		max-width: calc(var(--nx-space-3) * 4.5);
+		min-height: 100vh;
+		height: 100vh;
+		max-height: 100vh;
+		overflow-x: hidden;
+		overflow-y: auto;
+		border-style: none;
+		border-right: 1px groove var(--nx-zero-boundary);
+	}
+
+	header.nx-header:has(ul.nx-offcanvas-ul.active) {
+		border: none;
+		position: absolute;
+		flex-direction: row;
+		min-width: 100vw;
+		width: 100vw;
+		max-width: 100vw;
+		min-height: 100vh;
+		height: 100vh;
+		max-height: 100vh;
+	}
+}

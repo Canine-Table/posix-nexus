@@ -1,0 +1,4 @@
+(defstruct opcode
+  type
+  payload)
+

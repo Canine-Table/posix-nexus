@@ -16,3 +16,4 @@ nsenter --net=/var/run/netns/nex-pod-208-ri -- ip -batch "$NEXUS_CNF/batch/nex-p
 nsenter --net=/var/run/netns/nex-pod-208-jellyfin -- ip -batch "$NEXUS_CNF/batch/nex-pod-208-jellyfin.batch"
 nsenter --net=/var/run/netns/nex-pod-208-nextcloud -- ip -batch "$NEXUS_CNF/batch/nex-pod-208-nextcloud.batch"
 nsenter --net=/var/run/netns/nex-pod-208-cups -- ip -batch "$NEXUS_CNF/batch/nex-pod-208-cups.batch"
+nsenter --net=/var/run/netns/nex-pod-208-penpot -- ip -batch "$NEXUS_CNF/batch/nex-pod-208-penpot.batch"

@@ -1,0 +1,5 @@
+/opt/posix-nexus/lib/cpp/qt/notepad/build/CMakeFiles/notepad.dir
+/opt/posix-nexus/lib/cpp/qt/notepad/build/CMakeFiles/edit_cache.dir
+/opt/posix-nexus/lib/cpp/qt/notepad/build/CMakeFiles/rebuild_cache.dir
+/opt/posix-nexus/lib/cpp/qt/notepad/build/CMakeFiles/notepad_autogen_timestamp_deps.dir
+/opt/posix-nexus/lib/cpp/qt/notepad/build/CMakeFiles/notepad_autogen.dir

@@ -1,0 +1,7 @@
+{
+	"InstallScripts" : 
+	[
+		"/opt/posix-nexus/lib/cpp/qt/notepad/build/cmake_install.cmake"
+	],
+	"Parallel" : false
+}

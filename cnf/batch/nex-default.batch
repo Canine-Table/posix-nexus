@@ -28,6 +28,7 @@ netns add nex-pod-208-ri
 netns add nex-pod-208-jellyfin
 netns add nex-pod-208-nextcloud
 netns add nex-pod-208-cups
+netns add nex-pod-208-penpot
 
 netns add nex-vpn-192
 netns add nex-iscsi-224

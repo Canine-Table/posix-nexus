@@ -10,6 +10,7 @@ netns delete nex-pod-208-ri
 netns delete nex-pod-208-jellyfin
 netns delete nex-pod-208-nextcloud
 netns delete nex-pod-208-cups
+netns delete nex-pod-208-penpot
 
 netns delete nex-vpn-192
 netns delete nex-iscsi-224
