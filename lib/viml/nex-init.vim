@@ -2,8 +2,11 @@
 function! s:NxVimInit()
 	set number textwidth=0 encoding=utf-8
 	set incsearch hlsearch
-	set tabstop=8 softtabstop=0 shiftwidth=8 noexpandtab autoindent
+	set tabstop=8 softtabstop=0 shiftwidth=8
+	set noexpandtab autoindent cindent smartindent
+	behave xterm
 	set ruler laststatus=2 showcmd showmode
+	set fileformat=unix
 	set wildmode=longest,list,full wildmenu
 	set list listchars=trail:▓,tab:▒░
 	set wrap breakindent
@@ -17,6 +20,16 @@ function! s:NxVimInit()
 		set termguicolors
 	endif
 	set background=dark
+
+	for s in getscriptinfo()
+		let tmpa = split(s['name'], 'nex-init.')
+		if len(tmpa) == 2 && tmpa[1] == 'vim'
+			let g:nex_viml_root = tmpa[0]
+			let g:nex_viml_init = s['name']
+			break
+		endif
+	endfor
+
 	call NxHasBool()
 	call NxEnviron()
 	call NxCallFile(
@@ -45,12 +58,14 @@ function! s:NxVimInit()
 	endif
 	call NxCallFile(
 		\ 'modules/nex-xml.vim',
-		\ 'modules/nex-TeX.vim'
+		\ 'modules/nex-TeX.vim',
+		\ 'modules/nex-gcobol.vim',
 	\ )
 	"call after the pluggins are loader or bad things happen
 	filetype plugin on
 	filetype on
 	filetype indent on
+
 	if filereadable(fnamemodify(g:nex_vim_config . "autoload/plug.vim", ":p"))
 		call NxCallFile("nex-plugins.vim")
 		call s:NxColorTheme()
@@ -63,19 +78,34 @@ function! NxDirectory(dir)
 endfunction
 
 function! NxEnviron()
-	let g:nex_viml_init = fnamemodify(expand('<sfile>'), ':p')
-	let tmpa = split(fnamemodify(g:nex_viml_init, ":h") . '/', 'VIMINIT..script ')
-	let g:nex_viml_root = tmpa[1]
-	let g:nex_cwd = tmpa[0]
-	if ! empty(getenv('NEXUS_LIB')) && isdirectory(getenv('NEXUS_LIB')) && ! exists('g:nex_lua_root')
-		let g:nex_lib_root = getenv('NEXUS_LIB')
+	if ! (exists('g:nex_viml_root') && isdirectory(g:nex_viml_root))
+		let g:nex_viml_init = fnamemodify(expand('<sfile>'), ':p')
+		let tmpa = split(fnamemodify(g:nex_viml_init, ":h") . '/', 'VIMINIT..script ')
+		let g:nex_viml_root = tmpa[1]
+		let g:nex_cwd = tmpa[0]
+	endif
+
+	if ! (exists('g:nex_lib_root') && isdirectory(g:nex_lib_root))
+		if ! empty(getenv('NEXUS_LIB')) && isdirectory(getenv('NEXUS_LIB'))
+			let g:nex_lib_root = getenv('NEXUS_LIB')
+		elseif exists('g:nex_viml_root') && isdirectory(g:nex_viml_root)
+			let tmpa = split(g:nex_viml_root, '/lib/')
+			if len(tmpa) == 2
+				let g:nex_lib_root = tmpa[0]
+			endif
+		endif
+	endif
+
+	if exists('g:nex_lib_root') && isdirectory(g:nex_lib_root)
 		let tmpa = fnamemodify(g:nex_lib_root . "/lua/vim/nex-init.lua", ":p")
 		if NxHasLua() != g:null && filereadable(tmpa)
+			echo 'loading lua extentions'
 			let g:nex_lua_init = tmpa
 			let g:nex_lua_root = fnamemodify(tmpa, ":h") . '/'
 			execute 'luafile ' . tmpa
 		endif
 	endif
+
 endfunction
 
 function! NxHasBool()
@@ -102,12 +132,16 @@ endfunction
 
 function! s:NxVimOs()
 	let g:NxCmd = {x -> substitute(system("command -v " . x), '\n\+$', '', '')}
+	let g:nex_path_separator = '/'
+	let g:nex_escape = '\'
 	if has('macunix')
 		return 1
 	elseif has("unix")
 		return 2
 	elseif has("win32")
 		let g:NxCmd = {x -> substitute(system("where " . x), '\r\?\n\+$', '', '')}
+		let g:nex_path_separator = '\'
+		let g:nex_escape = '`'
 		return 3
 	else
 		let g:NxCmd = {x -> ""}
@@ -150,6 +184,10 @@ function! NxVimVersion()
 		let g:nex_vim = "vim"
 	else
 		let g:nex_vim = "vim9"
+		if filereadable($VIMRUNTIME . '/defaults.vim')
+			echo 'loading defaults'
+			source $VIMRUNTIME/defaults.vim
+		endif
 	endif
 	if g:nex_vim_os == 3
 		let tmpa = getenv("HOME") . "/vimfiles/"

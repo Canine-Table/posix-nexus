@@ -5,9 +5,43 @@
 		:nx-make-queue-from-list
 		:nx-enqueue
 		:nx-dequeue)
-	(:export :nx-tok-br))
+	(:export :nx-crop-zip
+		:nx-crop-merge
+		:nx-flatten-once
+		:nx-flatten-1
+		:nx-prepend-to-all
+		:nx-append-to-all
+		:nx-double-list-p
+		:nx-flat-list-p
+		:nx-finalize
+		:nx-normalize
+		:nx-normalize-singletons
+		:nx-unwrap-singletons
+		:nx-tok-br))
 
 (in-package :nx-stream.token)
+
+(defun nx-unwrap-singletons (x)
+  "Repeatedly unwrap X while it is a single-element list."
+  (loop while (and (consp x) (null (cdr x)))
+        do (setf x (car x)))
+  x)
+
+(defun nx-normalize-singletons (lst)
+  "Given a list LST, unwrap single-element nesting on its first
+   non-NIL element, keep the rest as-is."
+  ;; skip leading NILs inside the list
+  (loop while (and lst (null (car lst)))
+        do (setf lst (cdr lst)))
+
+  (when (null lst)
+    (return-from nx-normalize-singletons nil))
+
+  (let* ((first (car lst))
+         (rest  (cdr lst))
+         (unwrapped (nx-unwrap-singletons first)))
+    (cons unwrapped rest)))
+
 
 (defun nx-crop-zip (a b)
 	(loop for x in a

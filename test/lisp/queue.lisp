@@ -27,8 +27,13 @@
   (nx-enqueue 'd q)
   (nx-enqueue 'e q)
   (nx-enqueue 'f q)
+  (nx-enqueue 'f q)
+  (nx-prequeue-from-list '(1 2 3 4 5 6 7 8 9 0) q)
+	
 
   (format t "~&After enqueues: ~S~%" q)
+
+  (format t "~&CAR queue: ~S~%" (car q))
 
   (format t "~&Dequeue: ~S~%" (nx-dequeue q))
   (format t "~&Queue now: ~S~%" q)

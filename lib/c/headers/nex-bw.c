@@ -223,8 +223,8 @@ unsigned long NX_bwClamp_lLLLF(
 	const unsigned long h,
 	const unsigned long l
 ) {
-	v = v ^ ((v ^ l) & -(v < l));
-	return v ^ ((v ^ h) & -(v > h));
+	const unsigned long r = v ^ ((v ^ l) & -(v < l));
+	return r ^ ((r ^ h) & -(r > h));
 }
 
 unsigned long NX_bwAvg_lLLF(
