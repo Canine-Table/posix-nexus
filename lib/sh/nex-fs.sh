@@ -2,6 +2,80 @@
 #nx_include nex-str.sh
 #nx_include nex-cmd.sh
 
+nx_fs_mount()
+(
+	sloc='' psloc='' ssloc=''
+	dloc='' pdloc='' sdloc=''
+	lmnt='' umnt='' mnt=''
+	cmd='' pcmd=''
+	run='' tmpa=''
+
+	while test "$#" -gt 0; do
+		case "$1" in
+			-r) {
+				run=1
+			};;
+			-c) {
+				pcmd="$2 "
+				shift
+			};;
+			-l) {
+				sloc="$2"
+				shift
+			};;
+
+			-L) {
+				dloc="$2"
+				shift
+			};;
+
+			-p) {
+				psloc="$2"
+				shift
+			};;
+
+			-P) {
+				pdloc="$2"
+				shift
+			};;
+
+			-s) {
+				ssloc="$2"
+				shift
+			};;
+
+			-S) {
+				sdloc="$2"
+				shift
+			};;
+
+			-M) {
+				umnt="${umnt}if(\$3==\"$(nx_fs_canonize -p "$psloc/$sloc/$ssloc")\"){mnt[\$3]=1;delete lmnt[\$3]}"
+			};;
+
+			-m) {
+				tmpa="$(nx_fs_canonize -p "$psloc/$sloc/$ssloc")"
+				mnt="${mnt}if(\$3==\"$tmpa\")delete mnt[\$3];"
+				lmnt="${lmnt}lmnt[\"$tmpa\"]=\"$(nx_fs_canonize -p "$pdloc/$dloc/$sdloc")\";"
+			};;
+		esac
+		shift
+	done
+
+	test -n "$lmnt" && {
+		cmd='for(i in lmnt)printf("'"$pcmd"'mount --bind \"%s\" \"%s\";",lmnt[i], i);delete lmnt;'
+	}
+
+	test -n "$umnt" && {
+		cmd="$cmd"'for(i in mnt)printf("'"$pcmd"'umount \"%s\";",i);'
+	}
+
+	test -n "$cmd" && {
+		cmd="$pcmd mount | ${AWK:-$(nx_cmd_awk)} 'BEGIN{split(\"\",mnt,\"\");split(\"\",lmnt,\"\")${lmnt:+;}$lmnt}{${umnt}${umnt:+;}$mnt}END{${cmd}delete mnt}'"
+		test -z "$run" && printf '%s' "$cmd" || eval "$cmd"
+	}
+)
+
 nx_fs_canonize()
 (
 	nx_data_optargs 'p<:bdp>' "$@"

@@ -12,6 +12,8 @@ h_nx_cmd git && {
 }
 
 export CC="$(nx_cmd_cc)"
+export G_NEX_PY="$(nx_cmd_python "$G_NEX_PY_VER")"
+export G_NEX_PIP="$(nx_cmd_pip "$G_NEX_PIP_VER")"
 export G_NEX_CLIPBOARD="$(nx_cmd_clipboard)"
 export G_NEX_WGET="$(nx_cmd_wget)"
 export G_NEX_PAGER="$(nx_cmd_pager)"

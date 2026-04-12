@@ -82,62 +82,107 @@ nx_data_dir()
 
 nx_data_include()
 (
-	while :; do
-		case "$1" in
-			-t) {
-				case "$2" in
-					-*) {
-						trm=' \\t'
-					};;
-					*) {
-						trm="$2"
-						shift
-					};;
-				esac
+	lstsp='<nx:null/>'
+	dir='nx_include'
+	sig='#' sep=',' vb='1'
+	inpt='' extsp='' exfl=''
+	mth='3' rt='' flsp='/'
+	gtln='' trnk=''
+	ecmnt='' scmnt=''
 
+	while test "$#" -gt 1; do
+		case "$1" in
+			-i|--input) {
+				tmpa="$(nx_data_dir "$2")" && inpt="$tmpa/$(basename "$2")"
 			};;
-			-l) {
-				lvl="$2"
-				shift
+
+			-x|--exclude) {
+				tmpa="$(nx_data_dir "$2")" && exfl="$exfl${exfl:+$ps}$tmpa/$(basename "$2")"
 			};;
-			-d) {
-				dir="$2"
-				shift
+
+			-g|--getline-method) {
+				gtln="$2"
 			};;
-			-s) {
+
+			-S|--separator) {
+				sep="$2"
+			};;
+
+			-l|--list-separator) {
+				lstsp="$2"
+			};;
+
+			-f|--file-separator) {
+				flsp="$2"
+			};;
+
+			-s|--sigil) {
 				sig="$2"
-				shift
 			};;
-			-i) {
-				inpt="$2"
-				shift
+
+			-e|--extention-separator) {
+				extsp="$2"
 			};;
-			-r) {
-				rt="$2"
-				shift
+
+			-r|--lib-root) {
+				tmpa=""$(nx_data_dir "$2")
+				test "$?" != 66 && rt="$tmpa"
 			};;
-			-e) {
-				ext="$2"
-				shift
+
+			-v|--verbose) {
+				vb="$2"
 			};;
+
+			-m|--method) {
+				mth="$2"
+			};;
+
+			-T|--no-truncate) {
+				trnk='0'
+				shift
+				continue
+			};;
+
+			-t|--truncate) {
+				trnk='1'
+				shift
+				continue
+			};;
+
+			-d|--directive) {
+				dir="$2"
+			};;
+
+			-c|--comment-start) {
+				scmnt="$2"
+				ecmnt="$2"
+			};;
+
+			-C|--comment-end) {
+				ecmnt="$2"
+			};;
+
 			*) {
 				break
 			};;
 		esac
-		shift
+		shift 2
 	done
-	test -z "$inpt" && {
-		inpt="$1"
+
+	test -z "$inpt" -a "$#" -gt 0 && {
+		tmpa="$(nx_data_dir "$1")" && inpt="$tmpa/$(basename "$1")" || return 2
 		shift
 	}
-	rt="${rt:-$NEXUS_LIB}"
+
+	rt="$(nx_data_dir "${rt:-$NEXUS_LIB}")"
+	test "$?" -eq 66 && return 3
+
 	${AWK:-$(nx_cmd_awk)} \
-		-v inpt="$(nx_data_dir "$inpt")/$(basename "$inpt")" \
-		-v exc="$ext" \
-		-v trm="$trm" \
-		-v lvl="$lvl" \
-		-v sig="$sig" \
-		-v dir="$dir" \
+		-v inpt="$inpt" \
+		-v exfl="$exfl" \
+		-v sep="$sep" \
+		-v seps="$lstsp$sep$sig$sep$flsp$sep$extsp$sep$dir$sep$scmnt$sep$ecmnt" \
+		-v flgs="$mth$sep$vb$sep$trnk$sep$gtln" \
 	"
 		$(cat \
 			"${rt}/awk/nex-misc.awk" \
@@ -149,7 +194,7 @@ nx_data_include()
 		)
 	"'
 		BEGIN {
-			nx_file_merge(inpt, exc, lvl, trm, sig, dir)
+			nx_file_merge(inpt, exfl, sep, seps, flgs)
 		}
 	'
 )

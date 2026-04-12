@@ -1,5 +1,5 @@
-#nx_include NEX_L:/sh/nex-bc.sh
 #nx_include nex-geometry.d/nex-trigonometry,sh
+#nx_include NEX_L:/sh/nex-bc.sh
 
 nx_bc_geo()
 (

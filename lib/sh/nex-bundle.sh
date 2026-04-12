@@ -86,7 +86,10 @@ nx_env()
 		exit 1
 	}
 	umask 022
-	nx_init_install -o 0 -O 0 -b "$tmpb" cnf env src docs bin sbin img -b "$HOME/" ".nx/ssl" ".nx/csr"
+	nx_init_install -o 0 -O 0 \
+		-b "$tmpb" cnf env src docs bin sbin img \
+		-b "$tmpb/env" log run cache bak ssl nnn vim \
+		-b "$HOME/.nx/" ssl csr kdbx db
 	cat > "${tmpb}env/.nexus-shell.bundles.sh" <<- EOF
 		#!${SHELL:-$(command -v sh)}
 		export NEXUS_ROOT="$tmpb"
@@ -99,8 +102,6 @@ nx_env()
 		export NEXUS_SBIN="${tmpb}sbin"
 		export NEXUS_BIN="${tmpb}bin"
 	EOF
-	tmpc="${tmpb}cnf/.nex-rc"
-	test -f "$tmpc" -a -r "$tmpc" && printf 'export ENV="%s"\n' "${tmpc}" >> "${tmpb}env/.nexus-shell.bundles.sh"
 	for tmpc in "${tmpb}lib/sh/"*".sh"; do
 		test ! "$tmpc" = "${tmpb}lib/sh/${tmpa}" -a  -r "$tmpc" && {
 			tmpe="$tmpe<nx:null/>$tmpc"
@@ -110,11 +111,19 @@ nx_env()
 	. "${tmpb}lib/sh/nex-cmd.sh"
 	export AWK="$(nx_cmd_awk)"
 	. "${tmpb}lib/sh/nex-data.sh"
-	nx_data_include -t \
-		-r "${tmpb}lib" \
-		-s "#" \
-		-d "include" \
-		-i "${tmpb}env/.nexus-shell.bundles" \
+	nx_data_include \
+		--truncate \
+		--verbose 1 \
+		--method 2 \
+		--directive 'nx_include' \
+		--comment-start 'nx_b:<<' \
+		--comment-end 'nx_e:<<' \
+		--lib-root "${tmpb}lib" \
+		--sigil '#' \
+		--list-separator '<nx:null/>' \
+		--file-separator '/' \
+		--separator ',' \
+		--input "${tmpb}env/.nexus-shell.bundles" \
 	>> "${tmpb}env/.nexus-shell.bundles.sh"
 	rm "${tmpb}env/.nexus-shell.bundles"
 	printf '%s' "${tmpb}env/.nexus-shell.bundles.sh" | tee "$HOME/.nx/.nx-root"

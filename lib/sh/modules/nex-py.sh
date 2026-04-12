@@ -18,32 +18,44 @@ nx_py_venv()
 				shift
 			};;
 			-a) {
-				. "$tmpa/$tmpb/.env/bin/activate"
+				tmpd="$tmpa/$tmpb/.env/bin/activate"
+				test -f "$tmpd" -a -r "$tmpd" -a -z "$VIRTUAL_ENV" && {
+					. "$tmpd"
+					unset VIRTUAL_ENV_PROMPT
+					nx_cfg_ps1
+				}
 			};;
-			-d) {
-				. "$tmpa/$tmpb/.env/bin/deactivate"
-			};;
+
 			-c) {
-				python -m venv "$tmpa/$tmpb/.env/"
+				h_nx_cmd $G_NEX_PY && $G_NEX_PY -m venv "$tmpa/$tmpb/.env/"
 			};;
+
 			*) {
 				if test "$VIRTUAL_ENV" = "$tmpa/$tmpb/.env"; then
 					case "$1" in
+						-d) {
+							tmpd="$tmpa/$tmpb/.env/bin/deactivate"
+							test -f "$tmpd" -a -r "$tmpd" && . "$tmpd"
+							unset VIRTUAL_ENV
+							nx_cfg_ps1
+						};;
 						-s) {
-							python "$tmpa/$tmpb/$tmpc"
+							h_nx_cmd $G_NEX_PY && $G_NEX_PY "$tmpa/$tmpb/$tmpc"
 						};;
 						-r) {
-							test -f "$tmpa/$tmpb/requirements.txt" -a -r "$tmpa/$tmpb/requirements.txt" && {
-								pip install -r "$tmpa/$tmpb/requirements.txt"
-								pip install --upgrade pip
+							tmpd="$tmpa/$tmpb/requirements.txt"
+							test -f "$tmpd" -a -r "$tmpd" && h_nx_cmd $G_NEX_PIP && {
+								$G_NEX_PIP install -r "$tmpd"
+								$G_NEX_PIP install --upgrade pip
 							}
 						};;
 					esac
 				else
-					printf '%s\n' "($1) unknown argument" 1>&2
+					nx_tty_printf -E '%s\n' "($1) unknown argument"
 				fi
 			};;
 		esac
 		shift
 	done
 }
+

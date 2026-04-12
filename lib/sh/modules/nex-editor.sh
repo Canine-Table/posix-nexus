@@ -6,6 +6,7 @@ nx_editor_export()
 		*vim)
 			{
 				export VIMINIT="source ${NEXUS_LIB}/viml/nex-init.vim"
+				set -o vi
 			};;
 	esac
 }

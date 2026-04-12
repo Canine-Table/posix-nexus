@@ -15,10 +15,12 @@ Thumbs.db
 *~
 
 # dotenv files only — env/ directory is tracked
+
 .env
 *.env
 *_env
-*ENV
+*[eE][nN][Vv]
+
 
 ########################################
 ## Flask / SQLAlchemy

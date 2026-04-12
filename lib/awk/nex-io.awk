@@ -123,17 +123,18 @@ function nx_file_store(V1, D1, D2, V2, D3, B1, B2, D4,
 	return D1
 }
 
-function nx_file_merge(D1, D2, D3, D4, B, N,
+function nx_file_merge(D1, D2, D3, D4, B,
 		incd, flsp, sig, ps, ds, drp, rlp,
 		cnt, eret, wret, ln, nxt, cr, nr,
+		dbg, mth, trnk, gtln, srt, ed, sbng,
 		stk, fls, stre, trk)
 {
 	ds = __nx_else(D3, ",") # Define default delimiters
 	if ((D3 = split(D4, stk, ds)) > 0) {
 		wret = 0
 		eret = 0
-		if (D3 > 5) {
-			D3 = D3 - 5
+		if (D3 > 7) {
+			D3 = D3 - 7
 			if (N > 1)
 				nx_ansi_error("separator to separate the separators was was either used within the separators as a separator or you passed '" D3 "' separators more than you should have, only the first 5 positions will be used\n")
 			wret = -2
@@ -152,42 +153,58 @@ function nx_file_merge(D1, D2, D3, D4, B, N,
 	# the file extention sep
 	extsp = __nx_else(stk[4], "[.]", 1)
 	if (stk[4] != "")
-		gsub(".", "[\\\&]", extsp)
+		extsp = nx_str_esc(extsp)
 
 	# the include directive name
 	incd = __nx_else(stk[5], "nx_include", 1)
 
-	eret = 0
+	srt = __nx_else(stk[6], "[/][*]", 1)
+	if (stk[6] != "")
+		srt = nx_str_esc(sig srt)
+	srt = "^" srt
+
+	ed = __nx_else(stk[7], "[*][/]", 1)
+	if (stk[7] != "")
+		ed = nx_str_esc(sig ed)
+	ed = ed "$"
+
+	split(B, stk, ds)
+	mth = __nx_else(int(stk[1]), 3)
+	dbg = int(stk[2])
+	trnk = int(stk[3])
+	gtln = stk[4]
+
 	split("", stk, "")
-	if (nx_delim_sep(ps, "file exclusion", stk, N) == -1)
+	eret = 0
+	if (nx_delim_sep(ps, "file exclusion", stk, dbg) == -1)
 		eret = -1
-	if (nx_delim_sep(sig, "directive sigial", stk, N) == -1)
+	if (nx_delim_sep(sig, "directive sigial", stk, dbg) == -1)
 		eret = -1
-	if (nx_delim_sep(flsp, "directory", stk, N) == -1)
+	if (nx_delim_sep(flsp, "directory", stk, dbg) == -1)
 		eret = -1
-	if (nx_delim_sep(extsp, "file extention", stk, N) == -1)
+	if (nx_delim_sep(extsp, "file extention", stk, dbg) == -1)
 		eret = -1
-	if (nx_delim_sep(incd, "include directive", stk, N) == -1)
+	if (nx_delim_sep(incd, "include directive", stk, dbg) == -1)
 		eret = -1
 	if (eret == -1) {
 		delete stk
 		return -1
 	}
 
-	B = int(B)
-	if (nx_file_store(fls, D1, "", stre, flsp, B, "", extsp) != 1) {
+	if (nx_file_store(fls, D1, "", stre, flsp, mth, gtln, extsp) != 1) {
 		delete stre
 		delete stk
 		delete fls
 		return -1
 	}
+
 	drp = fls[fls[2]]
 	rpl = fls[fls[1]]
 
 	# are there files to omit if founds after the directive??
 	if (D2 = nx_trim_split(D2, stk, ps)) {
 		do {
-			if (nx_file_store(fls, stk[D2], drp, stre, flsp, B1, "", extsp) == 1)
+			if (nx_file_store(fls, stk[D2], drp, stre, flsp, mth, gtln, extsp) == 1)
 				drp = fls[fls[2]]
 		} while (--D2 > 0)
 	}
@@ -207,7 +224,7 @@ function nx_file_merge(D1, D2, D3, D4, B, N,
 				if (match(ln, /^[^ \t]+/)) {
 					nr = substr(ln, RSTART, RLENGTH)
 					ln = substr(ln, RSTART + RLENGTH)
-					D1 = nx_file_store(fls, nr, drp, stre, flsp, B1)
+					D1 = nx_file_store(fls, nr, drp, stre, flsp, mth, gtln, exts)
 					if (D1 > -1)
 						drp = fls[fls[2]]
 					if (D1 == 1) {
@@ -241,8 +258,32 @@ function nx_file_merge(D1, D2, D3, D4, B, N,
 	delete trk
 	nx_dfs(stk) # flattens the dfs stack into indexes
 	nxt = stk[0]
-	for (D2 = 1; D2 <= nxt; ++D2)
-		printf("%s", stk[stk[D2]])
+
+	sbng = "^[#][!][/]"
+	cnt = 0
+
+	if (trnk == 1) {
+		D4 = 0
+		for (D2 = 1; D2 <= nxt; ++D2) {
+			D3 = nx_trim_str(stk[stk[D2]], " \r\v\t\f\n")
+			if (D4) {
+				if (D3 ~ ed)
+					D4 = 0
+			} else if (D3 ~ srt) {
+				D4 = 1
+			} else if (D3 != "") {
+				if (!cnt) {
+					cnt = 1
+					printf("%s\n", D3)
+				} else if (D3 !~ sbng) {
+					printf("%s\n", D3)
+				}
+			}
+		}
+	} else {
+		for (D2 = 1; D2 <= nxt; ++D2)
+			printf("%s", stk[stk[D2]])
+	}
 	delete stk
 }
 

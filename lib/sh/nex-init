@@ -14,7 +14,13 @@ nx_init()
 	)"
 }
 
-nx_init "$@"
-#. "$HOME/.bashrc"
+nx_init
+tmpa="$HOME/.${0#-}rc"
+if test -f "$tmpa" -a -r "$tmpa"; then
+	. "$tmpa"
+else
+	nx_cfg_export
+fi
+unset tmpa
 
-nx_cfg_export
+

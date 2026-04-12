@@ -1,15 +1,12 @@
-
-mount | grep -q "$NEXUS_LIB/py/flask/nexus/webgl/static/glsl/" || {
-	sudo mount --bind $NEXUS_LIB/glsl $NEXUS_LIB/py/flask/nexus/webgl/static/glsl
-}
-
-mount | grep -q "$NEXUS_LIB/py/flask/nexus/static/img/" || {
-	sudo mount --bind $NEXUS_LIB/../img $NEXUS_LIB/py/flask/nexus/static/img
-}
-
-
+eval "$(nx_fs_mount \
+	-r \
+	-c 'sudo' \
+	-p "$NEXUS_LIB/py/flask/nexus" \
+	-P "$NEXUS_LIB" \
+	-l 'webgl/static/glsl' -L 'glsl' -m \
+	-l 'static/img' -L '../img' -m)"
 
 nx_py_venv \
         -A flask \
-        $@
+        -a $@ -s
 
