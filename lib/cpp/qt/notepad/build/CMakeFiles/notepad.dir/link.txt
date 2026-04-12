@@ -1,1 +1,0 @@
-/usr/bin/c++ -Wl,--dependency-file=CMakeFiles/notepad.dir/link.d CMakeFiles/notepad.dir/notepad_autogen/mocs_compilation.cpp.o CMakeFiles/notepad.dir/notepad.cpp.o -o notepad  /usr/lib/libQt6Widgets.so.6.11.0 /usr/lib/libQt6Gui.so.6.11.0 /usr/lib/libGLX.so /usr/lib/libOpenGL.so /usr/lib/libQt6Core.so.6.11.0
