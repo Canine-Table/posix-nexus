@@ -60,6 +60,7 @@ function! s:NxVimInit()
 		\ 'modules/nex-xml.vim',
 		\ 'modules/nex-TeX.vim',
 		\ 'modules/nex-gcobol.vim',
+		\ 'modules/nex-menus.vim',
 	\ )
 	"call after the pluggins are loader or bad things happen
 	filetype plugin on
