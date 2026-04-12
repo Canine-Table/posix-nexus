@@ -88,7 +88,7 @@ nx_env()
 	umask 022
 	nx_init_install -o 0 -O 0 \
 		-b "$tmpb" cnf env src docs bin sbin img \
-		-b "$tmpb/env" log run cache bak ssl nnn vim \
+		-b "$tmpb/env/" log run cache bak ssl nnn vim \
 		-b "$HOME/.nx/" ssl csr kdbx db
 	cat > "${tmpb}env/.nexus-shell.bundles.sh" <<- EOF
 		#!${SHELL:-$(command -v sh)}
