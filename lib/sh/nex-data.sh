@@ -86,9 +86,9 @@ nx_data_include()
 	dir='nx_include'
 	sig='#' sep=',' vb='1'
 	inpt='' extsp='' exfl=''
-	mth='3' rt='' flsp='/'
+	mth='2' rt='' flsp='/'
 	gtln='' trnk=''
-	ecmnt='' scmnt=''
+	scmnt=':<<-NX' ecmnt='NX'
 
 	while test "$#" -gt 1; do
 		case "$1" in
@@ -170,12 +170,12 @@ nx_data_include()
 	done
 
 	test -z "$inpt" -a "$#" -gt 0 && {
-		tmpa="$(nx_data_dir "$1")" && inpt="$tmpa/$(basename "$1")" || return 2
+		tmpa="$(nx_data_dir "$1")" && inpt="$tmpa/$(basename "$1")" || return 227
 		shift
 	}
 
 	rt="$(nx_data_dir "${rt:-$NEXUS_LIB}")"
-	test "$?" -eq 66 && return 3
+	test "$?" -eq 66 && return 228
 
 	${AWK:-$(nx_cmd_awk)} \
 		-v inpt="$inpt" \

@@ -89,6 +89,7 @@ nx_env()
 	nx_init_install -o 0 -O 0 \
 		-b "$tmpb" cnf env src docs bin sbin img \
 		-b "$tmpb/env/" log run cache bak ssl nnn vim \
+		-b "$HOME/" .nx \
 		-b "$HOME/.nx/" ssl csr kdbx db
 	cat > "${tmpb}env/.nexus-shell.bundles.sh" <<- EOF
 		#!${SHELL:-$(command -v sh)}
@@ -116,8 +117,8 @@ nx_env()
 		--verbose 1 \
 		--method 2 \
 		--directive 'nx_include' \
-		--comment-start 'nx_b:<<' \
-		--comment-end 'nx_e:<<' \
+		--comment-start ':<<-NX' \
+		--comment-end 'NX' \
 		--lib-root "${tmpb}lib" \
 		--sigil '#' \
 		--list-separator '<nx:null/>' \
