@@ -5,8 +5,8 @@
 kpse.set_program_name("luatex")
 
 local M = {}
-package.loadlib(kpse.find_file("lsqlite3", "clua"), "luaopen_lsqlite3")()
-M.db3 = require('lsqlite3')
+--package.loadlib(kpse.find_file("lsqlite3", "clua"), "luaopen_lsqlite3")()
+--M.db3 = require('lsqlite3')
 
 M.module = require('nex-module')
 M.system = M.module.load['nex-system']
@@ -31,7 +31,7 @@ M.tex.loaded = function()
 	end
 end
 
-M.sql = require('nex-db')
+--[=[M.sql = require('nex-db')
 M.tex.var.db = M.sql:new(M.db3, "TeX")
 M.tex.var.db:create({
 	bib = "id TEXT PRIMARY KEY, author TEXT, title TEXT, year INTEGER, journal TEXT",
@@ -42,7 +42,7 @@ M.tex.var.db:create({
 
 M.tex.var.db:insert("acr", "short,long", {
 	"'foil', 'First Outer Inner Last'"
-})
+})]=]
 
 return M
 

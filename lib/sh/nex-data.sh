@@ -88,7 +88,7 @@ nx_data_include()
 	inpt='' extsp='' exfl=''
 	mth='2' rt='' flsp='/'
 	gtln='' trnk=''
-	scmnt=':<<-NX' ecmnt='NX'
+	scmnt=":<<-'NX'" ecmnt='NX'
 
 	while test "$#" -gt 1; do
 		case "$1" in

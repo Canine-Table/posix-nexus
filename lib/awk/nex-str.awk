@@ -23,8 +23,6 @@ function nx_count_str(D, S)
 	return gsub(__nx_else(S, "."), "&", D)
 }
 
-
-
 function nx_str_esc(D)
 {
 	gsub(/./, "[\\\&]", D)

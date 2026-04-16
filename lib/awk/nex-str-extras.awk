@@ -3,6 +3,68 @@
 #nx_include nex-int.awk
 #nx_include nex-math-extras.awk
 
+# D1:	input
+# D2	sep
+# D3	esc
+# D4	placeholder
+# D5	self
+# B 	if you want to keep V for later set it to 1
+function nx_str_parse_esc(D1, D2, D3, D4, D5, V, B,
+	pre, post, ptok, ctok, acm,
+	ln, i, j)
+{
+	D2 = __nx_else(D2, "/", 1)
+	D3 = __nx_else(D3, "\\\\", 1)
+	D4 = __nx_else(D4, "\xFF", 1)
+	D5 = __nx_else(D5, ".", 1)
+
+	gsub(D3, D4, D1)
+
+	j = 0
+	ln = split(nx_trim_str(D1), V, "")
+	if (V[1] == D2)
+		pre = D2
+	if (V[ln] == D2)
+		post = D2
+
+	for (i = 1; i <= ln; ++i) {
+		ptok = ctok
+		ctok = V[i]
+		if (ctok == D2 && ptok != D4) {
+			if ((acm != D5 || i == 2) && acm != "")
+				V[++j] = acm
+			acm = ""
+		} else if (ctok == D4 && ptok == D4) {
+			ctok = ""
+		} else {
+			acm = acm ctok
+		}
+	}
+
+	if (acm != "")
+		V[++j] = acm
+	acm = ""
+
+	for (i = j; i > 0; --i) {
+		ctok = V[i]
+		if (ctok == "..") {
+			ln = 0
+			do {
+				ln++
+				ctok = V[--i]
+			} while (i > 1 && ctok == "..")
+			i = i - ln
+			if (i < 1)
+				i = 1
+			ctok = V[i]
+		}
+		acm = nx_join_str(ctok, acm, D2)
+	}
+	gsub(D4, "", acm)
+	if (B != 1)
+		delete V
+	return pre acm post
+}
 
 function nx_same_length(N1, N2, V, B1, B2,		k, n, n1, n2, l, l1, l2, b, b1, b2)
 {
@@ -96,7 +158,42 @@ function nx_slice_str(D, N, B1, B2,	s, e, l)
 	}
 }
 
+function __nx_nesc_match(D1, D2, B, D3, D4,
+	tl, fm, ln, trk)
+{
+	if (D1 == "")
+		return -1
+	fm = 0
+	tl = 0
+	D2 = __nx_else(D2, " ")
+	if ((D3 = __nx_else(D3, "\\\\")) == "\\\\")
+		ln = 1
+	else
+		ln = length(D3)
+	B = int(B)
+	while (match(D1, D2)) {
+		fm = fm + RSTART
+		tl = tl + RSTART
+		if (! (match(substr(D1, 1, RSTART - 1), D3 "+$") && D3) || int(RLENGTH % 2) == 0)
+			break
+		fm = fm + RLENGTH - nx_count_str(substr(D1, 1, fm - 1), D3) * ln
+		D1 = substr(D1, fm + 1)
+	}
+	D1 = __nx_if(B && D1 == "", -1, fm - nx_count_str(substr(D1, 1, fm - 1), D3) * ln)
+	D2 = tl
+	delete trk
+	if (B == 1)
+		return D1
+	if (B == 2)
+		return D2
+	return D1 __nx_else(D4, "<nx:null/>") D2
+}
+
+
+
+
 function nx_nesc_match(D1, D2, B, D3, D4,	trk)
+
 {
 	if (D1 == "")
 		return -1

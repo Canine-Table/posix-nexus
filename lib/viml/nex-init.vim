@@ -9,7 +9,7 @@ function! s:NxVimInit()
 	set fileformat=unix
 	set wildmode=longest,list,full wildmenu
 	set list listchars=trail:▓,tab:▒░
-	set wrap breakindent
+	set breakindent
 	set magic
 	set title
 	set hidden
@@ -20,16 +20,6 @@ function! s:NxVimInit()
 		set termguicolors
 	endif
 	set background=dark
-
-	for s in getscriptinfo()
-		let tmpa = split(s['name'], 'nex-init.')
-		if len(tmpa) == 2 && tmpa[1] == 'vim'
-			let g:nex_viml_root = tmpa[0]
-			let g:nex_viml_init = s['name']
-			break
-		endif
-	endfor
-
 	call NxHasBool()
 	call NxEnviron()
 	call NxCallFile(
@@ -86,6 +76,17 @@ function! NxEnviron()
 		let g:nex_cwd = tmpa[0]
 	endif
 
+	if ! (exists('g:nex_viml_root') && isdirectory(g:nex_viml_root))
+		for s in getscriptinfo()
+			let tmpa = split(s['name'], 'nex-init.')
+			if len(tmpa) == 2 && tmpa[1] == 'vim'
+				let g:nex_viml_root = tmpa[0]
+				let g:nex_viml_init = s['name']
+				break
+			endif
+		endfor
+	endif
+
 	if ! (exists('g:nex_lib_root') && isdirectory(g:nex_lib_root))
 		if ! empty(getenv('NEXUS_LIB')) && isdirectory(getenv('NEXUS_LIB'))
 			let g:nex_lib_root = getenv('NEXUS_LIB')
@@ -122,7 +123,7 @@ function! NxHasBool()
 endfunction
 
 function! NxHasLua()
-	if has('lua') || has('nvim')
+	if has('lua') || has('nvim') || has('luajit')
 		if exists('g:nex_lua_root')
 			return g:true
 		endif
