@@ -15,11 +15,21 @@ function nx_to_environ(D, B,	m)
 	return D
 }
 
-function __nx_stringify_var(D1, D2)
+
+
+function __nx_stringify_var(D1, D2, B, inner, outer)
 {
-	gsub("'", "\x27\x22\x27\x22\x27", D1)
-	gsub("^'|'$", "", D1)
-	return nx_to_environ(D1) "='" D2 "' "
+	if (B) {
+		inner = "\x27"
+		outer = "\x22"
+	} else {
+		inner = "\x22"
+		outer = "\x27"
+	}
+
+	gsub(outer, outer inner outer inner outer, D2)
+	gsub("^" outer "|" outer "$", "", D2)
+	return nx_to_environ(D1) "=" outer D2 outer " "
 }
 
 function __nx_elif(B1, B2, B3, B4, B5, B6)

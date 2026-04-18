@@ -120,11 +120,8 @@ nx_fs_mount()
 
 			-m|--mount) {
 				tmpa="$(nx_fs_canonize -p "$psloc/$sloc/$ssloc")"
-				tmpb="$(nx_fs_canonize -p "$pdloc/$dloc/$sdloc")"
 				mnt="${mnt}if(\$3==\"$tmpa\"){delete lmnt[\$3]}"
-				#if(\$3 in lmnt){delete lmnt[\$3]};
-				#mnt="${mnt}if(\"$tmpa\" in lmnt)delete lmnt[\"$tmpa\"];"
-				lmnt="${lmnt}lmnt[\"$tmpa\"]=\"$tmpb\";"
+				lmnt="${lmnt}lmnt[\"$tmpa\"]=\"$(nx_fs_canonize -p "$pdloc/$dloc/$sdloc")\";"
 			};;
 		esac
 		shift
@@ -186,14 +183,6 @@ nx_fs_canonize()
 	'
 )
 
-nx_fs_i_fd()
-{
-	case "$1" in
-		-o) test -e "/proc/${3:-$$}/fd/$2" && return 1;;
-		-c) test -e "/proc/${3:-$$}/fd/$2" || return 0;;
-	esac
-}
-
 nx_fs_pipe()
 (
 	nx_data_optargs 'v:fcr' "$@"
@@ -237,7 +226,7 @@ nx_fs_path()
 				dnm = nx_file_path(drnm, 0)
 				bnm = nx_file_path(nm)
 				if (nx_file_store(fls, bnm, dnm) == -1)
-				if (nx_file_store(fls,	nx_file_path(drnm, 1) "/" bnm) == -1) {
+				if (nx_file_store(fls, nx_file_path(drnm, 1) "/" bnm) == -1) {
 					nx_ansi_error("(nx_fs_path breach) file check failed: '" dnm "' (NEX_Gl_p=" nm ") either does not exist, is not readable, or is empty")
 					delete fls
 					exit 1
@@ -295,81 +284,107 @@ nx_fs_follow()
 	printf '%s' "$tmpa"
 )
 
+nx_fs_noclobber()
+(
+	acm=''
+	while test "$#" -gt 0; do
+		tmpa="$(nx_fs_path -p "$1" 2>/dev/null)"
+		acm="$acm${acm:+<nx:null/>}${tmpa:-$1}<nx:null/>$(nx_str_timestamp -f)"
+		shift
+	done
 
-
-:<<'NX'
-
-			for (i = 1; i <= j; ++i)
-				print arr[i]
-			exit
-			sq = 0
-			for (i = 1; i <= k; ++i) {
-				ptok = ctok
-				ctok = arr[i]
-				if (ctok == "/" && gsub("Ø", "", ptok) % 2 == 0) {
-					end = i - start + sq
-					cur = substr(path, start, end)
-					if (cur != "." || i == 2)
-						arr[++j] = cur
-					sq = sq + 1
-					start = i + sq
-				}
-			}
-
-			j = 0
-			start = 1
-			pre = ""
-			post = ""
-			ptok = ""
-			ctok = ""
-			acm = ""
-			cr = "/"
-			rcr = "[^" cr "]"
-			esc = "\\\\"
-			plhr = "\xFF"
-			gsub(esc, plhr, path)
-			k = split(nx_trim_str(path), arr, "")
-
-			if (arr[1] == cr)
-				pre = cr
-			if (arr[k] == cr)
-				post = cr
-
-			for (i = 1; i <= k; ++i) {
-				ptok = ctok
-				ctok = arr[i]
-				if (ctok == cr && ptok != plhr) {
-					if ((acm != "." || i == 2) && acm != "")
-						arr[++j] = acm
-					acm = ""
-				} else if (ctok == plhr && ptok == plhr) {
-					ctok = ""
+	acm="$(${AWK:-$(nx_cmd_awk)} \
+		-v acm="$acm" \
+	"
+		$(nx_data_include -i "${NEXUS_LIB}/awk/nex-io-extras.awk")
+	"'
+		BEGIN {
+			len = split(acm, paths, "<nx:null/>")
+			for (idx = 1; idx < len; idx+=2) {
+				path = nx_str_parse_esc(nx_file_path(paths[idx], 0, "/", earr))
+				stamp = paths[idx + 1]
+				dnm = path
+				bnm = path
+				sub(/[^/]*$/, "", dnm)
+				sub(/^.*\//, "", bnm)
+				if (bnm !~ /^[.]/) {
+					bext = bnm
+					bext = bnm
+					sub(/^[^.]*/, "", bext)
+					sub(/[.].*$/, "", bnm)
 				} else {
-					acm = acm ctok
+					sz = split(bnm, szarr, "")
+					for (srt = 1; srt <= sz; ++srt) {
+						if (szarr[srt] != ".")
+							break
+					}
+					if (srt == sz) {
+						bext = "." stamp "-$(nx_str_rand 16)" bext
+					} else {
+						tmpa = substr(bnm, srt)
+						bext = tmpa
+						sub(/[.].*$/, "", tmpa)
+						sub(/^[^.]*/, "", bext)
+						bnm = substr(bnm, 1, srt - 1) tmpa
+					}
 				}
+				if (!sub(/(([2-9][0-9]([0248][1-35-79]|[1379][014-9])(((0[135679]|12)([12][0-9]|0[1-9]|3[01]))|((0[469]|11)([12][0-9]|0[1-9]|30))|((0[469]|11)([12][0-9]|0[1-8])))_([01][0-9]|2[0-3])[0-5][0-9][0-5][0-9])|([2-9][0-9]([0248][048]|[1379][23])(((0[135679]|12)([12][0-9]|0[1-9]|3[01]))|((0[469]|11)([12][0-9]|0[1-9]|30))|((0[469]|11)([12][0-9]|0[1-9])))_([01][0-9]|2[0-3])[0-5][0-9][0-5][0-9]))-[0-9A-Za-z]{16}/, stamp "-$(nx_str_rand 16)", bext))
+					bext = "." stamp "-$(nx_str_rand 16)" bext
+				npath = __nx_stringify_var("", dnm bnm bext, 1)
+				printf("%s tmpb%s tmpc=\x22$tmpa\x22;test -e \x22$tmpa\x22&&{ while test -e \x22$tmpc\x22;do tmpc%s;done;mv \x22$tmpa\x22 \x22$tmpc\x22; printf \x27%%s\x27 \x22$tmpc\x22; }", __nx_stringify_var("tmpa", path), npath, npath, npath)
 			}
+			delete earr
+			delete szarr
+			delete paths
+		}
+	')"
+	test -n "$acm" && eval "$acm"
+)
 
-			if (acm != "")
-				arr[++j] = acm
-			path = ""
-			for (i = j; i > 0; --i) {
-				cur = arr[i]
-				if (cur == "..") {
-					k  = 0
-					do {
-						k++
-						cur = arr[--i]
-					} while (i > 1 && cur == "..")
-					i = i - k
-					if (i < 1)
-						i = 1
-					cur = arr[i]
-				}
-				path = nx_join_str(cur, path, "/")
+nx_fs_swap()
+(
+	tmpb=""
+	tmpa="$(nx_data_dir "$1")"
+	case "$?" in
+		66) return 227;;
+		196) tmpc="$tmpa";;
+		0) tmpb="$(basename "$1")" && tmpc="$tmpa/$tmpb";;
+	esac
+
+	tmpe=""
+	tmpd="$(nx_data_dir "$2")"
+	case "$?" in
+		66) return 228;;
+		196) tmpf="$tmpd";;
+		0) tmpe="$(basename "$2")" && tmpf="$tmpd/$tmpe";;
+	esac
+
+	test "$tmpf" = "$tmpc" && {
+		nx_tty_print -E 'Swap aborted: both paths refer to the same file'
+		return 229
+	}
+
+	test -e "$tmpf" -a -e "$tmpc" && {
+		${AWK:-$(nx_cmd_awk)} \
+			-v da="$tmpa" \
+			-v db="$tmpd" \
+		'
+			BEGIN {
+				la = length(da)
+				lb = length(db)
+				if (la < lb)
+					l = la
+				else
+					l = lb
+				if (substr(da, 1, l) == substr(db, 1, l) && la != lb)
+					exit 1
 			}
-			gsub("\xFF", "", path)
-			print pre path post
-			delete arr
-
-NX
-
+		' || {
+			nx_tty_print -E "Swap aborted: cannot swap nested paths:\n\tA: $tmpc\n\tB: $tmpf\n"
+			exit 230
+		}
+		tmpa="$(nx_fs_noclobber "$tmpc")"
+		mv "$tmpf" "$tmpc"
+		mv "$tmpa" "$tmpf"
+	}
+)

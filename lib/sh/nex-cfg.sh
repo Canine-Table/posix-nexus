@@ -109,6 +109,37 @@ nx_cfg_ps1()
 	esac
 }
 
+:<<-'NX'
+nx_cfg_tree()
+(
+	bs=''
+	while test "$#" -gt 0; do
+		case "$1" in
+			-b|--base) {
+				tmpa="$(nx_data_dir "$(nx_fs_canonize -p "$2")")" && {
+					bs="$tmpa"
+					shift
+				}
+			};;
+			-c|--container) {
+			};;
+			-l|--leaf) {
+			};;
+		esac
+		shift
+	done
+)
+
+nx_cfg_home()
+{
+	case "$HOME" in
+		"/home/$LOGNAME") {
+
+		};;
+	esac
+}
+NX
+
 nx_cfg_dirs()
 (
 	nx_err=0

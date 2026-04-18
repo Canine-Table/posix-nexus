@@ -9,6 +9,7 @@ netns delete nex-pod-208-pgadmin
 netns delete nex-pod-208-ri
 netns delete nex-pod-208-jellyfin
 netns delete nex-pod-208-nextcloud
+netns delete nex-pod-208-talk
 netns delete nex-pod-208-cups
 netns delete nex-pod-208-penpot
 

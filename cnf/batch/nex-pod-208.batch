@@ -110,7 +110,7 @@ link set nexus0 netns nex-pod-208-cups
 
 ######( penpot )###############################
 link add nexus7 type veth peer name nexus0
-link property add dev nexus6 altname pnpt_net
+link property add dev nexus7 altname pnpt_net
 link set nexus7 alias "Virtual wired ethernet container holding penpot which is connected the podman network on vlan 208."
 link set nexus7 group 3
 link set nexus7 up
@@ -120,6 +120,18 @@ link set nexus0 alias "Virtual wired ethernet device refered to by nexus0 for th
 link set nexus0 group 3
 link set nexus0 netns nex-pod-208-penpot
 
+
+######( penpot )###############################
+link add nexus8 type veth peer name nexus0
+link property add dev nexus8 altname talk_net
+link set nexus8 alias "Virtual wired ethernet container holding nextcloud talk which is connected the podman network on vlan 208."
+link set nexus8 group 3
+link set nexus8 up
+link set nexus8 master bridge0
+link property add dev nexus0 altname talk_gw
+link set nexus0 alias "Virtual wired ethernet device refered to by nexus0 for the podman guest talk."
+link set nexus0 group 3
+link set nexus0 netns nex-pod-208-talk
 
 ###################################################
 link set nexus name nexus0

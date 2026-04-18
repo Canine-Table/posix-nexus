@@ -559,7 +559,7 @@ function nx_json_identifier(V1, V2, V3, V4, B, V5,	t)
 
 function nx_json_delimiter(V1, V2, V3, V4, V5, B, V6)
 {
-	if (nx_is_space(V3[V2["cr"]]))
+	if (nx_is_space(V3[V2["cr"]]) || V3[V2["cr"]] == "\n")
 		return 0
 	if (V3[V2["cr"]] in V5)
 		return nx_json_depth(V1, V2, V3, V4, V5, B, V6)
@@ -656,7 +656,7 @@ function nx_json_machine(V1, V2, V3, V4, V5, V6, B, V7)
 {
 	for (V2["cr"] = 1; V2["cr"] <= V2["len"]; V2["cr"]++) {
 		if (V2["ste"] == "NX_DEFAULT") {
-			if (nx_is_space(V3[V2["cr"]]))
+			if (nx_is_space(V3[V2["cr"]]) || V3[V2["cr"]] == "\n")
 				continue
 			if (V2["err"] = nx_json_default(V1, V2, V3, V4, V5, V6, B, V7))
 				break
@@ -676,7 +676,7 @@ function nx_json_machine(V1, V2, V3, V4, V5, V6, B, V7)
 			if (V2["err"] = nx_json_identifier(V1, V2, V3, V4, B, V7))
 				break
 		} else if (V2["ste"] == "NX_NONE") {
-			if (nx_is_space(V3[V2["cr"]]))
+			if (nx_is_space(V3[V2["cr"]]) || V3[V2["cr"]] == "\n")
 				continue
 			if (V2["err"] = nx_json_depth(V1, V2, V3, V4, V5, B, V7))
 				break

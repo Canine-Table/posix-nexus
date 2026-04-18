@@ -15,6 +15,7 @@ cat > "$NEXUS_CNF/batch/clean.batch" <<- 'EOF'
 	netns delete nex-pod-208-ri
 	netns delete nex-pod-208-jellyfin
 	netns delete nex-pod-208-nextcloud
+	netns delete nex-pod-208-talk
 	netns delete nex-pod-208-cups
 	netns delete nex-pod-208-penpot
 
@@ -41,9 +42,10 @@ cat > "$NEXUS_CNF/batch/nex-ns.sh" <<- 'EOF'
 	nsenter --net=/var/run/netns/nex-pod-208-pgadmin -- ip -batch "$NEXUS_CNF/batch/nex-pod-208-pgadmin.batch"
 	nsenter --net=/var/run/netns/nex-pod-208-ri -- ip -batch "$NEXUS_CNF/batch/nex-pod-208-ri.batch"
 	nsenter --net=/var/run/netns/nex-pod-208-jellyfin -- ip -batch "$NEXUS_CNF/batch/nex-pod-208-jellyfin.batch"
-	nsenter --net=/var/run/netns/nex-pod-208-nextcloud -- ip -batch "$NEXUS_CNF/batch/nex-pod-208-nextcloud.batch"
 	nsenter --net=/var/run/netns/nex-pod-208-cups -- ip -batch "$NEXUS_CNF/batch/nex-pod-208-cups.batch"
+	nsenter --net=/var/run/netns/nex-pod-208-nextcloud -- ip -batch "$NEXUS_CNF/batch/nex-pod-208-nextcloud.batch"
 	nsenter --net=/var/run/netns/nex-pod-208-penpot -- ip -batch "$NEXUS_CNF/batch/nex-pod-208-penpot.batch"
+	nsenter --net=/var/run/netns/nex-pod-208-talk -- ip -batch "$NEXUS_CNF/batch/nex-pod-208-talk.batch"
 EOF
 
 #######( default )#################################
@@ -77,6 +79,7 @@ cat > "$NEXUS_CNF/batch/nex-default.batch" <<- 'EOF'
 	netns add nex-pod-208-ri
 	netns add nex-pod-208-jellyfin
 	netns add nex-pod-208-nextcloud
+	netns add nex-pod-208-talk
 	netns add nex-pod-208-cups
 	netns add nex-pod-208-penpot
 
@@ -390,7 +393,7 @@ cat > "$NEXUS_CNF/batch/nex-pod-208.batch" <<- 'EOF'
 
 	######( penpot )###############################
 	link add nexus7 type veth peer name nexus0
-	link property add dev nexus6 altname pnpt_net
+	link property add dev nexus7 altname pnpt_net
 	link set nexus7 alias "Virtual wired ethernet container holding penpot which is connected the podman network on vlan 208."
 	link set nexus7 group 3
 	link set nexus7 up
@@ -400,6 +403,18 @@ cat > "$NEXUS_CNF/batch/nex-pod-208.batch" <<- 'EOF'
 	link set nexus0 group 3
 	link set nexus0 netns nex-pod-208-penpot
 
+
+	######( penpot )###############################
+	link add nexus8 type veth peer name nexus0
+	link property add dev nexus8 altname talk_net
+	link set nexus8 alias "Virtual wired ethernet container holding nextcloud talk which is connected the podman network on vlan 208."
+	link set nexus8 group 3
+	link set nexus8 up
+	link set nexus8 master bridge0
+	link property add dev nexus0 altname talk_gw
+	link set nexus0 alias "Virtual wired ethernet device refered to by nexus0 for the podman guest talk."
+	link set nexus0 group 3
+	link set nexus0 netns nex-pod-208-talk
 
 	###################################################
 	link set nexus name nexus0
@@ -416,6 +431,7 @@ cat > "$NEXUS_CNF/batch/nex-br-pod-208.batch" <<- 'EOF'
 	vlan add dev nexus5 vid 208 pvid untagged
 	vlan add dev nexus6 vid 208 pvid untagged
 	vlan add dev nexus7 vid 208 pvid untagged
+	vlan add dev nexus8 vid 208 pvid untagged
 	vlan add dev bridge0 vid 208 self
 EOF
 
@@ -518,6 +534,20 @@ cat > "$NEXUS_CNF/batch/nex-pod-208-penpot.batch" <<- 'EOF'
 
 	###################################################
 	address add 172.16.208.9/20 label "nexus0:pnpt" dev nexus0
+	link set nexus0 up
+	route add default via 172.16.208.1 dev nexus0
+EOF
+
+######( aio )###############################
+cat > "$NEXUS_CNF/batch/nex-pod-208-talk.batch" <<- 'EOF'
+	link set lo name loopback0
+	link property add dev loopback0 altname lo
+	link set loopback0 alias "The loopback0 does not traverse wires. It does not blink with LEDs. It does not care for MAC addresses or ARP. It is pure essence—an idea made manifest. A metaphysical interface, looping endlessly, like Ouroboros devouring its own tail."
+	link set loopback0 group 772
+	link set loopback0 up
+
+	###################################################
+	address add 172.16.208.10/20 label "nexus0:talk" dev nexus0
 	link set nexus0 up
 	route add default via 172.16.208.1 dev nexus0
 EOF
