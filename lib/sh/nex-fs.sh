@@ -287,6 +287,12 @@ nx_fs_follow()
 nx_fs_noclobber()
 (
 	acm=''
+	vb=''
+	test "$1" = '-v' -o "$1" = '--verbose' && {
+		vb=1
+		shift
+	}
+
 	while test "$#" -gt 0; do
 		tmpa="$(nx_fs_path -p "$1" 2>/dev/null)"
 		acm="$acm${acm:+<nx:null/>}${tmpa:-$1}<nx:null/>$(nx_str_timestamp -f)"
@@ -295,6 +301,7 @@ nx_fs_noclobber()
 
 	acm="$(${AWK:-$(nx_cmd_awk)} \
 		-v acm="$acm" \
+		-v vb="$vb" \
 	"
 		$(nx_data_include -i "${NEXUS_LIB}/awk/nex-io-extras.awk")
 	"'
@@ -331,7 +338,13 @@ nx_fs_noclobber()
 				if (!sub(/(([2-9][0-9]([0248][1-35-79]|[1379][014-9])(((0[135679]|12)([12][0-9]|0[1-9]|3[01]))|((0[469]|11)([12][0-9]|0[1-9]|30))|((0[469]|11)([12][0-9]|0[1-8])))_([01][0-9]|2[0-3])[0-5][0-9][0-5][0-9])|([2-9][0-9]([0248][048]|[1379][23])(((0[135679]|12)([12][0-9]|0[1-9]|3[01]))|((0[469]|11)([12][0-9]|0[1-9]|30))|((0[469]|11)([12][0-9]|0[1-9])))_([01][0-9]|2[0-3])[0-5][0-9][0-5][0-9]))-[0-9A-Za-z]{16}/, stamp "-$(nx_str_rand 16)", bext))
 					bext = "." stamp "-$(nx_str_rand 16)" bext
 				npath = __nx_stringify_var("", dnm bnm bext, 1)
-				printf("%s tmpb%s tmpc=\x22$tmpa\x22;test -e \x22$tmpa\x22&&{ while test -e \x22$tmpc\x22;do tmpc%s;done;mv \x22$tmpa\x22 \x22$tmpc\x22; printf \x27%%s\x27 \x22$tmpc\x22; }", __nx_stringify_var("tmpa", path), npath, npath, npath)
+				printf("%s tmpb%s tmpc=\x22$tmpa\x22;test -e \x22$tmpa\x22", __nx_stringify_var("tmpa", path), npath)
+				if (vb == 1)
+					printf("||{ printf \x27%%s\x27 \x22$tmpa\x22;false;}")
+				printf("&&{ while test -e \x22$tmpc\x22;do tmpc%s;done;", npath)
+				if (vb != 1)
+					printf("mv \x22$tmpa\x22 \x22$tmpc\x22;")
+				printf("printf \x27%%s\x27 \x22$tmpc\x22;}", npath)
 			}
 			delete earr
 			delete szarr
@@ -339,6 +352,7 @@ nx_fs_noclobber()
 		}
 	')"
 	test -n "$acm" && eval "$acm"
+
 )
 
 nx_fs_swap()

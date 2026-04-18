@@ -72,25 +72,27 @@ nx_init_install()
 
 nx_env()
 (
-	tmpa="$(basename "$0")"
-	tmpb="$("${AWK:-awk}" -v path="$(cd "$(dirname "$0")" && pwd)/${tmpa}" 'BEGIN {
-		if (sub("lib/sh/.+[.]sh$", "", path)) {
+	test "$(command -v "${0#-}")" != "$SHELL" && {
+		tmpa="$(basename "$0")"
+		tmpb="$("${AWK:-awk}" -v path="$(cd "$(dirname "$0")" && pwd)/${tmpa}" 'BEGIN {
+			if (!sub("lib/sh/.+[.]sh$", "", path))
+				exit 1
 			gsub("//", "/", path)
 			print path
-		} else {
-			printf("\x1b[1;31m[x] Please make sure the initiator file is executable before proceeding.\x1b[0m")
-			exit 1
-		}
-	}')" || {
-		printf '%s\n' "$tmpb"
-		exit 1
+		}')"
+	} || {
+		nx_err 'Please make sure the initiator file is executable before proceeding'
+		exit 226
 	}
+
 	umask 022
 	nx_init_install -o 0 -O 0 \
 		-b "$tmpb" cnf env src docs bin sbin img \
-		-b "${tmpb}env/" log run cache bak ssl nnn vim \
 		-b "$HOME/" .nx \
-		-b "$HOME/.nx/" ssl csr kdbx db
+		-b "$HOME/.nx/" ssl csr kdbx db \
+		-b "${tmpb}env/" log run cache bak ssl nnn vim \
+		-G 7 -U 7 -O 7 tmp proc
+
 	cat > "${tmpb}env/.nexus-shell.bundles.sh" <<- EOF
 		#!${SHELL:-$(command -v sh)}
 		export NEXUS_ROOT="$tmpb"
