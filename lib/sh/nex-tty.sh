@@ -9,49 +9,53 @@ nx_tty_print()
 			$(nx_data_include -i "${NEXUS_LIB}/awk/nex-log-extras.awk")
 		"'
 			BEGIN {
-				ln = split(inpt, flds, "<nx:null/>")
-				trk["sig"] = "<nx:true/>"
-				trk["bg"] = "<nx:false/>"
-				for (i = 1; i <= ln; i++) {
-					if (sub(/^-/, "", flds[i])) {
-						inpt = tolower(flds[i])
-						trk["col"] = flds[i]
-						if (inpt == "l") {
-							nx_ansi_light(flds[++i], trk["sig"], trk["bg"] "" trk["col"])
-						} else if (inpt == "b") {
-							nx_ansi_dark(flds[++i], trk["sig"], trk["bg"] "" trk["col"])
-						} else if (inpt == "s") {
-							nx_ansi_success(flds[++i], trk["sig"], trk["bg"] "" trk["col"])
-						} else if (inpt == "w") {
-							nx_ansi_warning(flds[++i], trk["sig"], trk["bg"] "" trk["col"])
-						} else if (inpt == "e") {
-							nx_ansi_error(flds[++i], trk["sig"], trk["bg"] "" trk["col"])
-						} else if (inpt == "d") {
-							nx_ansi_debug(flds[++i], trk["sig"], trk["bg"] "" trk["col"])
-						} else if (inpt == "a") {
-							nx_ansi_alert(flds[++i], trk["sig"], trk["bg"] "" trk["col"])
-						} else if (inpt == "i") {
-							nx_ansi_info(flds[++i], trk["sig"], trk["bg"] "" trk["col"])
-						} else if (inpt == "g") {
-							if (flds[i+1] == "-R") {
-								trk["bg"] = ""
-								i++
-							} else {
-								nx_boolean(trk, "bg")
+				if (sub("-F<nx:null/>", "", inpt)) {
+					nx_ansi_print(inpt)
+				} else {
+					ln = split(inpt, flds, "<nx:null/>")
+					trk["sig"] = "<nx:true/>"
+					trk["bg"] = "<nx:false/>"
+					for (i = 1; i <= ln; i++) {
+						if (sub(/^-/, "", flds[i])) {
+							inpt = tolower(flds[i])
+							trk["col"] = flds[i]
+							if (inpt == "l") {
+								nx_ansi_light(flds[++i], trk["sig"], trk["bg"] "" trk["col"])
+							} else if (inpt == "b") {
+								nx_ansi_dark(flds[++i], trk["sig"], trk["bg"] "" trk["col"])
+							} else if (inpt == "s") {
+								nx_ansi_success(flds[++i], trk["sig"], trk["bg"] "" trk["col"])
+							} else if (inpt == "w") {
+								nx_ansi_warning(flds[++i], trk["sig"], trk["bg"] "" trk["col"])
+							} else if (inpt == "e") {
+								nx_ansi_error(flds[++i], trk["sig"], trk["bg"] "" trk["col"])
+							} else if (inpt == "d") {
+								nx_ansi_debug(flds[++i], trk["sig"], trk["bg"] "" trk["col"])
+							} else if (inpt == "a") {
+								nx_ansi_alert(flds[++i], trk["sig"], trk["bg"] "" trk["col"])
+							} else if (inpt == "i") {
+								nx_ansi_info(flds[++i], trk["sig"], trk["bg"] "" trk["col"])
+							} else if (inpt == "g") {
+								if (flds[i+1] == "-R") {
+									trk["bg"] = ""
+									i++
+								} else {
+									nx_boolean(trk, "bg")
+								}
+							} else if (flds[i] == "c") {
+								if (flds[i+1] == "-R") {
+									trk["sig"] = ""
+									i++
+								} else {
+									nx_boolean(trk, "sig")
+								}
 							}
-						} else if (flds[i] == "c") {
-							if (flds[i+1] == "-R") {
-								trk["sig"] = ""
-								i++
-							} else {
-								nx_boolean(trk, "sig")
-							}
+						} else {
+							nx_ansi_print(flds[i] "<nx:null/>" flds[i])
 						}
-					} else {
-						nx_ansi_print(flds[i] "<nx:null/>" flds[i])
 					}
+					delete flds
 				}
-				delete flds
 			}
 		'
 )
@@ -59,6 +63,8 @@ nx_tty_print()
 nx_tty_all()
 {
 	h_nx_cmd tty stty && test -t 1 && {
+		trap 'nx_fs_fifo -r $fl' EXIT HUP INT TERM
+		fl="$(nx_fs_fifo -t "$1")"
 		${AWK:-$(nx_cmd_awk)} \
 			-v tt="$(stty --all)" \
 		"
@@ -84,7 +90,35 @@ nx_tty_all()
 				}
 				print r
 			}
-		'
-	}
+		' > "$fl" &
+		read < "$fl"
+		eval "$REPLY"
+	} 2> /dev/null
 }
 
+__nx_tty_div()
+{
+	nx_tty_all
+	case "$1" in
+		-s) tmpa="─";;
+		-t) tmpa='━';;
+		-j) tmpa='╍';;
+		-r) tmpa='╼';;
+		-l) tmpa='╾';;
+		*) tmpa="═";;
+	esac
+	nx_str_append "$G_NEX_TTY_COLUMNS" "$tmpa"
+}
+
+nx_tty_div()
+{
+	__nx_tty_div "$1"
+}
+
+nx_tty_hault()
+{
+	trap "printf '\x1b[?25h'; return" EXIT HUP INT TERM
+	printf '\x1b[?25l'
+	tmpa="$(printf '%s' "$1" | sed 's/\(^0*\|[^0-9]*\)//g')"
+	read -n 1 -s ${tmpa:+-t $tmpa} tmpa
+}

@@ -111,6 +111,50 @@ nx_str_rand()
 	'
 }
 
+nx_str_comment()
+(
+	tmpa=$(nx_fs_path -p "$1") || exit 226
+	esc='\'
+	st='/*'
+	ed='*/'
+	ol="//"
+
+	case "$(printf '%s' "$tmpa" | sed 's/^.*[.]//g')" in
+		ini);;
+	esac
+
+	#sed --posix
+	echo "$(${AWK:-$(nx_cmd_awk)} \
+		-v esc="$esc" \
+		-v ol="$ol" \
+		-v ed="$ed" \
+		-v st="$st" \
+	'
+		BEGIN {
+			sp = esc "t" esc "r" esc "f" esc "v" esc "n"
+			pre = "/2/{x;/[" esc "][" sp "]*$/!{x;s/2//;x};s/.*//;b nt};"
+
+			gsub(/./, "\\\\&", st)
+			gsub(/./, "\\\\&", ed)
+			gsub(/./, "\\\\&", ol)
+
+			if (ol != "") {
+				md = "s/\(^[" sp "]*[" esc "]" ol"\|[^" esc "]" ol "\).*\(" esc "\)*[" sp "]*$/\2/;s/" esc "$//;t ol;"
+				suf  = ":ol;x;s/^/2/;x;"
+			}
+			suf = suf ":nt;/^$/d"
+			#esc = "\([^" nesc "]\|^\)"
+			#if (st != "" && ed != "") {
+			#	l = l "/1/{x;s/.*" esc st "/\1/;t ed;s/.*//;b nt};"
+			#	chk2 = chk2 "s/" esc ed ".*/\1/;t st;b nt;:st;x;s/$/1/;x;b nt;:ed;x;s/1//;x;b nt;"
+			#}
+
+		#l = "x;" l "x;" chk2 suf
+		printf("x;%sx;%s%s", pre, md, suf)
+
+	}')" # < "$tmpa"
+)
+
 nx_str_grep()
 (
 	nx_data_optargs 'd:f:S:r:m:s:c:b:a:o@wgiC' "$@"
@@ -139,4 +183,18 @@ nx_str_grep()
 		}
 	'
 )
+
+nx_str_append()
+{
+	${AWK:-$(nx_cmd_awk)} \
+		-v cnt="$1" \
+		-v cr="$2" \
+	"
+			$(nx_data_include -i "${NEXUS_LIB}/awk/nex-str.awk")
+	"'
+		BEGIN {
+			print nx_append_str(cr, cnt)
+		}
+	'
+}
 

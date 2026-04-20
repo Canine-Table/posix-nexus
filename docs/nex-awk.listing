@@ -1,0 +1,1 @@
+nx_file_merge("main.txt", "secret.cfg,debug.cfg", ",", "#,/,.,nx_include", 1, 1)

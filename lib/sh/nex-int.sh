@@ -1,6 +1,16 @@
 #nx_include nex-data.sh
 #nx_include nex-cmd.sh
 
+nx_int_Z()
+{
+	printf ' %s' $* | sed --posix 's/\(^0*\|[^0-9]*\)//g;/^$/{s/$/0/}'
+}
+
+nx_int_Q()
+{
+	printf ' %s' $* | sed --posix -f "${NEXUS_LIB}/sed/nex-parse.sed"
+}
+
 nx_int_range()
 (
 	nx_data_optargs 'v@g:l:b<oa>e' "$@"

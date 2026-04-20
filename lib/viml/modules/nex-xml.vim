@@ -5,6 +5,5 @@ function! NxXmlSettings()
 	let g:user_emmet_leader_key='<C-e>'
 endfunction
 
-autocmd Filetype lisp,el,php,json,nft,yml,yaml,htm,xml,html,svg,css call NxXmlSettings()
-
+autocmd Filetype sed,lisp,el,php,json,nft,yml,yaml,htm,xml,html,svg,css call NxXmlSettings()
 

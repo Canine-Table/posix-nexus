@@ -15,8 +15,6 @@ function nx_to_environ(D, B,	m)
 	return D
 }
 
-
-
 function __nx_stringify_var(D1, D2, B, inner, outer)
 {
 	if (B) {
