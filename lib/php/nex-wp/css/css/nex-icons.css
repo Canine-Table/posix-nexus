@@ -1,0 +1,41 @@
+
+.nx-icon {
+	display: block;
+	height: 3rem;
+	width: 3rem;
+	background: currentcolor;
+	mask-size: 3rem;
+	mask-repeat: no-repeat;
+	mask-position: center;
+}
+
+.nx-icon-button {
+	cursor: pointer;
+	transition-timing-function: ease;
+	transition-duration: 0.5s;
+	transition-delay: 0.1s;
+}
+
+.nx-icon-button:hover {
+	background: var(--nx-bg-hover);
+	color: var(--nx-hover-text);
+}
+
+.nx-icon-button:focus-visible {
+	outline: var(--nx-focus-ring-width) solid var(--nx-focus-ring-color);
+	outline-offset: 3px;
+}
+
+.nx-icon.nx-colour {
+	mask-image: var(--nx-colour);
+}
+
+.nx-hamburger {
+	mask-image: var(--nx-hamburger);
+}
+
+.nx-icon.nx-close {
+	mask-image: var(--nx-close);
+	align-self: start;
+}
+

@@ -1,0 +1,91 @@
+/* ============================================================
+	 TRIG THEME — ROOT VARIABLES (extends Nexus root)
+	 ============================================================ */
+:root {
+	/* Canonical phase quadrants */
+	--tri-phase-0: 0deg;
+	--tri-phase-1: 90deg;
+	--tri-phase-2: 180deg;
+	--tri-phase-3: 270deg;
+
+	/* Base amplitude for all TRIG motion */
+	--tri-amp: 200vw;
+
+	/* Amplitude tiers (scalable) */
+	--tri-amp-sm: calc(var(--tri-amp) * 0.5);
+	--tri-amp-md: calc(var(--tri-amp) * 1);
+	--tri-amp-lg: calc(var(--tri-amp) * 2);
+	--tri-amp-xl: calc(var(--tri-amp) * 3);
+
+	/* Bowditch / Lissajous frequency ratios */
+	--tri-freq-x: 3;
+	--tri-freq-y: 2;
+
+	/* Harmonic multipliers */
+	--tri-harmonic-1: 1;
+	--tri-harmonic-2: 2;
+	--tri-harmonic-3: 3;
+
+	/* Global animation speed */
+	--tri-speed: 18s;
+
+	/* Speed tiers */
+	--tri-speed-fast: calc(var(--tri-speed) * 0.5);
+	--tri-speed-slow: calc(var(--tri-speed) * 2);
+
+	/* Radius used for masks, gradients, and circular motion */
+	--tri-radius: calc(50% + sin(var(--tri-phase-1)) * 20%);
+
+	/* Radius tiers */
+	--tri-radius-sm: calc(var(--tri-radius) * 0.5);
+	--tri-radius-lg: calc(var(--tri-radius) * 1.5);
+
+	/* Curve scaling (for transforms, masks, gradients) */
+	--tri-scale-1: 1;
+	--tri-scale-2: 1.5;
+	--tri-scale-3: 2;
+
+	/* Oscillation strength (for panels, headers, lists) */
+	--tri-osc-weak: 2px;
+	--tri-osc-med: 6px;
+	--tri-osc-strong: 12px;
+}
+
+/* ============================================================
+	 TRIG THEME — Bowditch Curve Utility
+	 ============================================================ */
+
+
+body#css-zen-garden,
+.nx-tri-background {
+	position: relative;
+	overflow-x: hidden;
+	background: var(--nx-zero-core);
+
+	/* TRIG gradient field */
+	background-image:
+		radial-gradient(
+			circle at center,
+			var(--nx-zero-core) 0%,
+			var(--nx-zero-core-shade) 60%,
+			var(--nx-zero-core) 100%
+		),
+		conic-gradient(
+			from var(--tri-phase-0),
+			var(--nx-zero-core) 0deg,
+			var(--nx-zero-witness-shade) 90deg,
+			var(--nx-zero-core) 180deg,
+			var(--nx-zero-glow-shade) 270deg,
+			var(--nx-zero-core) 360deg
+		);
+
+		background-size: 200% 200%;
+		background-position:
+			calc(50% + var(--tri-amp) * sin(var(--tri-phase-1)))
+			calc(50% + var(--tri-amp) * sin(var(--tri-phase-0)));
+
+		/* TRIG motion engine */
+		animation: nx-tri-bowdish-curve var(--tri-speed) linear infinite;
+}
+
+

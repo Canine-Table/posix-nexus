@@ -1,0 +1,8 @@
+
+/* LG: desktop width */
+@media (min-width: 1200px) {
+	footer.nx-footer {
+		flex-direction: row;
+	}
+}
+

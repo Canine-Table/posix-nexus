@@ -2,19 +2,20 @@
 #nx_include nex-sh.awk
 #nx_include nex-log-extras.awk
 
-function nx_sh_opts_stringify(D, B)
-{
-	gsub("'", "\x27\x22\x27\x22\x27", D)
-	gsub("^'|'$", "", D)
-	if (B == "<nx:true/>")
-		return D
-	return "\x27" D "\x27"
-}
+#function nx_sh_opts_stringify(D, B)
+#{
+#	gsub("'", "\x27\x22\x27\x22\x27", D)
+#	gsub("^'|'$", "", D)
+#	if (B == "<nx:true/>")
+#		return D
+#	return "\x27" D "\x27"
+#}
+
 
 # D1	the string
 # D2	the opening group
 # D3	the closing group
-function nx_sh_stride(D1, D2, D3,
+function nx_shell_stride(D2, D2, D3,
 	cnt)
 {
 	cnt = 0
@@ -29,7 +30,7 @@ function nx_sh_stride(D1, D2, D3,
 	return cnt
 }
 
-function nx_sh_opts_logger(N, V, D1, D2,
+function nx_shell_opts_logger(N, V, D1, D2,
 	str, srt, i, j)
 {
 	if (N > 4) {
@@ -151,7 +152,7 @@ function nx_shell_opts(D1, V, D2, N, D3,
 		}
 	}
 
-	if ((D2 = nx_sh_stride(D1, go, gc)) == -1) {
+	if ((D2 = nx_shell_stride(D1, go, gc)) == -1) {
 		if (dbg > 0)
 			nx_ansi_error("the group terminator '" gc "' ran away\n")
 		delete trk
@@ -233,7 +234,6 @@ function nx_shell_opts(D1, V, D2, N, D3,
 				wret = -2
 				continue
 			}
-
 			V[acm] = D1
 		}
 	}
@@ -246,7 +246,7 @@ function nx_shell_opts(D1, V, D2, N, D3,
 		else
 			nx_ansi_light("done :D\n")
 		if (dbg > 3)
-			nx_sh_opts_logger(N, V, strde, grp)
+			nx_shell_opts_logger(N, V, strde, grp)
 	}
 	if (eret)
 		return -1

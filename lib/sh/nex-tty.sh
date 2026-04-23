@@ -64,6 +64,7 @@ nx_tty_all()
 {
 	h_nx_cmd tty stty && test -t 1 && {
 		trap 'nx_fs_fifo -r $fl' EXIT HUP INT TERM
+		trap 'nx_tty_all' SIGWINCH
 		fl="$(nx_fs_fifo -t "$1")"
 		${AWK:-$(nx_cmd_awk)} \
 			-v tt="$(stty --all)" \
@@ -91,8 +92,8 @@ nx_tty_all()
 				print r
 			}
 		' > "$fl" &
-		read < "$fl"
-		eval "$REPLY"
+		read G_NX_TTY_REPLY < "$fl"
+		eval "$G_NX_TTY_REPLY"
 	} 2> /dev/null
 }
 
@@ -111,9 +112,9 @@ __nx_tty_div()
 }
 
 nx_tty_div()
-{
+(
 	__nx_tty_div "$1"
-}
+)
 
 nx_tty_hault()
 {
@@ -122,3 +123,4 @@ nx_tty_hault()
 	tmpa="$(printf '%s' "$1" | sed 's/\(^0*\|[^0-9]*\)//g')"
 	read -n 1 -s ${tmpa:+-t $tmpa} tmpa
 }
+

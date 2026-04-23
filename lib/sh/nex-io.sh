@@ -10,3 +10,108 @@ nx_io_yn()
 	test "$tmpa" = 'y' -o "$tmpa" = 1
 )
 
+__nx_io_pid()
+{
+	exec 3<&-
+	while test "$#" -gt 0; do
+		read < "$1"
+		kill -9 "$REPLY"
+		rm -f "$1"
+		shift
+	done 2> /dev/null
+}
+
+nx_io_evlp()
+{
+	NEXUS_PID="$(nx_fs_noclobber -v "$NEXUS_ENV/run/$$.$(nx_str_timestamp -f)-$(nx_str_rand 16).pid")"
+	(
+		#nx_tty_all
+		ttou="$(nx_fs_fifo -t "$5" "ttou")"
+		ttin="$(nx_fs_fifo -t "$5" "ttin")"
+		ev="$(nx_fs_noclobber -v "$NEXUS_ENV/run/$$.$(nx_str_timestamp -f)-$(nx_str_rand 16).pid")"
+		trap "nx_fs_fifo -r $ttin; nx_fs_fifo -r $ttou; __nx_io_pid $ev; rm -f $NEXUS_PID" EXIT HUP INT TERM
+		#trap "nx_tty_all" WINCH
+		printf '%s' "$ttin"
+		${AWK:-$(nx_cmd_awk)} \
+			-v ttin="$ttin" \
+			-v ttou="$ttou" \
+			-v sep="${6:-<nx:null/>}" \
+		"
+			$(nx_data_include -i "${NEXUS_LIB}/awk/nex-json-extras.awk")
+		"'
+			BEGIN {
+				'"$1"'
+				flh = 1
+				while(line != "EXIT") {
+					getline line < ttin
+					split(line, args, sep)
+					op = args[1]
+					if (op == "FLUSH") {
+						flh = int(args[2])
+						line = "FLUSH"
+					} else {
+						'"$2"'
+					}
+					printf("%s", line) > ttou
+					if (flh != 0)
+						fflush(ttou)
+					close(ttin)
+				}
+				'"$3"'
+				delete args
+			}
+		' & printf '%d' "$!" > "$ev"
+		exec 3< "$ttou"
+		cmd="${4:-"echo"}"
+		while read -u 3; do
+			case "$REPLY" in
+				*EXIT) break;;
+				*) $cmd "$REPLY";;
+			esac
+		done
+	) & printf '%d' "$!" > "$NEXUS_PID"
+}
+
+nx_io_json()
+{
+	nx_io_evlp \
+		'dbg=2;ind=4;rt="";' \
+		'
+			if (op == "DEBUG-LEVEL") {
+				dbg = __nx_else(args[2], dbg, 1)
+				line = dbg
+			} else if (op == "ROOT") {
+				rt = __nx_else(args[2], rt, 1)
+				line = rt
+			} else if (op == "INDENT") {
+				ind = __nx_else(args[2], ind, 1)
+				line = ind
+			} else {
+				if (op == "SET") {
+					split("", js, "")
+					op = "MERGE"
+				}
+				if (op == "MERGE") {
+					if (err = nx_json(args[2], js, __nx_else(args[3], dbg)))
+						line = err
+					else
+						line = "MERGE"
+				} else if (op == "DELETE") {
+					nx_json_delete(__nx_else(args[2], rt, 1), js)
+					line = "DELETE"
+				} else if (op == "TYPE") {
+					line = nx_json_type(__nx_else(args[2], rt, 1), js)
+				} else if (op == "OUTPUT") {
+					line = nx_json_flatten(__nx_else(args[2], rt, 1), js, __nx_else(args[3], ind, 1))
+				} else if (op == "DUMP") {
+					line = "something! "
+					sp = __nx_else(args[2], " = ")
+					ed = __nx_else(args[3], "\n")
+					for (et in js)
+						line = line et sp js[et] ed
+				}
+			}
+		' \
+		'delete cfg;delete js;'
+}
+

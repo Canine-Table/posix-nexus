@@ -111,6 +111,20 @@ nx_str_rand()
 	'
 }
 
+nx_str_append()
+{
+	${AWK:-$(nx_cmd_awk)} \
+		-v cnt="$1" \
+		-v cr="$2" \
+	"
+			$(nx_data_include -i "${NEXUS_LIB}/awk/nex-str.awk")
+	"'
+		BEGIN {
+			print nx_append_str(cr, cnt)
+		}
+	'
+}
+
 nx_str_comment()
 (
 	tmpa=$(nx_fs_path -p "$1") || exit 226
@@ -184,17 +198,4 @@ nx_str_grep()
 	'
 )
 
-nx_str_append()
-{
-	${AWK:-$(nx_cmd_awk)} \
-		-v cnt="$1" \
-		-v cr="$2" \
-	"
-			$(nx_data_include -i "${NEXUS_LIB}/awk/nex-str.awk")
-	"'
-		BEGIN {
-			print nx_append_str(cr, cnt)
-		}
-	'
-}
 

@@ -1,0 +1,107 @@
+/* Table container */
+table.nx-table {
+    table-layout: fixed;
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1.5rem 0;
+    background: var(--nx-bg-0);
+    border: 1px solid var(--nx-border-1);
+    border-radius: var(--nx-radius);
+    overflow-x: auto;
+    font-size: var(--nx-font-size);
+    letter-spacing: var(--nx-letter);
+    position: relative;
+}
+
+/* Scroll wrapper */
+.nx-table-wrapper {
+    position: relative;
+    max-width: 100%;
+    overflow-x: auto;
+}
+
+/* Optional subtle overlay, tuned to your palette */
+.nx-table::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: conic-gradient(
+        from 180deg at 50% 50%,
+        var(--nx-zero-boundary-soft),
+        transparent,
+        var(--nx-zero-boundary-soft)
+    );
+    opacity: 0.4;
+    mix-blend-mode: soft-light;
+    pointer-events: none;
+}
+
+/* Ensure content sits above overlay */
+.nx-table > * {
+    position: relative;
+    z-index: 1;
+}
+
+/* Caption */
+.nx-table caption {
+    caption-side: top;
+    padding: var(--nx-space-2) var(--nx-space-3);
+    margin: 0;
+    background: var(--nx-bg-secondary);
+    color: var(--nx-text-secondary);
+    font-family: var(--nx-font-header);
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    text-align: left;
+    border-bottom: 1px solid var(--nx-zero-boundary);
+}
+
+/* Header cells */
+.nx-table thead th {
+    background: var(--nx-zero-core-soft);
+    color: var(--nx-text-secondary);
+    text-align: left;
+    padding: var(--nx-space-2) var(--nx-space-3);
+    font-weight: 600;
+    border-bottom: 1px solid var(--nx-zero-boundary);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+}
+
+.nx-table td,
+.nx-table th {
+    white-space: nowrap;
+}
+
+
+/* Body rows */
+.nx-table tbody tr {
+    border-bottom: 1px solid var(--nx-zero-boundary-soft);
+    transition: background-color 0.12s ease;
+}
+
+.nx-table tbody tr:hover {
+    background: var(--nx-zero-boundary-soft);
+}
+
+/* Cells */
+.nx-table td {
+    padding: var(--nx-space-2) var(--nx-space-3);
+    color: var(--nx-text-primary);
+}
+
+/* Footer */
+.nx-table tfoot td {
+    background: var(--nx-zero-core-soft);
+    padding: var(--nx-space-2) var(--nx-space-3);
+    border-top: 1px solid var(--nx-zero-boundary);
+    color: var(--nx-text-secondary);
+    font-weight: 500;
+}
+
+/* Focused row */
+.nx-table tr.nx-focus {
+    background: var(--nx-zero-witness-soft);
+}
+

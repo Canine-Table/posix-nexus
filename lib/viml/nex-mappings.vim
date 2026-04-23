@@ -88,17 +88,41 @@ function! NxToggleCommentVisual(sep = ' ') range
 	endif
 endfunction
 
+":nmap - Display normal mode maps
+":imap - Display insert mode maps
+":vmap - Display visual and select mode maps
+":smap - Display select mode maps
+":xmap - Display visual mode maps
+":cmap - Display command-line mode maps
+":omap - Display operator pending mode maps
+
+"mapclear! - Clear all insert and command-line mode maps
+"nmapclear - Clear all normal mode maps
+"vmapclear - Clear all visual and select mode maps
+"xmapclear - Clear all visual mode maps
+"smapclear - Clear all select mode maps
+"imapclear - Clear all insert mode maps
+"cmapclear - Clear all command-line mode maps
+"omapclear - Clear all operating pending mode mapsxnoremap 
+
+"Commands                        Mode
+"--------                        ----
+"nmap, nnoremap, nunmap          Normal mode
+"imap, inoremap, iunmap          Insert and Replace mode
+"vmap, vnoremap, vunmap          Visual and Select mode
+"xmap, xnoremap, xunmap          Visual mode
+"smap, snoremap, sunmap          Select mode
+"cmap, cnoremap, cunmap          Command-line mode
+"omap, onoremap, ounmap          Operator pending mode
+
+
 let g:mapleader = ","
 xnoremap <leader>co :<C-u>silent!'<,'>s/^/\=NxGetCommentPrefix()/<CR>:nohlsearch<CR>
 
 " Visual mode: Ctrl-/ toggles comments
 xnoremap <leader>tc :silent! call NxToggleCommentVisual()<CR>
-nnoremap x d$
-nnoremap X d^
 onoremap s t<space>
 onoremap S T<space>
-noremap b ^
-noremap e $
 nnoremap T :tabnew<CR>
 nnoremap Q :quit<CR>
 inoremap jk <esc>

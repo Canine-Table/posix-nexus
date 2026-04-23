@@ -18,7 +18,6 @@ ${AWK:-$(nx_cmd_awk)} "
 		str = " hello<hi greet;hH> wazzup@;a:cd:e:f# good# bye<:done run;bB>"
 
 		nx_shell_opts(str, arr, ds, flgs, seps)
-
 	}
 '
 

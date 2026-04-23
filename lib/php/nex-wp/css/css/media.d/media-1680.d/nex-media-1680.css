@@ -1,0 +1,8 @@
+
+/* XXL: 3 columns */
+@media (min-width: 1680px) {
+	div.nx-container,
+	div.nx-nav-page.active {
+		grid-template-columns: repeat(3, 1fr);
+	}
+}
