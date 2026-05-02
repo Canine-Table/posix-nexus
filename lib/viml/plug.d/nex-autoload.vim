@@ -33,6 +33,7 @@ call plug#begin(g:nex_src.vim.config . 'plugged')
 
 	" Plugins safe for both
 	Plug 'honza/vim-snippets'
+	Plug 'SirVer/ultisnips'
 	Plug 'pierrelarsson/vim-nftables'
 	Plug 'lervag/vimtex'
 	Plug 'plasticboy/vim-markdown'

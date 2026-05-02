@@ -20,6 +20,7 @@ function! s:NxVimInit()
 	call s:NxHasBool()
 	call s:NxEnviron()
 	call NxCallFile(
+		\ "nex-ab.vim",
 		\ "nex-clip.vim",
 		\ "nex-map.vim",
 		\ "nex-str.vim",

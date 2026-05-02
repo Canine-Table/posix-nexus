@@ -8,9 +8,10 @@ function! s:NxSnippetSettings()
 		let g:UltiSnipsJumpBackwardTrigger = '<S-Tab>'
 		let g:UltiSnipsEditSplit = 'vertical'
 		let g:UltiSnipsSnippetDirectories = [ g:nex_src.vim.config . 'UltiSnips' ]
-		if exists('g:nex_mod_viml')
-			call NxContainer(g:nex_src.vim.root . '/snip.d')
-			call add(g:UltiSnipsSnippetDirectories, g:nex_src.vim.root . '/snip.d')
+		if has_key(g:nex_src.vim, 'root') && isdirectory(g:nex_src.vim.root)
+			let g:nex_src.vim.snip = g:nex_src.vim.root . '/snip.d'
+			call NxContainer(g:nex_src.vim.snip)
+			call add(g:UltiSnipsSnippetDirectories, g:nex_src.vim.snip)
 		endif
 	endif
 endfunction

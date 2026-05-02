@@ -43,7 +43,6 @@ function! s:NxConfig()
 	endif
 	set background=dark
 	filetype indent on
-
 	let g:vimtex_disable_autoload = 1
 	let g:emmet_leader_key = '<C-e>'
 endfunction
