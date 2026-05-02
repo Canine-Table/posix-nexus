@@ -1,0 +1,6 @@
+@media (min-width: 1440px) {
+	body > div.nx-page > nav.nx-nav ~ footer.nx-footer {
+		display: flex;
+		flex-direction: column;
+	}
+}

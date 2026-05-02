@@ -94,21 +94,24 @@ nx_tty_all()
 		' > "$fl" &
 		read G_NX_TTY_REPLY < "$fl"
 		eval "$G_NX_TTY_REPLY"
+		case "$1" in
+			-p|--print) printf '%s' "$G_NX_TTY_REPLY";;
+		esac
 	} 2> /dev/null
 }
 
 __nx_tty_div()
 {
-	nx_tty_all
+	test -z "$G_NEX_TTY_COLUMNS" && nx_tty_all
 	case "$1" in
-		-s) tmpa="─";;
-		-t) tmpa='━';;
-		-j) tmpa='╍';;
-		-r) tmpa='╼';;
-		-l) tmpa='╾';;
-		*) tmpa="═";;
+		-s|--single) tmpa="─";;
+		-t|--thick) tmpa='━';;
+		-r|--right) tmpa='╼';;
+		-l|--left) tmpa='╾';;
+		-d|--double) tmpa="═";;
+		*) tmpa='╍';;
 	esac
-	nx_str_append "$G_NEX_TTY_COLUMNS" "$tmpa"
+	nx_str_append "$G_NEX_TTY_COLUMNS" "$tmpa" | xargs printf '\n%s\n'
 }
 
 nx_tty_div()

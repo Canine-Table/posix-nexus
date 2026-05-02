@@ -1,11 +1,11 @@
 /* XL: 2 columns */
 @media (min-width: 1440px) {
-	div.nx-container,
+	/*div.nx-container,
 	div.nx-nav-page.active {
 		max-width: var(--nx-max-width-wide);
 		display: grid;
 		grid-template-columns: repeat(2, 1fr);
 		gap: var(--nx-space-3);
-	}
+	}*/
 }
 

@@ -109,37 +109,6 @@ nx_cfg_ps1()
 	esac
 }
 
-:<<-'NX'
-nx_cfg_tree()
-(
-	bs=''
-	while test "$#" -gt 0; do
-		case "$1" in
-			-b|--base) {
-				tmpa="$(nx_data_dir "$(nx_fs_canonize -p "$2")")" && {
-					bs="$tmpa"
-					shift
-				}
-			};;
-			-c|--container) {
-			};;
-			-l|--leaf) {
-			};;
-		esac
-		shift
-	done
-)
-
-nx_cfg_home()
-{
-	case "$HOME" in
-		"/home/$LOGNAME") {
-
-		};;
-	esac
-}
-NX
-
 nx_cfg_dirs()
 (
 	nx_err=0
@@ -151,7 +120,7 @@ nx_cfg_dirs()
 		"$NEXUS_ENV"
 	do
 		test -z "$tmpa" && {
-			nx_tty_print -e "the Nexus env has not been properly loaded, have you used the nex-bundle.sh and loaded it via your bashrc, nex-init or directly?"
+			nx_tty_print -e "the Nexus env has not been properly loaded, have you used the nex-bundle.sh and loaded it via your rc (.bashrc, .zshrc, etc), or run nex-init or directly?"
 			exit 2
 		}
 	done

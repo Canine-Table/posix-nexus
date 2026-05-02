@@ -199,6 +199,7 @@ input, textarea {
 
 body {
 	margin: 0;
+	padding: 0;
 
 	background-color: var(--nx-bg-primary);
 	color: var(--nx-text-secondary);
@@ -209,6 +210,7 @@ body {
 
 	/* Zero's spatial law */
 	overflow-x: hidden;
+	overflow-y: hidden;
 	background-attachment: fixed;
 
 	/* smooth rendering */
@@ -274,12 +276,12 @@ h1, h2, h3, h4, h5, h6 {
 	font-family: var(--nx-font-header);
 	letter-spacing: 0.15em;
 	text-transform: uppercase;
-  position: relative;
-  display: inline-block;
-  color: var(--nx-zero-boundary);
-  text-shadow:
-    0 0 20px var(--nx-zero-witness),
-    0 0 40px var(--nx-zero-drift);
+	position: relative;
+	display: inline-block;
+	color: var(--nx-zero-boundary);
+	text-shadow:
+		0 0 20px var(--nx-zero-witness),
+		0 0 40px var(--nx-zero-drift);
 }
 
 main.nx-main {

@@ -1,8 +1,12 @@
 ##############################################################################################
 
 alias vi='$EDITOR'
+
 alias pager='$PAGER'
-alias emacs='emacs -nw -q --load "$NEXUS_LIB/lisp/el/nex-init.el"'
+
+h_nx_cmd emacs && {
+	alias emacs='emacs -nw -q --load "$NEXUS_LIB/lisp/el/nex-init.el"'
+}
 
 alias ipa='ip --color=auto address show'
 alias ipn='ip --color=auto neighbor show'
@@ -29,6 +33,9 @@ alias now='date +"%T"'
 alias nowdate='date +"%d-%m-%Y"'
 alias epoch='date +"%s"'
 
-h_nx_cmd tmux && alias tmux="tmux -f $NEXUS_CNF/.tmux.conf"
+h_nx_cmd tmux && {
+	alias tmux="tmux -f $NEXUS_CNF/.tmux.conf"
+	export TMUX_TMPDIR="$NEXUS_ENV/proc"
+}
 
 ##############################################################################################

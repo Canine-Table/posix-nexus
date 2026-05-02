@@ -1,26 +1,13 @@
-#nx_include nex-sh.awk
-#nx_include nex-sh.awk
 #nx_include nex-log-extras.awk
-
-#function nx_sh_opts_stringify(D, B)
-#{
-#	gsub("'", "\x27\x22\x27\x22\x27", D)
-#	gsub("^'|'$", "", D)
-#	if (B == "<nx:true/>")
-#		return D
-#	return "\x27" D "\x27"
-#}
-
 
 # D1	the string
 # D2	the opening group
 # D3	the closing group
-function nx_shell_stride(D2, D2, D3,
+function nx_shell_stride(D1, D2, D3,
 	cnt)
 {
 	cnt = 0
 	while (match(D1, D2)) {
-		# TODO is it 3 still?
 		cnt += 3
 		D1 = substr(D1, RSTART + RLENGTH)
 		if (! match(D1, D3))
@@ -62,9 +49,9 @@ function nx_shell_opts_logger(N, V, D1, D2,
 		if (D2 > 13) {
 			for (i = 13; i < D2; i += 3) {
 				j = i + D1
-				str = "\ngroup '" V[i + 2] "' " V[j] ":"
+				str = "\ngroup '" V[j + D1] "' " V[j] ":"
 				srt = V[i]
-				for (j += D1; j <= srt; j += D1)
+				for (j += D1 + D1; j <= srt; j += D1)
 					str = str " " V[j]
 				nx_ansi_info(str)
 			}
@@ -73,255 +60,465 @@ function nx_shell_opts_logger(N, V, D1, D2,
 	nx_fd_stderr("\n")
 }
 
-function nx_shell_opts(D1, V, D2, N, D3,
-	acm, lop, li, ds, ks, fas, kas, go, gc, lo, lc, op, iop,
-	fmt, cg, cl, lcr, cr, fld, grp, crgrp, cgl, idx, eret, wret,
-	trk, dbg)
+function nx_shell_opts(D1, V1, D2, N, D3, V2,
+	obol, lo, lc,
+	gfr, gcr, gsym, goff, gbse, gpos, gbol, grp, cgrp, go, gc,
+	dbol, djmp, dmov,
+	acm, rgx, rcr, lcr, cr,
+	ds, fas, ext,
+	sln, smx,
+	ks, kas,
+	fmt, idx, bol,
+	eret, wret,
+	ovr, dbg,
+	trk)
 {
-	# Check if the input string D1 is not empty,
-	if (D1 == "")
+	if (D1 ~ /^[ \t\n\v\r\f]*$/) {
+		nx_ansi_error("please provide something to work with, '" D1 "' is not understood here yet\n")
 		return -1
-	ds = __nx_else(D2, ",") # Define default delimiters
-	split(N, trk, ds)
-	dbg = int(trk[1])
-
-	if ((D3 = split(D3, trk, ds)) > 0) {
-		wret = 0
-		eret = 0
-		if (D3 > 7) {
-			D3 = D3 - 7
-			if (dbg > 1)
-				nx_ansi_warning("separator to separate the separators was was either used within the separators as a separator or you passed '" D3 "' separators more than you should have, only the first 9 positions will be used\n")
-			D3 = 7
-			wret = -2
-		}
-		do {
-			D2 = trk[D3]
-			if (D2 != "") {
-				if (D2 in trk) {
-					if (dbg > 1)
-						nx_ansi_warning("separator '" D2 "' already in use as separator number '" trk[D2] "'\n")
-					trk[D3] = ""
-					wret = -2
-				} else if (length(D2) > 1) {
-					if (dbg > 1)
-						nx_ansi_warning("separator '" D2 "' must be a single character\n")
-					nx_bijective(trk, substr(D2, 1, 1), D3)
-					wret = -2
-				} else if (nx_is_alpha(D2)) {
-					if (dbg > 1)
-						nx_ansi_warning("separator '" D2 "' must not be alphanumeric\n")
-					trk[D3] = ""
-					wret = -2
-				} else {
-					trk[D2] = D3
-				}
-			}
-		} while (--D3 > 0)
-		D3 = 1
-	} else {
-		D3 = 0
 	}
 
-	ks = __nx_else(trk[1], ":") # key sep
+	ds = __nx_else(D2, ",")
+	split(N, trk, ds)
+	dbg = int(trk[1])
+	ovr = int(trk[2])
+	gfr = int(trk[6])
+
+	if ((sln = split(D3, trk, ds)) > 0) {
+		smx = 7
+		if (dbg > 1) {
+			if (sln > smx + 1)
+				nx_ansi_warning("'" D3 "' separator to separate the separators was was either used within the separators as a separator or you passed '"  sidx - smn  "' separators more than you should have, only the first '" smx "' positions will be used\n")
+			for (idx = 1; idx <= smx; ++idx) {
+				acm = trk[idx]
+				if (acm != "") {
+					eret = 1
+					if (acm in trk) {
+						nx_ansi_warning("separator '" acm "' already in use as separator number '" trk[acm] "'\n")
+					} else if (length(acm) > 1) {
+						nx_ansi_warning("separator '" acm "' must be a single character\n")
+					} else if (nx_is_alnum(acm)) {
+						nx_ansi_warning("separator '" acm "' must not be alphanumeric\n")
+					} else {
+						eret = 0
+						trk[acm] = idx
+					}
+					if (eret)
+						wret = -1
+				}
+			}
+		} else {
+			for (idx = 1; idx <= smx; ++idx) {
+				if (acm in trk || nx_is_alnum(acm) || length(acm) > 1) {
+					wret = -2
+				} else {
+					trk[acm] = idx
+				}
+			}
+		}
+	}
+
+	ks = __nx_else(trk[1], "%") # key sep
 	fas = __nx_else(trk[2], "@") # appendable arr sep
 	kas = __nx_else(trk[3], "#") # appendable kwds sep
 	go = __nx_else(trk[4], "<") # begin group
 	gc = __nx_else(trk[5], ">") # eng group
 	lo = __nx_else(trk[6], " ") # begin or continue long option mode
 	lc = __nx_else(trk[7], ";") # end long option mode
+	ext = __nx_else(trk[8], "-_:.") # extra characters allowed between alpha characters in long option mode
 
-	if (D3) {
-		split("", trk, "")
-		trk[ks] = "key value pair"
-		if (nx_delim_sep("flag array", fas, trk, dbg) == -1)
-			eret = -1
-		if (nx_delim_sep("key value pair array", kas, trk, dbg) == -1)
-			eret = -1
-		if (nx_delim_sep("open group", go, trk, dbg) == -1)
-			eret = -1
-		if (nx_delim_sep("close group", gc, trk, dbg) == -1)
-			eret = -1
-		if (nx_delim_sep("long option", lo, trk, dbg) == -1)
-			eret = -1
-		if (nx_delim_sep("short option", lc, trk, dbg) == -1)
-			eret = -1
-		if (eret == -1) {
-			delete trk
-			return -1
-		}
+	if (nx_delim_sep("key value pair", ks, V2, dbg) == -1)
+		eret = -1
+	if (nx_delim_sep("flag array", fas, V2, dbg) == -1)
+		eret = -1
+	if (nx_delim_sep("key value pair array", kas, V2, dbg) == -1)
+		eret = -1
+	if (nx_delim_sep("open group", go, V2, dbg) == -1)
+		eret = -1
+	if (nx_delim_sep("close group", gc, V2, dbg) == -1)
+		eret = -1
+	if (nx_delim_sep("long option", lo, V2, dbg) == -1)
+		eret = -1
+	if (nx_delim_sep("short option", lc, V2, dbg) == -1)
+		eret = -1
+
+	if (eret == -1) {
+		delete trk
+		return -1
 	}
 
-	if ((D2 = nx_shell_stride(D1, go, gc)) == -1) {
+	if ((idx = nx_shell_stride(D1, go, gc)) == -1) {
 		if (dbg > 0)
 			nx_ansi_error("the group terminator '" gc "' ran away\n")
 		delete trk
 		return -1
 	}
 
+	strde = 12 + idx
+	nx_parr_stk(V1, strde)
+	nx_parr_stk(V1, 1, ks)
+	nx_parr_stk(V1, 4, lo)
+	nx_parr_stk(V1, 7, fas)
+	nx_parr_stk(V1, 10, kas)
+	goff = strde + strde
+
+	split(ext, trk, "")
+	for (idx in trk) {
+		acm = trk[idx]
+		if (! (acm in V2 || acm in trk)) {
+			trk[acm] = idx
+			rgx = rgx acm
+		}
+	}
+
+	acm = "([a-zA-Z]"
+	if (lcr = rgx) {
+		rcr = nx_str_esc(lcr, 2)
+		rgx = "([a-zA-Z]|" rcr
+		acm = acm rgx ")*"
+		rcr = rcr ")+$"
+		rgx = rgx ")+$"
+		rcr = "(" rcr
+	} else {
+		rgx = "[a-zA-Z]+$"
+	}
+	V1[strde] = acm ")?"
 	fmt = split(D1, trk, "")
-	strde = 12 + D2
-	nx_parr_stk(V, strde)
 	if (dbg > 2)
 		nx_ansi_alert("passed param string was " D1 "\n")
-	D2 = nx_sh_long(trk, lo, lc, 0, fmt)
 	grp = 13
-	cg = 0
-
+	gbol = 0
 	for (idx = 1; idx <= fmt; ++idx) {
 		cr = trk[idx]
-		D1 = cr == lo
-		if (D1 || cr == lc) {
-			lop = D1
+		bol = cr == lo
+		if (bol || cr == lc) {
+			obol = bol
 			cr = trk[++idx]
 		}
 		if (nx_is_alpha(cr)) {
 			acm = cr
 			cr = trk[++idx]
-			if (lop) {
-				while (nx_is_alpha(cr)) {
+			if (obol) {
+				while (cr ~ rgx) {
 					acm = acm cr
 					cr = trk[++idx]
 				}
-				D1 = 0
+				if (lcr && gsub(rcr, "", acm) && dbg > 1)
+					nx_ansi_alert("trailing '" lcr "' found after '" acm "'\n")
+				bol = 0
 			} else {
-				D1 = nx_is_alpha(cr)
+				bol = nx_is_alpha(cr)
+			}
+			if (dbol) {
+				djmp = cr
+				cr = gsym
+				if (djmp != gc)
+					djmp = ""
+				if (bol && djmp != lo) {
+					idx = idx - !obol
+					bol = 0
+				}
 			}
 
-			if (D1 || cr == lo || cr == lc || cr == "" || cg) {
-				if (D1)
-					idx = idx - !lop
-				else
-					lop = cr == lo
-				if (cg) {
-					D1 = nx_parr_stk(V, grp, acm)
-					if (cr == gc) {
-						cg = 0
-						grp = grp + 3
+			if (acm in V1) {
+				dmov = 0
+				
+				if (gbol) {
+					if (dbg > 1)
+						nx_ansi_warning("argument '" acm "' was already registered\n")
+					idx--
+				} else {
+					gpos = V1[acm]
+					gbse = gpos % strde
+					if (gbse > 12 && gbse + goff == gpos && cr == go) {
+						gcr = acm
+						gbol = 1
+						gsym = trk[idx + 1]
+						if (nx_is_alpha(gsym) || gsym == gc) {
+							gsym = lo
+							--idx
+						}
+						if (ovr)
+							V1[gbse + strde] = gsym
+						else
+							gsym = V1[gbse + strde]
+						cgrp = grp
+						grp = gbse
 						if (dbg > 2)
-							nx_ansi_debug(acm " is end of group leader type '" cgl "' with leader " lcr " position " D1 "'\n")
+							nx_ansi_light("adding on to '" acm "' of type '" gsym "'\n")
+					} else if (cr == go) {
+						gsym = trk[idx + 1]
+						if (gsym == gc) {
+							++idx
+							continue
+						}
+						dbol = 1
+						if (gfr == 1) {
+							if (!nx_is_alpha(gsym))
+								++idx
+							gsym = V1[gbse + strde]
+							if (dbg > 1)
+								nx_ansi_warning("reusing '" gsym "' type for original entry '" acm "' first declaration\n")
+						} else if (gfr == 2) {
+							if (nx_is_alpha(gsym))
+								gsym = lo
+							else
+								++idx
+							if (dbg > 1)
+								nx_ansi_warning("replacing '" V1[gbse + strde] "' with '" gsym "' type for group entries within the group once refered to as '" acm "'\n")
+						} else if (gfr == 3) {
+							dmov = 1
+							dbol = 0
+							cr = nx_parr_stk(V1, gbse)
+							if (cr == acm) {
+								delete V1[V1[cr]]
+							} else {
+								dmov = V1[acm]
+								V1[cr] = dmov
+								V1[dmov] = cr
+								delete V1[acm]
+							}
+							if (!ovr) {
+								gsym = V1[gbse + strde]
+								cr = trk[idx + 1];
+								if (nx_is_alpha(cr) || cr == gc) {
+									trk[idx] = gsym
+									trk[--idx] = go
+								} else {
+									trk[idx + 1] = gsym
+								}
+							}
+							cr = go
+							if (dbg > 2)
+								nx_ansi_light("param override of '" acm "' was prepaired to be registered as a group leader'\n")
+						} else {
+							acm = ""
+							while (++idx <= fmt) {
+								if ((cr = trk[idx]) == gc)
+									break
+								acm = acm cr
+							}
+							dbol = 0
+							if (dbg > 1)
+								nx_ansi_warning("skipping past group entries '" acm "'\n")
+						}
+					} else {
+						if (dbg > 1)
+							nx_ansi_warning("argument '" acm "' was already registered\n")
+						idx--
+					}
+				}
+				if (!dmov)
+					continue
+			}
+
+			if (cr == gc && !gbol) {
+				cr = __nx_if(obol, lo, lc)
+				if (dbg > 2)
+					nx_ansi_warning("extra '" gc "' detected after '" acm "' changing type to '" cr "'\n")
+			}
+			if (bol || cr == lo || cr == lc || cr == "" || gbol) {
+				if (bol) {
+					idx = idx - !obol
+				} else if (cr != gc) {
+					obol = cr == lo
+				}
+				if (gbol) {
+					gpos = nx_parr_stk(V1, grp, acm)
+					if (cr == gc) {
+						gbol = 0
+						if (cgrp > grp) {
+							grp = cgrp
+						} else {
+							grp = grp + 3
+						}
+						if (dbg > 2)
+							nx_ansi_debug(acm " is end of group leader type '" gsym "' with leader " gcr " position " gpos "'\n")
 					}
 				} else {
-					D1 = nx_parr_stk(V, 4, acm)
-					if (N > 2)
-						nx_ansi_success("passed param '" acm "' was registered as a flag at position '" D1 "'\n")
+					gpos = nx_parr_stk(V1, 4, acm)
+					if (dbg > 2)
+						nx_ansi_success("passed param '" acm "' was registered as a flag at position '" gpos "'\n")
 				}
 			} else if (cr == go) {
-				lcr = acm
-				cg = 1
-				cgl = trk[idx + 1]
-				if (nx_is_alpha(cgl))
-					cgl = ""
+				gcr = acm
+				gbol = 1
+				gsym = trk[idx + 1]
+				if (nx_is_alpha(gsym) || gsym == gc)
+					gsym = lo
 				else
 					++idx
-				D1 = nx_parr_stk(V, grp, acm)
+				nx_parr_stk(V1, grp, gsym)
+				gpos = nx_parr_stk(V1, grp, acm)
 				if (dbg > 2)
-					nx_ansi_light("passed param '" acm "' was registered as a group leader at position '" D1 "'\n")
+					nx_ansi_light("passed param '" acm "' was registered as a group leader at position '" gpos "'\n")
 			} else if (cr == ks) {
-				D1 = nx_parr_stk(V, 1, acm)
+				gpos = nx_parr_stk(V1, 1, acm)
 				if (dbg > 2)
-					nx_ansi_debug("passed param '" acm "' was registered as a keyword argument at position '" D1 "'\n")
+					nx_ansi_debug("passed param '" acm "' was registered as a keyword argument at position '" gpos "'\n")
 			} else if (cr == fas) {
-				D1 = nx_parr_stk(V, 7, acm)
+				gpos = nx_parr_stk(V1, 7, acm)
 				if (dbg > 2)
-					nx_ansi_success("passed param '" acm "' was registered as a flag array (appendable) at position '" D1 "'\n")
+					nx_ansi_success("passed param '" acm "' was registered as a flag array (appendable) at position '" gpos "'\n")
 			} else if (cr == kas) {
-				D1 = nx_parr_stk(V, 10, acm)
+				gpos = nx_parr_stk(V1, 10, acm)
 				if (dbg > 2)
-					nx_ansi_debug("passed param '" acm "' was registered as a keyword array (appendable) at position '" D1 "'\n")
+					nx_ansi_debug("passed param '" acm "' was registered as a keyword array (appendable) at position '" gpos "'\n")
 			} else if (dbg > 1) {
 				nx_ansi_warning("passed param '" acm "' was not registered, '" cr "' is not a known group\n")
 				wret = -2
 				continue
 			}
-			V[acm] = D1
+			V1[acm] = gpos
+			if (djmp)
+				--idx
+		} else if (cr == gc) {
+			if (gbol) {
+				gbol = 0
+				if (cgrp > grp) {
+					grp = cgrp
+				} else if (dbol) {
+					dbol = 0
+					djmp = ""
+				} else {
+					grp = grp + 3
+				}
+				if (dbg > 2)
+					nx_ansi_debug(acm " is end of group leader type '" gsym "' with leader " gcr " position " D1 "'\n")
+			} else if (dbg > 1) {
+				nx_ansi_warning("extra '" gc "' detected after '" acm trk[idx - 1] "', discarding\n")
+			}
+		} else {
+			if (dbg > 1)
+				nx_ansi_warning("provided '" cr "' is garbage, what do you wish this to mean? discarding\n")
+			wret = -2
 		}
 	}
+
 	delete trk
-	if (dbg > 2) {
-		if (eret)
-			nx_ansi_light("done D:\n")
-		else if (wret)
-			nx_ansi_light("done :(\n")
-		else
-			nx_ansi_light("done :D\n")
-		if (dbg > 3)
-			nx_shell_opts_logger(N, V, strde, grp)
-	}
-	if (eret)
-		return -1
-	return wret
+	if (dbg > 3)
+		nx_shell_opts_logger(dbg, V1, strde, grp)
+	if (eret = int(eret))
+		return eret
+	return int(wret)
 }
 
 function nx_shell_args(D1, V, D2, N, D3, D4,
-	ds, ps, fs, fsa, fsr, dbg,
-	strde, con, tok, r, idx, cat, grp, trm, dsh, vl, wret, eret, acrgx,
+	ds, ps,
+	fs, fa, fr,
+	dbg, bk, ovr, ab,
+	ctp, cidx,
+	oln, oidx,
+	strde, con, tok,
+	r, s, n,
+	idx, cat, grp, trm,
+	dsh, vl,
+	wret, eret,
+	acrgx, eacrgx,
 	agv, trk)
 {
-	# Check if the input string D1 is not empty,
-	if (D1 == "")
+	if (D1 ~ /^[ \t\n\v\r\f]*$/) {
+		nx_ansi_error("please provide something to work with, '" D1 "' is not understood here yet\n")
 		return -1
-	ds = __nx_else(D2, ",") # Define default delimiters
+	}
+
+	ds = __nx_else(D2, ",")
 	split(N, trk, ds)
 	dbg = int(trk[1])
+	ovr = int(trk[2])
+	bk = int(trk[3])
+	ab = int(trk[7])
 
-	wret = 0
-	eret = 0
-	if ((D2 = split(D3, trk, ds)) > 0) {
-		do {
-			tok = trk[D2]
-			if (tok != "") {
-				if (tok in trk) {
-					if (dbg > 1)
-						nx_ansi_warning("separator '" D2 "' already in use as separator number '" trk[tok] "'\n")
-					trk[D2] = ""
-					wret = -2
-				} else {
-					trk[tok] = D2
+	if ((idx = split(D3, trk, ds)) > 0) {
+		amx = 3
+		if (dbg > 1) {
+			do {
+				tok = trk[idx]
+				if (tok != "") {
+					if (tok in trk) {
+						nx_ansi_warning("separator '" tok "' already in use as separator number '" trk[tok] "'\n")
+						trk[idx] = ""
+						wret = -2
+					} else {
+						trk[tok] = idx
+					}
 				}
-			}
-		} while (--D2 > 0)
-		D2 = 1
-	} else {
-		D2 = 0
+			} while (--idx > 0)
+		} else {
+			do {
+				if (trk[idx] != "") {
+					if (tok in trk) {
+						trk[idx] = ""
+						wret = ""
+					} else {
+						trk[tok] = idx
+					}
+				}
+			} while (--idx > 0)
+		}
 	}
 
 	ps = __nx_else(trk[1], "<nx:null/>") # Param sep
 	fs = __nx_else(trk[2], "=") # optional set flag sep
-	fsa = __nx_else(trk[3], "+") # optional push flag sep
-	fsr = __nx_else(trk[4], "-") # optional pop flag sep
+	fa = __nx_else(trk[3], "+") # optional push flag sep
+	fr = __nx_else(trk[4], "-") # optional pop flag sep
 	con = __nx_else(trk[5], " ", 1) # concat sep of remainder string
 	con = __nx_if(con == "<nx_null/>", "", con)
+	acrgx = "[" fa "]|[" fr "]"
 
-	acrgx = "[" fsa "]|[" fsr "]"
-	trk["fs"] = fs
-	trk["ps"] = ps
-	trk["fsa"] = fsa fs
-	trk["fsr"] = fsr fs
+	V["-0"] = __nx_if(V["-0"] < -3, V["-0"], -3)
+	cnt = split(D1, agv, ps) + 1
 
-	if (D2) {
-		split("", trk, "")
-		trk[ps] = "parameter"
-		if (nx_delim_sep("optional set flag", fs, trk, dbg) == -1)
-			eret = -1
-		if (nx_delim_sep("optional push flag", fsa, trk, dbg) == -1)
-			eret = -1
-		if (nx_delim_sep("optional pop flag", fsr, trk, dbg) == -1)
-			eret = -1
-		if (eret == -1) {
-			delete trk
-			return -1
-		}
+	if (nx_shell_opts(agv[1], V, ds, N, D4) == -1)
+		return -2
+
+	strde = V[0]
+
+	split("", trk, "")
+	if (nx_delim_sep("parameter", ps, trk, dbg) == -1)
+		eret = -1
+	if (nx_delim_sep("optional set flag", fs, trk, dbg) == -1)
+		eret = -1
+	if (nx_delim_sep("optional push flag", fa, trk, dbg) == -1)
+		eret = -1
+	if (nx_delim_sep("optional pop flag", fr, trk, dbg) == -1)
+		eret = -1
+
+	if (eret == -1) {
+		delete trk
+		return -1
 	}
 
-	cnt = split(D1, agv, ps)
-	nx_shell_opts(agv[1], V, ds, N, D4)
-	strde = V[0]
+	trk["fs"] = fs
+	trk["ps"] = ps
+	trk["fa"] = fa fs
+	trk["fr"] = fr fs
+
+	eacrgx = V[strde] "[A-Za-z]+"
+
 	trm = 1
-	for (D2 = 2; D2 <= cnt; ++D2) {
-		tok = agv[D2]
-		dsh = "-"
-		vl = ""
+	ctp = cnt
+	cidx = cnt
+	idx = 10
+	do {
+		agv["-" V[idx + strde]] = idx
+		idx = idx - 3
+	} while (idx > 1)
+	agv["-" V[idx + strde]] = idx
+	agv["con"] = con
+	agv["ps"] = ps
+	while (idx < cnt) {
+		if (ctp > cnt) {
+			if (cidx == ctp) {
+				ctp = cnt
+				cidx = cnt
+				continue
+			}
+			tok = agv[++cidx]
+		} else {
+			tok = agv[++idx]
+		}
+
 		if (trm > 0 && sub(/^-/, "", tok)) {
 			if (sub(/^-/, "", tok)) {
 				if (tok == "") {
@@ -329,57 +526,178 @@ function nx_shell_args(D1, V, D2, N, D3, D4,
 					if (dbg > 2)
 						nx_ansi_light("end of arguments detected  '--' appending remainder\n")
 					continue
-				}
-				if (length(tok = nx_shell_actions(tok, acrgx, fs, trk, dbg)) > 1 && tok in V) {
+				} else if (length(tok = nx_shell_actions(tok, acrgx, fs, agv, dbg, eacrgx)) > 1 && tok in V) {
 					if (dbg > 2)
 						nx_ansi_debug("long form option '" tok "' was registered, preceding\n")
 					trm = 2
 				}
-			} else if (length(tok = nx_shell_actions(tok, acrgx, fs, trk, dbg)) == 1 && tok in V) {
-				if (dbg > 2)
-					nx_ansi_success("short form option '" tok "' was registered, preceding\n")
-				trm = 2
+			} else if (nx_shell_actions(tok, acrgx, fs, agv, dbg, eacrgx) != -1) {
+				opt = agv["opt"]
+				if (length(opt) > 1) {
+					vl = agv["mod"] agv["num"] agv["act"] agv["val"]
+					oln = split(opt, trk, "")
+					opt = ""
+					for (oidx = 1; oidx <= oln; ++oidx) {
+						tok = trk[oidx]
+						if (tok in V) {
+							if (dbg > 2)
+								nx_ansi_alert("short form bundle option '-" tok vl "' was registered, preceding\n")
+							agv[++ctp] = "-" tok vl
+						} else {
+							opt = opt tok
+						}
+					}
+					trm = 2
+					if (bk && opt)
+						agv[idx--] = opt
+					continue
+				} else if (opt in V) {
+					if (dbg > 2)
+						nx_ansi_success("short form option '" opt "' was registered, preceding\n")
+					trm = 2
+					tok = opt
+				}
 			}
 		}
+
 		if (trm < 2) {
-			tok = agv[D2]
-			r = nx_join_str(r, tok, ps)
+			if (ab) {
+				if (ab == 1)
+					break
+				trm = 0
+			}
+			tok = agv[idx]
+			s = nx_join_str(s, tok, ps)
+			r = nx_join_str(r, tok, con)
+			++n
 			if (dbg > 2)
 				nx_ansi_alert("appending '" tok "' to remainder \n")
 			continue
 		}
+
 		trm = 1
-		cat = tok
-		idx = V[cat]
-		while (! nx_is_digit(idx)) {
-			cat = idx
-			idx = V[cat]
-		}
-		grp = idx % strde
-		if (length(cat) > 1)
-			dsh = "--"
+		cat = V[tok]
+		grp = cat % strde
+
 		if (dbg > 2) {
-			if (cat != tok)
-				nx_ansi_alert("aliased token '" tok "' mapped to '" cat "'\n")
-			nx_ansi_light("token index for '" cat "' registered under '" idx " and part of the '" grp "' id\n")
+			if (grp < 13)
+				nx_ansi_light("token index for '" tok "' registered under '" cat "' and part of the '" grp "' id\n")
+			else
+				nx_ansi_light("token index for '" tok "' registered under '" cat "' and part of the '" grp "' id, with the group leader being '" V[grp + strde]l "'\n")
 		}
-		print grp
+		idx = nx_shell_dispatch(V, agv, idx, grp)
 	}
+
 	V[-1] = r
-	gsub(ps, con, r)
-	V[-2] = r
-	if (N > 2)
-		nx_fd_stderr("remainder is '" r "' \n")
+	V[-2] = s
+	V[-3] = n - 1
+	if (dbg > 2)
+		nx_ansi_alert("remainder is '" r "' \n")
 	delete agv
 	delete trk
+	if (eret = int(eret))
+		return eret
+	return int(wret)
 }
 
-function nx_shell_actions(D1, D2, D3, V, N,
-	opt, num, val,
+function nx_shell_dispatch(V1, V2, N1, N2,
+	strde, cat, sym, arg, opt, act, mod, val, num, cse, dsh, cur, idx,
+	con, ps, vr)
+{
+	strde = V1[0]
+	sym = "-" V1[N2 + strde]
+	cat = V2[sym]
+	ps = V2["ps"]
+
+	if (N2 < 13) {
+		opt = V2["opt"]
+		con = ""
+	} else {
+		opt = V1[N2 + strde + strde]
+		con = "G"
+	}
+
+	if (length(opt) > 1)
+		dsh = "--"
+	else
+		dsh = "-"
+
+	if (! (dsh opt in V1)) {
+		idx = V1["-0"] - 1
+		V1[idx] = dsh opt
+		V1[dsh opt] = idx--
+		if (cat == 1)
+			V1[idx] = "NEX_" con "k_" opt
+		else if (cat == 4)
+			V1[idx] = "NEX_" con "f_" opt
+		else if (cat == 7)
+			V1[idx] = "NEX_" con "F_" opt
+		else if (cat == 10)
+			V1[idx] = "NEX_" con "K_" opt
+		else
+			V1[idx] = "NEX_" con "_" opt
+		V1["-0"] = --idx
+	} else {
+		idx = V1[dsh opt] - 2
+	}
+
+	opt = V2["opt"]
+	cse = nx_is_lower(substr(opt, 1, 1))
+	con = V2["con"]
+	ps = V2["ps"]
+	cur = V1[idx]
+
+	if ((act = V2["act"])  == "") {
+		if (cat == 1) {
+			if (N2 < 13)
+				V1[idx] = V2[++N1]
+			else if (cse)
+				V1[idx] = ps V2[++N1] ps opt
+			else
+				V1[idx] = opt ps V2[++N1]
+		} else if (cat == 4) {
+			if (N2 < 13)
+				nx_boolean(V1, idx, !cse)
+			else
+				V1[idx] = opt
+		} else if (cat == 7) {
+			if (cse)
+				V1[idx] = nx_join_str(cur, opt, con)
+			else
+				V1[idx] = nx_join_str(opt, cur, con)
+		} else if (cat == 10) {
+			if (cse)
+				V1[idx] = nx_join_str(cur, opt ps V2[++N1], ps)
+			else
+				V1[idx] = nx_join_str(opt ps V2[++N1], cur, ps)
+		}
+	} else {
+		val = V2["val"]
+		num = V2["num"]
+		if ((mod = V2["mod"]) == "") {
+			if (cat == 1 || cat == 4 || cat == 7) {
+				V1[idx] = val
+				if (cat == 4)
+					nx_boolean(V1, idx, !cse)
+			} else if (cat == 10) {
+				if (cse)
+					V1[idx] = opt ps val
+				else
+					V1[idx] = val ps opt
+			}
+		} else {
+			# Truncated Action dispatch
+		}
+	}
+	return N1
+}
+
+function nx_shell_actions(D1, D2, D3, V, N, D4,
+	opt, num, val, mod,
 	trk)
 {
 	opt = D1
-	if (match(D1, "^[A-Za-z]+((" D2 ")[0-9]*)?" D3)) {
+	if (match(D1, "^" D4 "((" D2 ")[0-9]*)?" D3)) {
 		val = substr(D1, RLENGTH + 1)
 		D2 = RLENGTH
 		split(substr(D1, 1, --D2), trk, "")
@@ -388,23 +706,76 @@ function nx_shell_actions(D1, D2, D3, V, N,
 			D2--
 		}
 		while (! nx_is_alpha(D1 = trk[D2])) {
-			D3 = D1 D3
+			mod = D1 mod
 			D2--
 		}
 		delete trk
 		opt = substr(opt, 1, D2)
 	} else {
-		D3 = ""
+		if (opt !~ "^" D4 "$") {
+			if (N > 0)
+				nx_ansi_error("the action '" opt "' modifier cannot start with an alphabetic character.\n")
+			return -1
+		}
+		D3 = opt
 	}
-	if (D3 !~ /^[A-Za-z]/) {
-		V["o"] = opt
-		V["v"] = val
-		V["a"] = D3
-		V["n"] = __nx_else(num, 1, 1)
+
+	if (D3 !~ "^" D4 "$") {
+		V["opt"] = opt
+		V["val"] = val
+		V["act"] = D3
+		V["mod"] = mod
+		V["num"] = __nx_else(num, 1, 1)
 		return opt
 	}
-	if (N > 0)
-		nx_ansi_error("the action modifier cannot start with an alphabetic character.\n")
-	return -1
+
+	V["opt"] = D3
+	V["val"] = ""
+	V["act"] = ""
+	V["mod"] = ""
+	V["num"] = ""
+	return D3
+}
+
+function nx_shell_environ(D1, V, D2, N, D3, D4,
+	ds, dbg, ln, idx, asn, err, dq, trk, pre, post,
+	vr, vl, nm, pos, acm)
+{
+	if ((err = nx_shell_args(D1, V, D2, N, D3, D4)) < 0)
+		return err
+
+	ds = __nx_else(D2, ",")
+	split(N, trk, ds)
+	dbg = int(trk[1])
+	if (int(trk[4])) {
+		pre = "export "
+		post = ";"
+	} else {
+		pre = ""
+		post = " "
+	}
+	dq = int(trk[5])
+
+	split(D3, trk, ds)
+	fs = __nx_else(trk[2], "=")
+
+	delete trk
+	ln = V["-0"]
+
+	acm = pre __nx_stringify_var("NEX_ARGC", -ln / 3 - 1, dq, fs, post)
+	acm = acm pre __nx_stringify_var("NEX_ARGV_R", V[-1], dq, fs, post)
+	acm = acm pre __nx_stringify_var("NEX_ARGV_S", V[-2], dq, fs, post)
+	acm = acm pre __nx_stringify_var("NEX_ARGV_0", V[-3], dq, fs, post)
+	for (idx = -4; idx >= ln; idx = idx - 3) {
+		nm = "NEX_ARGV_" ++pos
+		vr = V[idx - 1]
+		gsub(/-/, 45, vr)
+		gsub(/[.]/, 46, vr)
+		gsub(/:/, 58, vr)
+		vl = V[idx - 2]
+		acm = acm pre __nx_stringify_var(nm, vr, dq, fs, post)
+		acm = acm pre __nx_stringify_var(vr, vl, dq, fs, post)
+	}
+	return acm
 }
 

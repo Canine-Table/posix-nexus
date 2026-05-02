@@ -24,7 +24,7 @@ function nx_file_path(D1, B, D2, V,	i, j)
 			V["~/"] = ENVIRON["HOME"] D2
 			V["NX_L:/"] = ENVIRON["NEXUS_LIB"] D2
 			V["NX_C:/"] = ENVIRON["NEXUS_CNF"] D2
-			V["NX_D:/"] = ENVIRON["NEXUS_DOCS"] D2
+			V["NX_D:/"] = ENVIRON["NEXUS_DOC"] D2
 			V["NX_E:/"] = ENVIRON["NEXUS_ENV"] D2
 			V["NX_SB:/"] = ENVIRON["NEXUS_SBIN"] D2
 			V["NX_B:/"] = ENVIRON["NEXUS_BIN"] D2

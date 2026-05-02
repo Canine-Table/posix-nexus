@@ -13,8 +13,16 @@ ${AWK:-$(nx_cmd_awk)} "
 
 		dbg = 4
 
+		ps = "<nx:null/>"
+		fs =  "="
+		fsa = "+"
+		fsr = "-"
+		con = " "
+
 		seps = ks ds fas ds kas ds go ds gc ds lo ds lc
 		flgs = dbg
+		acts = ps ds fs ds dsa ds dsr ds con
+
 		str = " hello<hi greet;hH> wazzup@;a:cd:e:f# good# bye<:done run;bB>"
 
 		nx_shell_opts(str, arr, ds, flgs, seps)

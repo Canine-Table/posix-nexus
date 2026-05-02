@@ -14,8 +14,8 @@
 
 	body > div.nx-page > nav.nx-nav {
 		top: 0;
-		overflow-x: auto;
-		overflow-y: hidden;
+		/*overflow-x: auto;
+		overflow-y: hidden;*/
 		border-style: none;
 		border-bottom: 1px groove var(--nx-zero-boundary);
 		min-height: calc(var(--nx-space-3) * 4.5);
@@ -25,7 +25,7 @@
 		width: 100vw;
 		max-width: 100vw;
 	}
-/*
+
 	body > div.nx-page {
 		min-height: calc(100vh - var(--nx-space-3) * 6);
 	}
@@ -69,6 +69,6 @@
 		border-bottom: 1px solid var(--nx-zero-boundary);
 		border-right: none;
 	}
-	*/
+
 }
 

@@ -5,7 +5,19 @@
 kpse.set_program_name("luatex")
 
 local M = {}
---package.loadlib(kpse.find_file("lsqlite3", "clua"), "luaopen_lsqlite3")()
+--[=[
+local so = kpse.find_file("lsqlite3", "clua")
+if not so then
+    texio.write_nl("NEX: ERROR: lsqlite3 not found")
+else
+    local loader = package.loadlib(so, "luaopen_lsqlite3")
+    if loader then
+        loader()
+    else
+        texio.write_nl("NEX: ERROR: failed to load lsqlite3")
+    end
+end
+]=]
 --M.db3 = require('lsqlite3')
 
 M.module = require('nex-module')
@@ -14,7 +26,7 @@ M.int = M.module.load['nex-int']
 M.data = M.module.load['nex-data']
 M.str = M.module.load['nex-str']
 M.bool = M.module.load['nex-bool']
---M.bit = M.module.load['nex-bit']
+M.bit = M.module.load['nex-bit']
 
 M.tex = {}
 M.tex.var = {}
@@ -31,9 +43,10 @@ M.tex.loaded = function()
 	end
 end
 
---[=[M.sql = require('nex-db')
-M.tex.var.db = M.sql:new(M.db3, "TeX")
-M.tex.var.db:create({
+--M.sql = require('nex-db')
+--M.tex.var.db = M.sql:new(M.db3, "TeX")
+
+--[=[M.tex.var.db:create({
 	bib = "id TEXT PRIMARY KEY, author TEXT, title TEXT, year INTEGER, journal TEXT",
 	gls = "term TEXT PRIMARY KEY, definition TEXT",
 	acr = "short TEXT PRIMARY KEY, long TEXT",
@@ -42,7 +55,7 @@ M.tex.var.db:create({
 
 M.tex.var.db:insert("acr", "short,long", {
 	"'foil', 'First Outer Inner Last'"
-})]=]
+})--]=]
 
 return M
 

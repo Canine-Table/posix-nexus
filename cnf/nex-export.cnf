@@ -20,7 +20,6 @@ export G_NEX_PAGER="$(nx_cmd_pager)"
 export G_NEX_SOCKETS="$(nx_cmd_sockets)"
 export G_NEX_SQL="$(nx_cmd_sql)"
 export G_NEX_CONTAINER="$(nx_cmd_container)"
-export TMUX_TMPDIR="$NEXUS_ENV/proc"
 export HISTCONTROL='erasedups'
 export HISTIGNORE='ls:pwd:cd:echo'
 export HISTSIZE=1000000
@@ -36,6 +35,7 @@ test "$E_NEX_LEMONADE" = true && nx_misc_lemonade
 test "$E_NEX_SOFFICE" = true && nx_misc_soffice
 
 h_nx_nnn
+
 
 #export POSIXLY_CORRECT=1
 

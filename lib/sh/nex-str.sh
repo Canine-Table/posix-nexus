@@ -33,7 +33,7 @@ nx_str_od()
 
 nx_str_join()
 {
-	printf '%s' "$1" | ${AWK:-$(nx_cmd_awk)} -v dlm="$2" 'NR==1{printf "%s",$0; next}{printf "%s", dlm $0}'
+	printf '%s' "$1" | ${AWK:-$(nx_cmd_awk)} -v dlm="$2" 'NR==1{printf("%s",$0); next}{printf("%s",dlm $0)}'
 }
 
 nx_str_cnt()
@@ -124,78 +124,4 @@ nx_str_append()
 		}
 	'
 }
-
-nx_str_comment()
-(
-	tmpa=$(nx_fs_path -p "$1") || exit 226
-	esc='\'
-	st='/*'
-	ed='*/'
-	ol="//"
-
-	case "$(printf '%s' "$tmpa" | sed 's/^.*[.]//g')" in
-		ini);;
-	esac
-
-	#sed --posix
-	echo "$(${AWK:-$(nx_cmd_awk)} \
-		-v esc="$esc" \
-		-v ol="$ol" \
-		-v ed="$ed" \
-		-v st="$st" \
-	'
-		BEGIN {
-			sp = esc "t" esc "r" esc "f" esc "v" esc "n"
-			pre = "/2/{x;/[" esc "][" sp "]*$/!{x;s/2//;x};s/.*//;b nt};"
-
-			gsub(/./, "\\\\&", st)
-			gsub(/./, "\\\\&", ed)
-			gsub(/./, "\\\\&", ol)
-
-			if (ol != "") {
-				md = "s/\(^[" sp "]*[" esc "]" ol"\|[^" esc "]" ol "\).*\(" esc "\)*[" sp "]*$/\2/;s/" esc "$//;t ol;"
-				suf  = ":ol;x;s/^/2/;x;"
-			}
-			suf = suf ":nt;/^$/d"
-			#esc = "\([^" nesc "]\|^\)"
-			#if (st != "" && ed != "") {
-			#	l = l "/1/{x;s/.*" esc st "/\1/;t ed;s/.*//;b nt};"
-			#	chk2 = chk2 "s/" esc ed ".*/\1/;t st;b nt;:st;x;s/$/1/;x;b nt;:ed;x;s/1//;x;b nt;"
-			#}
-
-		#l = "x;" l "x;" chk2 suf
-		printf("x;%sx;%s%s", pre, md, suf)
-
-	}')" # < "$tmpa"
-)
-
-nx_str_grep()
-(
-	nx_data_optargs 'd:f:S:r:m:s:c:b:a:o@wgiC' "$@"
-	$NEX_S | ${AWK:-$(nx_cmd_awk)} \
-		-v fnd="$NEX_k_f" \
-		-v mth="$NEX_k_m" \
-		-v rpl="$NEX_k_r" \
-		-v sep="$NEX_k_s" \
-		-v osep="$NEX_k_S" \
-		-v delm="${NEX_k_d:-<nx:null/>}" \
-		-v cnt="$NEX_k_c" \
-		-v bfre="$NEX_k_b" \
-		-v aftr="$NEX_k_a" \
-		-v ofst="$NEX_K_o" \
-		-v wrp="${NEX_f_w:-<nx:false/>}" \
-		-v gbl="${NEX_f_g:-<nx:true/>}" \
-		-v inc="${NEX_f_i:-<nx:false/>}" \
-		-v cse="${NEX_f_C:-<nx:false/>}" \
-	"
-		$(nx_data_include -i "${NEXUS_LIB}/awk/nex-str-extras.awk")
-	"'
-		{
-			nx_str_grep($0, flds, delm, fnd delm mth delm rpl delm sep delm osep, inc delm wrp delm gbl delm cse, bfre delm aftr delm cnt, ofst)
-		} END {
-			delete flds
-		}
-	'
-)
-
 

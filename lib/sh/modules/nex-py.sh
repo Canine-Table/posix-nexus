@@ -19,6 +19,7 @@ nx_py_venv()
 			};;
 			-a) {
 				tmpd="$tmpa/$tmpb/.env/bin/activate"
+				echo $tmpd
 				test -f "$tmpd" -a -r "$tmpd" -a -z "$VIRTUAL_ENV" && {
 					. "$tmpd"
 					unset VIRTUAL_ENV_PROMPT
@@ -51,7 +52,7 @@ nx_py_venv()
 						};;
 					esac
 				else
-					nx_tty_printf -E '%s\n' "($1) unknown argument"
+					nx_tty_print -E "($1) unknown argument"
 				fi
 			};;
 		esac

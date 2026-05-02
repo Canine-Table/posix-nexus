@@ -45,33 +45,38 @@ function nx_replace_pop(V, D)
 	return --V[0]
 }
 
-function nx_parr_stk(V, N, D)
+function nx_parr_stk(V, N, D,
+	hdr, blk)
 {
 	N = int(N)
 	if (! (0 in V)) {
 		if (N <= 0)
 			N = 64
 		V[0] = N
+		blk = N
 		do {
 			V[N] = N
 		} while (--N > 0)
-	} else if (N > 0 && N <= V[0]) {
+		return blk
+	} else if (N <= (hdr = V[0]) && N > 0) {
+		blk = V[N]
 		if (D == "") {
-			if (V[N] - V[0] >= V[V[N]]) {
-				D = V[V[N]]
-				delete V[V[N]]
-				V[N] = V[N] - V[0]
+			if (blk > hdr) {
+				D = V[blk]
+				delete V[blk]
+				V[N] = blk - hdr
 				return D
 			}
 		} else {
 			if (D == "<nx:null/>")
 				D = ""
-			V[N] = V[N] + V[0]
-			V[V[N]] = D
-			return V[N]
+			blk = blk + hdr
+			V[blk] = D
+			V[N] = blk
+			return blk
 		}
-	} else if (D == int(D) && (D = int(D)) >= 0 && D <= V[0]) {
-		return V[D]
+	} else if (D == (blk = int(D)) && blk >= 0 && blk <= hdr) {
+		return V[blk]
 	}
 	return -1
 }

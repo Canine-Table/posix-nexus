@@ -1,30 +1,51 @@
+function s:NxClipboardSettings()
+	" iSH clipboard
+	if filereadable('/dev/clipboard')
+		call NxCallFile('clip.d/nex-clip-ish.vim')
+		return 'ish:/dev/clipboard'
+	endif
 
-function NxClipboardSettings()
-	if filereadable("/dev/clipboard") &&  system("test -c /dev/clipboard && printf '%s' 'char'") =~ 'char'
-		nnoremap <silent> <leader>yy :write /dev/clipboard<CR>
-		xnoremap <silent> <leader>yy :'<,'>write /dev/clipboard<CR>
-	else
-		let tmpa = NxMatchExec(g:nex_clip, {
-			\ "xsel": "-ib",
-			\ "lemonade": "",
-			\ "tmux": "load-buffer -",
-			\ "xclip": "-selection clipboard",
-			\ "wl-copy": "",
-			\ "wayclip": "",
-			\ "clip": "",
-			\ "pbcopy": ""
-		\ })
-		if tmpa == v:false
-			echoerr "No clipboard backend available."
-			return v:false
-		else
-			set clipboard+=unnamedplus
-			let g:clipboard = tmpa
-			execute 'nnoremap <silent> <leader>yy :write !' . tmpa . '<CR>'
-			execute 'xnoremap <silent> <leader>yy :write !' . tmpa . '<CR>'
+	" SSH + lemonade
+	if exists('$SSH_CLIENT') && executable('lemonade')
+		call NxCallFile('clip.d/nex-clip-lemonade.vim')
+		return 'lemonade'
+	endif
+
+	" Wayland
+	if exists('$WAYLAND_DISPLAY')
+		if executable('wl-copy')
+			call NxCallFile('clip.d/nex-clip-wayland.vim')
+			return 'wl-copy'
+		elseif executable('wayclip')
+			call NxCallFile('clip.d/nex-clip-wayclip.vim')
+			return 'wayclip'
 		endif
 	endif
+
+	" X11
+	if exists('$DISPLAY')
+		if executable('xsel')
+			call NxCallFile('clip.d/nex-clip-xsel.vim')
+			return 'xsel'
+		elseif executable('xclip')
+			call NxCallFile('clip.d/nex-clip-xclip.vim')
+			return 'xclip'
+		endif
+	endif
+
+	" tmux OSC52
+	if exists('$TMUX')
+		call NxCallFile('clipd.d/nex-clip-osc52.vim')
+		return 'tmux'
+	endif
+
+	" Vim built-in clipboard (rare)
+	if has('clipboard')
+		return 'vim'
+	endif
+
+	return 'none'
 endfunction
 
-call NxClipboardSettings()
+let g:nex_has.clip = s:NxClipboardSettings()
 

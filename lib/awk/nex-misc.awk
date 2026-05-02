@@ -15,12 +15,12 @@ function nx_boolean(V, D, N,	d)
 
 function nx_delim_sep(D1, D2, V, N)
 {
-	if (D1 in V) {
+	if (D2 in V) {
 		if (N > 0)
-			nx_ansi_error("the '" D2 "' separator '" D1 "' colides with the '" V[D1] "' separator\n")
+			nx_ansi_error("the '" D1 "' separator '" D2 "' colides with the '" V[D2] "' separator\n")
 		return -1
 	} else {
-		V[D1] = D2
+		V[D2] = D1
 	}
 	return 0
 }

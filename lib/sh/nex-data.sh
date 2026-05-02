@@ -14,6 +14,27 @@ nx_data_ref_append()
 	printf '%s' "$tmpa$NEX_K_d"
 )
 
+nx_data_unset()
+{
+	while test "$#" -gt 0; do
+		unset "$1"
+		shift
+	done 2>&1 1>/dev/null
+}
+
+_nx_data_unset()
+{
+	eval "$(while read -r; do
+		nx_data_ref "$REPLY" | grep -q '.*' && printf 'unset %s;' "$REPLY"
+	done)"
+}
+
+_nx_data_unset_()
+{
+	nx_data_unset "$@"
+	_nx_data_unset
+}
+
 nx_data_compare()
 (
 	nx_data_optargs 'l@r@m:s:c' "$@"
@@ -67,6 +88,228 @@ nx_data_optargs()
 			'
 	)"
 }
+
+nx_data_longopt()
+{
+	eval "$(${AWK:-$(nx_cmd_awk)} \
+		-v inpt="$(nx_str_chain "$@")" \
+	"
+		$(nx_data_include -i "${NEXUS_LIB}/awk/nex-shell.awk")
+	"'
+		BEGIN {
+			p["-u"] = ""
+			pstr = " u<unset>"
+
+			p["-q"] = "<nx:false/>"
+			pstr = pstr "q<quote>"
+
+			p["-o"] = "<nx:false/>"
+			pstr = pstr "o<override type-override>"
+
+			p["-e"] = "<nx:false/>"
+			pstr = pstr "e<export>"
+
+			p["-b"] = "<nx:false/>"
+			pstr = pstr "b<backtrack>"
+
+			p["-a"] = "0"
+			pstr = pstr "a<abort>"
+
+			p["-v"] = "1"
+			pstr = pstr "v<verbose>"
+
+			p["-f"] = "0"
+			pstr = pstr "f<force-group>"
+
+			p["-d"] = ","
+			pstr = pstr "d<%delimiter delimiter-separator>"
+
+			p["-k"] = "%"
+			pstr = pstr "k<%key key-separator>"
+
+			p["-g"] = "<"
+			pstr = pstr "g<%open group-open>"
+
+			p["-G"] = ">"
+			pstr = pstr "G<%close group-close>"
+
+			p["-F"] = "@"
+			pstr = pstr "F<%flag-array flag-array-separator>"
+
+			p["-K"] = "#"
+			pstr = pstr "K<%key-array key-array-separator>"
+
+			p["-l"] = " "
+			pstr = pstr "l<%long>"
+
+			p["-s"] = ";"
+			pstr = pstr "s<%short>"
+
+			p["-p"] = "<nx:null/>"
+			pstr = pstr "p<%param parameter-separator>"
+
+			p["-S"] = "="
+			pstr = pstr "S<%flag-set>"
+
+			p["-A"] = "+"
+			pstr = pstr "A<%add flag-add>"
+
+			p["-R"] = "-"
+			pstr = pstr "R<%remove flag-remove>"
+
+			p["-c"] = " "
+			pstr = pstr "c<%concat concatenation-separator>"
+
+			p["-L"] = "._-:"
+			pstr = pstr "L<%extra-long-characters>"
+
+			s = p["-d"]
+			seps = p["-k"] s p["-F"] s p["-K"] s p["-g"] s p["-G"] s p["-l"] s p["-s"] s p["-L"]
+			acts = p["-p"] s p["-S"] s p["-A"] s p["-R"] ds p["-c"]
+			togs = p["-v"] s (p["-o"] == "<nx:true/>") s (p["-b"]  == "<nx:true/>") s (p["-e"]  == "<nx:true/>") s (p["-q"] == "<nx:true/>") s p["-f"] s 2
+			nx_shell_args(pstr p["-p"] inpt, arr, s, togs, acts, seps)
+			ln = arr["-0"]
+			for (idx = -4; idx >= ln; idx = idx - 3)
+				p[arr[idx]] = arr[idx - 2]
+
+			if (arr["-3"] > 0) {
+				s = p["-d"]
+				r = arr["-2"]
+				split("", arr, "")
+				seps = p["-k"] s p["-F"] s p["-K"] s p["-g"] s p["-G"] s p["-l"] s p["-s"] s p["-L"]
+				acts = p["-p"] s p["-S"] s p["-A"] s p["-R"] ds p["-c"]
+				togs = p["-v"] s (p["-o"] == "<nx:true/>") s (p["-b"]  == "<nx:true/>") s (p["-e"]  == "<nx:true/>") s (p["-q"] == "<nx:true/>") s p["-f"] s p["-a"]
+				print nx_shell_environ(r, arr, s, togs, acts, seps)
+			}
+			delete arr
+		}
+	')"
+}
+
+nx_data_longopts()
+(
+	ds=',' ks='%' fas='@' kas='#' go='<' gc='>' lo=' ' lc=';'
+	ps='<nx:null/>' fs='=' fa='+' fr='-' con=' '
+	vb='1' ovr='0' bk='0' qt='0' ex='0' gfr='0' ab='0'
+	us=''
+
+	while test "$#" -gt 1; do
+		case "$1" in
+			-u|--unset) {
+				us="$2"
+			};;
+
+			-a|--abort) {
+				ab="$2"
+			};;
+
+			-q|--quote) {
+				qt="$2"
+			};;
+
+			-e|--export) {
+				ex="$2"
+			};;
+
+			-o|--override|--type-override) {
+				ovr="$2"
+			};;
+
+			-d|--delimiter|--delimiter-separator) {
+				ds="$2"
+			};;
+
+			-b|--backtrack) {
+				bk="$2"
+			};;
+
+			-k|--key|--key-separator) {
+				ks="$2"
+			};;
+
+			-F|--flag-array|--flag-array-separator) {
+				fas="$2"
+			};;
+
+			-K|--key-array|--key-array-separator) {
+				kas="$2"
+			};;
+
+			-g|--open|--group-open) {
+				go="$2"
+			};;
+
+			-G|--close|--group-close) {
+				gc="$2"
+			};;
+
+			-f|--force-group) {
+				gfr="$2"
+			};;
+
+			-l|--long) {
+				lo="$2"
+			};;
+
+			-s|--short) {
+				lc="$2"
+			};;
+
+			p-|--param|--parameter-separator) {
+				ps="$2"
+			};;
+
+			-S|--flag-set) {
+				fs="$2"
+			};;
+
+			-A|--add|--flag-add) {
+				fa="$2"
+			};;
+
+			-R|--remove|--flag-remove) {
+				fr="$2"
+			};;
+
+			-c|--concat|--concatenation-separator) {
+				con="$2"
+			};;
+
+			-v|--verbose) {
+				vb="$2"
+			};;
+
+			--) {
+				shift
+				break
+			};;
+
+			*) {
+				break
+			};;
+		esac
+		shift 2
+	done
+
+	${AWK:-$(nx_cmd_awk)} \
+		-v sep="$ds" \
+		-v seps="$ks$ds$fas$ds$kas$ds$go$ds$gc$ds$lo$ds$lc" \
+		-v acts="$ps$ds$fs$ds$dsa$ds$dsr$ds$con" \
+		-v togs="$vb$ds$ovr$ds$bk$ds$ex$ds$dq$ds$gfr$ds$ab" \
+		-v inpt="$(nx_str_chain "$@")" \
+	"
+		$(nx_data_include -i "${NEXUS_LIB}/awk/nex-shell.awk")
+	"'
+		BEGIN {
+			if (! (err = nx_shell_environ(inpt, arr, sep, togs, acts, seps)) < 2) {
+				print err
+				err = 0
+			}
+			delete arr
+			exit -err
+		}
+	'
+)
 
 nx_data_dir()
 {

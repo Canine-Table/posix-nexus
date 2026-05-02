@@ -2,9 +2,21 @@
 h_nx_cmd()
 {
 	while test "$#" -gt 0; do
-		command -v "$1" 1>/dev/null 2>&1 || return 1
+		command -v "$1" || return 226
 		shift
-	done
+	done 2>&1 1>/dev/null
+}
+
+_h_nx_cmd()
+{
+	while read -r; do
+		command -v "$REPLY" || return 227
+	done 2>&1 1>/dev/null
+}
+
+_h_nx_cmd_()
+{
+	h_nx_cmd "$@" && _h_nx_cmd "$@" || return 228
 }
 
 g_nx_cmd()
@@ -13,7 +25,29 @@ g_nx_cmd()
 		command -v "$1" && return
 		shift
 	done
-	return 1
+	return 226
+}
+
+_g_nx_cmd()
+{
+	while read -r; do
+		command -v "$REPLY" && return
+	done
+	return 227
+}
+
+_g_nx_cmd_()
+{
+	g_nx_cmd "$@" || _g_nx_cmd "$@" || return 228
+}
+
+_g_nx_cmd_nm_()
+{
+	if test "$#" -eq 0; then
+		_g_nx_cmd || return 227
+	else
+		g_nx_cmd "$@" || return
+	fi | tr '\\' '/' | sed 's/.*[/]//'
 }
 
 nx_cmd_pager()
@@ -64,7 +98,6 @@ nx_cmd_sudo()
 nx_cmd_clipboard() {
 	g_nx_cmd ${SSH_CLIENT:+lemonade} ${DISPLAY:+xsel xclip} ${WAYLAND_DISPLAY:+wl-copy wayclip} ${TMUX:+tmux}
 }
-
 
 nx_cmd_wget()
 {
