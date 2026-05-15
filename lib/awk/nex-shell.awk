@@ -17,6 +17,36 @@ function nx_shell_stride(D1, D2, D3,
 	return cnt
 }
 
+function nx_shell_diff(D1, V1, D2, V2,
+	carr, cr)
+{
+	if (! split(D1, carr, __nx_else(D2, "", 1))) {
+		delete carr
+		return ""
+	}
+
+	D2 = ""
+	for (D1 in carr) {
+		cr = carr[D1]
+		if (! (cr in V2 || cr in V1)) {
+			V1[cr] = D1
+			D2 = D2 cr
+		}
+	}
+	delete carr
+	return D2
+}
+
+function __nx_shell_skip(D1, V, D2, N1, N2)
+{
+	if (D1 ~ D2) {
+		while (D1 ~ D2)
+			D1 = V[++N1]
+		return N1 + int(N2)
+	}
+	return N1
+}
+
 function nx_shell_opts_logger(N, V, D1, D2,
 	str, srt, i, j)
 {
@@ -62,15 +92,17 @@ function nx_shell_opts_logger(N, V, D1, D2,
 
 function nx_shell_opts(D1, V1, D2, N, D3, V2,
 	obol, lo, lc,
-	gfr, gcr, gsym, goff, gbse, gpos, gbol, grp, cgrp, go, gc,
+	gfr, gcr, gsym, goff, gbse, gpos, gbol, grp, cgrp, go, gc, gent,
 	dbol, djmp, dmov,
 	acm, rgx, rcr, lcr, cr,
+	vb2, vb2msg,
 	ds, fas, ext,
 	sln, smx,
 	ks, kas,
 	fmt, idx, bol,
 	eret, wret,
 	ovr, dbg,
+	flw, skp, sbol,
 	trk)
 {
 	if (D1 ~ /^[ \t\n\v\r\f]*$/) {
@@ -78,7 +110,7 @@ function nx_shell_opts(D1, V1, D2, N, D3, V2,
 		return -1
 	}
 
-	ds = __nx_else(D2, ",")
+	ds = __nx_else(D2, "<nx:null/>")
 	split(N, trk, ds)
 	dbg = int(trk[1])
 	ovr = int(trk[2])
@@ -123,9 +155,10 @@ function nx_shell_opts(D1, V1, D2, N, D3, V2,
 	kas = __nx_else(trk[3], "#") # appendable kwds sep
 	go = __nx_else(trk[4], "<") # begin group
 	gc = __nx_else(trk[5], ">") # eng group
-	lo = __nx_else(trk[6], " ") # begin or continue long option mode
+	lo = __nx_else(trk[6], ",") # begin or continue long option mode
 	lc = __nx_else(trk[7], ";") # end long option mode
 	ext = __nx_else(trk[8], "-_:.") # extra characters allowed between alpha characters in long option mode
+	skp = __nx_else(trk[9], "\n\v\f\t\r ") # extra characters that hold no meaning and should be skipped
 
 	if (nx_delim_sep("key value pair", ks, V2, dbg) == -1)
 		eret = -1
@@ -156,20 +189,15 @@ function nx_shell_opts(D1, V1, D2, N, D3, V2,
 
 	strde = 12 + idx
 	nx_parr_stk(V1, strde)
-	nx_parr_stk(V1, 1, ks)
-	nx_parr_stk(V1, 4, lo)
-	nx_parr_stk(V1, 7, fas)
-	nx_parr_stk(V1, 10, kas)
+	V1[ks] = nx_parr_stk(V1, 1, ks)
+	V1[lo] = nx_parr_stk(V1, 4, lo)
+	V1[fas] = nx_parr_stk(V1, 7, fas)
+	V1[kas] = nx_parr_stk(V1, 10, kas)
 	goff = strde + strde
 
-	split(ext, trk, "")
-	for (idx in trk) {
-		acm = trk[idx]
-		if (! (acm in V2 || acm in trk)) {
-			trk[acm] = idx
-			rgx = rgx acm
-		}
-	}
+	split("", trk, "")
+	rgx = nx_shell_diff(ext, trk, "", V2)
+	flw = "(" nx_str_esc(nx_shell_diff(skp, trk, "", V2), 2) ")+"
 
 	acm = "([a-zA-Z]"
 	if (lcr = rgx) {
@@ -182,22 +210,37 @@ function nx_shell_opts(D1, V1, D2, N, D3, V2,
 	} else {
 		rgx = "[a-zA-Z]+$"
 	}
+
 	V1[strde] = acm ")?"
+	V1[goff] = ext
+	V1[goff + strde] = flw
+	V1[goff + goff] = skp
+
 	fmt = split(D1, trk, "")
 	if (dbg > 2)
 		nx_ansi_alert("passed param string was " D1 "\n")
+
 	grp = 13
 	gbol = 0
+
 	for (idx = 1; idx <= fmt; ++idx) {
-		cr = trk[idx]
+		cr = trk[idx = __nx_shell_skip(trk[idx], trk, flw, idx)]
+		if (idx > fmt)
+			break
+
 		bol = cr == lo
 		if (bol || cr == lc) {
-			obol = bol
-			cr = trk[++idx]
+			if (obol != bol) {
+				if (dbg > 2)
+					nx_ansi_info(__nx_if(obol == "", "applying form to " __nx_if(bol, "long form", "short form"), "updating form from " __nx_if(obol, "long form to short form", "short form to long form")) "\n")
+				obol = bol
+			}
+			cr = trk[idx = __nx_shell_skip(trk[++idx], trk, flw, idx)]
 		}
+
 		if (nx_is_alpha(cr)) {
 			acm = cr
-			cr = trk[++idx]
+			cr = trk[idx = __nx_shell_skip(trk[++idx], trk, flw, idx)]
 			if (obol) {
 				while (cr ~ rgx) {
 					acm = acm cr
@@ -205,24 +248,12 @@ function nx_shell_opts(D1, V1, D2, N, D3, V2,
 				}
 				if (lcr && gsub(rcr, "", acm) && dbg > 1)
 					nx_ansi_alert("trailing '" lcr "' found after '" acm "'\n")
-				bol = 0
-			} else {
-				bol = nx_is_alpha(cr)
+				cr = trk[idx = __nx_shell_skip(cr, trk, flw, idx)]
 			}
-			if (dbol) {
-				djmp = cr
-				cr = gsym
-				if (djmp != gc)
-					djmp = ""
-				if (bol && djmp != lo) {
-					idx = idx - !obol
-					bol = 0
-				}
-			}
+			bol = nx_is_alpha(cr)
 
 			if (acm in V1) {
 				dmov = 0
-				
 				if (gbol) {
 					if (dbg > 1)
 						nx_ansi_warning("argument '" acm "' was already registered\n")
@@ -233,11 +264,13 @@ function nx_shell_opts(D1, V1, D2, N, D3, V2,
 					if (gbse > 12 && gbse + goff == gpos && cr == go) {
 						gcr = acm
 						gbol = 1
-						gsym = trk[idx + 1]
-						if (nx_is_alpha(gsym) || gsym == gc) {
+
+						if (nx_is_alpha(gsym = trk[__nx_shell_skip(trk[idx], trk, flw, idx)]) || gsym == gc) {
+							if (gsym == gc)
+								--idx
 							gsym = lo
-							--idx
 						}
+
 						if (ovr)
 							V1[gbse + strde] = gsym
 						else
@@ -247,26 +280,24 @@ function nx_shell_opts(D1, V1, D2, N, D3, V2,
 						if (dbg > 2)
 							nx_ansi_light("adding on to '" acm "' of type '" gsym "'\n")
 					} else if (cr == go) {
-						gsym = trk[idx + 1]
-						if (gsym == gc) {
-							++idx
-							continue
+						gsym = trk[__nx_shell_skip(trk[++idx], trk, flw, idx)]
+						if (nx_is_alpha(gsym) || gsym == gc) {
+							--idx
+							gsym = lo
 						}
-						dbol = 1
+
 						if (gfr == 1) {
-							if (!nx_is_alpha(gsym))
-								++idx
-							gsym = V1[gbse + strde]
-							if (dbg > 1)
-								nx_ansi_warning("reusing '" gsym "' type for original entry '" acm "' first declaration\n")
+							if (ovr) {
+								if (dbg > 1)
+									nx_ansi_warning("replacing '" V1[gbse + strde] "' with '" gsym "' type for group entries within the schelar once refered to as '" acm "'\n")
+							} else {
+								cr = gsym
+								gsym = V1[gbse + strde]
+								if (dbg > 1)
+									nx_ansi_warning("discarding old type '" cr "' and reusing '" gsym "' type for original entry '" acm "' first declaration\n")
+							}
+							dbol = V1[gsym] - strde
 						} else if (gfr == 2) {
-							if (nx_is_alpha(gsym))
-								gsym = lo
-							else
-								++idx
-							if (dbg > 1)
-								nx_ansi_warning("replacing '" V1[gbse + strde] "' with '" gsym "' type for group entries within the group once refered to as '" acm "'\n")
-						} else if (gfr == 3) {
 							dmov = 1
 							dbol = 0
 							cr = nx_parr_stk(V1, gbse)
@@ -278,7 +309,10 @@ function nx_shell_opts(D1, V1, D2, N, D3, V2,
 								V1[dmov] = cr
 								delete V1[acm]
 							}
-							if (!ovr) {
+
+							if (ovr) {
+								if (dbg > 2)
+									nx_ansi_light("param override disabled\n")
 								gsym = V1[gbse + strde]
 								cr = trk[idx + 1];
 								if (nx_is_alpha(cr) || cr == gc) {
@@ -287,20 +321,38 @@ function nx_shell_opts(D1, V1, D2, N, D3, V2,
 								} else {
 									trk[idx + 1] = gsym
 								}
+							} else {
+								if (dbg > 2)
+									nx_ansi_light("param override enabled\n")
 							}
+
 							cr = go
 							if (dbg > 2)
 								nx_ansi_light("param override of '" acm "' was prepaired to be registered as a group leader'\n")
 						} else {
+							D1 = acm
 							acm = ""
+							D2 = ""
 							while (++idx <= fmt) {
-								if ((cr = trk[idx]) == gc)
+								if ((cr = trk[idx = __nx_shell_skip(trk[idx], trk, flw, idx)]) == gc)
 									break
+								dbol = cr == lo
+								if (dbol || cr == lc)
+									D2 = dbol
 								acm = acm cr
 							}
+
+							if (ovr && D2 != "" && D2 != obol) {
+								if (dbg > 2)
+									nx_ansi_info("ovrride was set, " __nx_if(obol == "", "applying form to " __nx_if(D2, "long form", "short form"), "updating form from " __nx_if(obol, "long form to short form", "short form to long form")) "\n")
+								obol = D2
+							}
+
+							if (dbg > 1) {
+								D2 = V1[V1[D1] % strde + strde]
+								nx_ansi_warning("skipping past '" D1 "' group entries '" acm "' as '" D1 "' is already of type '" V2[D2] "' assigned the symbol '" D2 "'\n")
+							}
 							dbol = 0
-							if (dbg > 1)
-								nx_ansi_warning("skipping past group entries '" acm "'\n")
 						}
 					} else {
 						if (dbg > 1)
@@ -312,29 +364,60 @@ function nx_shell_opts(D1, V1, D2, N, D3, V2,
 					continue
 			}
 
+			# skip characters are implicit flags with sbol
+			sbol = nx_is_alpha(cr = trk[idx = __nx_shell_skip(cr, trk, flw, idx)])
+
+			if (dbol) {
+				djmp = cr == lo
+				if ((djmp || cr == lc) && djmp != obol) {
+					if (dbg > 2)
+						nx_ansi_info(__nx_if(obol == "", "setting form to " __nx_if(djmp, "long form", "short form"), "updating form from " __nx_if(obol, "long form to short form", "short form to long form")) "\n")
+					obol = djmp
+				}
+				djmp = cr
+				cr = gsym
+				if (djmp != gc)
+					djmp = ""
+			}
+
 			if (cr == gc && !gbol) {
 				cr = __nx_if(obol, lo, lc)
 				if (dbg > 2)
 					nx_ansi_warning("extra '" gc "' detected after '" acm "' changing type to '" cr "'\n")
 			}
-			if (bol || cr == lo || cr == lc || cr == "" || gbol) {
-				if (bol) {
-					idx = idx - !obol
+
+			if (sbol || bol || cr == lo || cr == lc || cr == "" || gbol) {
+				if (sbol) {
+					if (dbg > 2)
+						nx_ansi_info("sbol 'true', backtracking next iteration\n")
+					--idx
 				} else if (cr != gc) {
-					obol = cr == lo
+					bol = cr == lo
+					if ((bol || cr == lc) && bol != obol) {
+						if (dbg > 2)
+							nx_ansi_info(__nx_if(obol == "", "applying form to " __nx_if(bol, "long form", "short form"), "updating form from " __nx_if(obol, "long form to short form", "short form to long form")) "\n")
+						obol = bol
+						--idx
+					}
 				}
 				if (gbol) {
 					gpos = nx_parr_stk(V1, grp, acm)
 					if (cr == gc) {
 						gbol = 0
 						if (cgrp > grp) {
+							if (dbg > 2)
+								nx_ansi_info("group reset from '" grp "' to '" cgrp "'\n")
 							grp = cgrp
 						} else {
 							grp = grp + 3
 						}
 						if (dbg > 2)
-							nx_ansi_debug(acm " is end of group leader type '" gsym "' with leader " gcr " position " gpos "'\n")
+							nx_ansi_debug("member '" acm "' is end of group leader type '" gsym "' with leader '" gcr "' at position '" gpos "'\n")
 					}
+				} else if (dbol) {
+					gpos = nx_parr_stk(V1, dbol, acm)
+					if (dbg > 2)
+						nx_ansi_success("passed param '" acm "' was modified to from type '" cr "'  to type '" gsym "' at position '" gpos "'\n")
 				} else {
 					gpos = nx_parr_stk(V1, 4, acm)
 					if (dbg > 2)
@@ -344,14 +427,19 @@ function nx_shell_opts(D1, V1, D2, N, D3, V2,
 				gcr = acm
 				gbol = 1
 				gsym = trk[idx + 1]
-				if (nx_is_alpha(gsym) || gsym == gc)
+				cr = trk[idx = __nx_shell_skip(gsym, trk, flw, idx)]
+				if (nx_is_alpha(gsym) || gsym == gc) {
 					gsym = lo
-				else
+				} else if (nx_is_alpha(cr) || cr == gc) {
+					gsym = lo
+					--idx
+				} else {
 					++idx
+				}
 				nx_parr_stk(V1, grp, gsym)
 				gpos = nx_parr_stk(V1, grp, acm)
 				if (dbg > 2)
-					nx_ansi_light("passed param '" acm "' was registered as a group leader at position '" gpos "'\n")
+					nx_ansi_light("passed param '" acm "' was registered as a group leader of type '" gsym "' at position '" gpos "'\n")
 			} else if (cr == ks) {
 				gpos = nx_parr_stk(V1, 1, acm)
 				if (dbg > 2)
@@ -370,6 +458,7 @@ function nx_shell_opts(D1, V1, D2, N, D3, V2,
 				continue
 			}
 			V1[acm] = gpos
+			D2 = V1[2 + strde]
 			if (djmp)
 				--idx
 		} else if (cr == gc) {
@@ -377,17 +466,51 @@ function nx_shell_opts(D1, V1, D2, N, D3, V2,
 				gbol = 0
 				if (cgrp > grp) {
 					grp = cgrp
-				} else if (dbol) {
-					dbol = 0
-					djmp = ""
 				} else {
 					grp = grp + 3
 				}
 				if (dbg > 2)
-					nx_ansi_debug(acm " is end of group leader type '" gsym "' with leader " gcr " position " D1 "'\n")
+					nx_ansi_debug(acm " is end of group leader type '" gsym "' with leader " gcr " position " gpos "'\n")
+			} else if (dbol) {
+				dbol = 0
+				djmp = ""
 			} else if (dbg > 1) {
-				nx_ansi_warning("extra '" gc "' detected after '" acm trk[idx - 1] "', discarding\n")
+				nx_ansi_warning("extra '" gc "' detected after '" acm __nx_if(nx_is_alpha(trk[idx - 1]), cr, trk[idx - 1]) "', discarding\n")
 			}
+		} else if (cr == go && gcr != "") {
+			#TODO
+			#type
+			#default
+			#epilog
+			#usage
+			#description
+			#help
+
+			acm = trk[idx = __nx_shell_skip(trk[++idx], trk, flw, idx)]
+			while (nx_is_alpha(cr = trk[++idx]))
+				acm = acm cr
+			if (acm == "type") {
+				gent = 1
+			} else if (acm == "default") {
+				gent = 2
+			} else if (acm == "epilog") {
+				gent = 3
+			} else if (acm == "usage") {
+				gent = 4
+			} else if (acm == "description") {
+				gent = 5
+			} else {
+				nx_ansi_warning("provided '" acm "' is garbage, what do you wish this to mean? discarding\n")
+				continue
+			}
+			acm = trk[idx = __nx_shell_skip(trk[++idx], trk, flw, idx)]
+			while ((cr = trk[++idx]) != gc) {
+				if (cr == "\x5c")
+					cr = trk[++idx]
+				acm = acm cr
+			}
+			V1[(V1[V1[gcr] - goff] + 1) + strde * gent] = acm
+
 		} else {
 			if (dbg > 1)
 				nx_ansi_warning("provided '" cr "' is garbage, what do you wish this to mean? discarding\n")
@@ -422,13 +545,14 @@ function nx_shell_args(D1, V, D2, N, D3, D4,
 		return -1
 	}
 
-	ds = __nx_else(D2, ",")
+	ds = __nx_else(D2, "<nx:null/>")
 	split(N, trk, ds)
 	dbg = int(trk[1])
 	ovr = int(trk[2])
 	bk = int(trk[3])
 	ab = int(trk[7])
 
+	sub("^<nx:null/><nx:null/>", "<nx:null/>", D3)
 	if ((idx = split(D3, trk, ds)) > 0) {
 		amx = 3
 		if (dbg > 1) {
@@ -489,12 +613,12 @@ function nx_shell_args(D1, V, D2, N, D3, D4,
 		return -1
 	}
 
-	trk["fs"] = fs
-	trk["ps"] = ps
-	trk["fa"] = fa fs
-	trk["fr"] = fr fs
-
 	eacrgx = V[strde] "[A-Za-z]+"
+	V[strde * 5] = eacrgx
+	V[strde * 6] = ps
+	V[strde * 7] = con
+	V[strde * 8] = fa
+	V[strde * 9] = fr
 
 	trm = 1
 	ctp = cnt
@@ -505,8 +629,6 @@ function nx_shell_args(D1, V, D2, N, D3, D4,
 		idx = idx - 3
 	} while (idx > 1)
 	agv["-" V[idx + strde]] = idx
-	agv["con"] = con
-	agv["ps"] = ps
 	while (idx < cnt) {
 		if (ctp > cnt) {
 			if (cidx == ctp) {
@@ -583,7 +705,7 @@ function nx_shell_args(D1, V, D2, N, D3, D4,
 			if (grp < 13)
 				nx_ansi_light("token index for '" tok "' registered under '" cat "' and part of the '" grp "' id\n")
 			else
-				nx_ansi_light("token index for '" tok "' registered under '" cat "' and part of the '" grp "' id, with the group leader being '" V[grp + strde]l "'\n")
+				nx_ansi_light("token index for '" tok "' registered under '" cat "' and part of the '" grp "' id, with the group leader of type '" V[grp + strde] "' being '" V[grp + strde + strde] "'\n")
 		}
 		idx = nx_shell_dispatch(V, agv, idx, grp)
 	}
@@ -643,33 +765,25 @@ function nx_shell_dispatch(V1, V2, N1, N2,
 
 	opt = V2["opt"]
 	cse = nx_is_lower(substr(opt, 1, 1))
-	con = V2["con"]
-	ps = V2["ps"]
+	ps =  V1[strde * 6]
+	con = V1[strde * 7]
 	cur = V1[idx]
 
 	if ((act = V2["act"])  == "") {
 		if (cat == 1) {
-			if (N2 < 13)
-				V1[idx] = V2[++N1]
-			else if (cse)
-				V1[idx] = ps V2[++N1] ps opt
-			else
-				V1[idx] = opt ps V2[++N1]
+			V1[idx] = V2[++N1]
 		} else if (cat == 4) {
+			nx_boolean(V1, idx, !cse)
+		} else if (cat == 7) {
 			if (N2 < 13)
-				nx_boolean(V1, idx, !cse)
+				nx_boolean(V1, idx, cse)
 			else
 				V1[idx] = opt
-		} else if (cat == 7) {
-			if (cse)
-				V1[idx] = nx_join_str(cur, opt, con)
-			else
-				V1[idx] = nx_join_str(opt, cur, con)
 		} else if (cat == 10) {
 			if (cse)
-				V1[idx] = nx_join_str(cur, opt ps V2[++N1], ps)
+				V1[idx] = opt ps V2[++N1]
 			else
-				V1[idx] = nx_join_str(opt ps V2[++N1], cur, ps)
+				V1[idx] = V2[++N1] ps opt
 		}
 	} else {
 		val = V2["val"]
@@ -685,8 +799,37 @@ function nx_shell_dispatch(V1, V2, N1, N2,
 				else
 					V1[idx] = val ps opt
 			}
-		} else {
-			# Truncated Action dispatch
+		} else if (mod == V1[strde * 8]) {
+			if (cat == 1) {
+				if (cse) {
+					if (N2 < 13)
+						V1[idx] = V2[++N1] opt
+					else
+						V1[idx] = V2[++N1] ps opt
+				} else {
+					if (N2 < 13)
+						V1[idx] = opt V2[++N1]
+					else
+						V1[idx] = opt ps V2[++N1]
+				}
+			} else if (cat == 4) {
+				if (cse)
+					V1[idx] = cur opt
+				else
+					V1[idx] = opt cur
+			} else if (cat == 7) {
+				if (cse)
+					V1[idx] = nx_join_str(cur, opt, con)
+				else
+					V1[idx] = nx_join_str(opt, cur, con)
+			} else if (cat == 10) {
+				if (cse)
+					V1[idx] = nx_join_str(cur, opt ps V2["val"], ps)
+				else
+					V1[idx] = nx_join_str(opt ps V2["val"], cur, ps)
+			}
+		} else if (mod == V1[strde * 9]) {
+			#TODO
 		}
 	}
 	return N1
@@ -737,6 +880,29 @@ function nx_shell_actions(D1, D2, D3, V, N, D4,
 	return D3
 }
 
+function nx_shell_sanitize(D, V,
+	v1, v2, i)
+{
+	for (i in V)
+		gsub(i, V[i], D)
+	if (i != "")
+		return D
+	for (i = 0; i <= 64; ++i)
+		v1[sprintf("%c", i)] = i
+	for (i = 91; i <= 96; ++i)
+		v1[sprintf("%c", i)] = i
+	for (i = 123; i <= 127; ++i)
+		v1[sprintf("%c", i)] = i
+	gsub(/[_A-Za-z0-9]/, "", D)
+	i = split(D, v2, "")
+	do {
+		D = v2[i]
+		V["[" D "]"] = v1[D]
+	} while (--i > 0)
+	delete v1
+	delete v2
+}
+
 function nx_shell_environ(D1, V, D2, N, D3, D4,
 	ds, dbg, ln, idx, asn, err, dq, trk, pre, post,
 	vr, vl, nm, pos, acm)
@@ -759,23 +925,22 @@ function nx_shell_environ(D1, V, D2, N, D3, D4,
 	split(D3, trk, ds)
 	fs = __nx_else(trk[2], "=")
 
-	delete trk
 	ln = V["-0"]
-
 	acm = pre __nx_stringify_var("NEX_ARGC", -ln / 3 - 1, dq, fs, post)
 	acm = acm pre __nx_stringify_var("NEX_ARGV_R", V[-1], dq, fs, post)
 	acm = acm pre __nx_stringify_var("NEX_ARGV_S", V[-2], dq, fs, post)
 	acm = acm pre __nx_stringify_var("NEX_ARGV_0", V[-3], dq, fs, post)
+
+	split("", trk, "")
+	nx_shell_sanitize(V[V[0] * 2], trk)
 	for (idx = -4; idx >= ln; idx = idx - 3) {
 		nm = "NEX_ARGV_" ++pos
-		vr = V[idx - 1]
-		gsub(/-/, 45, vr)
-		gsub(/[.]/, 46, vr)
-		gsub(/:/, 58, vr)
+		vr = nx_shell_sanitize(V[idx - 1], trk)
 		vl = V[idx - 2]
 		acm = acm pre __nx_stringify_var(nm, vr, dq, fs, post)
 		acm = acm pre __nx_stringify_var(vr, vl, dq, fs, post)
 	}
+	delete trk
 	return acm
 }
 

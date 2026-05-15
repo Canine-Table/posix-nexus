@@ -129,7 +129,8 @@ nx_cfg_dirs()
 		"$NEXUS_SBIN" \
 		"$NEXUS_SRC" \
 		"$NEXUS_DOC" \
-		"$NEXUS_DOC/auxiliary" \
+		"$NEXUS_DOC/aux" \
+		"$NEXUS_DOC/out" \
 		"$NEXUS_DOC/pages" \
 		"$NEXUS_DOC/pdfs" \
 		"$NEXUS_DOC/txt" \
@@ -147,6 +148,5 @@ nx_cfg_dirs()
 	test "$nx_err" -eq 0 && exit
 	nx_tty_print -w "$nx_err errors occured during directory setup."
 	exit 1
-
 )
 

@@ -37,6 +37,7 @@ function nx_shell_opts(D1, V, D2, N, D3)
 		\hline
 		\nxSQ{1} & dbg & Verbosity / debug level (controls warnings and logs) \\
 		\nxSQ{2} & ovr & Override mode for group type resolution (see below) \\
+		\nxSQ{6} & gfr & ... \\
 		\hline
 	\end{tabularx}
 \end{NxLightBox}
@@ -56,7 +57,8 @@ function nx_shell_opts(D1, V, D2, N, D3)
 		{>1}/{warnings},%
 		{>2}/{verbose audit},%
 		{>3}/{mapping summary},%
-		{>4}/{full dump}%
+		{>4}/{very detailed summary},%
+		{>5}/{full dump}%
 	}%
 \end{NxLightListBox}
 
@@ -65,14 +67,16 @@ function nx_shell_opts(D1, V, D2, N, D3)
 		\hline
 		\textbf{Index} & \textbf{Default} & \textbf{Variable} & \textbf{Meaning} \\
 		\hline
-		- & \nxSQ{,} & ds & Default delimiter string \\
-		1 & \nxSQ{:} & ks & Key separator \\
-		2 & \nxSQ{@} & fas	& Appendable flag array separator \\
-		3 & \nxSQ{\#} & kas	& Appendable keyword array separator \\
-		4 & \nxSQ{<} & go	 & Begin group marker \\
-		5 & \nxSQ{>} & gc	 & End group marker \\
-		6 & \nxSQ{~~} & lo & Begin or continue long option mode \\
-		7 & \nxSQ{;} & lc	 & End long option mode \\
+		- & \nxSQ{<nx:null/>} & ds & Default delimiter string \\
+		1 & \nxSQ{\%} & ks & Key separator \\
+		2 & \nxSQ{@} & fas & Appendable flag array separator \\
+		3 & \nxSQ{\#} & kas & Appendable keyword array separator \\
+		4 & \nxSQ{<} & go & Begin group marker \\
+		5 & \nxSQ{>} & gc & End group marker \\
+		6 & \nxSQ{,} & lo & Begin or continue long option mode \\
+		7 & \nxSQ{;} & lc & End long option mode \\
+		8 & \nxSQ{-\_:.} & ext & Characters allowed between alpha characters \\
+		9 & \nxSQ{\Verb@\n\v\f\t\r@~} & skp & Characters that hold no meaning \\
 		\hline
 	\end{tabularx}
 \end{NxLightBox}
@@ -80,7 +84,7 @@ function nx_shell_opts(D1, V, D2, N, D3)
 \begin{NxLightListBox}[title={Short vs Long Option Group Leaders}]
 		\nxEachArw{ArrowDark}{Secondary}{1}{%
 			{Short form}/{Input: \nxSQ{\nxSpaces{alpha<beta gamma>}} \nxArw{2} Flags = a, l, p, h; Group leader = a; Members = b, e, t, a, gamma},%
-				{Long form}/{Input: \nxSQ{\nxSpaces{ alpha<beta gamma>}} \nxArw{2} Group leader = alpha; Members = beta, gamma},%
+				{Long form}/{Input: \nxSQ{\nxSpaces{,alpha<beta gamma>}} \nxArw{2} Group leader = alpha; Members = beta, gamma},%
 				{Key distinction}/{Leading space (\nxSQ{lo}) preserves token as long option; without space, token explodes into flags and first flag becomes leader}%
 		}
 \end{NxLightListBox}
@@ -90,10 +94,10 @@ function nx_shell_opts(D1, V, D2, N, D3)
 		\hline
 		\textbf{Category} & \textbf{Base index} & \textbf{Walk by} \\
 		\hline
-		Keywords				 & 1	& $+\,S_{\text{total}}$ \\
-		Flags						& 4	& $+\,S_{\text{total}}$ \\
-		Flag arrays			& 7	& $+\,S_{\text{total}}$ \\
-		Keyword arrays	 & 10 & $+\,S_{\text{total}}$ \\
+		Keywords & 1 & $+\,S_{\text{total}}$ \\
+		Flags & 4 & $+\,S_{\text{total}}$ \\
+		Flag arrays & 7 & $+\,S_{\text{total}}$ \\
+		Keyword arrays & 10 & $+\,S_{\text{total}}$ \\
 		Groups (triplets)& 13 & $+\,3$ per group header, values spaced by $S_{\text{total}}$ \\
 		\hline
 	\end{tabularx}
@@ -120,6 +124,47 @@ function nx_shell_opts(D1, V, D2, N, D3)
 		{Groups}/{Base index 13, triplets spaced by 3, values spaced by $S$}%
 	}
 \end{NxLightListBox}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\nxSections{(gfr) Group Formation Rules}{3}
+
+\begin{NxLightBox}[title={\texttt{0} --- Skip}]
+Consumes all characters until the next group closer \nxSQ{>} and
+\emph{does not register} a group. No leader, no type, and no members
+are stored. Debug output (when enabled) reports the skipped contents.
+\end{NxLightBox}
+
+\begin{NxLightBox}[title={\texttt{1} --- Preserve Type}]
+Extends an existing group while preserving its previously declared
+type symbol. If the new declaration begins with a non-alphabetic
+character, the parser rewinds one token to maintain alignment.
+The group type at \texttt{V[gbse + strde]} is reused verbatim.
+A warning is emitted when \texttt{dbg > 1}.
+\end{NxLightBox}
+
+\begin{NxLightBox}[title={\texttt{2} --- Replace Type}]
+Extends an existing group but \emph{replaces} its type symbol with the
+newly parsed one. This updates \texttt{V[gbse + strde]} unconditionally.
+A warning is emitted when \texttt{dbg > 1}. \\
+\end{NxLightBox}
+
+\begin{NxLightBox}[title={\texttt{3} --- Rebuild / Leader Promotion}]
+	\nxLnArcBox[]{Performs a structural rewrite of the group:}
+	\begin{NxLightList}
+		\nxEachItem{ArrowDark}{%
+			{Retrieves the current leader via \texttt{nx\_parr\_stk(V1, gbse)}.},%
+			{If the new leader matches the old one, the old symbol-table entry is removed.},%
+			{Otherwise, the symbol table is rewritten: the old leader is demoted, the new symbol becomes the leader, and the bidirectional mapping is updated.},%
+			{When \texttt{ovr = 0}, the token stream \texttt{trk[]} is rewritten so that the new leader symbol appears syntactically in place of the old one.},%
+			{Parsing resumes as if a fresh group opener \nxSQ{<} had been seen.}%
+		}
+	\end{NxLightList}
+	\begin{NxLightP}
+	This mode enables full leader promotion and parameter override within the
+	schema. Debug output (when \texttt{dbg > 2}) reports the rewrite.
+	\end{NxLightP}
+\end{NxLightBox}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \nxSections{Examples}{3}

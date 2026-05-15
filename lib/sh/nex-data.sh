@@ -98,7 +98,7 @@ nx_data_longopt()
 	"'
 		BEGIN {
 			p["-u"] = ""
-			pstr = " u<unset>"
+			pstr = ",u<unset>"
 
 			p["-q"] = "<nx:false/>"
 			pstr = pstr "q<quote>"
@@ -121,7 +121,7 @@ nx_data_longopt()
 			p["-f"] = "0"
 			pstr = pstr "f<force-group>"
 
-			p["-d"] = ","
+			p["-d"] = "<nx:null/>"
 			pstr = pstr "d<%delimiter delimiter-separator>"
 
 			p["-k"] = "%"
@@ -139,7 +139,7 @@ nx_data_longopt()
 			p["-K"] = "#"
 			pstr = pstr "K<%key-array key-array-separator>"
 
-			p["-l"] = " "
+			p["-l"] = ","
 			pstr = pstr "l<%long>"
 
 			p["-s"] = ";"
@@ -163,153 +163,39 @@ nx_data_longopt()
 			p["-L"] = "._-:"
 			pstr = pstr "L<%extra-long-characters>"
 
+			p["-w"] = " \t\n\v\f\r"
+			pstr = pstr "w<%whitespace>"
+
+			p["-P"] = "<nx:false/>"
+			pstr = pstr "P<print>"
+
 			s = p["-d"]
-			seps = p["-k"] s p["-F"] s p["-K"] s p["-g"] s p["-G"] s p["-l"] s p["-s"] s p["-L"]
+			seps = p["-k"] s p["-F"] s p["-K"] s p["-g"] s p["-G"] s p["-l"] s p["-s"] s p["-L"] s p["-w"]
 			acts = p["-p"] s p["-S"] s p["-A"] s p["-R"] ds p["-c"]
 			togs = p["-v"] s (p["-o"] == "<nx:true/>") s (p["-b"]  == "<nx:true/>") s (p["-e"]  == "<nx:true/>") s (p["-q"] == "<nx:true/>") s p["-f"] s 2
 			nx_shell_args(pstr p["-p"] inpt, arr, s, togs, acts, seps)
 			ln = arr["-0"]
 			for (idx = -4; idx >= ln; idx = idx - 3)
 				p[arr[idx]] = arr[idx - 2]
-
 			if (arr["-3"] > 0) {
+
 				s = p["-d"]
 				r = arr["-2"]
 				split("", arr, "")
-				seps = p["-k"] s p["-F"] s p["-K"] s p["-g"] s p["-G"] s p["-l"] s p["-s"] s p["-L"]
+				seps = p["-k"] s p["-F"] s p["-K"] s p["-g"] s p["-G"] s p["-l"] s p["-s"] s p["-L"] s p["-w"]
 				acts = p["-p"] s p["-S"] s p["-A"] s p["-R"] ds p["-c"]
 				togs = p["-v"] s (p["-o"] == "<nx:true/>") s (p["-b"]  == "<nx:true/>") s (p["-e"]  == "<nx:true/>") s (p["-q"] == "<nx:true/>") s p["-f"] s p["-a"]
-				print nx_shell_environ(r, arr, s, togs, acts, seps)
+				if (p["-P"] == "<nx:true/>")
+					p["-P"] = "echo "
+				else
+					p["-P"] = ""
+				print p["-P"] nx_shell_environ(r, arr, s, togs, acts, seps)
 			}
 			delete arr
+			delete p
 		}
 	')"
 }
-
-nx_data_longopts()
-(
-	ds=',' ks='%' fas='@' kas='#' go='<' gc='>' lo=' ' lc=';'
-	ps='<nx:null/>' fs='=' fa='+' fr='-' con=' '
-	vb='1' ovr='0' bk='0' qt='0' ex='0' gfr='0' ab='0'
-	us=''
-
-	while test "$#" -gt 1; do
-		case "$1" in
-			-u|--unset) {
-				us="$2"
-			};;
-
-			-a|--abort) {
-				ab="$2"
-			};;
-
-			-q|--quote) {
-				qt="$2"
-			};;
-
-			-e|--export) {
-				ex="$2"
-			};;
-
-			-o|--override|--type-override) {
-				ovr="$2"
-			};;
-
-			-d|--delimiter|--delimiter-separator) {
-				ds="$2"
-			};;
-
-			-b|--backtrack) {
-				bk="$2"
-			};;
-
-			-k|--key|--key-separator) {
-				ks="$2"
-			};;
-
-			-F|--flag-array|--flag-array-separator) {
-				fas="$2"
-			};;
-
-			-K|--key-array|--key-array-separator) {
-				kas="$2"
-			};;
-
-			-g|--open|--group-open) {
-				go="$2"
-			};;
-
-			-G|--close|--group-close) {
-				gc="$2"
-			};;
-
-			-f|--force-group) {
-				gfr="$2"
-			};;
-
-			-l|--long) {
-				lo="$2"
-			};;
-
-			-s|--short) {
-				lc="$2"
-			};;
-
-			p-|--param|--parameter-separator) {
-				ps="$2"
-			};;
-
-			-S|--flag-set) {
-				fs="$2"
-			};;
-
-			-A|--add|--flag-add) {
-				fa="$2"
-			};;
-
-			-R|--remove|--flag-remove) {
-				fr="$2"
-			};;
-
-			-c|--concat|--concatenation-separator) {
-				con="$2"
-			};;
-
-			-v|--verbose) {
-				vb="$2"
-			};;
-
-			--) {
-				shift
-				break
-			};;
-
-			*) {
-				break
-			};;
-		esac
-		shift 2
-	done
-
-	${AWK:-$(nx_cmd_awk)} \
-		-v sep="$ds" \
-		-v seps="$ks$ds$fas$ds$kas$ds$go$ds$gc$ds$lo$ds$lc" \
-		-v acts="$ps$ds$fs$ds$dsa$ds$dsr$ds$con" \
-		-v togs="$vb$ds$ovr$ds$bk$ds$ex$ds$dq$ds$gfr$ds$ab" \
-		-v inpt="$(nx_str_chain "$@")" \
-	"
-		$(nx_data_include -i "${NEXUS_LIB}/awk/nex-shell.awk")
-	"'
-		BEGIN {
-			if (! (err = nx_shell_environ(inpt, arr, sep, togs, acts, seps)) < 2) {
-				print err
-				err = 0
-			}
-			delete arr
-			exit -err
-		}
-	'
-)
 
 nx_data_dir()
 {

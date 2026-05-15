@@ -1,10 +1,5 @@
 
 function! NxTeXSettings()
-	set tabstop=2 softtabstop=0 shiftwidth=2 noexpandtab autoindent
-	if empty(v:servername) && exists('*remote_startserver')
-		call remote_startserver('VIM')
-	endif
-
 	let g:nex_src['tex']['root'] = expand('%:p:h')
 	let g:nex_src['tex']['aux'] = g:nex_src['tex']['root'] . '/aux'
 	let g:nex_src['tex']['out'] = g:nex_src['tex']['root'] . '/out'
@@ -52,8 +47,6 @@ function! NxTeXSettings()
 		endif
 		call NxCallFunction(l:backends[g:vimtex_compiler_method])
 		autocmd Filetype tex call NxTeXKeyMap()
-		echo 'VimTeX Compiler:' g:vimtex_compiler_method
-		echo 'VimTex Executable:' g:nex['tex']['compiler']
 	else
 		echoerr "Unknown compiler method:" g:vimtex_compiler_method
 	endif
@@ -121,16 +114,23 @@ function! NxConfigureArara()
 endfunction
 
 function! NxTeXKeyMap()
-		augroup NxVimKeyMap autocmd!
-			nnoremap <buffer> <Leader>lv :VimtexView<CR>
-			nnoremap <buffer> <Leader>ll :VimtexCompile<CR>
-			noremap  <buffer> <Leader>lL :VimtexCompileSS<CR>
-			nnoremap <buffer> <Leader>LL :VimtexCompileSelected<CR>
-			nnoremap <buffer> <Leader>lq :VimtexStop<CR>
-			noremap  <buffer> <Leader>lm :VimtexToggleMain<CR>
-			noremap  <buffer> <Leader>lt :VimtexLog<CR>
-			noremap  <buffer> <Leader>wc <Cmd>VimtexCountWords<CR>
-		augroup END
+	set tabstop=2 softtabstop=0 shiftwidth=2 noexpandtab autoindent
+	if empty(v:servername) && exists('*remote_startserver')
+		call remote_startserver('VIM')
+	endif
+	augroup NxVimKeyMap autocmd!
+		nnoremap <buffer> <Leader>lv :VimtexView<CR>
+		nnoremap <buffer> <Leader>ll :VimtexCompile<CR>
+		noremap <buffer> <Leader>lL :VimtexCompileSS<CR>
+		nnoremap <buffer> <Leader>LL :VimtexCompileSelected<CR>
+		nnoremap <buffer> <Leader>lq :VimtexStop<CR>
+		noremap <buffer> <Leader>lm :VimtexToggleMain<CR>
+		noremap <buffer> <Leader>lt :VimtexLog<CR>
+		noremap <buffer> <Leader>wc <Cmd>VimtexCountWords<CR>
+	augroup END
+
+	echo 'VimTeX Compiler:' g:vimtex_compiler_method
+	echo 'VimTex Executable:' g:nex['tex']['compiler']
 endfunction
 
 call NxTeXSettings()

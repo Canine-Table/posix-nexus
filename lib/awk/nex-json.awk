@@ -18,7 +18,7 @@ function nx_json_log_delim(V, D)
 
 function nx_json_log_db(V, N, D, B)
 {
-	if (length(V)) {
+	if (0 in V) {
 		return nx_log_db(N, D, B, V)
 	} else {
 		# Empty input (1)
