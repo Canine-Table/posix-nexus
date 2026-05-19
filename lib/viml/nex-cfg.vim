@@ -7,14 +7,14 @@ function! s:NxConfig()
 	let g:nex.user = tmpa
 
 	let tmpa = expand('$NEXUS_ENV')
-	if tmpa != g:null && g:nex.user != g:null
-		let g:nex_src.run = tmpa . '/run/' . g:nex.user . '/'
-		let g:nex_src.log = tmpa . '/log/' . g:nex.user . '/'
-		call NxContainer(g:nex_src.run, g:nex_src.log)
+	if tmpa != g:null && g:nex['user'] != g:null
+		let g:nex_src['run'] = tmpa . '/run/' . g:nex['user'] . '/'
+		let g:nex_src['log'] = tmpa . '/log/' . g:nex['user'] . '/'
+		call NxContainer(g:nex_src['run'], g:nex_src['log'])
 		if has('persistent_undo')
-			let g:nex_src.vim.undo = g:nex_src.run . 'undo'
-			call NxContainer(g:nex_src.vim.undo)
-			set undodir=g:nex_src.vim.undo
+			let g:nex_src['vim']['undo'] = g:nex_src['run'] . 'undo'
+			call NxContainer(g:nex_src['vim']['undo'])
+			set undodir=$NEXUS_ENV/vim/undo
 			set undofile
 		endif
 	endif
@@ -22,9 +22,11 @@ function! s:NxConfig()
 	set number textwidth=0 encoding=utf-8
 	set incsearch hlsearch
 	set tabstop=8 softtabstop=0 shiftwidth=8
+	if ! g:nex_has['nvim']
+		set pastetoggle=<F3>
+		behave xterm
+	endif
 	set noexpandtab autoindent cindent smartindent
-	behave xterm
-	set pastetoggle=<F3>
 	set ruler laststatus=2 showcmd showmode
 	set fileformat=unix
 	set wildmode=longest,list,full wildmenu

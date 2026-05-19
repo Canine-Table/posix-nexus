@@ -14,27 +14,6 @@ nx_data_ref_append()
 	printf '%s' "$tmpa$NEX_K_d"
 )
 
-nx_data_unset()
-{
-	while test "$#" -gt 0; do
-		unset "$1"
-		shift
-	done 2>&1 1>/dev/null
-}
-
-_nx_data_unset()
-{
-	eval "$(while read -r; do
-		nx_data_ref "$REPLY" | grep -q '.*' && printf 'unset %s;' "$REPLY"
-	done)"
-}
-
-_nx_data_unset_()
-{
-	nx_data_unset "$@"
-	_nx_data_unset
-}
-
 nx_data_compare()
 (
 	nx_data_optargs 'l@r@m:s:c' "$@"
@@ -116,7 +95,7 @@ nx_data_longopt()
 			pstr = pstr "a<abort>"
 
 			p["-v"] = "1"
-			pstr = pstr "v<verbose>"
+			pstr = pstr "v<%verbose>"
 
 			p["-f"] = "0"
 			pstr = pstr "f<force-group>"

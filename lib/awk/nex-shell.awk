@@ -240,7 +240,7 @@ function nx_shell_opts(D1, V1, D2, N, D3, V2,
 
 		if (nx_is_alpha(cr)) {
 			acm = cr
-			cr = trk[idx = __nx_shell_skip(trk[++idx], trk, flw, idx)]
+			cr = trk[++idx]
 			if (obol) {
 				while (cr ~ rgx) {
 					acm = acm cr
@@ -248,7 +248,8 @@ function nx_shell_opts(D1, V1, D2, N, D3, V2,
 				}
 				if (lcr && gsub(rcr, "", acm) && dbg > 1)
 					nx_ansi_alert("trailing '" lcr "' found after '" acm "'\n")
-				cr = trk[idx = __nx_shell_skip(cr, trk, flw, idx)]
+				if (cr ~ flw)
+					cr = trk[idx = __nx_shell_skip(cr, trk, flw, idx)]
 			}
 			bol = nx_is_alpha(cr)
 
@@ -389,7 +390,7 @@ function nx_shell_opts(D1, V1, D2, N, D3, V2,
 			if (sbol || bol || cr == lo || cr == lc || cr == "" || gbol) {
 				if (sbol) {
 					if (dbg > 2)
-						nx_ansi_info("sbol 'true', backtracking next iteration\n")
+						nx_ansi_info("sbol 'true', '" acm "' and '" cr "' backtracking next iteration\n")
 					--idx
 				} else if (cr != gc) {
 					bol = cr == lo
@@ -486,24 +487,27 @@ function nx_shell_opts(D1, V1, D2, N, D3, V2,
 			#description
 			#help
 
+			
 			acm = trk[idx = __nx_shell_skip(trk[++idx], trk, flw, idx)]
 			while (nx_is_alpha(cr = trk[++idx]))
 				acm = acm cr
 			if (acm == "type") {
-				gent = 1
+				gent = 0
 			} else if (acm == "default") {
-				gent = 2
+				gent = 1
 			} else if (acm == "epilog") {
-				gent = 3
+				gent = 2
 			} else if (acm == "usage") {
-				gent = 4
+				gent = 3
 			} else if (acm == "description") {
-				gent = 5
+				gent = 4
 			} else {
 				nx_ansi_warning("provided '" acm "' is garbage, what do you wish this to mean? discarding\n")
 				continue
 			}
+			
 			acm = trk[idx = __nx_shell_skip(trk[++idx], trk, flw, idx)]
+
 			while ((cr = trk[++idx]) != gc) {
 				if (cr == "\x5c")
 					cr = trk[++idx]
@@ -722,6 +726,99 @@ function nx_shell_args(D1, V, D2, N, D3, D4,
 	return int(wret)
 }
 
+function nx_shell_help(V,
+	str, srt, strde, soff, moff,
+	ldr,
+	i, j)
+{
+	strde = V[0]
+	soff = strde + strde
+	srt = V[1]
+	for (i = 1 + soff; i <= srt; i += strde)
+		str = str " " V[i]
+	if (str != "") {
+		nx_ansi_info("\n(" V[1 + strde] ") keywords:" str)
+		str = ""
+	}
+
+	srt = V[4]
+	for (i = 4 + soff; i <= srt; i += strde)
+		str = str " " V[i]
+	if (str) {
+		nx_ansi_info("\n(" V[4 + strde] ") flags:" str)
+		str = ""
+	}
+
+	srt = V[7]
+	for (i = 7 + soff; i <= srt; i += strde)
+		str = str " " V[i]
+	if (str) {
+		nx_ansi_info("\n(" V[7 + strde] ") flag arrays:" str)
+		str = ""
+	}
+
+	srt = V[10]
+	for (i = 10 + soff; i <= srt; i += strde)
+		str = str " " V[i]
+	if (str) {
+		nx_ansi_info("\n(" V[10 + strde] ") keyword arrays:" str)
+		str = ""
+	}
+
+
+	if (strde > 13) {
+		for (i = 13; i <= strde; i =  i + 3) {
+			j = i + strde
+
+			ldr = V[j + strde]
+			# TODO find the bug causing this
+			if (!(ldr in V))
+				break
+
+			str = "\n("  V[j] ") group '" ldr "' ->"
+			srt = V[i]
+			for (j += soff; j <= srt; j += strde)
+				str = str " " V[j]
+			nx_ansi_info(str)
+
+			moff = V[i] + 1
+			j = 0
+			if (moff in V) {
+				nx_ansi_debug("\ntype:\n\t'" V[moff] "'")
+				j = 1
+			}
+
+			moff = moff + strde
+			if (moff in V) {
+				nx_ansi_debug("\ndefault:\n\t'" V[moff] "'")
+				j = 1
+			}
+
+			moff = moff + strde
+			if (moff in V) {
+				nx_ansi_success("\nepilog:\n\t'" V[moff] "'")
+				j = 1
+			}
+
+			moff = moff + strde
+			if (acm == "usage") {
+				nx_ansi_alert("\usage:\n\t'" V[moff] "'")
+				j = 1
+			}
+
+			moff = moff + strde
+			if (moff in V) {
+				nx_ansi_light("\ndescription:\n\t'" V[moff] "'")
+				j = 1
+			}
+
+			if (j)
+				nx_fd_stderr("\n")
+		}
+	}
+	nx_fd_stderr("\n")
+}
+
 function nx_shell_dispatch(V1, V2, N1, N2,
 	strde, cat, sym, arg, opt, act, mod, val, num, cse, dsh, cur, idx,
 	con, ps, vr)
@@ -763,6 +860,7 @@ function nx_shell_dispatch(V1, V2, N1, N2,
 		idx = V1[dsh opt] - 2
 	}
 
+	vr = opt
 	opt = V2["opt"]
 	cse = nx_is_lower(substr(opt, 1, 1))
 	ps =  V1[strde * 6]
@@ -773,6 +871,10 @@ function nx_shell_dispatch(V1, V2, N1, N2,
 		if (cat == 1) {
 			V1[idx] = V2[++N1]
 		} else if (cat == 4) {
+			if (vr == "help" || vr == "h") {
+				#print "echo help needed"
+				nx_shell_help(V1)
+			}
 			nx_boolean(V1, idx, !cse)
 		} else if (cat == 7) {
 			if (N2 < 13)

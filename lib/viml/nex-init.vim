@@ -121,7 +121,7 @@ endfunction
 
 function! NxHasLua()
 	if g:nex_has.lua
-		if has_key(g:nex_src.lua, 'root') && isdirectory(g:nex_src.lua.root)
+		if has_key(g:nex_src['lua'], 'root') && isdirectory(g:nex_src['lua']['root'])
 			return g:true
 		endif
 		return g:false
@@ -131,8 +131,8 @@ endfunction
 
 function! NxVimLoader(file)
 	if match(a:file, '\.vim$') >= 0
-		if has_key(g:nex_src.vim, 'root') && isdirectory(g:nex_src.vim.root) && filereadable(g:nex_src.vim.root . a:file)
-			execute 'source ' . g:nex_src.vim.root . a:file
+		if has_key(g:nex_src['vim'], 'root') && isdirectory(g:nex_src['vim']['root']) && filereadable(g:nex_src['vim']['root'] . a:file)
+			execute 'source ' . g:nex_src['vim']['root'] . a:file
 		elseif filereadable(a:file)
 			execute 'source ' . a:file
 		endif
@@ -143,8 +143,8 @@ endfunction
 
 function! NxLuaLoader(file)
 	if match(a:file, '\.lua$') >= 0
-		if has_key(g:nex_src.lua, 'root') && isdirectory(g:nex_src.lua.root) && filereadable(g:nex_src.lua.root . a:file)
-			execute 'luafile ' . g:nex_src.lua.root . a:file
+		if has_key(g:nex_src['lua'], 'root') && isdirectory(g:nex_src['lua']['root']) && filereadable(g:nex_src['lua']['root'] . a:file)
+			execute 'luafile ' . g:nex_src['lua']['root'] . a:file
 		elseif filereadable(a:file)
 			execute 'luafile ' . a:file
 		endif
