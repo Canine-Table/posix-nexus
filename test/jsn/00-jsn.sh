@@ -1,29 +1,27 @@
 (
-
 	nx_data_longopt ',
-		hello
-		world@
-		this#
-		is%
 		realpath<@
 			b basename
 			d dirname
 			r
 		>
 		<
-			description this is a radio option for return a path
-		>
+			type toggle>
 		<
-			epilog what even is an rpilog?
-		>
-		<
-			type toggle
-		>
+			description this is a radio option for return a path.>
 		file<%
 			l location
 			f
 		>
-		help<h>
+		<
+			type string>
+		<
+			description a path relative or absolute pointing to a file, directory or whatever has a path on the filesystem.>
+		help<
+			h
+		>
+		<
+			description the flag to seek help.>
 	' "$@"
 	NEX_ARGV_R=$(nx_data_dir "${NEX_Gk_file:=$NEX_ARGV_R}")
 	case "$?" in
@@ -56,15 +54,4 @@
 			printf '%s' "$NEX_ARGV_R"
 		};;
 	esac
-
-	#nx_data_longopt ',
-	#	path<@
-	#		b basename
-	#		d dirname
-	#		p r realpath
-	#	>
-	#' "$@"
-
-
-	#nx_jsn_parse --file sample.json
 )

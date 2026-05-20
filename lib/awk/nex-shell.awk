@@ -252,7 +252,6 @@ function nx_shell_opts(D1, V1, D2, N, D3, V2,
 					cr = trk[idx = __nx_shell_skip(cr, trk, flw, idx)]
 			}
 			bol = nx_is_alpha(cr)
-
 			if (acm in V1) {
 				dmov = 0
 				if (gbol) {
@@ -486,8 +485,6 @@ function nx_shell_opts(D1, V1, D2, N, D3, V2,
 			#usage
 			#description
 			#help
-
-			
 			acm = trk[idx = __nx_shell_skip(trk[++idx], trk, flw, idx)]
 			while (nx_is_alpha(cr = trk[++idx]))
 				acm = acm cr
@@ -505,7 +502,6 @@ function nx_shell_opts(D1, V1, D2, N, D3, V2,
 				nx_ansi_warning("provided '" acm "' is garbage, what do you wish this to mean? discarding\n")
 				continue
 			}
-			
 			acm = trk[idx = __nx_shell_skip(trk[++idx], trk, flw, idx)]
 
 			while ((cr = trk[++idx]) != gc) {
@@ -514,7 +510,8 @@ function nx_shell_opts(D1, V1, D2, N, D3, V2,
 				acm = acm cr
 			}
 			V1[(V1[V1[gcr] - goff] + 1) + strde * gent] = acm
-
+			idx = __nx_shell_skip(trk[++idx], trk, flw, idx) - 1
+			acm = go
 		} else {
 			if (dbg > 1)
 				nx_ansi_warning("provided '" cr "' is garbage, what do you wish this to mean? discarding\n")
@@ -523,6 +520,7 @@ function nx_shell_opts(D1, V1, D2, N, D3, V2,
 	}
 
 	delete trk
+	V1[strde * 10] = grp
 	if (dbg > 3)
 		nx_shell_opts_logger(dbg, V1, strde, grp)
 	if (eret = int(eret))
@@ -727,13 +725,15 @@ function nx_shell_args(D1, V, D2, N, D3, D4,
 }
 
 function nx_shell_help(V,
-	str, srt, strde, soff, moff,
-	ldr,
+	str, srt, strde, soff,
+	moff, grps,
 	i, j)
 {
 	strde = V[0]
+	grps = V[strde * 10]
 	soff = strde + strde
 	srt = V[1]
+
 	for (i = 1 + soff; i <= srt; i += strde)
 		str = str " " V[i]
 	if (str != "") {
@@ -765,56 +765,48 @@ function nx_shell_help(V,
 		str = ""
 	}
 
+	for (i = 13; i < grps; i =  i + 3) {
+		j = i + strde
 
-	if (strde > 13) {
-		for (i = 13; i <= strde; i =  i + 3) {
-			j = i + strde
+		str = "\n("  V[j] ") group '" V[j + strde] "' ->"
+		srt = V[i]
+		for (j += soff; j <= srt; j += strde)
+			str = str " " V[j]
+		nx_ansi_info(str)
 
-			ldr = V[j + strde]
-			# TODO find the bug causing this
-			if (!(ldr in V))
-				break
-
-			str = "\n("  V[j] ") group '" ldr "' ->"
-			srt = V[i]
-			for (j += soff; j <= srt; j += strde)
-				str = str " " V[j]
-			nx_ansi_info(str)
-
-			moff = V[i] + 1
-			j = 0
-			if (moff in V) {
-				nx_ansi_debug("\ntype:\n\t'" V[moff] "'")
-				j = 1
-			}
-
-			moff = moff + strde
-			if (moff in V) {
-				nx_ansi_debug("\ndefault:\n\t'" V[moff] "'")
-				j = 1
-			}
-
-			moff = moff + strde
-			if (moff in V) {
-				nx_ansi_success("\nepilog:\n\t'" V[moff] "'")
-				j = 1
-			}
-
-			moff = moff + strde
-			if (acm == "usage") {
-				nx_ansi_alert("\usage:\n\t'" V[moff] "'")
-				j = 1
-			}
-
-			moff = moff + strde
-			if (moff in V) {
-				nx_ansi_light("\ndescription:\n\t'" V[moff] "'")
-				j = 1
-			}
-
-			if (j)
-				nx_fd_stderr("\n")
+		moff = V[i] + 1
+		j = 0
+		if (moff in V) {
+			nx_ansi_debug("\ntype:\n\t'" V[moff] "'")
+			j = 1
 		}
+
+		moff = moff + strde
+		if (moff in V) {
+			nx_ansi_debug("\ndefault:\n\t'" V[moff] "'")
+			j = 1
+		}
+
+		moff = moff + strde
+		if (moff in V) {
+			nx_ansi_success("\nepilog:\n\t'" V[moff] "'")
+			j = 1
+		}
+
+		moff = moff + strde
+		if (acm == "usage") {
+			nx_ansi_alert("\usage:\n\t'" V[moff] "'")
+			j = 1
+		}
+
+		moff = moff + strde
+		if (moff in V) {
+			nx_ansi_light("\ndescription:\n\t'" V[moff] "'")
+			j = 1
+		}
+
+		if (j)
+			nx_fd_stderr("\n")
 	}
 	nx_fd_stderr("\n")
 }
@@ -872,7 +864,6 @@ function nx_shell_dispatch(V1, V2, N1, N2,
 			V1[idx] = V2[++N1]
 		} else if (cat == 4) {
 			if (vr == "help" || vr == "h") {
-				#print "echo help needed"
 				nx_shell_help(V1)
 			}
 			nx_boolean(V1, idx, !cse)
