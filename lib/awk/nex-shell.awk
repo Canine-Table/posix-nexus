@@ -478,13 +478,6 @@ function nx_shell_opts(D1, V1, D2, N, D3, V2,
 				nx_ansi_warning("extra '" gc "' detected after '" acm __nx_if(nx_is_alpha(trk[idx - 1]), cr, trk[idx - 1]) "', discarding\n")
 			}
 		} else if (cr == go && gcr != "") {
-			#TODO
-			#type
-			#default
-			#epilog
-			#usage
-			#description
-			#help
 			acm = trk[idx = __nx_shell_skip(trk[++idx], trk, flw, idx)]
 			while (nx_is_alpha(cr = trk[++idx]))
 				acm = acm cr
@@ -499,10 +492,11 @@ function nx_shell_opts(D1, V1, D2, N, D3, V2,
 			} else if (acm == "description") {
 				gent = 4
 			} else {
-				nx_ansi_warning("provided '" acm "' is garbage, what do you wish this to mean? discarding\n")
+				nx_ansi_warning("provided '" acm "' is garbage, what do you wish this to mean? '" cr "'  discarding\n")
 				continue
 			}
-			acm = trk[idx = __nx_shell_skip(trk[++idx], trk, flw, idx)]
+			if ((acm = trk[idx = __nx_shell_skip(trk[++idx], trk, flw, idx)]) == "\x5c")
+				acm = trk[++idx]
 
 			while ((cr = trk[++idx]) != gc) {
 				if (cr == "\x5c")
@@ -510,15 +504,13 @@ function nx_shell_opts(D1, V1, D2, N, D3, V2,
 				acm = acm cr
 			}
 			V1[(V1[V1[gcr] - goff] + 1) + strde * gent] = acm
-			idx = __nx_shell_skip(trk[++idx], trk, flw, idx) - 1
-			acm = go
+			#idx = __nx_shell_skip(trk[++idx], trk, flw, idx) - 1
 		} else {
 			if (dbg > 1)
 				nx_ansi_warning("provided '" cr "' is garbage, what do you wish this to mean? discarding\n")
 			wret = -2
 		}
 	}
-
 	delete trk
 	V1[strde * 10] = grp
 	if (dbg > 3)
@@ -530,7 +522,7 @@ function nx_shell_opts(D1, V1, D2, N, D3, V2,
 
 function nx_shell_args(D1, V, D2, N, D3, D4,
 	ds, ps,
-	fs, fa, fr,
+	fs, fa, fr, pref,
 	dbg, bk, ovr, ab,
 	ctp, cidx,
 	oln, oidx,
@@ -555,7 +547,11 @@ function nx_shell_args(D1, V, D2, N, D3, D4,
 	ab = int(trk[7])
 
 	sub("^<nx:null/><nx:null/>", "<nx:null/>", D3)
-	if ((idx = split(D3, trk, ds)) > 0) {
+	idx = split(D3, trk, ds)
+	pref = __nx_else(trk[6], "-") # prefix for long/short options
+	delete trk[6]
+
+	if (idx > 0) {
 		amx = 3
 		if (dbg > 1) {
 			do {
@@ -565,7 +561,8 @@ function nx_shell_args(D1, V, D2, N, D3, D4,
 						nx_ansi_warning("separator '" tok "' already in use as separator number '" trk[tok] "'\n")
 						trk[idx] = ""
 						wret = -2
-					} else {
+					} else if (tok) {
+						
 						trk[tok] = idx
 					}
 				}
@@ -589,6 +586,7 @@ function nx_shell_args(D1, V, D2, N, D3, D4,
 	fa = __nx_else(trk[3], "+") # optional push flag sep
 	fr = __nx_else(trk[4], "-") # optional pop flag sep
 	con = __nx_else(trk[5], " ", 1) # concat sep of remainder string
+
 	con = __nx_if(con == "<nx_null/>", "", con)
 	acrgx = "[" fa "]|[" fr "]"
 
@@ -621,6 +619,7 @@ function nx_shell_args(D1, V, D2, N, D3, D4,
 	V[strde * 7] = con
 	V[strde * 8] = fa
 	V[strde * 9] = fr
+	V[strde * 11] = pref
 
 	trm = 1
 	ctp = cnt
@@ -642,13 +641,13 @@ function nx_shell_args(D1, V, D2, N, D3, D4,
 		} else {
 			tok = agv[++idx]
 		}
-
-		if (trm > 0 && sub(/^-/, "", tok)) {
-			if (sub(/^-/, "", tok)) {
-				if (tok == "") {
+		if (trm > 0 && substr(tok, 1, 1) == pref) {
+			tok = substr(tok, 2)
+			if (substr(tok, 1, 1) == pref) {
+				if ((tok = substr(tok, 2)) == "") {
 					trm = 0
 					if (dbg > 2)
-						nx_ansi_light("end of arguments detected  '--' appending remainder\n")
+						nx_ansi_light("end of arguments detected  '" pref pref "' appending remainder\n")
 					continue
 				} else if (length(tok = nx_shell_actions(tok, acrgx, fs, agv, dbg, eacrgx)) > 1 && tok in V) {
 					if (dbg > 2)
@@ -665,8 +664,8 @@ function nx_shell_args(D1, V, D2, N, D3, D4,
 						tok = trk[oidx]
 						if (tok in V) {
 							if (dbg > 2)
-								nx_ansi_alert("short form bundle option '-" tok vl "' was registered, preceding\n")
-							agv[++ctp] = "-" tok vl
+								nx_ansi_alert("short form bundle option '" pref tok vl "' was registered, preceding\n")
+							agv[++ctp] = pref tok vl
 						} else {
 							opt = opt tok
 						}
@@ -685,7 +684,9 @@ function nx_shell_args(D1, V, D2, N, D3, D4,
 		}
 
 		if (trm < 2) {
-			if (ab) {
+			if (ab && trm && opt != "") {
+				if (dbg > 2)
+					nx_ansi_success("option '" tok "' was never redistered, abort flag was set to '" ab "', preceding\n")
 				if (ab == 1)
 					break
 				trm = 0
@@ -828,10 +829,9 @@ function nx_shell_dispatch(V1, V2, N1, N2,
 		con = "G"
 	}
 
+	dsh = V1[strde * 11]
 	if (length(opt) > 1)
-		dsh = "--"
-	else
-		dsh = "-"
+		dsh = dsh dsh
 
 	if (! (dsh opt in V1)) {
 		idx = V1["-0"] - 1

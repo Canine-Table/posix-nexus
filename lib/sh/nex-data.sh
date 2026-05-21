@@ -78,97 +78,161 @@ nx_data_longopt()
 		BEGIN {
 			p["-u"] = ""
 			pstr = ",u<unset>"
+			pstr = pstr "<type toggle>"
+			pstr = pstr "<default <nx:false/\>>"
+			pstr = pstr "<description Clear all NEX_ARGV_* NEX_ARGC and group variables in the current scope before processing new arguments>"
 
 			p["-q"] = "<nx:false/>"
 			pstr = pstr "q<quote>"
+			pstr = pstr "<default <nx:false/\>>"
+			pstr = pstr "<type toggle>"
+			pstr = pstr "<description Use double-quoted values instead of single-quoted shell-safe literals; enables interpolation and requires careful escaping>"
 
 			p["-o"] = "<nx:false/>"
 			pstr = pstr "o<override type-override>"
+			pstr = pstr "<default <nx:false/\>>"
+			pstr = pstr "<type toggle>"
+			pstr = pstr "<description Preserve the original group form and type when a group is redefined; forces the parser to reuse the existing symbol and prevents form switching>"
 
 			p["-e"] = "<nx:false/>"
 			pstr = pstr "e<export>"
+			pstr = pstr "<default <nx:false/\>>"
+			pstr = pstr "<type toggle>"
+			pstr = pstr "<description Emit export VAR=value; instead of VAR=value during environment construction>"
 
 			p["-b"] = "<nx:false/>"
 			pstr = pstr "b<backtrack>"
+			pstr = pstr "<default <nx:false/\>>"
+			pstr = pstr "<type toggle>"
 
 			p["-a"] = "0"
 			pstr = pstr "a<abort>"
+			pstr = pstr "<default 0>"
+			pstr = pstr "<type number>"
 
 			p["-v"] = "1"
 			pstr = pstr "v<%verbose>"
+			pstr = pstr "<default 1>"
+			pstr = pstr "<type number>"
 
 			p["-f"] = "0"
 			pstr = pstr "f<force-group>"
+			pstr = pstr "<default 0>"
+			pstr = pstr "<type number>"
 
 			p["-d"] = "<nx:null/>"
 			pstr = pstr "d<%delimiter delimiter-separator>"
+			pstr = pstr "<default <nx:null/\>>"
+			pstr = pstr "<type string>"
 
 			p["-k"] = "%"
 			pstr = pstr "k<%key key-separator>"
+			pstr = pstr "<default %>"
+			pstr = pstr "<type character>"
 
 			p["-g"] = "<"
 			pstr = pstr "g<%open group-open>"
+			pstr = pstr "<default <>"
+			pstr = pstr "<type character>"
 
 			p["-G"] = ">"
 			pstr = pstr "G<%close group-close>"
+			pstr = pstr "<default \>>"
+			pstr = pstr "<type character>"
 
 			p["-F"] = "@"
 			pstr = pstr "F<%flag-array flag-array-separator>"
+			pstr = pstr "<default @>"
+			pstr = pstr "<type character>"
 
 			p["-K"] = "#"
 			pstr = pstr "K<%key-array key-array-separator>"
+			pstr = pstr "<default #>"
+			pstr = pstr "<type character>"
 
 			p["-l"] = ","
 			pstr = pstr "l<%long>"
+			pstr = pstr "<default ,>"
+			pstr = pstr "<type character>"
 
 			p["-s"] = ";"
 			pstr = pstr "s<%short>"
+			pstr = pstr "<default ;>"
+			pstr = pstr "<type character>"
 
 			p["-p"] = "<nx:null/>"
 			pstr = pstr "p<%param parameter-separator>"
+			pstr = pstr "<default <nx:null/\>>"
+			pstr = pstr "<type character>"
 
 			p["-S"] = "="
 			pstr = pstr "S<%flag-set>"
+			pstr = pstr "<default =>"
+			pstr = pstr "<type character>"
 
 			p["-A"] = "+"
 			pstr = pstr "A<%add flag-add>"
+			pstr = pstr "<default +>"
+			pstr = pstr "<type character>"
 
 			p["-R"] = "-"
 			pstr = pstr "R<%remove flag-remove>"
+			pstr = pstr "<default ->"
+			pstr = pstr "<type character>"
 
 			p["-c"] = " "
 			pstr = pstr "c<%concat concatenation-separator>"
+			pstr = pstr "<default \ >"
+			pstr = pstr "<type string>"
 
 			p["-L"] = "._-:"
 			pstr = pstr "L<%extra-long-characters>"
+			pstr = pstr "<default ._-:>"
+			pstr = pstr "<type string>"
 
 			p["-w"] = " \t\n\v\f\r"
 			pstr = pstr "w<%whitespace>"
+			pstr = pstr "<default \\\\\\t\\\\\\n\\\\\\v\\\\\\f\\\\\\r >"
+			pstr = pstr "<type string>"
 
-			p["-P"] = "<nx:false/>"
-			pstr = pstr "P<print>"
+			p["-O"] = "<nx:false/>"
+			pstr = pstr "O<output out>"
+			pstr = pstr "<default <nx:false/\>>"
+			pstr = pstr "<type toggle>"
 
+			p["-P"] = "-"
+			pstr = pstr "P<prefix argument-prefix>"
+			pstr = pstr "<default ->"
+			pstr = pstr "<type character>"
+
+			p["-h"] = ""
+			pstr = pstr "h<help>"
+			pstr = pstr "<default null constant>"
+			pstr = pstr "<type void>"
+
+			p["-v"] = 4
 			s = p["-d"]
 			seps = p["-k"] s p["-F"] s p["-K"] s p["-g"] s p["-G"] s p["-l"] s p["-s"] s p["-L"] s p["-w"]
-			acts = p["-p"] s p["-S"] s p["-A"] s p["-R"] ds p["-c"]
-			togs = p["-v"] s (p["-o"] == "<nx:true/>") s (p["-b"]  == "<nx:true/>") s (p["-e"]  == "<nx:true/>") s (p["-q"] == "<nx:true/>") s p["-f"] s 2
-			nx_shell_args(pstr p["-p"] inpt, arr, s, togs, acts, seps)
+			acts = p["-p"] s p["-S"] s p["-A"] s p["-R"] s p["-c"] s p["-P"]
+			togs = p["-v"] s (p["-o"] == "<nx:true/>") s (p["-b"] == "<nx:true/>") s (p["-e"]  == "<nx:true/>") s (p["-q"] == "<nx:true/>") s p["-f"] s 2
+			nx_shell_args(pstr p["-p"] s inpt, arr, s, togs, acts, seps)
+
+			exit
 			ln = arr["-0"]
 			for (idx = -4; idx >= ln; idx = idx - 3)
 				p[arr[idx]] = arr[idx - 2]
 			if (arr["-3"] > 0) {
-
 				s = p["-d"]
 				r = arr["-2"]
 				split("", arr, "")
 				seps = p["-k"] s p["-F"] s p["-K"] s p["-g"] s p["-G"] s p["-l"] s p["-s"] s p["-L"] s p["-w"]
 				acts = p["-p"] s p["-S"] s p["-A"] s p["-R"] ds p["-c"]
 				togs = p["-v"] s (p["-o"] == "<nx:true/>") s (p["-b"]  == "<nx:true/>") s (p["-e"]  == "<nx:true/>") s (p["-q"] == "<nx:true/>") s p["-f"] s p["-a"]
-				if (p["-P"] == "<nx:true/>")
-					p["-P"] = "echo "
+				if (p["-O"] == "<nx:true/>")
+					p["-O"] = "echo "
 				else
-					p["-P"] = ""
-				print p["-P"] nx_shell_environ(r, arr, s, togs, acts, seps)
+					p["-O"] = ""
+				print p["-O"] nx_shell_environ(r, arr, s, togs, acts, seps)
 			}
 			delete arr
 			delete p

@@ -8,6 +8,8 @@
 		<
 			type toggle>
 		<
+			default <nx:true/\>>
+		<
 			description this is a radio option for return a path.>
 		file<%
 			l location
