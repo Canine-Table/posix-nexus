@@ -1,6 +1,82 @@
 #nx_include nex-str.sh
 #nx_include nex-cmd.sh
 
+nx_data_longopt()
+{
+	eval "$(${AWK:-$(nx_cmd_awk)} \
+		-v inpt="$(nx_str_chain "$@")" \
+		-v scpe="$(set | sed -n 's/^\(NEX_\(G\?[fFkK]_[A-Za-z]\+\([0-9]\+[A-Za-z]\+\)\?\)\|ARGC\|ARGV_\([SR]\|[0-9]\+\)\)=.*/\1/p')" \
+	"
+		$(cat \
+			"${NEXUS_LIB}/awk/nex-misc.awk" \
+			"${NEXUS_LIB}/awk/nex-misc-extras.awk" \
+			"${NEXUS_LIB}/awk/nex-math.awk" \
+			"${NEXUS_LIB}/awk/nex-math-extras.awk" \
+			"${NEXUS_LIB}/awk/nex-map.awk" \
+			"${NEXUS_LIB}/awk/nex-struct.awk" \
+			"${NEXUS_LIB}/awk/nex-type.awk" \
+			"${NEXUS_LIB}/awk/nex-struct-extras.awk" \
+			"${NEXUS_LIB}/awk/nex-io.awk" \
+			"${NEXUS_LIB}/awk/nex-int.awk" \
+			"${NEXUS_LIB}/awk/nex-int-extras.awk" \
+			"${NEXUS_LIB}/awk/nex-log.awk" \
+			"${NEXUS_LIB}/awk/nex-log-extras.awk" \
+			"${NEXUS_LIB}/awk/nex-str.awk" \
+			"${NEXUS_LIB}/awk/nex-str-extras.awk" \
+			"${NEXUS_LIB}/awk/nex-shell.awk"
+		)
+	"'
+		BEGIN {
+			pstr = __nx_shell_schema_str(p, "", 1)
+			ds = p["-d"]
+			ps = p["-p"]
+			dbg = p["-v"]
+
+			tog = __nx_shell_schema_tog(p, ds)
+			flg = __nx_shell_schema_flg(p, ds, 1)
+			cat = __nx_shell_schema_cat(p, ds)
+			act = __nx_shell_schema_act(p, ds)
+			mic = __nx_shell_schema_mic(p, ds)
+			__nx_shell_schema(pstr ds inpt, ds, ps, dbg, cat, tog, act, flg, mic, vec, agv)
+			nx_shell_opts(vec, agv)
+			nx_shell_args(vec, agv)
+			strde = vec[0]
+			m = vec[strde * 4]
+			oft = m * 9
+			vl = vec["-2"]
+			if (vl ~ vec[(oft + 6) * strde] || vl == "") {
+				print "printf \x22%s\x22 \x22\x22"
+			} else {
+				l = V["-0"]
+				for (i = -4; i >= l; i = i - 3)
+					p[vec[i]] = vec[i - 2]
+				dbg = p["-v"]
+				ps = p["-p"]
+				ds = p["-d"]
+
+				tog = __nx_shell_schema_tog(p, ds)
+				flg = __nx_shell_schema_flg(p, ds)
+				cat = __nx_shell_schema_cat(p, ds)
+				act = __nx_shell_schema_act(p, ds)
+				mic = __nx_shell_schema_mic(p, ds)
+				pstr = vec["-1"]
+				split("", vec, "")
+				split("", agv, "")
+				__nx_shell_schema(pstr, ds, ps, dbg, cat, tog, act, flg, mic, vec, agv)
+				if (p["-O"] == "<nx:true/>")
+					p["-O"] = "echo "
+				else
+					p["-O"] = ""
+				nx_shell_opts(vec, agv)
+				nx_shell_args(vec, agv)
+				print p["-O"] nx_shell_environ(vec, agv, scpe)
+			}
+			delete vec
+			delete agv
+		}
+	')"
+}
+
 nx_data_ref()
 {
 	test -n "$1" && eval "printf \$$1" 2> /dev/null
@@ -59,7 +135,7 @@ nx_data_optargs()
 		${AWK:-$(nx_cmd_awk)} \
 			-v inpt="$(nx_str_chain "$@")" \
 			"
-				$(nx_data_include -i "${NEXUS_LIB}/awk/nex-sh-extras.awk")
+				$(nx_data_include -i "${NEXUS_LIB}/awk/nex-sh.awk")
 			"'
 				BEGIN {
 					print nx_sh_optargs(inpt)
@@ -68,177 +144,7 @@ nx_data_optargs()
 	)"
 }
 
-nx_data_longopt()
-{
-	eval "$(${AWK:-$(nx_cmd_awk)} \
-		-v inpt="$(nx_str_chain "$@")" \
-	"
-		$(nx_data_include -i "${NEXUS_LIB}/awk/nex-shell.awk")
-	"'
-		BEGIN {
-			p["-u"] = ""
-			pstr = ",u<unset>"
-			pstr = pstr "<type toggle>"
-			pstr = pstr "<default <nx:false/\>>"
-			pstr = pstr "<description Clear all NEX_ARGV_* NEX_ARGC and group variables in the current scope before processing new arguments>"
 
-			p["-q"] = "<nx:false/>"
-			pstr = pstr "q<quote>"
-			pstr = pstr "<default <nx:false/\>>"
-			pstr = pstr "<type toggle>"
-			pstr = pstr "<description Use double-quoted values instead of single-quoted shell-safe literals; enables interpolation and requires careful escaping>"
-
-			p["-o"] = "<nx:false/>"
-			pstr = pstr "o<override type-override>"
-			pstr = pstr "<default <nx:false/\>>"
-			pstr = pstr "<type toggle>"
-			pstr = pstr "<description Preserve the original group form and type when a group is redefined; forces the parser to reuse the existing symbol and prevents form switching>"
-
-			p["-e"] = "<nx:false/>"
-			pstr = pstr "e<export>"
-			pstr = pstr "<default <nx:false/\>>"
-			pstr = pstr "<type toggle>"
-			pstr = pstr "<description Emit export VAR=value; instead of VAR=value during environment construction>"
-
-			p["-b"] = "<nx:false/>"
-			pstr = pstr "b<backtrack>"
-			pstr = pstr "<default <nx:false/\>>"
-			pstr = pstr "<type toggle>"
-
-			p["-a"] = "0"
-			pstr = pstr "a<abort>"
-			pstr = pstr "<default 0>"
-			pstr = pstr "<type number>"
-
-			p["-v"] = "1"
-			pstr = pstr "v<%verbose>"
-			pstr = pstr "<default 1>"
-			pstr = pstr "<type number>"
-
-			p["-f"] = "0"
-			pstr = pstr "f<force-group>"
-			pstr = pstr "<default 0>"
-			pstr = pstr "<type number>"
-
-			p["-d"] = "<nx:null/>"
-			pstr = pstr "d<%delimiter delimiter-separator>"
-			pstr = pstr "<default <nx:null/\>>"
-			pstr = pstr "<type string>"
-
-			p["-k"] = "%"
-			pstr = pstr "k<%key key-separator>"
-			pstr = pstr "<default %>"
-			pstr = pstr "<type character>"
-
-			p["-g"] = "<"
-			pstr = pstr "g<%open group-open>"
-			pstr = pstr "<default <>"
-			pstr = pstr "<type character>"
-
-			p["-G"] = ">"
-			pstr = pstr "G<%close group-close>"
-			pstr = pstr "<default \>>"
-			pstr = pstr "<type character>"
-
-			p["-F"] = "@"
-			pstr = pstr "F<%flag-array flag-array-separator>"
-			pstr = pstr "<default @>"
-			pstr = pstr "<type character>"
-
-			p["-K"] = "#"
-			pstr = pstr "K<%key-array key-array-separator>"
-			pstr = pstr "<default #>"
-			pstr = pstr "<type character>"
-
-			p["-l"] = ","
-			pstr = pstr "l<%long>"
-			pstr = pstr "<default ,>"
-			pstr = pstr "<type character>"
-
-			p["-s"] = ";"
-			pstr = pstr "s<%short>"
-			pstr = pstr "<default ;>"
-			pstr = pstr "<type character>"
-
-			p["-p"] = "<nx:null/>"
-			pstr = pstr "p<%param parameter-separator>"
-			pstr = pstr "<default <nx:null/\>>"
-			pstr = pstr "<type character>"
-
-			p["-S"] = "="
-			pstr = pstr "S<%flag-set>"
-			pstr = pstr "<default =>"
-			pstr = pstr "<type character>"
-
-			p["-A"] = "+"
-			pstr = pstr "A<%add flag-add>"
-			pstr = pstr "<default +>"
-			pstr = pstr "<type character>"
-
-			p["-R"] = "-"
-			pstr = pstr "R<%remove flag-remove>"
-			pstr = pstr "<default ->"
-			pstr = pstr "<type character>"
-
-			p["-c"] = " "
-			pstr = pstr "c<%concat concatenation-separator>"
-			pstr = pstr "<default \ >"
-			pstr = pstr "<type string>"
-
-			p["-L"] = "._-:"
-			pstr = pstr "L<%extra-long-characters>"
-			pstr = pstr "<default ._-:>"
-			pstr = pstr "<type string>"
-
-			p["-w"] = " \t\n\v\f\r"
-			pstr = pstr "w<%whitespace>"
-			pstr = pstr "<default \\\\\\t\\\\\\n\\\\\\v\\\\\\f\\\\\\r >"
-			pstr = pstr "<type string>"
-
-			p["-O"] = "<nx:false/>"
-			pstr = pstr "O<output out>"
-			pstr = pstr "<default <nx:false/\>>"
-			pstr = pstr "<type toggle>"
-
-			p["-P"] = "-"
-			pstr = pstr "P<prefix argument-prefix>"
-			pstr = pstr "<default ->"
-			pstr = pstr "<type character>"
-
-			p["-h"] = ""
-			pstr = pstr "h<help>"
-			pstr = pstr "<default null constant>"
-			pstr = pstr "<type void>"
-
-			p["-v"] = 4
-			s = p["-d"]
-			seps = p["-k"] s p["-F"] s p["-K"] s p["-g"] s p["-G"] s p["-l"] s p["-s"] s p["-L"] s p["-w"]
-			acts = p["-p"] s p["-S"] s p["-A"] s p["-R"] s p["-c"] s p["-P"]
-			togs = p["-v"] s (p["-o"] == "<nx:true/>") s (p["-b"] == "<nx:true/>") s (p["-e"]  == "<nx:true/>") s (p["-q"] == "<nx:true/>") s p["-f"] s 2
-			nx_shell_args(pstr p["-p"] s inpt, arr, s, togs, acts, seps)
-
-			exit
-			ln = arr["-0"]
-			for (idx = -4; idx >= ln; idx = idx - 3)
-				p[arr[idx]] = arr[idx - 2]
-			if (arr["-3"] > 0) {
-				s = p["-d"]
-				r = arr["-2"]
-				split("", arr, "")
-				seps = p["-k"] s p["-F"] s p["-K"] s p["-g"] s p["-G"] s p["-l"] s p["-s"] s p["-L"] s p["-w"]
-				acts = p["-p"] s p["-S"] s p["-A"] s p["-R"] ds p["-c"]
-				togs = p["-v"] s (p["-o"] == "<nx:true/>") s (p["-b"]  == "<nx:true/>") s (p["-e"]  == "<nx:true/>") s (p["-q"] == "<nx:true/>") s p["-f"] s p["-a"]
-				if (p["-O"] == "<nx:true/>")
-					p["-O"] = "echo "
-				else
-					p["-O"] = ""
-				print p["-O"] nx_shell_environ(r, arr, s, togs, acts, seps)
-			}
-			delete arr
-			delete p
-		}
-	')"
-}
 
 nx_data_dir()
 {

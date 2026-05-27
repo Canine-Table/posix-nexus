@@ -1,5 +1,5 @@
 (
-	nx_data_longopt -v=4 ',
+	nx_data_longopt ',
 		alpha<@
 			beta
 			>theta

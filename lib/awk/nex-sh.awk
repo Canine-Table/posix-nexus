@@ -2,7 +2,7 @@
 #nx_include nex-misc.awk
 #nx_include nex-struct.awk
 #nx_include nex-type.awk
-#nx_include nex-log.awk
+#nx_include nex-log-extras.awk
 
 function __nx_stringify_opts(V, D1, D2, D3, D4, D5, N,	i, j)
 {

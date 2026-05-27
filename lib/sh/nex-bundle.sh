@@ -70,6 +70,44 @@ nx_init_install()
 	done
 }
 
+nx_bundle_init()
+(
+	test "$(command -v "${0#-}")" != "$SHELL" && {
+		bnm="$(basename "$0")"
+		dnm="$("${AWK:-awk}" -v path="$(cd "$(dirname "$0")" && pwd)/${bnm}" 'BEGIN {
+			if (!sub("lib/sh/.+[.]sh$", "", path))
+				exit 226
+			gsub("//", "/", path)
+			printf("%s", path)
+		}')"
+	} || {
+		printf '\x1b[1;31m[x] Please make sure the initiator file is executable before proceeding\x1b[0m\n' "$1" 2>&1
+		exit 226
+	}
+
+	export NEXUS_LIB="${dnm}lib"
+	. "$NEXUS_LIB/sh/nex-cmd.sh"
+	export AWK="$(nx_cmd_awk)"
+	. "$NEXUS_LIB/sh/nex-data.sh"
+	. "$NEXUS_LIB/sh/nex-fs.sh"
+
+	cat > "${dnm}env/.nexus-shell.bundles.sh" <<- EOF
+		#!${SHELL:-$(command -v sh)}
+		export NEXUS_ROOT="$dnm"
+		export NEXUS_SRC="${dnm}src"
+		export NEXUS_LIB="${dnm}lib"
+		export NEXUS_ENV="${dnm}env"
+		export NEXUS_CNF="${dnm}cnf"
+		export NEXUS_DOC="${dnm}docs"
+		export NEXUS_LOG="${dnm}env"
+		export NEXUS_SBIN="${dnm}sbin"
+		export NEXUS_BIN="${dnm}bin"
+		export NEXUS_TEST="${dnm}/tests"
+		export NEXUS_BUNDLE="${dnm}sh/$bnm"
+		export NEXUS_INIT="${dnm}sh/nex-init"
+	EOF
+)
+
 nx_env()
 (
 	test "$(command -v "${0#-}")" != "$SHELL" && {
@@ -139,4 +177,3 @@ else
 	nx_env
 fi
 test "$1" = '-d' && set +x
-

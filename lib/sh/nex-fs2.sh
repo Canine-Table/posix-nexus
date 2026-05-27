@@ -1,7 +1,5 @@
-
+nx_fs2_path()
 (
-	export NEX_Gf_hello="why"
-	export NEX_Gf_h="why"
 	nx_data_longopt ',
 		realpath<@
 			b basename
@@ -62,3 +60,4 @@
 		};;
 	esac
 )
+
