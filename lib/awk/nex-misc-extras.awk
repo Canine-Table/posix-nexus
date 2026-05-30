@@ -15,7 +15,7 @@ function nx_to_environ(D, B,	m)
 	return D
 }
 
-function __nx_stringify_var(D1, D2, B, D3, D4,
+function __nx_stringify_var(D1, D2, B, D3, D4, D5,
 	inner, outer)
 {
 	if (B) {
@@ -28,8 +28,7 @@ function __nx_stringify_var(D1, D2, B, D3, D4,
 
 	gsub(outer, outer inner outer inner outer, D2)
 	gsub("^" outer "|" outer "$", "", D2)
-	return nx_to_environ(D1) __nx_else(D3, "=") outer D2 outer __nx_else(D4, " ")
-
+	return __nx_only(D1, nx_to_environ(D1)) __nx_only(!D5, __nx_else(D3, "=")) outer D2 outer __nx_only(!D5, __nx_else(D4, " "))
 }
 
 function __nx_elif(B1, B2, B3, B4, B5, B6)

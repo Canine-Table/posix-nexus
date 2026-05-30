@@ -239,9 +239,63 @@ function __nx_shell_schema_str(V, D, B)
 	D = D "<type void>"
 	D = D "<description Display schema, metadata, and usage information for all options.>"
 
+
+	V["--type"] = "type"
+	D = D "type<%directive-type>"
+	D = D "<default type>"
+	D = D "<type string>"
+	D = D "<description Directive that sets or overrides the type metadata for the next schema element.>"
+
+	V["--default"] = "default"
+	D = D "default<%directive-default>"
+	D = D "<default default>"
+	D = D "<type string>"
+	D = D "<description Directive that assigns a default value to the next schema element.>"
+
+	V["--epilog"] = "epilog"
+	D = D "epilog<%directive-epilog>"
+	D = D "<default epilog>"
+	D = D "<type string>"
+	D = D "<description Directive that appends epilog text to the generated help output.>"
+
+	V["--usage"] = "usage"
+	D = D "usage<%directive-usage>"
+	D = D "<default usage>"
+	D = D "<type string>"
+	D = D "<description Directive that sets the usage string for the schema.>"
+
+	V["--description"] = "description"
+	D = D "description<%directive-description>"
+	D = D "<default description>"
+	D = D "<type string>"
+	D = D "<description Directive that sets the description block for the schema or group.>"
+
+	V["--build"] = "build"
+	D = D "build<%directive-build>"
+	D = D "<default build>"
+	D = D "<type string>"
+	D = D "<description Directive that injects build metadata (version, date, VCS tag) into the schema.>"
+
+	V["--expects"] = "expects"
+	D = D "expects<%directive-expects>"
+	D = D "<default expects>"
+	D = D "<type string>"
+	D = D "<description Semantic constraint for the option (e.g. file, dir, exists, range:1..5, one-of:a,b,c).>"
+
+	V["--macro-prefix"] = "<nx@"
+	D = D "macro-prefix<%directive-macro-prefix>"
+	D = D "<default <nx@>"
+	D = D "<type string>"
+	D = D "<description Directive that sets the prefix used for macro expansion in build snippets.>"
+
+	V["--macro-suffix"] = "/>"
+	D = D "macro-suffix<%directive-macro-suffix>"
+	D = D "<default /\>>"
+	D = D "<type string>"
+	D = D "<description Directive that sets the suffix used for macro expansion in build snippets.>"
+
 	return D
 }
-
 
 function __nx_shell_schema_cat(V, D)
 {
@@ -296,44 +350,53 @@ function __nx_shell_schema_mic(V, D)
 	# 5	set symbol
 	# 6	group count
 	# 7	assign separator
-	return V["-P"] D V["-L"] D V["-w"] D V["-c"] D V["-S"] D V["-y"]
+	# 8	macro prefix
+	# 9	macro suffix
+	return V["-P"] D V["-L"] D V["-w"] D V["-c"] D V["-S"] D V["-y"] D V["--macro-prefix"] D V["--macro-suffix"]
+}
+
+function __nx_shell_schema_dir(V, D)
+{
+	# 1 type directive
+	# 2 default directive
+	# 3 epilog directive
+	# 4 usage directive
+	# 5 description directive
+	# 6 build directive
+	return V["--type"] D V["--default"] D V["--epilog"] D V["--usage"] D V["--description"] D V["--build"] D V["--expects"]
 }
 
 function __nx_shell_schema(D1, D2, D3, N,
-	D4, D5, D6, D7, D8,
+	D4, D5, D6, D7, D8, D9,
 	V1, V2,
 	l, n, i, m,
 	acm,
 	eret, wret, ab,
 	ks, fas, kas, go, gc, lo, lc,
+	tpe, dft, epi, use, dsc, blt, ex,
 	fa, fd, fm, fr, fi, fn,
-	pref, ext, skp, ncn, fs, as,
+	pref, ext, skp, ncn, fs, as, psrt, mpre, msuf,
 	rgx, acrgx,
 	v_ta, v_tb)
 {
 
 	# PARAMETERS
 	# ----------
-	# SCELAR PARAMETERS
+	# SCALAR PARAMETERS
 	# D1	the input
 	# D2	the parameter separator
 	# D3	the remainder separator
 	# N	debug level
 
-
 	# STRING SPLIT ARRAY PARAMETERS
-	# D4	catagory symbols
+	# D4	category symbols
 	# D5	toggles
 	# D6	action symbols
 	# D7	flags
 	# D8	misc symbols
-
+	# D9	directives
 
 	# REFERENCE ARRAYS
-	# V1	the symbol structure
-	# V2	the parameters stack
-
-
 	# V1	the symbol structure vector
 	# V2	the parameters stack
 
@@ -347,7 +410,7 @@ function __nx_shell_schema(D1, D2, D3, N,
 	N = int(N)
 	wret = 0
 	m = 256
-
+	psrt = -6
 
 	# CATEGORY (D4) SECTION ###########################
 	n = 7
@@ -454,7 +517,7 @@ function __nx_shell_schema(D1, D2, D3, N,
 	##################################################
 
 
-	# MISC (D8) SECTON ###############################
+	# MISC (D8) SECTION ##############################
 	split(D8, v_ta, D2)
 	pref = __nx_else(v_ta[1], "-") # prefix for long/short options
 	ext = __nx_else(v_ta[2], "-_:.") # extra characters allowed between alpha characters in long option mode
@@ -462,6 +525,8 @@ function __nx_shell_schema(D1, D2, D3, N,
 	ncn = __nx_if(ncn, "", __nx_else(v_ta[4], " ", 1)) # concat sep of remainder string
 	fs = __nx_else(v_ta[5], "=") # set symbol
 	as = __nx_else(v_ta[6], "=") # assign symbol
+	mpre = __nx_else(v_ta[7], "<nx@") # macro prefix
+	msuf = __nx_else(v_ta[8], "/>") # macro suffix
 
 	split("", v_ta, "")
 	ext = nx_shell_diff(ext, v_ta, "", v_tb)
@@ -579,7 +644,7 @@ function __nx_shell_schema(D1, D2, D3, N,
 	}
 
 	# start of params when invoking the function nx_shell_args
-	V1["-0"] = __nx_if(V1["-0"] < -3, V1["-0"], -3)
+	V1["-0"] = __nx_if(V1["-0"] < psrt, V1["-0"], psrt)
 	##################################################
 
 
@@ -600,17 +665,20 @@ function __nx_shell_schema(D1, D2, D3, N,
 	V1[(oft + 6) * strde] = fn
 	##################################################
 
+
 	# SCELAR SECTION #################################
 	# 1	the parameter separator
 	# 2	the remainder separator
 	# 3	debug level
 	# 4	map boundary
 	# 5	group count
+	# 6	positional parameter starting index
 	V1[1 * strde] = D2
 	V1[2 * strde] = D3
 	V1[3 * strde] = N
 	V1[4 * strde] = m
 	V1[5 * strde] = 0
+	V1[6 * strde] = psrt
 	##################################################
 
 	skp = "(" nx_str_esc(skp, 2) ")+"
@@ -620,17 +688,19 @@ function __nx_shell_schema(D1, D2, D3, N,
 		ext = "([a-zA-Z]|" rgx
 		acm = acm ext ")*)?[A-Za-z]+"
 		rgx = rgx")+$"
-		ext = ext ")+$"
+		ext = ext ")+"
 		rgx = "(" rgx
 	} else {
-		ext = "[a-zA-Z]+$"
+		ext = "[a-zA-Z]+"
 	}
 
 	for (i = 1; i <= n; ++i)
 		acrgx = acrgx "|[" V1[(oft + i) * strde] "]"
+	mpre = nx_str_esc(mpre)
+	msuf = nx_str_esc(msuf)
 
 	# REGEX SECTION ##################################
-	n = 6
+	n = 10
 	oft = m * 9
 	V1[(oft + 0) * strde] = n
 	# 1	the action modifier match regex
@@ -639,12 +709,105 @@ function __nx_shell_schema(D1, D2, D3, N,
 	# 4	skip regex defaults to whitespace
 	# 5	action regex
 	# 6	skip regex defaults to whitespace with anchors
+	# 7	macro prefix
+	# 8	macro suffix
+	# 9	macro regex
+	# 9	macro remove pre suf regex
 	V1[(oft + 1) * strde] = acm
-	V1[(oft + 2) * strde] = ext
+	V1[(oft + 2) * strde] = ext "$"
 	V1[(oft + 3) * strde] = rgx
 	V1[(oft + 4) * strde] = skp
 	V1[(oft + 5) * strde] = substr(acrgx, 2)
 	V1[(oft + 6) * strde] = "^" skp "$"
+	V1[(oft + 7) * strde] = mpre
+	V1[(oft + 8) * strde] = msuf
+	V1[(oft + 9) * strde] = mpre ext msuf
+	V1[(oft + 10) * strde] = "(^" mpre "|" msuf "$)"
+	##################################################
+
+
+	# CATEGORY (D9) SECTION ###########################
+	n = 6
+	if ((l = split(D9, v_ta, D2)) > 0) {
+		i = __nx_if(l > n, n, l)
+		if (N > 1) {
+			if (l > n + 1)
+				nx_ansi_warning("'" D9 "' string contains more directives than implemented, separator to separate the directives was either used as a directive or you passed '"  l - n  "' directives more than you should have, only the first '" n "' positions will be used\n")
+			l = i
+			for (i = 1; i <= l; ++i) {
+				acm = v_ta[i]
+				if (acm != "") {
+					if (acm in v_ta) {
+						nx_ansi_warning("directive '" acm "' already in use at position '" v_ta[acm] "'\n")
+						v_ta[i] = ""
+						wret = -2
+					} else {
+						v_ta[acm] = i
+					}
+				}
+			}
+		} else {
+			l = i
+			for (i = 1; i <= l; ++i) {
+				acm = v_ta[i]
+				if (acm != "") {
+					if (acm in v_ta) {
+						v_ta[i] = ""
+						wret = -2
+					} else {
+						v_ta[acm] = i
+					}
+				}
+			}
+		}
+	}
+
+	tpe = __nx_else(v_ta[1], "type")
+	dft = __nx_else(v_ta[2], "default")
+	epi = __nx_else(v_ta[3], "epilog")
+	use = __nx_else(v_ta[4], "usage")
+	dsc = __nx_else(v_ta[5], "description")
+	blt = __nx_else(v_ta[6], "build")
+	ex = __nx_else(v_ta[7], "expects")
+
+	if (nx_delim_sep("type directive", tpe, v_tb, N) == -1)
+		eret = -1
+	if (nx_delim_sep("default directive", dft, v_tb, N) == -1)
+		eret = -1
+	if (nx_delim_sep("epilog directive", epi, v_tb, N) == -1)
+		eret = -1
+	if (nx_delim_sep("usage directive", use, v_tb, N) == -1)
+		eret = -1
+	if (nx_delim_sep("description directive", dsc, v_tb, N) == -1)
+		eret = -1
+	if (nx_delim_sep("build directive", blt, v_tb, N) == -1)
+		eret = -1
+	if (nx_delim_sep("expects directive", ex, v_tb, N) == -1)
+		eret = -1
+	delete v_tb
+
+	if (eret == -1) {
+		delete v_ta
+		return -1
+	}
+
+	# DIRECTIVE SECTION ##############################
+	n = 6
+	oft = m * 7
+	V1[(oft + 0) * strde] = n
+	# 1 type directive
+	# 2 default directive
+	# 3 epilog directive
+	# 4 usage directive
+	# 5 description directive
+	# 6 build directive
+	V1[(oft + 1) * strde] = tpe
+	V1[(oft + 2) * strde] = dft
+	V1[(oft + 3) * strde] = epi
+	V1[(oft + 4) * strde] = use
+	V1[(oft + 5) * strde] = dsc
+	V1[(oft + 6) * strde] = blt
+	V1[(oft + 7) * strde] = ex
 	##################################################
 
 	delete v_ta
@@ -658,6 +821,7 @@ function nx_shell_opts(V1, V2,
 	fas,
 	obol, lo, lc,
 	gfr, gcr, gsym, goff, gbse, gpos, gbol, grp, cgrp, go, gc, gent,
+	tpe, dft, epi, use, dsc, blt, ex,
 	dbol, djmp, dmov,
 	acm, lcr, rcr, cr,
 	vb2, vb2msg,
@@ -672,6 +836,16 @@ function nx_shell_opts(V1, V2,
 	strde = V1[0]
 	dbg = V1[strde * 3]
 	m = V1[strde * 4]
+
+	# DIRECTIVES
+	oft = m * 7
+	tpe = V1[(oft + 1) * strde]
+	dft = V1[(oft + 2) * strde]
+	epi = V1[(oft + 3) * strde]
+	use = V1[(oft + 4) * strde]
+	dsc = V1[(oft + 5) * strde]
+	blt = V1[(oft + 6) * strde]
+	ex = V1[(oft + 7) * strde]
 
 	# SYMBOLS
 	oft = m * 4
@@ -971,16 +1145,20 @@ function nx_shell_opts(V1, V2,
 			acm = trk[idx = __nx_shell_skip(trk[++idx], trk, flw, idx)]
 			while (nx_is_alpha(cr = trk[++idx]))
 				acm = acm cr
-			if (acm == "type") {
+			if (acm == tpe) {
 				gent = 0
-			} else if (acm == "default") {
+			} else if (acm == dft) {
 				gent = 1
-			} else if (acm == "epilog") {
+			} else if (acm == epi) {
 				gent = 2
-			} else if (acm == "usage") {
+			} else if (acm == use) {
 				gent = 3
-			} else if (acm == "description") {
+			} else if (acm == dsc) {
 				gent = 4
+			} else if (acm == blt) {
+				gent = 5
+			} else if (acm == ex) {
+				gent = 6
 			} else {
 				nx_ansi_warning("provided '" acm "' is garbage, what do you wish this to mean? '" cr "' discarding unimplemented metadata field\n")
 				continue
@@ -1144,7 +1322,7 @@ function nx_shell_args(V1, V2,
 
 	V1[-1] = r
 	V1[-2] = s
-	V1[-3] = n - 1
+	V1[-3] = int(n)
 	if (dbg > 2)
 		nx_ansi_alert("remainder is '" r "' \n")
 	delete trk
@@ -1240,9 +1418,43 @@ function nx_shell_help(V,
 	nx_fd_stderr("\n")
 }
 
+
+function nx_shell_build(V, N,
+	strde, m, oft,
+	pref,
+	msuf, mstr, mrmrgx,
+	mpr, mar, dsh, dq)
+{
+	strde = V[0]
+	m = V[strde * 4]
+
+	# REGEX
+	oft = m * 9
+	mrgx = V[(oft + 9) * strde]
+	mrmrgx = V[(oft + 10) * strde]
+	mstr = V[N]
+
+	oft = m * 5
+	dq = !V1[(oft + 5) * strde]
+
+	# MISC
+	oft = m * 8
+	pref = V[(oft + 1) * strde]
+	while (match(mstr, mrgx)) {
+		mpr = substr(mstr, RSTART, RLENGTH)
+		mar = mpr
+		gsub(mrmrgx, "", mar)
+		if (mar in V) {
+			dsh = __nx_if(length(mar) > 1, pref pref, pref)
+			sub(mpr, __nx_stringify_var("", V[V[dsh mar] - 2], dq, "", "", 1), mstr)
+		}
+	}
+	V[-4] = V[-4] mstr
+}
+
 function nx_shell_dispatch(V1, V2, N1, N2,
 	strde, cat, sym, arg, opt, act, mod, val, num, cse, pref, cur, idx,
-	con, ps, vr, m, oft,
+	con, ps, vr, m, oft, bld,
 	fa, fd, fm, fr, fi, fn)
 {
 	strde = V1[0]
@@ -1363,9 +1575,12 @@ function nx_shell_dispatch(V1, V2, N1, N2,
 					V1[idx] = nx_join_str(opt ps val, cur, ps)
 			}
 		} else if (mod == fd) {
-			
-		}
+			# ...
+		} # ...
 	}
+	bld = (V1[V1[vr] - strde * 2] + 1) + strde * 5
+	if (bld in V1)
+		nx_shell_build(V1, bld)
 	return N1
 }
 
@@ -1439,7 +1654,7 @@ function nx_shell_sanitize(D, V,
 
 function nx_shell_environ(V1, V2, D,
 	as, ln, idx, dq, trk, pre, post, ust, ept, ext, oft,
-	vr, vl, nm, pos, acm,
+	vr, vl, nm, pos, acm, psrt,
 	strde, m)
 {
 
@@ -1462,6 +1677,7 @@ function nx_shell_environ(V1, V2, D,
 	oft = m * 8
 	as = V1[(oft + 6) * strde]
 	ext = V1[(oft + 2) * strde]
+	psrt = V1[strde * 6]
 
 	if (ust) {
 		ln = split(D, trk, " ")
@@ -1471,16 +1687,18 @@ function nx_shell_environ(V1, V2, D,
 	}
 
 	ln = V1["-0"]
-	acm = acm pre __nx_stringify_var("NEX_ARGC", -ln / 3 - 1, dq, as, post)
+	idx = -psrt / 3
+	acm = acm pre __nx_stringify_var("NEX_ARGC", -ln / 3 - idx, dq, as, post)
 	acm = acm pre __nx_stringify_var("NEX_ARGV_R", V1[-1], dq, as, post)
 	acm = acm pre __nx_stringify_var("NEX_ARGV_S", V1[-2], dq, as, post)
 	acm = acm pre __nx_stringify_var("NEX_ARGV_0", V1[-3], dq, as, post)
+	acm = acm pre __nx_stringify_var("NEX_ARGV_E", V1[-4], dq, as, post)
 	idx = ""
 	for (idx in V2)
 		break
 	if (idx == "")
 		nx_shell_sanitize(ext, V2)
-	for (idx = -4; idx >= ln; idx = idx - 3) {
+	for (idx = psrt - 1; idx >= ln; idx = idx - 3) {
 		nm = "NEX_ARGV_" ++pos
 		vr = nx_shell_sanitize(V1[idx - 1], V2)
 		vl = V1[idx - 2]

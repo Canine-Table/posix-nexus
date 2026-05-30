@@ -31,13 +31,13 @@ nx_data_longopt()
 			ds = p["-d"]
 			ps = p["-p"]
 			dbg = p["-v"]
-
 			tog = __nx_shell_schema_tog(p, ds)
 			flg = __nx_shell_schema_flg(p, ds, 1)
 			cat = __nx_shell_schema_cat(p, ds)
 			act = __nx_shell_schema_act(p, ds)
 			mic = __nx_shell_schema_mic(p, ds)
-			__nx_shell_schema(pstr ds inpt, ds, ps, dbg, cat, tog, act, flg, mic, vec, agv)
+			dir = __nx_shell_schema_dir(p, ds)
+			__nx_shell_schema(pstr ds inpt, ds, ps, dbg, cat, tog, act, flg, mic, dir, vec, agv)
 			nx_shell_opts(vec, agv)
 			nx_shell_args(vec, agv)
 			strde = vec[0]
@@ -48,21 +48,22 @@ nx_data_longopt()
 				print "printf \x22%s\x22 \x22\x22"
 			} else {
 				l = V["-0"]
-				for (i = -4; i >= l; i = i - 3)
+				psrt = vec[l * 6]
+				for (i = psrt; i >= l; i = i - 3)
 					p[vec[i]] = vec[i - 2]
 				dbg = p["-v"]
 				ps = p["-p"]
 				ds = p["-d"]
-
 				tog = __nx_shell_schema_tog(p, ds)
 				flg = __nx_shell_schema_flg(p, ds)
 				cat = __nx_shell_schema_cat(p, ds)
 				act = __nx_shell_schema_act(p, ds)
 				mic = __nx_shell_schema_mic(p, ds)
+				dir = __nx_shell_schema_dir(p, ds)
 				pstr = vec["-1"]
 				split("", vec, "")
 				split("", agv, "")
-				__nx_shell_schema(pstr, ds, ps, dbg, cat, tog, act, flg, mic, vec, agv)
+				__nx_shell_schema(pstr, ds, ps, dbg, cat, tog, act, flg, mic, dir, vec, agv)
 				if (p["-O"] == "<nx:true/>")
 					p["-O"] = "echo "
 				else
@@ -82,6 +83,20 @@ nx_data_ref()
 	test -n "$1" && eval "printf \$$1" 2> /dev/null
 }
 
+nx_data_dir()
+{
+	test -e "$1" || return 66 && {
+		test -d "$1" && {
+			printf '%s' "$(cd "$1" && pwd)"
+			return 196
+		} || {
+			printf '%s' "$(cd $(dirname "$1") && pwd)"
+		}
+	}
+}
+
+
+############################################################################################
 nx_data_ref_append()
 (
 	nx_data_optargs 'v:d@s:' "$@"
@@ -146,17 +161,6 @@ nx_data_optargs()
 
 
 
-nx_data_dir()
-{
-	test -e "$1" || return 66 && {
-		test -d "$1" && {
-			printf '%s' "$(cd "$1" && pwd)"
-			return 196
-		} || {
-			printf '%s' "$(cd $(dirname "$1") && pwd)"
-		}
-	}
-}
 
 nx_data_include()
 (

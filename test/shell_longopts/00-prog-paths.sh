@@ -10,7 +10,7 @@
 			f
 		>
 	' "$@"
-	NEX_ARGV_R=$(nx_data_dir "${NEX_Gk_file:=$NEX_ARGV_R}")
+	NEX_ARGV_S="$(nx_data_dir "${NEX_Gk_file:=$NEX_ARGV_S}")"
 	case "$?" in
 		66) {
 			exit 66

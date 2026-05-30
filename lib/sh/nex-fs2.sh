@@ -28,7 +28,9 @@ nx_fs2_path()
 		<
 			description the flag to seek help.>
 	' "$@"
-	NEX_ARGV_R="$(nx_data_dir "${NEX_Gk_file:=${NEX_ARGV_R:-$(pwd)}}")"
+	exit
+	NEX_Gk_file="${NEX_Gk_file:-${NEX_ARGV_R:-$(pwd)}}"
+	NEX_ARGV_R="$(nx_data_dir "$NEX_Gk_file")"
 	case "$?" in
 		66) {
 			exit 66
