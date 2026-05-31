@@ -4,13 +4,15 @@
 #nx_include nex-int.awk
 #nx_include nex-log.awk
 
-function nx_boolean(V, D, N,	d)
+function nx_boolean(V, D1, N, D2, D3,	d)
 {
-	d = V[D]
-	if (d == "" && N || d == "<nx:true/>")
-		V[D] = "<nx:false/>"
-	else if (d == "" || d == "<nx:false/>")
-		V[D] = "<nx:true/>"
+	d = V[D1]
+	D2 = __nx_else(D2, "<nx:true/>")
+	D3 = __nx_else(D3, "<nx:false/>")
+	if (d == "" && N || d == D2)
+		V[D1] = D3
+	else if (d == "" || d == D3)
+		V[D1] = D2
 }
 
 function nx_delim_sep(D1, D2, V, N)

@@ -192,8 +192,8 @@ function __nx_nesc_match(D1, D2, B, D3, D4,
 
 
 
-function nx_nesc_match(D1, D2, B, D3, D4,	trk)
-
+function nx_nesc_match(D1, D2, B, D3, D4,
+	trk)
 {
 	if (D1 == "")
 		return -1
@@ -302,101 +302,5 @@ function nx_str_totitle(D,	v, i, s)
 	delete v
 	gsub(/(^ )|( $)/, "", s)
 	return s
-}
-
-# Work in progress
-function nx_str_grep(D1, V, D2, D3, B, N, D4,	trk)
-{
-	if (! ("fnd" in V)) {
-		D2 = __nx_else(D2, "<nx:null/>")
-		split(D3, trk, D2)
-		V["fnd"] = trk[1]
-		if (trk[2] != "") {
-			V["mth"] = trk[2]
-			V["rpl"] = trk[3]
-		}
-		V["sep"] = __nx_else(trk[4], "[\t ]*")
-		V["osep"] = __nx_else(trk[5], "\n")
-		split(B, trk, D2)
-		V["inc"] = trk[1]
-		V["wp"] = trk[2]
-		V["gbl"] = trk[3]
-		if (trk[4] == "<nx:true/>")
-			IGNORECASE=1
-		split(N, trk, D2)
-		if (int(trk[1]) == trk[1])
-			V["bfre"] = trk[1]
-		else
-			V["bfre"] = ""
-		if (int(trk[2]) == trk[2])
-			V["aftr"] = trk[2]
-		else
-			V["aftr"] = ""
-		V["pd"] = 0
-		if (int(trk[3]) == trk[3])
-			V["cnt"] = trk[3]
-		if (D4 != "") {
-			B = split(D4, trk, D2) + 1
-			for (D4 = 1; D4 <= B; ++D4) {
-				if (! ("o=" trk[D4] in trk)) {
-					V["o=" ++V["o"]] = trk[D4]
-					trk["o=" trk[D4]] = D4
-				}
-			}
-		}
-	}
-	if ("o" in V) {
-		N = split(D1, trk, V["sep"])
-		for (D2 = 0; D2 <= V["o"]; ++D2)
-			print V["o=" D2] "  =  " trk[V["o=" D2]]
-		D3 = ""
-		B = ""
-		for (D2 = 1; D2 <= V["o"]; ++D2) {
-			if (V["wp"] == "<nx:true/>") {
-				B = trk[(V["o=" D2] - 1) % N +  + 11]
-			} else {
-				B = __nx_if(V["wp"] == "<nx:false/>" && trk[V["o=" D2]] > N, D1, trk[V["o=" D2]])
-			}
-			if ("mth" in V) {
-				if (V["gbl"] == "<nx:true/>") {
-					gsub(V["mth"], V["rpl"], B)
-				} else {
-					sub(V["mth"], V["rpl"], B)
-				}
-			}
-			D3 = nx_join_str(D3, B, V["osep"])
-		}
-		V[--V["-0"]] =  D3
-	} else {
-		if ("mth" in V) {
-			if (V["gbl"] == "<nx:true/>") {
-				gsub(V["mth"], V["rpl"], D1)
-			} else {
-				sub(V["mth"], V["rpl"], D1)
-			}
-		}
-		V[--V["-0"]] = D1
-	}
-	if (D1 ~ V["fnd"] && (! ("cnt" in V) || V["cnt"]-- > 0)) {
-		if ("bfre" in V) {
-			for (N = V["-0"] + V["bfre"]; N > V["-0"]; --N) {
-				if (N in V)
-					print V[N]
-			}
-		}
-		if (V["inc"] != "<nx:true/>")
-			delete V[V["-0"]++]
-		else
-			print V[V["-0"]]
-		if ("aftr" in V)
-			V["pd"] = V["aftr"]
-	} else if (V["pd"]-- > 0 && V[V["-0"]] != "") {
-		print V[V["-0"]]
-	} else if ("cnt" in V && V["cnt"] < 0) {
-		delete trk
-		delete V
-		return -1
-	}
-	return 1
 }
 

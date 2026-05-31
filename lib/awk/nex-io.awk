@@ -4,15 +4,23 @@
 #nx_include nex-str-extras.awk
 #nx_include nex-log-extras.awk
 
+
 function nx_is_file(D, B)
 {
 	if (D == "")
 		return 0
-	if ((getline < D) > __nx_if(B == "", 0, -1))
+	if ((getline < D) > __nx_if(int(B) == 0, 0, -1))
 		close(D)
 	else
 		return 0
 	return 1
+}
+
+function nx_is_map(V, i)
+{
+	for (i in V)
+		break
+	return i != ""
 }
 
 function nx_file_path(D1, B, D2, V,	i, j)
