@@ -78,6 +78,7 @@ nx_data_longopt()
 				nx_shell_args(vec, agv)
 				print p["-O"] q nx_shell_environ(vec, agv, scpe) q
 			}
+			delete p
 			delete vec
 			delete agv
 		}

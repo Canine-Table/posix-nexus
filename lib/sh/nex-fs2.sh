@@ -1,6 +1,6 @@
 nx_fs2_path()
 (
-	nx_data_longopt -O ',
+	nx_data_longopt -- ',
 		realpath<@
 			b basename
 			d dirname
@@ -8,7 +8,7 @@ nx_fs2_path()
 			r
 		>
 		<
-			type toggle>
+			type str>
 		<
 			default realpath>
 		<
@@ -18,11 +18,11 @@ nx_fs2_path()
 			f
 		>
 		<
-			type string>
+			type str>
 		<
 			default .>
 		<
-			description a path relative or absolute pointing to a file, directory or whatever has a path on the filesystem.>
+			description a path relative or absolute pointing to a file, directory or whatever has a path on the filesystem. >
 		help<
 			h
 		>
@@ -66,9 +66,62 @@ nx_fs2_path()
 	esac
 )
 
+
+nx_fs2_install()
+(
+	nx_data_longopt -O  ',
+		u<%
+			user
+		>
+		<type int>
+		<min 0>
+		<max 7>
+		<default 6>
+		g<%
+			group
+		>
+		<type int>
+		<min 0>
+		<max 7>
+		<default 4>
+		o<%
+			other
+		>
+		<type int>
+		<min 0>
+		<max 7>
+		<default 4>
+		m<%
+			mode
+		>
+		<type int>
+		<min 0>
+		<max 777>
+		<default 644>
+		M<%
+			mask
+		>
+		<type int>
+		<min 0>
+		<max 777>
+		<default 644>
+		t<%
+			target
+		>
+		T<%type>
+		<lazy>
+		<regex ^[dfp]$>
+		<default d>
+		<type char>
+		p<%prefix>
+		<
+			build test -d <nx@p/\> -o ! -e <nx@p/\> && NEX_Gk_p=<nx@p/\>;>
+	' "$@"
+)
+
 #nx_fs2_install()
 #(
-#
+
 #	nx_data_longopt ',
 #		p<%
 #			prefix
