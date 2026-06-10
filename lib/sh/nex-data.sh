@@ -31,7 +31,7 @@ nx_data_longopt()
 			ds = p["-d"]
 			ps = p["-p"]
 			dbg = p["-v"]
-			tog = __nx_shell_schema_tog(p, ds)
+			tog = __nx_shell_schema_tog(p, ds, 1)
 			flg = __nx_shell_schema_flg(p, ds, 1)
 			cat = __nx_shell_schema_cat(p, ds)
 			act = __nx_shell_schema_act(p, ds)
@@ -44,15 +44,16 @@ nx_data_longopt()
 			strde = vec[0]
 			m = vec[strde * 4]
 			oft = m * 9
-			vl = vec["-2"]
+			vl = vec[-2 * strde]
 			if (vl ~ vec[(oft + 6) * strde] || vl == "") {
 				print "printf \x22%s\x22 \x22\x22"
 			} else {
 				l = vec[0]
 				L = vec["-0"]
 				psrt = vec[l * 6]
-				for (i = psrt - 1; i >= L; i = i - 3) {
-					p[vec[i]] = vec[i - 2]
+				ofst = l * 3
+				for (i = psrt * 2; i >= L; i = i + psrt) {
+					p[vec[i]] = vec[i + ofst]
 				}
 				dbg = p["-v"]
 				ps = p["-p"]
@@ -64,13 +65,15 @@ nx_data_longopt()
 				mic = __nx_shell_schema_mic(p, ds)
 				dir = __nx_shell_schema_dir(p, ds)
 				rep = __nx_shell_schema_rep(p, ds)
-				pstr = vec["-1"]
+				oft = m * 2
+				tru = vec[(oft + 1) * l]
+				pstr = vec[-1 * l]
 				split("", vec, "")
 				split("", agv, "")
 				__nx_shell_schema(pstr, ds, ps, dbg, cat, tog, act, flg, mic, dir, rep, vec, agv)
-				if (p["-O"] == "<nx:true/>") {
+				if (p["-O"] == tru) {
 					p["-O"] = "echo "
-					q = __nx_if(p["-q"] == "<nx:true/>", "\x27", "\x22")
+					q = __nx_if(p["-q"] == tru, "\x27", "\x22")
 				} else {
 					p["-O"] = ""
 				}

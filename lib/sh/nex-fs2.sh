@@ -1,3 +1,4 @@
+
 nx_fs2_path()
 (
 	nx_data_longopt -- ',
@@ -69,124 +70,55 @@ nx_fs2_path()
 
 nx_fs2_install()
 (
-	nx_data_longopt -O  ',
-		u<%
-			user
-		>
-		<type int>
-		<min 0>
-		<max 7>
-		<default 6>
-		g<%
-			group
-		>
-		<type int>
-		<min 0>
-		<max 7>
-		<default 4>
-		o<%
-			other
-		>
-		<type int>
-		<min 0>
-		<max 7>
-		<default 4>
-		m<%
-			mode
-		>
-		<type int>
-		<min 0>
-		<max 777>
-		<default 644>
-		M<%
-			mask
-		>
-		<type int>
-		<min 0>
-		<max 777>
-		<default 644>
-		t<%
-			target
-		>
-		T<%type>
-		<lazy>
-		<regex ^[dfp]$>
-		<default d>
-		<type char>
-		p<%prefix>
-		<
-			build test -d <nx@p/\> -o ! -e <nx@p/\> && NEX_Gk_p=<nx@p/\>;>
-	' "$@"
+    tmpa="$(whoami)"
+    nx_data_longopt -- ',
+	m<%mode>
+	<type int>
+	<regex ^[0-7]{3}$>
+	<default 644>
+	<description file mode to apply to created targets (octal)>
+
+	O<%owner>
+	<type str>
+	<default '"$tmpa"'>
+	<description owner username to assign to created targets>
+
+	G<%group-owner>
+	<type str>
+	<default '"$tmpa"'>
+	<description group name to assign to created targets>
+
+	U<%umask>
+	<build umask <nx@U/\>;>
+	<type int>
+	<regex ^[0-7]{3}$>
+	<default 022>
+	<description umask to apply before creating targets (octal)>
+
+	t<%target>
+	<type str>
+	<build case <nx@T/\> in
+		d) mkdir -p <nx@p/\><nx@t/\>;;
+		f) touch <nx@p/\><nx@t/\>;;
+		p) mkfifo <nx@p/\><nx@t/\>;;
+		*) false;;
+	esac && chmod <nx@m/\> <nx@p/\><nx@t/\> && chown <nx@O/\>:<nx@G/\> <nx@p/\><nx@t/\>;>
+	<description path (relative to prefix) to create as directory, file, or fifo>
+
+	T<%type>
+	<regex ^[dfp]$>
+	<type char>
+	<default d>
+	<description target type: d=directory, f=file, p=fifo>
+
+	p<%prefix>
+	<build test -d <nx@p/\> -o ! -e <nx@p/\> && mkdir -p <nx@p/\>;>
+	<type str>
+	<description prefix directory under which targets are created>
+
+	help<h>
+	<description show help and exit>
+    ' "$@"
+    test -n "$NEX_ARGV_E" && eval "$NEX_ARGV_E"
 )
 
-#nx_fs2_install()
-#(
-
-#	nx_data_longopt ',
-#		p<%
-#			prefix
-#		>
-#		<
-#			type str>
-#		<
-#			expects directory>
-#		<
-#			build test -d <nx@p/\> -o ! -e <nx@p/\> && NEX_Gk_p=<nx@p/\>;>
-#	'
-#	u=6
-#	g=4
-#	o=4
-#	U=7
-#	G=5
-#	O=5
-#	a="$(whoami)"
-#	A="$a"
-#	c=""
-#	while test "$#" -gt 0; do
-#		case "$1" in
-#			-c|-C) {
-#				test $1 "-C" && c="" || b="1"
-#			};;
-#			-b) {
-#				test -d "$2" && b="$2"
-#				shift
-#			};;
-#			-a|-A) {
-#				eval "$(printf '%s' "$1" | cut -d '-' -f 2)"="$2"
-#				shift
-#			};;
-#			-u|-g|-o|-U|-G|-O) {
-#				if awk -v prm="$2" 'BEGIN{if(perm >= 0 && perm <= 7){exit 0}else{exit 1}}'; then
-#					eval "$(printf '%s' "$1" | cut -d '-' -f 2)"="$2"
-#					shift
-#				else
-#					nx_err "expected an octal number,  received $1."
-#				fi
-#			};;
-#			*) {
-#				test -d "$b$1" || {
-#					test -e "$b$1" && {
-#						while :; do
-#							tmpd="$b$1-$(date '+%s').bak"
-#							test -e "$tmpd" || break
-#						done
-#						mv "$b$1" "$tmpd" || {
-#							nx_err "The path to '$1' must be either be a directory or a path that does not yet exist, manual intervention required."
-#							exit 2
-#						}
-#					}
-#					mkdir -p "$b$1" || {
-#						nx_err "The path to '$1' could not be created, manual intervention required."
-#						exit 3
-#					}
-#					nx_success "$b$1 was created"
-#				}
-#				test -n "$c" && {
-#					chmod "$U$G$O" "$b$1"
-#					chown "$a:$A" "$b$1"
-#				}
-#			};;
-#		esac
-#		shift
-#	done
-#)

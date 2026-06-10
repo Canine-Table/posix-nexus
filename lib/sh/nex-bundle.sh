@@ -91,6 +91,29 @@ nx_bundle_init()
 	. "$NEXUS_LIB/sh/nex-data.sh"
 	. "$NEXUS_LIB/sh/nex-fs.sh"
 
+	--mode 755 \
+	--prefix "$dnm" \
+	--target src \
+	--target docs \
+	--target bin \
+	--target cnf \
+	--target env \
+	--prefix "$HOME/.nx/" \
+	--target csr \
+	--target ssl \
+	--target kdbx \
+	--target db \
+	--prefix "${dnm}env/" \
+	--target log \
+	--target run \
+	--target cache \
+	--target nnn \
+	--target vim \
+	--target ssl \
+	--target bak \
+	--mode 777 \
+	--target tmp
+
 	cat > "${dnm}env/.nexus-shell.bundles.sh" <<- EOF
 		#!${SHELL:-$(command -v sh)}
 		export NEXUS_ROOT="$dnm"

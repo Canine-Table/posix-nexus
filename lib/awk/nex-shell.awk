@@ -323,7 +323,7 @@ function __nx_shell_schema_str(V, D, B)
 	D = D "<type str>"
 	D = D "<description Specifies the maximum numeric value allowed for this option.>"
 
-	V["--lazy-defaults"] = "<nx:false/>"
+	V["--lazy-defaults"] = __nx_if(B, "<nx:true/>", "<nx:false/>")
 	D = D "lazy-defaults<lazy-assign-defaults>"
 	D = D "<default <nx:false/\>>"
 	D = D "<type str>"
@@ -334,6 +334,30 @@ function __nx_shell_schema_str(V, D, B)
 	D = D "<type str>"
 	D = D "<description apply this option's default only if the option is used at least once; the default is assigned immediately before the first valid value and is not exported if the option is never invoked>"
 
+	V["--post-before"] = ""
+	D = D "post-before<%post-eval-before eval-before>"
+	D = D "<type str>"
+	D = D "<default post-before>"
+	D = D "<description apply eval before>"
+
+	V["--post-after"] = ""
+	D = D "post-after<%post-eval-after eval-after>"
+	D = D "<type str>"
+	D = D "<default post-after>"
+	D = D "<description apply eval after>"
+
+
+	V["--post-awk-before"] = ""
+	D = D "post-awk-before<%post-awk-eval-before eval-awk-before>"
+	D = D "<type str>"
+	D = D "<default post-awk-before>"
+	D = D "<description apply eval before>"
+
+	V["--post-awk-after"] = ""
+	D = D "post-awk-after<%post-awk-eval-after eval-awk-after>"
+	D = D "<type str>"
+	D = D "<default post-awk-after>"
+	D = D "<description apply eval after>"
 	return D
 }
 
@@ -349,7 +373,7 @@ function __nx_shell_schema_cat(V, D)
 	return V["-k"] D V["-F"] D V["-K"] D V["-g"] D V["-G"] D V["-l"] D V["-s"]
 }
 
-function __nx_shell_schema_tog(V, D)
+function __nx_shell_schema_tog(V, D, B)
 {
 	# 1	unset
 	# 2	override
@@ -358,7 +382,10 @@ function __nx_shell_schema_tog(V, D)
 	# 5	double quote
 	# 6	concat flag
 	# 7	lazy defaults flag
-	return V["-u"] D V["-o"] D V["-b"] D V["-e"] D V["-q"] D V["-C"] D V["--lazy-defaults"]
+	D = V["-u"] D V["-o"] D V["-b"] D V["-e"] D V["-q"] D V["-C"] D V["--lazy-defaults"]
+	if (B)
+		V["--lazy-defaults"] = "<nx:false/>"
+	return D
 }
 
 function __nx_shell_schema_flg(V, D, B)
@@ -408,7 +435,11 @@ function __nx_shell_schema_dir(V, D)
 	# 8 min directive
 	# 9 max directive
 	# 10 lazy directive
-	return V["--type"] D V["--default"] D V["--epilog"] D V["--usage"] D V["--description"] D V["--build"] D V["--regex"] D V["--min"] D V["--max"] D V["--lazy"]
+	# 11 post before
+	# 12 post after
+	# 13 post awk eval before
+	# 14 post awk eval after
+	return V["--type"] D V["--default"] D V["--epilog"] D V["--usage"] D V["--description"] D V["--build"] D V["--regex"] D V["--min"] D V["--max"] D V["--lazy"] D V["--post-before"] D V["--post-after"] D V["--post-awk-before"] D V["--post-awk-after"]
 }
 
 
@@ -474,7 +505,7 @@ function __nx_shell_schema(D1, D2, D3, N,
 	acm,
 	eret, wret, ab,
 	ks, fas, kas, go, gc, lo, lc,
-	tpe, dft, epi, use, dsc, blt, regx, min, max, lzy,
+	tpe, dft, epi, use, dsc, blt, regx, min, max, lzy, pafr, pbfr, apafr, apbfr,
 	fa, fd, fm, fr, fi, fn,
 	pref, ext, skp, ncn, fs, as, psrt, mpre, msuf,
 	tru, fls, non,
@@ -525,8 +556,7 @@ function __nx_shell_schema(D1, D2, D3, N,
 	N = int(N)
 	wret = 0
 	m = 256
-	psrt = -6
-
+	psrt = -8
 
 	# CATEGORY (D4) SECTION ###########################
 	n = 7
@@ -727,13 +757,14 @@ function __nx_shell_schema(D1, D2, D3, N,
 		return -1
 	}
 
-	# start of params when invoking the function nx_shell_args
+	# start of params when invoking the function nx_shell_args and nx_shell_environ
+	psrt = psrt * strde
 	V1["-0"] = __nx_if(V1["-0"] < psrt, V1["-0"], psrt)
 	##################################################
 
 
 	# ACTION (D6) SECTION ############################
-	oft = m * 6
+	oft = m * 7
 	V1[(oft + 0) * strde] = n
 	# 1	push modifier symbol
 	# 2	pop modifier symbol
@@ -756,7 +787,7 @@ function __nx_shell_schema(D1, D2, D3, N,
 	# 3	debug level
 	# 4	map boundary
 	# 5	group count
-	# 6	positional parameter starting index
+	# 6	positional parameter starting index and assigned block size
 	V1[1 * strde] = D2
 	V1[2 * strde] = D3
 	V1[3 * strde] = N
@@ -764,7 +795,6 @@ function __nx_shell_schema(D1, D2, D3, N,
 	V1[5 * strde] = 0
 	V1[6 * strde] = psrt
 	##################################################
-
 
 	skp = "(" nx_str_esc(skp, 2) ")+"
 	acm = "([a-zA-Z]"
@@ -813,7 +843,7 @@ function __nx_shell_schema(D1, D2, D3, N,
 
 
 	# CATEGORY (D9) SECTION ###########################
-	n = 10
+	n = 14
 	wret = __nx_else(nx_unique_check(D9, v_ta, D2, n, N, "directive"), wret)
 	tpe = __nx_else(v_ta[1], "type")
 	dft = __nx_else(v_ta[2], "default")
@@ -825,6 +855,10 @@ function __nx_shell_schema(D1, D2, D3, N,
 	min = __nx_else(v_ta[8], "min")
 	max = __nx_else(v_ta[9], "max")
 	lzy = __nx_else(v_ta[10], "lazy")
+	pbfr = __nx_else(v_ta[11], "post-before")
+	pafr = __nx_else(v_ta[12], "post-after")
+	apbfr = __nx_else(v_ta[13], "post-awk-before")
+	apafr = __nx_else(v_ta[14], "post-awk-after")
 
 
 	if (nx_delim_sep("type directive", tpe, v_tb, N) == -1)
@@ -847,6 +881,14 @@ function __nx_shell_schema(D1, D2, D3, N,
 		eret = -1
 	if (nx_delim_sep("lazy directive", lzy, v_tb, N) == -1)
 		eret = -1
+	if (nx_delim_sep("post before directive", pbfr, v_tb, N) == -1)
+		eret = -1
+	if (nx_delim_sep("post after directive", pafr, v_tb, N) == -1)
+		eret = -1
+	if (nx_delim_sep("post awk eval before directive", apbfr, v_tb, N) == -1)
+		eret = -1
+	if (nx_delim_sep("post awk eval after directive", apafr, v_tb, N) == -1)
+		eret = -1
 	delete v_tb
 
 	if (eret == -1) {
@@ -867,6 +909,10 @@ function __nx_shell_schema(D1, D2, D3, N,
 	# 8 min directive
 	# 9 max directive
 	# 10 lazy directive
+	# 11 post before
+	# 12 post after
+	# 13 post awk eval before
+	# 14 post awk eval after
 	V1[(oft + 1) * strde] = tpe
 	V1[(oft + 2) * strde] = dft
 	V1[(oft + 3) * strde] = epi
@@ -877,6 +923,10 @@ function __nx_shell_schema(D1, D2, D3, N,
 	V1[(oft + 8) * strde] = min
 	V1[(oft + 9) * strde] = max
 	V1[(oft + 10) * strde] = lzy
+	V1[(oft + 11) * strde] = pbfr
+	V1[(oft + 12) * strde] = pafr
+	V1[(oft + 13) * strde] = apbfr
+	V1[(oft + 14) * strde] = apafr
 	##################################################
 
 
@@ -919,9 +969,9 @@ function nx_shell_opts(V1, V2,
 	fas,
 	obol, lo, lc,
 	gfr, gcr, gsym, goff, gbse, gpos, gbol, grp, cgrp, go, gc, gent,
-	tpe, dft, epi, use, dsc, blt, regx, min, max,
+	tpe, dft, epi, use, dsc, blt, regx, min, max, lzy, pbfr, pafr, apbfr, apafr,
 	dbol, djmp, dmov,
-	ab, lzyd, lzy, islzy,
+	ab, lzyd, islzy,
 	acm, lcr, rcr, cr,
 	ks, kas,
 	fmt, idx, bol,
@@ -953,8 +1003,10 @@ function nx_shell_opts(V1, V2,
 	min = V1[(oft + 8) * strde]
 	max = V1[(oft + 9) * strde]
 	lzy = V1[(oft + 10) * strde]
-	#print "echo "  lzy
-
+	pbfr = V1[(oft + 11) * strde]
+	pafr = V1[(oft + 12) * strde]
+	apbfr = V1[(oft + 13) * strde]
+	apafr = V1[(oft + 14) * strde]
 
 	# CATEGORIES
 	oft = m * 4
@@ -1277,6 +1329,14 @@ function nx_shell_opts(V1, V2,
 				gent = 8
 			} else if (acm == lzy) {
 				gent = 9
+			} else if (acm == pbfr) {
+				gent = 10
+			} else if (acm == pafr) {
+				gent = 11
+			} else if (acm == apbfr) {
+				gent = 12
+			} else if (acm == apafr) {
+				gent = 13
 			} else {
 				if (dbg > 1)
 					nx_ansi_warning("provided '" acm "' is garbage, what do you wish this to mean? '" cr "' discarding unimplemented metadata field\n")
@@ -1427,7 +1487,6 @@ function nx_shell_args(V1, V2,
 		}
 
 		if (trm < 2) {
-			#if (ab && (ab != 3 || (ab == 3 && opt != "")) && trm) {
 			if (ab  && trm) {
 				if (dbg > 2)
 					nx_ansi_debug("option '" tok "' was never redistered, abort flag was set to '" ab "', preceding\n")
@@ -1457,9 +1516,9 @@ function nx_shell_args(V1, V2,
 		idx = nx_shell_dispatch(V1, V2, idx, grp)
 	}
 
-	V1[-1] = r
-	V1[-2] = s
-	V1[-3] = int(n)
+	V1[-1 * strde] = r
+	V1[-2 * strde] = s
+	V1[-3 * strde] = int(n)
 	if (dbg > 2)
 		nx_ansi_alert("remainder is '" r "' \n")
 	delete trk
@@ -1584,10 +1643,11 @@ function nx_shell_build(V, N,
 		gsub(mrmrgx, "", mar)
 		if (mar in V) {
 			dsh = __nx_if(length(mar) > 1, pref pref, pref)
-			sub(mpr, __nx_stringify_var("", V[V[dsh mar] - 2], dq, "", "", 1), mstr)
+			sub(mpr, __nx_stringify_var("", V[V[dsh mar] - 2], !dq, "", "", 1), mstr)
 		}
 	}
-	V[-4] = V[-4] mstr
+	oft = -4 * strde
+	V[oft] = V[oft] mstr
 }
 
 
@@ -1599,7 +1659,7 @@ function nx_shell_build(V, N,
 # N2	direction
 function nx_shell_type(V1, V2, N1, D1, D2, D3, N2,
 	strde, dft, tpe, tru, fls,
-	min, max, regx, opt, vl,
+	min, max, regx, opt, vl, ln,
 	dbg,
 	m, oft, num)
 {
@@ -1609,10 +1669,6 @@ function nx_shell_type(V1, V2, N1, D1, D2, D3, N2,
 	vl = D1
 	strde = V1[0]
 	dbg = V1[strde * 3]
-	if (N1 + strde in V1)
-		dft = V1[N1 + strde]
-	else
-		dft = ""
 	regx = N1 + strde * 6
 	opt = V2["opt"]
 	if (N1 in V1) {
@@ -1630,10 +1686,13 @@ function nx_shell_type(V1, V2, N1, D1, D2, D3, N2,
 				D1 = ""
 		} else if (tpe ~ /^char(\[[0-9]*\])?$/) {
 			gsub(/[^0-9]/, "", tpe)
-			tpe = __nx_else(tpe, 1)
-			if (length(D1 > tpe)) {
+			ln = __nx_else(tpe, 1)
+			tpe = "char"
+			if (dbg > 2)
+				nx_ansi_alert("char type specified a length of '" ln "' for option '" opt "'\n")
+			if (length(D1) > ln) {
 				if (dbg > 1)
-					nx_ansi_warning("char overflow, type specified a length of '" tpe "' for option '" opt "', but '" D1 "' is a length of '" length(D1) "'\n")
+					nx_ansi_warning("char overflow, type specified a length of '" ln "' for option '" opt "', but '" D1 "' is a length of '" length(D1) "'\n")
 				D1 = ""
 			}
 		} else if (tpe == "int") {
@@ -1710,13 +1769,14 @@ function nx_shell_type(V1, V2, N1, D1, D2, D3, N2,
 function nx_shell_dispatch(V1, V2, N1, N2,
 	strde, cat, sym, arg, opt, act, mod, val, num, cse, pref, cur, idx,
 	con, ps, vr, m, oft,
-	tpe, bld, dft, gcr,
-	tru, fls,
+	tpe, bld, dft, hdft, gcr,
+	tru, fls, dbg, psrt,
 	fa, fd, fm, fr, fi, fn)
 {
 
 	strde = V1[0]
 	m = V1[strde * 4]
+	dbg = V1[strde * 3]
 
 	if (N2 < 13) {
 		opt = V2["opt"]
@@ -1733,15 +1793,25 @@ function nx_shell_dispatch(V1, V2, N1, N2,
 	# MISC
 	oft = m * 8
 	pref = V1[(oft + 1) * strde]
+
 	tpe = V1[V1[opt] - strde * 2] + 1
+	bld = tpe + strde * 5
 	dft = tpe + strde
 
 	if (length(opt) > 1)
 		pref = pref pref
 	if (! (pref opt in V1)) {
-		idx = V1["-0"] - 1
+		psrt = V1[strde * 6]
+		num = V1["-0"]
+		idx = num + psrt
+		V1["-0"] = idx
+
 		V1[idx] = pref opt
-		V1[pref opt] = idx--
+		idx = idx + strde
+
+		V1[pref opt] = idx
+		idx = idx + strde
+
 		if (cat == 1)
 			V1[idx] = "NEX_" con "k_" opt
 		else if (cat == 4)
@@ -1752,15 +1822,30 @@ function nx_shell_dispatch(V1, V2, N1, N2,
 			V1[idx] = "NEX_" con "K_" opt
 		else
 			V1[idx] = "NEX_" con "_" opt
-		V1["-0"] = --idx
-		if (dft in V1)
+		idx = idx + strde
+		if (hdft = dft in V1)
 			V1[idx] = V1[dft]
+		if (idx > num) {
+			if (dbg > 0)
+				nx_ansi_error("block size is too small, overflow occured, exiting\n")
+			exit -2
+		}
 	} else {
-		idx = V1[pref opt] - 2
+		idx = V1[pref opt] + strde * 2
 	}
 
-	if (N1 == "")
+	if (N1 == "") {
+		if (hdft == 1) {
+			if (dbg > 2)
+				nx_ansi_alert("applying default for '" opt "'\n")
+			if (bld in V1) {
+				if (dbg > 2)
+					nx_ansi_alert("applying fast defaults for '" opt "'\n")
+				nx_shell_build(V1, bld)
+			}
+		}
 		return 0
+	}
 
 	ps = V1[strde * 2]
 
@@ -1777,8 +1862,6 @@ function nx_shell_dispatch(V1, V2, N1, N2,
 	oft = m * 2
 	tru = V1[(oft + 1) * strde]
 	fls = V1[(oft + 2) * strde]
-
-	bld = tpe + strde * 5
 
 	vr = opt
 	V2["gcr"] = vr
@@ -1915,6 +1998,7 @@ function nx_shell_sanitize(D, V,
 function nx_shell_environ(V1, V2, D,
 	as, ln, idx, dq, trk, pre, post, ust, ept, ext, oft,
 	vr, vl, nm, pos, acm, psrt,
+	t2, t3,
 	strde, m)
 {
 
@@ -1945,23 +2029,23 @@ function nx_shell_environ(V1, V2, D,
 			acm = acm pre __nx_stringify_var(trk[idx], "", dq, as, post)
 		delete trk
 	}
-
 	ln = V1["-0"]
-	idx = -psrt / 3
-	acm = acm pre __nx_stringify_var("NEX_ARGC", -ln / 3 - idx, dq, as, post)
-	acm = acm pre __nx_stringify_var("NEX_ARGV_R", V1[-1], dq, as, post)
-	acm = acm pre __nx_stringify_var("NEX_ARGV_S", V1[-2], dq, as, post)
-	acm = acm pre __nx_stringify_var("NEX_ARGV_0", V1[-3], dq, as, post)
-	acm = acm pre __nx_stringify_var("NEX_ARGV_E", V1[-4], dq, as, post)
+	acm = acm pre __nx_stringify_var("NEX_ARGC", ln / psrt - 1, dq, as, post)
+	acm = acm pre __nx_stringify_var("NEX_ARGV_R", V1[-1 * strde], dq, as, post)
+	acm = acm pre __nx_stringify_var("NEX_ARGV_S", V1[-2 * strde], dq, as, post)
+	acm = acm pre __nx_stringify_var("NEX_ARGV_0", V1[-3 * strde], dq, as, post)
+	acm = acm pre __nx_stringify_var("NEX_ARGV_E", V1[-4 * strde], dq, as, post)
 	idx = ""
+	t2 = strde * 2
+	t3 = strde * 3
 	for (idx in V2)
 		break
 	if (idx == "")
 		nx_shell_sanitize(ext, V2)
-	for (idx = psrt - 1; idx >= ln; idx = idx - 3) {
+	for (idx = psrt * 2; idx >= ln; idx = idx + psrt) {
 		nm = "NEX_ARGV_" ++pos
-		vr = nx_shell_sanitize(V1[idx - 1], V2)
-		vl = V1[idx - 2]
+		vr = nx_shell_sanitize(V1[idx + t2], V2)
+		vl = V1[idx + t3]
 		acm = acm pre __nx_stringify_var(nm, vr, dq, as, post)
 		acm = acm pre __nx_stringify_var(vr, vl, dq, as, post)
 	}
