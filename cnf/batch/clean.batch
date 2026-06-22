@@ -12,7 +12,11 @@ netns delete nex-pod-208-nextcloud
 netns delete nex-pod-208-talk
 netns delete nex-pod-208-cups
 netns delete nex-pod-208-penpot
-
+netns delete nex-pod-208-n8n
+netns delete nex-pod-208-phi3-mini
+netns delete nex-pod-208-mistral-7b
+netns delete nex-pod-208-llama-8b
+netns delete nex-pod-208-redisinsight
 netns delete nex-vpn-192
 netns delete nex-iscsi-224
 netns delete nex-srv-240

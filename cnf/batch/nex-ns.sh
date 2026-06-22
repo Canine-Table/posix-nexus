@@ -15,10 +15,11 @@ nsenter --net=/var/run/netns/nex-pod-208-pgadmin -- ip -batch "$NEXUS_CNF/batch/
 nsenter --net=/var/run/netns/nex-pod-208-ri -- ip -batch "$NEXUS_CNF/batch/nex-pod-208-ri.batch"
 nsenter --net=/var/run/netns/nex-pod-208-jellyfin -- ip -batch "$NEXUS_CNF/batch/nex-pod-208-jellyfin.batch"
 nsenter --net=/var/run/netns/nex-pod-208-cups -- ip -batch "$NEXUS_CNF/batch/nex-pod-208-cups.batch"
-
-nsenter --net=/var/run/netns/nex-pod-208-nextcloud -- socat UDP-LISTEN:53,fork UDP:172.16.128.1:53 & 2>&1 >/dev/null
 nsenter --net=/var/run/netns/nex-pod-208-nextcloud -- ip -batch "$NEXUS_CNF/batch/nex-pod-208-nextcloud.batch"
-
 nsenter --net=/var/run/netns/nex-pod-208-penpot -- ip -batch "$NEXUS_CNF/batch/nex-pod-208-penpot.batch"
-nohup nsenter --net=/var/run/netns/nex-pod-208-talk -- socat UDP-LISTEN:53,fork UDP:172.16.128.1:53 & 2>&1 >/dev/null
 nsenter --net=/var/run/netns/nex-pod-208-talk -- ip -batch "$NEXUS_CNF/batch/nex-pod-208-talk.batch"
+nsenter --net=/var/run/netns/nex-pod-208-n8n -- ip -batch "$NEXUS_CNF/batch/nex-pod-208-n8n.batch"
+nsenter --net=/var/run/netns/nex-pod-208-phi3-mini -- ip -batch "$NEXUS_CNF/batch/nex-pod-208-phi3-mini.batch"
+nsenter --net=/var/run/netns/nex-pod-208-mistral-7b -- ip -batch "$NEXUS_CNF/batch/nex-pod-208-mistral-7b.batch"
+nsenter --net=/var/run/netns/nex-pod-208-llama-8b -- ip -batch "$NEXUS_CNF/batch/nex-pod-208-llama-8b.batch"
+nsenter --net=/var/run/netns/nex-pod-208-redisinsight -- ip -batch "$NEXUS_CNF/batch/nex-pod-208-redisinsight.batch"

@@ -114,6 +114,12 @@ nx_cmd_python()
 	g_nx_cmd python python3 python3.14 python3.$1 python3$1
 }
 
+
+nx_cmd_browser()
+{
+	g_nx_cmd librewolf brave firefox
+}
+
 nx_cmd_pip()
 {
 	g_nx_cmd pip pip3 pip3.14 pip3.$1 pip$1

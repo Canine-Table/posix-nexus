@@ -6,7 +6,7 @@ test -n "$NEXUS_CNF" || {
 }
 
 test "$(id -u)" -eq 0 || {
-	nx_io_printf -E "elevated privileges required!"
+	nx_tty_print -E "elevated privileges required!"
 	return 2
 }
 

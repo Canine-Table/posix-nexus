@@ -7,9 +7,9 @@ link set nexus0 netns nex-posix-128
 link set nexus1 name nexus0
 link property add dev nexus0 altname nex_lab
 link set nexus0 alias "Virtual wired ethernet device refered to by nexus0."
-address add 172.16.128.1/17 label "nexus0:lab" dev nexus0
+address add 172.17.128.1/17 label "nexus0:lab" dev nexus0
 link set nexus0 up
-route replace 172.16.128.0/17 via 172.16.128.2 dev nexus0
+route replace 172.17.128.0/17 via 172.17.128.2 dev nexus0
 
 # Wireguad setup
 link add dummy0 type dummy
@@ -30,6 +30,11 @@ netns add nex-pod-208-nextcloud
 netns add nex-pod-208-talk
 netns add nex-pod-208-cups
 netns add nex-pod-208-penpot
+netns add nex-pod-208-n8n
+netns add nex-pod-208-phi3-mini
+netns add nex-pod-208-mistral-7b
+netns add nex-pod-208-llama-8b
+netns add nex-pod-208-redisinsight
 
 netns add nex-vpn-192
 netns add nex-iscsi-224

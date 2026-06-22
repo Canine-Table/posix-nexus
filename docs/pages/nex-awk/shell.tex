@@ -1,0 +1,151 @@
+\nxSections{Shell Modules}{1}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\nxSections{Schema Compiler}{2}
+
+\begin{NxLightBox}[title={(Lane Map)}, phantomlabel={func:__nx_shell_schema:lanes}]
+    \begin{tabularx}{\textwidth}{|c|Z|l|}
+        \hline
+        \textbf{Lane} & \textbf{Name} & \textbf{Meaning} \\
+        \hline
+        0 & schelars       & Scalar parameters (D1–D3, debug, map size, indices, etc.) \\
+        1 & types          & Type definitions (D11) \\
+        2 & representation & Type representations (D10) \\
+        3 & directives     & Directive keywords (D9) \\
+        4 & categories     & Category symbols (D4) \\
+        5 & toggles        & Toggle flags (D5) \\
+        6 & actions        & Action symbols (D6) \\
+        7 & flags          & Numeric flags (D7) \\
+        8 & misc           & Miscellaneous symbols (D8) \\
+        9 & regex          & Regex definitions (regex lane) \\
+        \hline
+    \end{tabularx}
+\end{NxLightBox}
+
+\begin{NxLightBox}[title={(D5) Toggles}, phantomlabel={func:__nx_shell_schema:D5}]
+    \begin{tabularx}{\textwidth}{|Z|c|Z|l|}
+        \hline
+        \textbf{Index} & \textbf{Default} & \textbf{Variable} & \textbf{Meaning} \\
+        \hline
+        1 & <nx:false/> & ust   & Unset \\
+        2 & <nx:false/> & ovr   & Override \\
+        3 & <nx:false/> & bk   & Backtrack \\
+        4 & <nx:false/> & ept   & Export \\
+        5 & <nx:false/> & dq   & Double‑quote \\
+        6 & <nx:false/> & con   & Concat flag \\
+        7 & <nx:false/> & lzyd & Lazy defaults flag \\
+        8 & <nx:true/>  & tpr & Directive prefix trim \\
+        9 & <nx:true/>  & tsf & Directive suffix trim \\
+        \hline
+    \end{tabularx}
+\end{NxLightBox}
+
+\begin{NxLightBox}[title={(D7) Flags}, phantomlabel={func:__nx_shell_schema:D7}]
+    \begin{tabularx}{\textwidth}{|Z|c|Z|l|}
+        \hline
+        \textbf{Index} & \textbf{Default} & \textbf{Variable} & \textbf{Meaning} \\
+        \hline
+        1 & 0 & gfr & Force (0–3) \\
+        2 & 0 & ab & Abort (0–3) \\
+        \hline
+    \end{tabularx}
+\end{NxLightBox}
+
+
+\begin{NxLightBox}[title={(D8) Misc Symbols}, phantomlabel={func:__nx_shell_schema:D8}]
+    \begin{tabularx}{\textwidth}{|Z|c|Z|l|}
+        \hline
+        \textbf{Index} & \textbf{Default} & \textbf{Variable} & \textbf{Meaning} \\
+        \hline
+        1 & -        & pref & Argument prefix character \\
+        2 & -\_:.     & ext  & Extra valid long‑form characters \\
+        3 & \texttt{\textbackslash n\textbackslash v\textbackslash f\textbackslash t\textbackslash r\ } & skp & Characters to ignore/skip \\
+        4 & (space)  & ncn  & Concat string for remainder \\
+        5 & =        & fs   & Set symbol \\
+        6 & =        & as   & Assign symbol \\
+        7 & <nx@     & mpre & Macro prefix \\
+        8 & />       & msuf & Macro suffix \\
+        \hline
+    \end{tabularx}
+\end{NxLightBox}
+
+\begin{NxLightBox}[title={(D9) Directives}, phantomlabel={func:__nx_shell_schema:D9}]
+    \begin{tabularx}{\textwidth}{|Z|c|Z|l|}
+        \hline
+        \textbf{Index} & \textbf{Default} & \textbf{Variable} & \textbf{Meaning} \\
+        \hline
+        1  & type            & tpe   & Type directive \\
+        2  & default         & dft   & Default directive \\
+        3  & epilog          & epi   & Epilog directive \\
+        4  & usage           & use   & Usage directive \\
+        5  & description     & dsc   & Description directive \\
+        6  & build           & blt   & Build directive \\
+        7  & regex           & regx  & Regex directive \\
+        8  & min             & min   & Min directive \\
+        9  & max             & max   & Max directive \\
+        10 & lazy            & lzy   & Lazy directive \\
+        11 & post-before     & pbfr  & Post‑before \\
+        12 & post-after      & pafr  & Post‑after \\
+        13 & post-awk-before & apbfr & Post‑awk‑before \\
+        14 & post-awk-after  & apafr & Post‑awk‑after \\
+        15 & append          & ap    & Append \\
+        16 & prepend         & pap   & Prepend \\
+        \hline
+    \end{tabularx}
+\end{NxLightBox}
+
+\begin{NxLightBox}[title={(D10) Type Representations}, phantomlabel={func:__nx_shell_schema:D10}]
+    \begin{tabularx}{\textwidth}{|Z|c|Z|l|}
+        \hline
+        \textbf{Index} & \textbf{Default} & \textbf{Variable} & \textbf{Meaning} \\
+        \hline
+        1 & <nx:true/>  & tru & True representation \\
+        2 & <nx:false/> & fls & False representation \\
+        3 & <nx:none/>  & non & None representation \\
+        \hline
+    \end{tabularx}
+\end{NxLightBox}
+
+\begin{NxLightBox}[title={(D6) Action Symbols}, phantomlabel={func:__nx_shell_schema:D6}]
+    \begin{tabularx}{\textwidth}{|Z|c|Z|l|}
+        \hline
+        \textbf{Index} & \textbf{Default} & \textbf{Variable} & \textbf{Meaning} \\
+        \hline
+        1 & + & fa & Push modifier symbol \\
+        2 & - & fd & Pop modifier symbol \\
+        3 & @ & fm & Match/find modifier symbol \\
+        4 & \textasciitilde & fr & Substitute/replace modifier symbol \\
+        5 & \% & fi & Index‑of‑match modifier symbol \\
+        6 & \# & fn & Number‑of‑matches modifier symbol \\
+        \hline
+    \end{tabularx}
+\end{NxLightBox}
+
+\begin{NxLightBox}[title={(Lane 9) Regex Definitions}, phantomlabel={func:__nx_shell_schema:regex}]
+\begin{enumerate}
+    \item[\textbf{9.1}] \textbf{Action‑modifier match regex}  \\
+        \Verb#([a-zA-Z]([a-zA-Z]|[-_:.])*)?[A-Za-z]+#
+
+    \item[\textbf{9.2}] \textbf{Extended + alphabetic long‑option regex}  \\
+        \Verb#([a-zA-Z]|[-_:.])+$#
+
+    \item[\textbf{9.3}] \textbf{Extended long‑option character regex}  \\
+        \Verb#([-_:.])+$#
+
+    \item[\textbf{9.4}] \textbf{Skip regex (whitespace)}  \\
+        \Verb#(\n\v\f\t\r )+#
+
+    \item[\textbf{9.5}] \textbf{Action regex (OR of action chars)}  \\
+        \Verb#<OR-accumulated action chars>#
+
+    \item[\textbf{9.6}] \textbf{Anchored skip regex}  \\
+        \Verb#^(\n\v\f\t\r )+$#
+
+    \item[\textbf{9.7}] \textbf{Macro regex}  \\
+        \Verb#<nx@([a-zA-Z]|[-_:.])+\/>#
+
+    \item[\textbf{9.8}] \textbf{Macro remove‑prefix‑suffix regex}  \\
+        \Verb#(^<nx@|\/>$)#
+\end{enumerate}
+\end{NxLightBox}
+

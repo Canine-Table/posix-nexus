@@ -123,7 +123,7 @@ nx_tty_hault()
 {
 	trap "printf '\x1b[?25h'; return" EXIT HUP INT TERM
 	printf '\x1b[?25l'
-	tmpa="$(printf '%s' "$1" | sed 's/\(^0*\|[^0-9]*\)//g')"
+	tmpa="$(nx_int_Z "$1")"
 	read -n 1 -s ${tmpa:+-t $tmpa} tmpa
 }
 

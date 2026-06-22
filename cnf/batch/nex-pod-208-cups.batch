@@ -5,6 +5,6 @@ link set loopback0 group 772
 link set loopback0 up
 
 ###################################################
-address add 172.16.208.8/20 label "nexus0:cups" dev nexus0
+address add 172.17.208.8/20 label "nexus0:cups" dev nexus0
 link set nexus0 up
-route add default via 172.16.208.1 dev nexus0
+route add default via 172.17.208.1 dev nexus0

@@ -88,6 +88,14 @@ nx_data_longopt()
 	')"
 }
 
+__nx_data_longopt_eval()
+{
+	test -n "$NEX_ARGV_E" || exit 226
+	printf "$NEX_ARGV_E"
+	nx_tty_div -s
+	eval "$NEX_ARGV_E"
+}
+
 nx_data_ref()
 {
 	test -n "$1" && eval "printf \$$1" 2> /dev/null
@@ -107,52 +115,34 @@ nx_data_dir()
 
 
 ############################################################################################
+
 nx_data_ref_append()
 (
-	nx_data_optargs 'v:d@s:' "$@"
-	NEX_k_v="$(nx_data_ref "$NEX_k_v")" || exit 65
-	test -n "$NEX_k_v" -a -n "$NEX_K_d" && tmpa="${NEX_k_v}${NEX_k_s:-<nx:null/>}"
-	printf '%s' "$tmpa$NEX_K_d"
+	nx_data_longopt -- ',
+
+	v<%value>
+	<description Reference to resolve before appending>
+
+	d<%data>
+	<description Data to append to the resolved reference>
+
+	s<%separator>
+	<description Separator to insert between value and data>
+	<default <nx:null/\>>
+
+	help<h>
+	<description Show help>
+	<build exit;>
+
+	' "$@"
+
+	test -n "$NEX_ARGV_E" && eval "$NEX_ARGV_E"
+	NEX_Gk_v="$(nx_data_ref "$NEX_Gk_v")" || exit 226
+	test -n "$NEX_Gk_v" -a -n "$NEX_Gk_d" && NEX_Gk_d="$NEX_Gk_v$NEX_Gk_s$NEX_Gk_d"
+	printf '%s' "$NEX_Gk_d"
+
 )
 
-nx_data_compare()
-(
-	nx_data_optargs 'l@r@m:s:c' "$@"
-	${AWK:-$(nx_cmd_awk)} \
-		-v lft="$NEX_K_l" \
-		-v rgt="$NEX_K_r" \
-		-v mde="$NEX_k_m" \
-		-v sep="$NEX_k_s" \
-		-v cnt="$NEX_f_c" \
-	"
-		$(nx_data_include -i "${NEXUS_LIB}/awk/nex-struct-extras.awk")
-	"'
-		BEGIN {
-			split(lft, larr, "<nx:null/>")
-			nx_arr_flip(larr)
-			split(rgt, rarr, "<nx:null/>")
-			nx_arr_flip(rarr)
-			split("", arr, "")
-			nx_arr_compare(larr, rarr, arr, mde, sep, __nx_if(cnt != "<nx:true/>", 2, 3))
-			delete larr
-			delete rarr
-			rgt = 0
-			if (cnt != "<nx:true/>") {
-				for (lft in arr) {
-					gsub("\x27", "\\\\x27", lft)
-					if (rgt++)
-						printf(" \\\n\x27%s\x27", lft)
-					else
-						printf("\x27%s\x27", lft)
-				}
-				printf("; # Nex is done here!\n")
-			} else {
-				print arr[0]
-			}
-			delete arr
-		}
-	'
-)
 
 nx_data_optargs()
 {
@@ -168,8 +158,6 @@ nx_data_optargs()
 			'
 	)"
 }
-
-
 
 
 nx_data_include()
@@ -293,31 +281,53 @@ nx_data_include()
 
 nx_data_path_append()
 (
-	nx_data_optargs 'v:s:' "$@"
+	nx_data_longopt -- ',
+
+	v<%value>
+	<description Base value to append into (resolved via nx_data_ref)>
+
+	s<%separator>
+	<description Separator used when joining path components>
+	<default <nx:null/\>>
+
+	help<h>
+	<description Show help>
+	<build exit;>
+
+	' "$@"
+
+	test -n "$NEX_ARGV_E" && eval "$NEX_ARGV_E"
 	${AWK:-$(nx_cmd_awk)} \
-		-v val="$(nx_data_ref "$NEX_k_v")" \
-		-v sep="${NEX_k_s:-<nx:null/>}" \
-		-v str="$NEX_R" \
-	"
-		$(nx_data_include -i "${NEXUS_LIB}/awk/nex-struct.awk")
-	"'
+			-v val="$(nx_data_ref "$NEX_Gk_v")" \
+			-v sep="$NEX_Gk_s" \
+		-v str="$NEX_ARGV_R" \
+		"
+			$(nx_data_include -i "${NEXUS_LIB}/awk/nex-struct.awk")
+		"'
 		BEGIN {
 			nx_trim_split(str, strs, "<nx:null/>")
 			strs["b4"] = 1
 			for (i = 1; i <= strs[0]; ++i) {
+
+				# A leading "-" toggles direction
 				if (sub(/^-/, "", strs[i])) {
 					if (strs[i] == "a")
-						strs["b4"] = 0
+						strs["b4"] = 0   # prepend
 					else
-						strs["b4"] = 1
-				} else if (sep val sep !~ sep strs[i] sep) {
+						strs["b4"] = 1   # append
+				}
+
+				# Only append/prepend if not already present
+				else if (sep val sep !~ sep strs[i] sep) {
 					if (strs["b4"])
 						val = nx_join_str(val, strs[i], sep)
 					else
 						val = nx_join_str(strs[i], val, sep)
 				}
 			}
+
 			delete strs
+
 			if (val)
 				print val
 			else
@@ -326,36 +336,7 @@ nx_data_path_append()
 	'
 )
 
-nx_data_word()
-(
-	nx_data_optargs 'k@p' "$@"
-	${AWK:-$(nx_cmd_awk)} \
-		-v str="$NEX_S" \
-		-v sep="$NEX_K_k" \
-		-v phdr="${NEX_f_p:+<nx:null/><nx:placeholder/>}" \
-	"
-		$(nx_data_include -i "${NEXUS_LIB}/awk/nex-struct-extras.awk")
-	"'
-		BEGIN {
-			if (! sep) {
-				dlm["\x22"] = "\x22"
-				dlm["\x27"] = "\x27"
-				dlm["\x60"] = "\x60"
-				dlm["\x09"] = ""
-				dlm["\x20"] = ""
-			}
-			nx_find_pair(str, mth, dlm, sep __nx_only(sep, phdr))
-			delete dlm
-			for (i = 5; i <= mth[mth[0]]; i += mth[0]) {
-				if (mth[i + 2] == "0")
-					print substr(str, 1, mth[i] - 1)
-				else
-					print substr(str, mth[i] + mth[i + 1], mth[i + 2])
-			}
-			delete mth
-		}
-	'
-)
+
 
 nx_data_match()
 (
@@ -384,5 +365,12 @@ nx_data_match()
 			exit str
 		}
 	'
+)
+
+nx_data_tester()
+(
+	#nx_data_optargs 'o@' "$@"
+	nx_data_longopt --concat '<nx:null/>' 'O@' "$@"
+	echo "$NEX_F_O"
 )
 

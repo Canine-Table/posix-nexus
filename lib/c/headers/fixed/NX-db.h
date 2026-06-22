@@ -6,37 +6,6 @@ typedef struct {
 	unsigned char h;
 } NX_wbbS;
 
-/*
-typedef struct {
-	NX_dwwS h;
-	NX_dwwS l;
-} NX_addS;
-
-typedef struct {
-	NX_addS h;
-	NX_addS l;
-} NX_oaaS;
-
-typedef struct {
-	NX_oaaS h;
-	NX_oaaS l;
-} NX_hooS;
-
-typedef struct {
-	NX_hooS h;
-	NX_hooS l;
-} NX_shhS;
-
-typedef struct {
-	NX_shhS h;
-	NX_shhS l;
-} NX_pssS;
-
-typedef struct {
-	NX_pssS h;
-	NX_pssS l;
-} NX_xppS;
-*/
 unsigned char NX_set_b1wBBF(NX_wbbS*, const unsigned char, const unsigned char);
 unsigned char NX_set_b1wVF(NX_wbbS*, const unsigned short);
 unsigned char NX_add_b1w1W1WF(NX_wbbS*, const NX_wbbS*, const NX_wbbS*);

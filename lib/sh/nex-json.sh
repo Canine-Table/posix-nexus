@@ -19,9 +19,28 @@ nx_data_jdump()
 
 nx_data_jtree()
 (
-	nx_data_optargs 'r:j:n:' "$@"
-	NEX_k_n="$(nx_int_range -o -g '-1' -v "$NEX_k_n")"
-	${AWK:-$(nx_cmd_awk)} -v jdump="$NEX_k_j" -v root="${NEX_k_r:-}" -v indent="$NEX_k_n" \
+	nx_data_longopt -- ',
+	j<%json>
+	<description JSON input to parse and flatten>
+
+	n<%indent>
+	<description Indentation level for flatten output>
+	<type int>
+	<default 4>
+	<min 0>
+	<max 32>
+
+	r<%root>
+	<description Optional root path to start flattening from>
+
+	help<h>
+	<description Show help>
+	<build exit;>
+	' "$@"
+	${AWK:-$(nx_cmd_awk)} \
+		-v jdump="$NEX_Gk_j" \
+		-v root="$NEX_Gk_r" \
+		-v indent="$NEX_Gk_n" \
 	"
 		$(nx_data_include -i "${NEXUS_LIB}/awk/nex-json.awk")
 	"'

@@ -7,4 +7,9 @@ vlan add dev nexus5 vid 208 pvid untagged
 vlan add dev nexus6 vid 208 pvid untagged
 vlan add dev nexus7 vid 208 pvid untagged
 vlan add dev nexus8 vid 208 pvid untagged
+vlan add dev nexus9 vid 208 pvid untagged
+vlan add dev nexus10 vid 208 pvid untagged
+vlan add dev nexus11 vid 208 pvid untagged
+vlan add dev nexus12 vid 208 pvid untagged
+vlan add dev nexus13 vid 208 pvid untagged
 vlan add dev bridge0 vid 208 self

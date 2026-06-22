@@ -48,10 +48,16 @@
 		<order-sua> :::=
 			! <signed> | <unsigned> | <auto>
 		;;;
+		<void> :::=
+			! g | G : void
+		;;;
 		<int> :::=
 			! v | V : short
 			! i | I : int
 			! l | L : long
+			! u | U : sizet
+			! r | r : ptrdifft
+			! c | C : wchart
 		;;;
 		<float> :::=
 			! f | F : float
@@ -59,6 +65,7 @@
 		;;;
 		<auto> :::=
 			! <size>
+			! m | M : misc
 		;;;
 		<signed> :::=
 			! <float>
@@ -86,8 +93,6 @@
 	\end{bnf}
 \end{center}
 
-
-
-
 \nxGram{prefix}
 \nxGram{grouping}
+

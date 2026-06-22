@@ -18,8 +18,7 @@ nx_py_venv()
 				shift
 			};;
 			-a) {
-				tmpd="$tmpa/$tmpb/.env/bin/activate"
-				echo $tmpd
+				tmpd="$tmpa/$tmpb/.env.d/bin/activate"
 				test -f "$tmpd" -a -r "$tmpd" -a -z "$VIRTUAL_ENV" && {
 					. "$tmpd"
 					unset VIRTUAL_ENV_PROMPT
@@ -28,14 +27,14 @@ nx_py_venv()
 			};;
 
 			-c) {
-				h_nx_cmd $G_NEX_PY && $G_NEX_PY -m venv "$tmpa/$tmpb/.env/"
+				h_nx_cmd $G_NEX_PY && $G_NEX_PY -m venv "$tmpa/$tmpb/.env.d/"
 			};;
 
 			*) {
-				if test "$VIRTUAL_ENV" = "$tmpa/$tmpb/.env"; then
+				if test "$VIRTUAL_ENV" = "$tmpa/$tmpb/.env.d"; then
 					case "$1" in
 						-d) {
-							tmpd="$tmpa/$tmpb/.env/bin/deactivate"
+							tmpd="$tmpa/$tmpb/.env.d/bin/deactivate"
 							test -f "$tmpd" -a -r "$tmpd" && . "$tmpd"
 							unset VIRTUAL_ENV
 							nx_cfg_ps1

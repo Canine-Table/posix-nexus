@@ -20,8 +20,8 @@ link property add dev bridge0 altname backbone176
 link set bridge0 alias "Logical software bridge device aggregating multiple interfaces refered to as bridge0."
 link set bridge0 group 1
 link set bridge0 up
-address add 172.16.176.2/20 label "bridge0:qemu_gw" dev bridge0
-route add default via 172.16.176.1 dev bridge0
+address add 172.17.176.2/20 label "bridge0:qemu_gw" dev bridge0
+route add default via 172.17.176.1 dev bridge0
 
 
 link set nexus0 group 3

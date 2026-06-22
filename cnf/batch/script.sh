@@ -18,7 +18,11 @@ cat > "$NEXUS_CNF/batch/clean.batch" <<- 'EOF'
 	netns delete nex-pod-208-talk
 	netns delete nex-pod-208-cups
 	netns delete nex-pod-208-penpot
-
+	netns delete nex-pod-208-n8n
+	netns delete nex-pod-208-phi3-mini
+	netns delete nex-pod-208-mistral-7b
+	netns delete nex-pod-208-llama-8b
+	netns delete nex-pod-208-redisinsight
 	netns delete nex-vpn-192
 	netns delete nex-iscsi-224
 	netns delete nex-srv-240
@@ -46,6 +50,11 @@ cat > "$NEXUS_CNF/batch/nex-ns.sh" <<- 'EOF'
 	nsenter --net=/var/run/netns/nex-pod-208-nextcloud -- ip -batch "$NEXUS_CNF/batch/nex-pod-208-nextcloud.batch"
 	nsenter --net=/var/run/netns/nex-pod-208-penpot -- ip -batch "$NEXUS_CNF/batch/nex-pod-208-penpot.batch"
 	nsenter --net=/var/run/netns/nex-pod-208-talk -- ip -batch "$NEXUS_CNF/batch/nex-pod-208-talk.batch"
+	nsenter --net=/var/run/netns/nex-pod-208-n8n -- ip -batch "$NEXUS_CNF/batch/nex-pod-208-n8n.batch"
+	nsenter --net=/var/run/netns/nex-pod-208-phi3-mini -- ip -batch "$NEXUS_CNF/batch/nex-pod-208-phi3-mini.batch"
+	nsenter --net=/var/run/netns/nex-pod-208-mistral-7b -- ip -batch "$NEXUS_CNF/batch/nex-pod-208-mistral-7b.batch"
+	nsenter --net=/var/run/netns/nex-pod-208-llama-8b -- ip -batch "$NEXUS_CNF/batch/nex-pod-208-llama-8b.batch"
+	nsenter --net=/var/run/netns/nex-pod-208-redisinsight -- ip -batch "$NEXUS_CNF/batch/nex-pod-208-redisinsight.batch"
 EOF
 
 #######( default )#################################
@@ -59,9 +68,9 @@ cat > "$NEXUS_CNF/batch/nex-default.batch" <<- 'EOF'
 	link set nexus1 name nexus0
 	link property add dev nexus0 altname nex_lab
 	link set nexus0 alias "Virtual wired ethernet device refered to by nexus0."
-	address add 172.16.128.1/17 label "nexus0:lab" dev nexus0
+	address add 172.17.128.1/17 label "nexus0:lab" dev nexus0
 	link set nexus0 up
-	route replace 172.16.128.0/17 via 172.16.128.2 dev nexus0
+	route replace 172.17.128.0/17 via 172.17.128.2 dev nexus0
 
 	# Wireguad setup
 	link add dummy0 type dummy
@@ -82,6 +91,11 @@ cat > "$NEXUS_CNF/batch/nex-default.batch" <<- 'EOF'
 	netns add nex-pod-208-talk
 	netns add nex-pod-208-cups
 	netns add nex-pod-208-penpot
+	netns add nex-pod-208-n8n
+	netns add nex-pod-208-phi3-mini
+	netns add nex-pod-208-mistral-7b
+	netns add nex-pod-208-llama-8b
+	netns add nex-pod-208-redisinsight
 
 	netns add nex-vpn-192
 	netns add nex-iscsi-224
@@ -131,7 +145,7 @@ cat > "$NEXUS_CNF/batch/nex-posix-128.batch" <<- 'EOF'
 	link set nexus0 up
 	link set nexus0 netns nex-qemu-176
 	link add link bridge0 name bridge0.176 type vlan id 176
-	address add 172.16.176.1/20 label "vlan176:qemu" dev bridge0.176
+	address add 172.17.176.1/20 label "vlan176:qemu" dev bridge0.176
 	link set bridge0.176 group 3
 	link set bridge0.176 up
 
@@ -148,7 +162,7 @@ cat > "$NEXUS_CNF/batch/nex-posix-128.batch" <<- 'EOF'
 	link set nexus0 group 3
 	link set nexus0 netns nex-vpn-192
 	link add link bridge0 name bridge0.192 type vlan id 192
-	address add 172.16.192.1/20 label "vlan192:vpn" dev bridge0.192
+	address add 172.17.192.1/20 label "vlan192:vpn" dev bridge0.192
 	link set bridge0.192 group 3
 	link set bridge0.192 up
 
@@ -165,7 +179,7 @@ cat > "$NEXUS_CNF/batch/nex-posix-128.batch" <<- 'EOF'
 	link set nexus0 group 3
 	link set nexus0 netns nex-pod-208
 	link add link bridge0 name bridge0.208 type vlan id 208
-	address add 172.16.208.1/20 label "vlan208:pod" dev bridge0.208
+	address add 172.17.208.1/20 label "vlan208:pod" dev bridge0.208
 	link set bridge0.208 group 3
 	link set bridge0.208 up
 
@@ -182,7 +196,7 @@ cat > "$NEXUS_CNF/batch/nex-posix-128.batch" <<- 'EOF'
 	link set nexus0 group 3
 	link set nexus0 netns nex-iscsi-224
 	link add link bridge0 name bridge0.224 type vlan id 224
-	address add 172.16.224.1/20 label "vlan224:iscsi" dev bridge0.224
+	address add 172.17.224.1/20 label "vlan224:iscsi" dev bridge0.224
 	link set bridge0.224 group 3
 	link set bridge0.224 up
 
@@ -199,17 +213,17 @@ cat > "$NEXUS_CNF/batch/nex-posix-128.batch" <<- 'EOF'
 	link set nexus0 group 3
 	link set nexus0 netns nex-srv-240
 	link add link bridge0 name bridge0.240 type vlan id 240
-	address add 172.16.240.1/20 label "vlan240:srv" dev bridge0.240
+	address add 172.17.240.1/20 label "vlan240:srv" dev bridge0.240
 	link set bridge0.240 group 3
 	link set bridge0.240 up
 
 
 	######################################################################
 	link set nexus name nexus0
-	address add 172.16.128.2/17 label "nexus0:gateway" dev nexus0
+	address add 172.17.128.2/17 label "nexus0:gateway" dev nexus0
 	link set nexus0 group 3
 	link set nexus0 up
-	route add default via 172.16.128.1 dev nexus0
+	route add default via 172.17.128.1 dev nexus0
 EOF
 
 cat > "$NEXUS_CNF/batch/nex-br-posix-128.batch" <<- 'EOF'
@@ -250,8 +264,8 @@ cat > "$NEXUS_CNF/batch/nex-qemu-176.batch" <<- 'EOF'
 	link set bridge0 alias "Logical software bridge device aggregating multiple interfaces refered to as bridge0."
 	link set bridge0 group 1
 	link set bridge0 up
-	address add 172.16.176.2/20 label "bridge0:qemu_gw" dev bridge0
-	route add default via 172.16.176.1 dev bridge0
+	address add 172.17.176.2/20 label "bridge0:qemu_gw" dev bridge0
+	route add default via 172.17.176.1 dev bridge0
 
 
 	link set nexus0 group 3
@@ -307,10 +321,10 @@ cat > "$NEXUS_CNF/batch/nex-pod-208.batch" <<- 'EOF'
 	link set bridge0 group 1
 	link set bridge0 up
 	link add link bridge0 name bridge0.208 type vlan id 208
-	address add 172.16.208.2/20 label "bridge0:qemu" dev bridge0.208
+	address add 172.17.208.2/20 label "bridge0:qemu" dev bridge0.208
 	link set bridge0.208 group 3
 	link set bridge0.208 up
-	route add default via 172.16.208.1 dev bridge0.208
+	route add default via 172.17.208.1 dev bridge0.208
 
 
 	######( adminer )###############################
@@ -404,7 +418,7 @@ cat > "$NEXUS_CNF/batch/nex-pod-208.batch" <<- 'EOF'
 	link set nexus0 netns nex-pod-208-penpot
 
 
-	######( penpot )###############################
+	######( talk )###############################
 	link add nexus8 type veth peer name nexus0
 	link property add dev nexus8 altname talk_net
 	link set nexus8 alias "Virtual wired ethernet container holding nextcloud talk which is connected the podman network on vlan 208."
@@ -415,6 +429,73 @@ cat > "$NEXUS_CNF/batch/nex-pod-208.batch" <<- 'EOF'
 	link set nexus0 alias "Virtual wired ethernet device refered to by nexus0 for the podman guest talk."
 	link set nexus0 group 3
 	link set nexus0 netns nex-pod-208-talk
+
+
+	######( n8n )###############################
+	link add nexus9 type veth peer name nexus0
+	link property add dev nexus9 altname n8n_net
+	link set nexus9 alias "Virtual wired ethernet container holding n8n which is connected the podman network on vlan 208."
+	link set nexus9 group 3
+	link set nexus9 up
+	link set nexus9 master bridge0
+	link property add dev nexus0 altname n8n_gw
+	link set nexus0 alias "Virtual wired ethernet device refered to by nexus0 for the podman guest n8n."
+	link set nexus0 group 3
+	link set nexus0 netns nex-pod-208-n8n
+
+
+	######( phi3-mini )###############################
+	link add nexus10 type veth peer name nexus0
+	link property add dev nexus10 altname phi3m_net
+	link set nexus10 alias "Virtual wired ethernet container holding phi3-mini which is connected the podman network on vlan 208."
+	link set nexus10 group 3
+	link set nexus10 up
+	link set nexus10 master bridge0
+	link property add dev nexus0 altname phi3m_gw
+	link set nexus0 alias "Virtual wired ethernet device refered to by nexus0 for the podman guest phi3-mini."
+	link set nexus0 group 3
+	link set nexus0 netns nex-pod-208-phi3-mini
+
+
+
+	######( mistral-7b )###############################
+	link add nexus11 type veth peer name nexus0
+	link property add dev nexus11 altname mst7_net
+	link set nexus11 alias "Virtual wired ethernet container holding mistral-7b which is connected the podman network on vlan 208."
+	link set nexus11 group 3
+	link set nexus11 up
+	link set nexus11 master bridge0
+	link property add dev nexus0 altname mst7_gw
+	link set nexus0 alias "Virtual wired ethernet device refered to by nexus0 for the podman guest mistral-7b."
+	link set nexus0 group 3
+	link set nexus0 netns nex-pod-208-mistral-7b
+
+
+	######( phi3-mini )###############################
+	link add nexus12 type veth peer name nexus0
+	link property add dev nexus12 altname lma8_net
+	link set nexus12 alias "Virtual wired ethernet container holding llama-8b which is connected the podman network on vlan 208."
+	link set nexus12 group 3
+	link set nexus12 up
+	link set nexus12 master bridge0
+	link property add dev nexus0 altname lma8_gw
+	link set nexus0 alias "Virtual wired ethernet device refered to by nexus0 for the podman guest llama-8b."
+	link set nexus0 group 3
+	link set nexus0 netns nex-pod-208-llama-8b
+
+
+	######( redisinsight )###############################
+	link add nexus13 type veth peer name nexus0
+	link property add dev nexus13 altname red_net
+	link set nexus13 alias "Virtual wired ethernet container holding redisinsight which is connected the podman network on vlan 208."
+	link set nexus13 group 3
+	link set nexus13 up
+	link set nexus13 master bridge0
+	link property add dev nexus0 altname red_gw
+	link set nexus0 alias "Virtual wired ethernet device refered to by nexus0 for the podman guest redisinsight."
+	link set nexus0 group 3
+	link set nexus0 netns nex-pod-208-redisinsight
+
 
 	###################################################
 	link set nexus name nexus0
@@ -432,6 +513,11 @@ cat > "$NEXUS_CNF/batch/nex-br-pod-208.batch" <<- 'EOF'
 	vlan add dev nexus6 vid 208 pvid untagged
 	vlan add dev nexus7 vid 208 pvid untagged
 	vlan add dev nexus8 vid 208 pvid untagged
+	vlan add dev nexus9 vid 208 pvid untagged
+	vlan add dev nexus10 vid 208 pvid untagged
+	vlan add dev nexus11 vid 208 pvid untagged
+	vlan add dev nexus12 vid 208 pvid untagged
+	vlan add dev nexus13 vid 208 pvid untagged
 	vlan add dev bridge0 vid 208 self
 EOF
 
@@ -445,9 +531,9 @@ cat > "$NEXUS_CNF/batch/nex-pod-208-adminer.batch" <<- 'EOF'
 	link set loopback0 up
 
 	###################################################
-	address add 172.16.208.4/20 label "nexus0:admr" dev nexus0
+	address add 172.17.208.4/20 label "nexus0:admr" dev nexus0
 	link set nexus0 up
-	route add default via 172.16.208.1 dev nexus0
+	route add default via 172.17.208.1 dev nexus0
 EOF
 
 
@@ -460,9 +546,9 @@ cat > "$NEXUS_CNF/batch/nex-pod-208-pgadmin.batch" <<- 'EOF'
 	link set loopback0 up
 
 	###################################################
-	address add 172.16.208.3/20 label "nexus0:pg" dev nexus0
+	address add 172.17.208.3/20 label "nexus0:pg" dev nexus0
 	link set nexus0 up
-	route add default via 172.16.208.1 dev nexus0
+	route add default via 172.17.208.1 dev nexus0
 EOF
 
 
@@ -475,9 +561,9 @@ cat > "$NEXUS_CNF/batch/nex-pod-208-ri.batch" <<- 'EOF'
 	link set loopback0 up
 
 	###################################################
-	address add 172.16.208.5/20 label "nexus0:vk" dev nexus0
+	address add 172.17.208.5/20 label "nexus0:vk" dev nexus0
 	link set nexus0 up
-	route add default via 172.16.208.1 dev nexus0
+	route add default via 172.17.208.1 dev nexus0
 EOF
 
 
@@ -490,9 +576,9 @@ cat > "$NEXUS_CNF/batch/nex-pod-208-jellyfin.batch" <<- 'EOF'
 	link set loopback0 up
 
 	###################################################
-	address add 172.16.208.6/20 label "nexus0:jfn" dev nexus0
+	address add 172.17.208.6/20 label "nexus0:jfn" dev nexus0
 	link set nexus0 up
-	route add default via 172.16.208.1 dev nexus0
+	route add default via 172.17.208.1 dev nexus0
 EOF
 
 ######( nextcloud )###############################
@@ -504,9 +590,9 @@ cat > "$NEXUS_CNF/batch/nex-pod-208-nextcloud.batch" <<- 'EOF'
 	link set loopback0 up
 
 	###################################################
-	address add 172.16.208.7/20 label "nexus0:nxtcld" dev nexus0
+	address add 172.17.208.7/20 label "nexus0:nxtcld" dev nexus0
 	link set nexus0 up
-	route add default via 172.16.208.1 dev nexus0
+	route add default via 172.17.208.1 dev nexus0
 EOF
 
 
@@ -519,9 +605,9 @@ cat > "$NEXUS_CNF/batch/nex-pod-208-cups.batch" <<- 'EOF'
 	link set loopback0 up
 
 	###################################################
-	address add 172.16.208.8/20 label "nexus0:cups" dev nexus0
+	address add 172.17.208.8/20 label "nexus0:cups" dev nexus0
 	link set nexus0 up
-	route add default via 172.16.208.1 dev nexus0
+	route add default via 172.17.208.1 dev nexus0
 EOF
 
 ######( penpot )###############################
@@ -533,9 +619,9 @@ cat > "$NEXUS_CNF/batch/nex-pod-208-penpot.batch" <<- 'EOF'
 	link set loopback0 up
 
 	###################################################
-	address add 172.16.208.9/20 label "nexus0:pnpt" dev nexus0
+	address add 172.17.208.9/20 label "nexus0:pnpt" dev nexus0
 	link set nexus0 up
-	route add default via 172.16.208.1 dev nexus0
+	route add default via 172.17.208.1 dev nexus0
 EOF
 
 ######( aio )###############################
@@ -547,8 +633,81 @@ cat > "$NEXUS_CNF/batch/nex-pod-208-talk.batch" <<- 'EOF'
 	link set loopback0 up
 
 	###################################################
-	address add 172.16.208.10/20 label "nexus0:talk" dev nexus0
+	address add 172.17.208.10/20 label "nexus0:talk" dev nexus0
 	link set nexus0 up
-	route add default via 172.16.208.1 dev nexus0
+	route add default via 172.17.208.1 dev nexus0
 EOF
+
+######( n8n )###############################
+cat > "$NEXUS_CNF/batch/nex-pod-208-n8n.batch" <<- 'EOF'
+	link set lo name loopback0
+	link property add dev loopback0 altname lo
+	link set loopback0 alias "The loopback0 does not traverse wires. It does not blink with LEDs. It does not care for MAC addresses or ARP. It is pure essence—an idea made manifest. A metaphysical interface, looping endlessly, like Ouroboros devouring its own tail."
+	link set loopback0 group 772
+	link set loopback0 up
+
+	###################################################
+	address add 172.17.208.11/20 label "nexus0:n8n" dev nexus0
+	link set nexus0 up
+	route add default via 172.17.208.1 dev nexus0
+EOF
+
+######( phi3-mini )###############################
+cat > "$NEXUS_CNF/batch/nex-pod-208-phi3-mini.batch" <<- 'EOF'
+	link set lo name loopback0
+	link property add dev loopback0 altname lo
+	link set loopback0 alias "The loopback0 does not traverse wires. It does not blink with LEDs. It does not care for MAC addresses or ARP. It is pure essence—an idea made manifest. A metaphysical interface, looping endlessly, like Ouroboros devouring its own tail."
+	link set loopback0 group 772
+	link set loopback0 up
+
+	###################################################
+	address add 172.17.208.12/20 label "nexus0:phi3" dev nexus0
+	link set nexus0 up
+	route add default via 172.17.208.1 dev nexus0
+EOF
+
+
+######( mistral-7b )###############################
+cat > "$NEXUS_CNF/batch/nex-pod-208-mistral-7b.batch" <<- 'EOF'
+	link set lo name loopback0
+	link property add dev loopback0 altname lo
+	link set loopback0 alias "The loopback0 does not traverse wires. It does not blink with LEDs. It does not care for MAC addresses or ARP. It is pure essence—an idea made manifest. A metaphysical interface, looping endlessly, like Ouroboros devouring its own tail."
+	link set loopback0 group 772
+	link set loopback0 up
+
+	###################################################
+	address add 172.17.208.13/20 label "nexus0:mst7" dev nexus0
+	link set nexus0 up
+	route add default via 172.17.208.1 dev nexus0
+EOF
+
+
+######( llama-8b )###############################
+cat > "$NEXUS_CNF/batch/nex-pod-208-llama-8b.batch" <<- 'EOF'
+	link set lo name loopback0
+	link property add dev loopback0 altname lo
+	link set loopback0 alias "The loopback0 does not traverse wires. It does not blink with LEDs. It does not care for MAC addresses or ARP. It is pure essence—an idea made manifest. A metaphysical interface, looping endlessly, like Ouroboros devouring its own tail."
+	link set loopback0 group 772
+	link set loopback0 up
+
+	###################################################
+	address add 172.17.208.14/20 label "nexus0:llma8" dev nexus0
+	link set nexus0 up
+	route add default via 172.17.208.1 dev nexus0
+EOF
+
+######( phi3-mini )###############################
+cat > "$NEXUS_CNF/batch/nex-pod-208-redisinsight.batch" <<- 'EOF'
+	link set lo name loopback0
+	link property add dev loopback0 altname lo
+	link set loopback0 alias "The loopback0 does not traverse wires. It does not blink with LEDs. It does not care for MAC addresses or ARP. It is pure essence—an idea made manifest. A metaphysical interface, looping endlessly, like Ouroboros devouring its own tail."
+	link set loopback0 group 772
+	link set loopback0 up
+
+	###################################################
+	address add 172.17.208.15/20 label "nexus0:red" dev nexus0
+	link set nexus0 up
+	route add default via 172.17.208.1 dev nexus0
+EOF
+
 

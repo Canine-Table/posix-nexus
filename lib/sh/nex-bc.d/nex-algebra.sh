@@ -3,13 +3,16 @@
 
 nx_bc_alg()
 (
-	__nx_bc "$@" -m 'algebra'
+	__nx_bc $@ -m 'algebra'
 )
 
 nx_bc_pow()
 (
-	nx_data_optargs 'v:' "$@"
-	nx_bc_alg "$@" -c "nx_erde_pow(${NEX_k_v:-$NEX_S})" || {
+	#echo "$NEX_ARGV_S"
+	nx_data_longopt  -v 3 -- ',v<%value>' "$@"
+	echo "$NEX_Gk_v"
+
+	nx_bc_alg "$NEX_ARGV_S" --code "nx_erde_pow(${NEX_Gk_v:-$NEX_ARGV_S}, 2)" || {
 		nx_tty_print -e 'pow(x, y) domain breach — x ≤ 0\n'
 		exit 227
 	}

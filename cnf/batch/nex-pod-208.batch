@@ -24,10 +24,10 @@ link set bridge0 alias "Logical software bridge device aggregating multiple inte
 link set bridge0 group 1
 link set bridge0 up
 link add link bridge0 name bridge0.208 type vlan id 208
-address add 172.16.208.2/20 label "bridge0:qemu" dev bridge0.208
+address add 172.17.208.2/20 label "bridge0:qemu" dev bridge0.208
 link set bridge0.208 group 3
 link set bridge0.208 up
-route add default via 172.16.208.1 dev bridge0.208
+route add default via 172.17.208.1 dev bridge0.208
 
 
 ######( adminer )###############################
@@ -121,7 +121,7 @@ link set nexus0 group 3
 link set nexus0 netns nex-pod-208-penpot
 
 
-######( penpot )###############################
+######( talk )###############################
 link add nexus8 type veth peer name nexus0
 link property add dev nexus8 altname talk_net
 link set nexus8 alias "Virtual wired ethernet container holding nextcloud talk which is connected the podman network on vlan 208."
@@ -132,6 +132,73 @@ link property add dev nexus0 altname talk_gw
 link set nexus0 alias "Virtual wired ethernet device refered to by nexus0 for the podman guest talk."
 link set nexus0 group 3
 link set nexus0 netns nex-pod-208-talk
+
+
+######( n8n )###############################
+link add nexus9 type veth peer name nexus0
+link property add dev nexus9 altname n8n_net
+link set nexus9 alias "Virtual wired ethernet container holding n8n which is connected the podman network on vlan 208."
+link set nexus9 group 3
+link set nexus9 up
+link set nexus9 master bridge0
+link property add dev nexus0 altname n8n_gw
+link set nexus0 alias "Virtual wired ethernet device refered to by nexus0 for the podman guest n8n."
+link set nexus0 group 3
+link set nexus0 netns nex-pod-208-n8n
+
+
+######( phi3-mini )###############################
+link add nexus10 type veth peer name nexus0
+link property add dev nexus10 altname phi3m_net
+link set nexus10 alias "Virtual wired ethernet container holding phi3-mini which is connected the podman network on vlan 208."
+link set nexus10 group 3
+link set nexus10 up
+link set nexus10 master bridge0
+link property add dev nexus0 altname phi3m_gw
+link set nexus0 alias "Virtual wired ethernet device refered to by nexus0 for the podman guest phi3-mini."
+link set nexus0 group 3
+link set nexus0 netns nex-pod-208-phi3-mini
+
+
+
+######( mistral-7b )###############################
+link add nexus11 type veth peer name nexus0
+link property add dev nexus11 altname mst7_net
+link set nexus11 alias "Virtual wired ethernet container holding mistral-7b which is connected the podman network on vlan 208."
+link set nexus11 group 3
+link set nexus11 up
+link set nexus11 master bridge0
+link property add dev nexus0 altname mst7_gw
+link set nexus0 alias "Virtual wired ethernet device refered to by nexus0 for the podman guest mistral-7b."
+link set nexus0 group 3
+link set nexus0 netns nex-pod-208-mistral-7b
+
+
+######( phi3-mini )###############################
+link add nexus12 type veth peer name nexus0
+link property add dev nexus12 altname lma8_net
+link set nexus12 alias "Virtual wired ethernet container holding llama-8b which is connected the podman network on vlan 208."
+link set nexus12 group 3
+link set nexus12 up
+link set nexus12 master bridge0
+link property add dev nexus0 altname lma8_gw
+link set nexus0 alias "Virtual wired ethernet device refered to by nexus0 for the podman guest llama-8b."
+link set nexus0 group 3
+link set nexus0 netns nex-pod-208-llama-8b
+
+
+######( redisinsight )###############################
+link add nexus13 type veth peer name nexus0
+link property add dev nexus13 altname red_net
+link set nexus13 alias "Virtual wired ethernet container holding redisinsight which is connected the podman network on vlan 208."
+link set nexus13 group 3
+link set nexus13 up
+link set nexus13 master bridge0
+link property add dev nexus0 altname red_gw
+link set nexus0 alias "Virtual wired ethernet device refered to by nexus0 for the podman guest redisinsight."
+link set nexus0 group 3
+link set nexus0 netns nex-pod-208-redisinsight
+
 
 ###################################################
 link set nexus name nexus0
