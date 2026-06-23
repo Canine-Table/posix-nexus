@@ -1,56 +1,107 @@
 #nx_include nex-algebra.d/nex-linear.sh
 #nx_include NEX_L:/sh/nex-bc.sh
 
+__nx_bc_alg()
+{
+	__nx_bc "$@" -m 'algebra'
+}
+
 nx_bc_alg()
-(
-	__nx_bc $@ -m 'algebra'
-)
+{
+	__nx_bc_alg "$@"
+}
 
 nx_bc_pow()
 (
-	#echo "$NEX_ARGV_S"
-	nx_data_longopt  -v 3 -- ',v<%value>' "$@"
-	echo "$NEX_Gk_v"
+    nx_data_longopt ',
+        v<%value>
+        <description Base value (defaults to $NEX_ARGV_S)>
 
-	nx_bc_alg "$NEX_ARGV_S" --code "nx_erde_pow(${NEX_Gk_v:-$NEX_ARGV_S}, 2)" || {
-		nx_tty_print -e 'pow(x, y) domain breach — x ≤ 0\n'
-		exit 227
-	}
+        p<%power>
+        <default 2>
+        <description Exponent value>
+
+        help<h>
+        <description Show help for nx_bc_pow>
+        <build exit;>
+    ' "$@"
+
+    __nx_bc_alg "$@" -c "nx_erde_pow("${NEX_Gk_v:-$NEX_ARGV_S}",$NEX_Gk_p)" || {
+        nx_tty_print -e 'pow(x, y) domain breach — x ≤ 0\n'
+        exit 227
+    }
 )
 
 nx_bc_sqrt()
 (
-	nx_data_optargs 'v:' "$@"
-	nx_bc_alg "$@" -c "nx_nr_sqrt(${NEX_k_v:-$NEX_S})" || {
-		nx_tty_print -e 'sqrt(x) domain breach — x ≤ 0\n'
-		exit 227
-	}
+    nx_data_longopt ',
+        v<%value>
+        <description Value to square‑root (defaults to $NEX_ARGV_S)>
+
+        help<h>
+        <description Show help for nx_bc_sqrt>
+        <build exit;>
+    ' "$@"
+
+    __nx_bc_alg "$@" -c "nx_nr_sqrt(${NEX_Gk_v:-$NEX_ARGV_S})" || {
+        nx_tty_print -e 'sqrt(x) domain breach — x ≤ 0\n'
+        exit 227
+    }
 )
+
 
 nx_bc_sqs()
 (
-	nx_data_optargs 'v:' "$@"
-	nx_bc_alg "$@" -c "nx_squares(${NEX_k_v:-$NEX_S})"
+    nx_data_longopt ',
+        v<%value>
+        <description Value to square (defaults to $NEX_ARGV_S)>
+
+        help<h>
+        <description Show help for nx_bc_sqs>
+        <build exit;>
+    ' "$@"
+
+    __nx_bc_alg "$@" -c "nx_squares(${NEX_Gk_v:-$NEX_ARGV_S})"
 )
 
 nx_bc_lcd()
 (
-	nx_data_optargs 'v:' "$@"
-	nx_bc_alg "$@" -c "nx_lcd(${NEX_k_v:-$NEX_S})" || {
-		nx_tty_print -e 'lcm(x,y) domain breach — x,y must be positive integers'
-		exit 227
-	}
+    nx_data_longopt ',
+        v<%value>
+        <description Pair (x,y) for LCD computation>
+
+        help<h>
+        <description Show help for nx_bc_lcd>
+        <build exit;>
+    ' "$@"
+
+    __nx_bc_alg "$@" -c "nx_lcd(${NEX_Gk_v:-$NEX_ARGV_S})" || {
+        nx_tty_print -e 'lcm(x,y) domain breach — x,y must be positive integers\n'
+        exit 227
+    }
 )
+
 
 nx_bc_gcd() { nx_bc_euc "$@"; }
 nx_bc_euc()
 (
-	nx_data_optargs 'v:' "$@"
-	nx_bc_alg "$@" -c "nx_euc(${NEX_k_v:-$NEX_S})" || {
-		nx_tty_print -e 'euc(x,y) domain breach — x,y must be non‑negative integers\n'
-		exit 227
-	}
+    nx_data_longopt ',
+        v<%value>
+        <description Pair (x,y) for Euclidean GCD>
+
+        help<h>
+        <description Show help for nx_bc_euc>
+        <build exit;>
+    ' "$@"
+
+    NEX_Gk_v="${NEX_Gk_v:-$NEX_ARGV_S}"
+
+    __nx_bc_alg "$@" -c "nx_euc($NEX_Gk_v)" || {
+        nx_tty_print -e 'euc(x,y) domain breach — x,y must be non‑negative integers\n'
+        exit 227
+    }
 )
+
 
 nx_bc_binom()
 (

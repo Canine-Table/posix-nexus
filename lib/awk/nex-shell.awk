@@ -382,6 +382,15 @@ function __nx_shell_schema_str(V, D, B)
 	D = D "<default directive-prefix-trim>"
 	D = D "<description Trim trailing flow‑whitespace from directive values before storing them>"
 
+
+	V["--chain-eval"] = "1"
+	D = D "chain-eval<%>"
+	D = D "<type int>"
+	D = D "<min 0>"
+	D = D "<max 3>"
+	D = D "<default 1>"
+	D = D "<description TODO>"
+
 	return D
 }
 
@@ -416,7 +425,7 @@ function __nx_shell_schema_flg(V, D, B)
 {
 	# 1	force [0-3]
 	# 2	abort [0-3]
-	D = V["-f"] D V["-a"]
+	D = V["-f"] D V["-a"] D V["--chain-eval"]
 	if (B)
 		V["-a"] = "0"
 	return D
@@ -770,8 +779,10 @@ function __nx_shell_schema(D1, D2, D3, N,
 	V1[(oft + 0) * strde] = n
 	# 1	force [0-3]
 	# 2	abort [0-3]
+	# 3	chain-eval [0-2]
 	V1[(oft + 1) * strde] = int(v_ta[1])
 	V1[(oft + 2) * strde] = (ab = int(v_ta[2]))
+	V1[(oft + 3) * strde] = int(v_ta[3])
 	##################################################
 
 
@@ -2123,7 +2134,7 @@ function nx_shell_environ(V1, V2, D,
 	as, ln, idx, dq, trk, pre, post, ust, ept, ext, oft,
 	vr, vl, nm, pos, acm, psrt,
 	t2, t3,
-	strde, m)
+	strde, m, chevl)
 {
 
 	strde = V1[0]
@@ -2133,6 +2144,10 @@ function nx_shell_environ(V1, V2, D,
 	ust = V1[(oft + 1) * strde]
 	ept = V1[(oft + 4) * strde]
 	dq = V1[(oft + 5) * strde]
+
+
+	oft = m * 7
+	chevl = V1[(oft + 3) * strde]
 
 	if (ept) {
 		pre = "export "
@@ -2153,12 +2168,22 @@ function nx_shell_environ(V1, V2, D,
 			acm = acm pre __nx_stringify_var(trk[idx], "", dq, as, post)
 		delete trk
 	}
+
 	ln = V1["-0"]
 	acm = acm pre __nx_stringify_var("NEX_ARGC", ln / psrt - 1, dq, as, post)
 	acm = acm pre __nx_stringify_var("NEX_ARGV_R", V1[-1 * strde], dq, as, post)
 	acm = acm pre __nx_stringify_var("NEX_ARGV_S", V1[-2 * strde], dq, as, post)
 	acm = acm pre __nx_stringify_var("NEX_ARGV_0", V1[-3 * strde], dq, as, post)
-	acm = acm pre __nx_stringify_var("NEX_ARGV_E", V1[-4 * strde], dq, as, post)
+
+	vl = ENVIRON["NEX_ARGV_E"]
+	if (chevl == 1) {
+		acm = acm pre __nx_stringify_var("NEX_ARGV_E", V1[-4 * strde], dq, as, post)
+	} else if (chevl == 2) {
+		acm = acm pre __nx_stringify_var("NEX_ARGV_E", vl V1[-4 * strde], dq, as, post)
+	} else if (chevl == 3) {
+		acm = acm pre __nx_stringify_var("NEX_ARGV_E", V1[-4 * strde] vl, dq, as, post)
+	}
+
 	idx = ""
 	t2 = strde * 2
 	t3 = strde * 3

@@ -7,7 +7,7 @@ nx_bc_ntn()
 
 nx_bc_sci()
 (
-	nx_data_longopt -u -- ',
+	nx_data_longopt ',
 
 	v<%value>
 	<description Value to convert to scientific notation>
@@ -17,20 +17,21 @@ nx_bc_sci()
 	<description Scientific notation mode [e|E|default]>
 
 	help<h>
-	<description Show help>
+	<description Show help for nx_bc_sci>
 	<build exit;>
 	' "$@"
 
-	test -n "$NEX_ARGV_E" && eval "$NEX_ARGV_E"
 	case "$NEX_GF_n" in
 		E) NEX_GF_n=2;;
 		e) NEX_GF_n=1;;
 		*) NEX_GF_n=0;;
 	esac
 
-	nx_bc_ntn -c "nx_ntn_sci(${NEX_Gk_v:-$NEX_ARGV_S},$NEX_GF_n)" || {
-		nx_tty_print -e 'scientific notation not defined for 0\n'
-		exit 227
-	}
+	__nx_bc "$@" \
+		-m 'notation' \
+		-c "nx_ntn_sci(${NEX_Gk_v:-$NEX_ARGV_S},$NEX_GF_n)" || {
+			nx_tty_print -e 'scientific notation not defined for 0\n'
+			exit 227
+		}
 )
 
