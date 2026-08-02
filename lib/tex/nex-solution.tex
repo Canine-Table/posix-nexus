@@ -1,0 +1,349 @@
+\makeatletter
+
+\pagestyle{empty}
+\pgfplotsset{%
+	compat=1.18%
+}%
+
+\tcbuselibrary{%
+	minted,%
+	vignette%
+}%
+
+\usetikzlibrary{%
+	shadows,%
+	mindmap,%
+	patterns,%
+	positioning,%
+	arrows.meta,%
+	decorations.text,%
+	shapes.geometric,%
+	decorations.fractals,%
+	decorations.shapes,%
+	decorations.pathmorphing,%
+	circuits.logic.IEC,%
+	decorations.markings,%
+	curvilinear,%
+	intersections,%
+	through,%
+	petri,%
+	backgrounds,%
+	fit,%
+	calc,%
+	shapes.misc,%
+	graphs,%
+	trees,%
+	automata%
+}%
+
+\definecolor{solution.primary.white}{HTML}{FFFFFF}
+\definecolor{solution.primary.black}{HTML}{000000}
+\definecolor{solution.secondary.blue}{HTML}{1DA1F2}
+\definecolor{solution.secondary.red}{HTML}{E63946}
+
+\definecolor{solution.page.top}{HTML}{FDFBF7} % A very light cream
+\definecolor{solution.page.middle}{HTML}{E8E6E3} % Soft beige-gray
+\definecolor{solution.page.bottom}{HTML}{D2D0CD} % A faded stone-gray
+
+\def\s@empty{}%
+\def\s@default{ ~}%
+\def\s@NaN{NaN}%
+\def\s@true{true}%
+\def\s@false{false}%
+
+\def\sExpr#1#2{\the\csname#1expr\endcsname#2\relax}
+\def\sNumExpr#1{\sExpr{num}{#1}}
+\def\sDimExpr#1{\sExpr{dim}{#1}}
+\def\sGlueExpr#1{\sExpr{glue}{#1}}
+\def\sMuExpr#1{\sExpr{mu}{#1}}
+
+\def\sOdd#1#2{\ifodd#1\else#2\fi}
+\def\sMath#1#2{\ifmmode#1\else#2\fi}
+\def\sKern#1{\sMath{\mkern#1}{\kern#1}}
+\def\sHSkip#1{\sMath{\mskip#1}{\hskip#1}}
+
+\def\sSFont#1{\fontsize{#1}{\sDimExpr{#1*6/5}}\selectfont}
+\def\sNoParIndent{\setlength{\parindent}{0pt}}
+
+\def\sDigit#1{%
+	\ifx#1\nx@empty%
+		-1% invalid
+	\else%
+		\ifnum\number`#1<48
+			-2%
+		\else
+			\ifnum\number`#1>57%
+				-3%
+			\else%
+				\sNumExpr{\number`#1-48}% returns numeric digit 0–9
+			\fi%
+		\fi%
+	\fi%
+}
+
+\def\sEmpty#1#2#3{%
+	\edef\s@tmpa{\unexpanded{#1}}%
+	\ifx\s@tmpa\s@empty%
+		#2%
+	\else%
+		#3%
+	\fi%
+}
+
+\def\sDefault#1#2#3{%
+	\edef\s@tmpa{}%
+	\def\s@tmpa{#1}%
+	\ifx\s@tmpa\s@default%
+		#2%
+	\else%
+		#3%
+	\fi%
+}
+
+\def\sCs#1#2#3{%
+	\expandafter\ifx\csname#1\endcsname\relax%
+		#3%
+	\else%
+		#2%
+	\fi%
+}
+
+\def\sRegister#1#2{%
+	\sEmpty{#1}{%
+		\typeout{empty name for a register is not allowed}%
+	}{%
+		\sCs{#1}{%
+			\typeout{Looks like the register '#1' is already a household name...}
+		}{%
+			\edef\s@tmpb{\sDigit{#2}}
+			\ifnum\s@tmpb>-1
+				\ifcase\s@tmpb
+					\let\s@tmpa=\newdimen% Case 0: Dimension register
+				\or%
+					\let\s@tmpa=\newcount% Case 1: Count register
+				\or%
+					\let\s@tmpa=\newskip% Case 2: Glue register (skip)
+				\or%
+					\let\s@tmpa=\newmuskip% Case 3: Math glue register (muskip)
+				\or%
+					\let\s@tmpa=\newbox % Case 4: Box register
+				\or%
+					\let\s@tmpa=\newinsert% Case 5: Insert register
+				\else
+					\let\s@tmpa=\newtoks% Case (Default): Token register
+				\fi\global\expandafter\s@tmpa\csname#1\endcsname\relax%
+			\fi
+		}
+	}
+}
+
+\sRegister{s@cnta}{1}
+\sRegister{s@cntb}{1}
+\sRegister{s@cntc}{1}
+
+\sRegister{s@boxa}{4}
+\sRegister{s@boxb}{4}
+\sRegister{s@boxc}{4}
+
+\sRegister{nx@toka}{6}
+\sRegister{nx@tokb}{6}
+\sRegister{nx@tokc}{6}
+
+\pgfkeys{%
+	/solution community/.is family,%
+	/solution community/.cd,%
+	cover page/.is family,%
+	cover page/.cd,%
+	/solution community cover page/.style={%
+		/solution community/cover page/.cd%
+	},%
+	title/.default={Solution Community},%
+	author/.default={Nova Team},%
+	image/.default={img/.env/solution-circle.svg},%
+	link/.default={https://solutioncommunity.org},%
+	abstract/.default={Connecting people who need help with those who can provide it.},%
+	Abstract/.default={Connecting hearts, changing lives},%
+	keywords/.default={%
+		solutions%
+	},%
+	subject/.default={%
+		Solution. For. Change.
+	},%
+	% Key Storage
+	title/.store in=\s@title,%
+	author/.store in=\s@author,%
+	image/.store in=\s@image,%
+	abstract/.store in=\s@abstract,%
+	Abstract/.store in=\s@Abstract,%
+	link/.store in=\s@link,%
+	subject/.store in=\s@subject,%
+	keywords/.store in=\s@keywords,%
+	% Code
+	ref/.code={%
+		\pgfkeysifdefined{/solution community/cover page/link}{}{%
+			\pgfkeys{/solution community/cover page/link}%
+		}%
+		\ifx#1\pgfkeysnovalue%
+			\pgfkeysifdefined{/solution community/cover page/ref}{}{%
+				\def\s@tmpa{\s@link}%
+			}%
+		\else%
+			\def\s@tmpa{#1}%
+		\fi%
+		\pgfkeysgetvalue{/solution community/cover page/ref}\s@tmpb%
+		\ifx\s@tmpa\s@tmpb\else%
+			\pgfkeyssetvalue{/solution community/cover page/ref}{\s@tmpa}%
+		\fi%
+	}%
+}
+
+\long\def\sCoverPage[#1]{%
+	\pgfkeys{%
+		solution community cover page,%
+		title,%
+		author,%
+		ref,%
+		abstract,%
+		Abstract,%
+		image,%
+		#1%
+	}%
+	\def\s@ref{\pgfkeysvalueof{/solution community/cover page/ref}}
+	\begin{tikzpicture}[remember picture, overlay]
+		\shade[
+			right color=solution.primary.black,%
+			left color=solution.primary.black!70!solution.primary.white,%
+			draw=solution.secondary.blue,%
+			ultra thick,%
+		] (current page.north west) -| (current page.south east) -| (current page.north west);
+		\node[%
+			circle,%
+			outer color=solution.primary.black,%
+			inner color=solution.primary.white,%
+			minimum width=0.7\pagewidth,%
+			circular drop shadow={%
+				shadow scale=1.05%
+			},%
+			draw=solution.primary.black,%
+			ultra thick,%
+			postaction={%
+				decorate,%
+				decoration={%
+					raise=2mm,
+					text along path,%
+					text align={align=center},%
+					text color=solution.secondary.blue,%
+					text={\today}
+				}
+			}
+		] (logo) at (current page.center) {};
+		\node at (current page.center) {\includesvg[width=10cm]{\s@image}};
+		\sShadowed[at={( 0,5 )},%
+			above=of logo,%
+			text=solution.secondary.blue,%
+			yshift=1cm,%
+			align=center,%
+			text width=\linewidth,%
+			yslant=0.1%
+		]{\sSFont{24pt} \bf \s@title};
+		\node[below=of logo, text=solution.secondary.blue, yshift=-1cm, align=center, text width=\linewidth] (author) {\sSFont{24pt} \bf \s@author};
+		\node[below=of author, text=solution.secondary.blue, align=center, text width=\linewidth] (link) {\sSFont{24pt} \href{\s@link}{\bf \s@ref}};
+	\end{tikzpicture}
+	\newpage
+	\expandafter\ifx\s@abstract\relax\else
+		\begin{tcolorbox}[nxCol=light, sdwA]
+			\begin{tcolorbox}[nxCol=light, title={\bf \s@Abstract}, hdrD, sdwA]
+				\s@abstract
+			\end{tcolorbox}
+		\end{tcolorbox}
+		\bigskip
+	\fi
+}
+
+\def\sShadowed[#1]#2;{
+	\node[scale=2,above,#1]{\global\setbox\s@boxa=\hbox{#2}\copy\s@boxa};
+	\node[scale=2,above, #1, yscale=-1, scope fading=south, opacity=0.4]{\box\s@boxa};
+}
+
+\def\sSnowFade{%
+	\AddToShipoutPictureBG{%
+		\AtPageLowerLeft{%
+			\begin{tikzpicture}[remember picture, overlay]
+				\expandafter\shade\expandafter[%
+					top color={\ifodd\the\count0 solution.page.top\else solution.page.bottom\fi},
+					middle color=solution.page.middle,%
+					bottom color={\ifodd\the\count0 solution.page.bottom\else solution.page.top\fi},
+				](current page.south west) rectangle (current page.north east);
+			\end{tikzpicture}
+		}
+	}
+}
+
+\def\sHyper[#1]{%
+	\pgfkeys{%
+		solution community cover page,%
+		title,%
+		author,%
+		subject,%
+		keywords,%
+		#1%
+	}%
+	\hypersetup{%
+		linktoc=all,%
+		colorlinks=true,%
+		linkcolor=solution.secondary.red,%
+		pdfborder={0 0 0},%
+		pdftitle={\s@title},%
+		pdfauthor={\s@author},%
+		pdfsubject={\s@subject},%
+		pdfkeywords={\s@keywords}%
+	}%
+}
+
+
+\def\sSnowFlakeHeader#1{%
+	\pagestyle{fancy}%
+	\setlength{\headheight}{20.97897pt}%
+	\nxLabel{sec:topOfDocument}{}{\phantomsection{}\label{sec:topOfDocument}}
+	\sCs{nxSec}{}{\global\def\sSec{topOfDocument}}
+	\fancyhead{}%
+	\fancyhead[LO, RE]{%
+		\nxLnBox{\hyperref[sec:topOfDocument]{#1}}%
+	}%
+	\global\renewcommand\headrule{%
+		\vspace{-0.75in}%
+		\def\SnowFlake{%
+			\tikz[decoration=Koch snowflake]{%
+				\draw decorate{%
+					decorate{%
+						decorate{(0,-2) -- (3,-2)}%
+					}%
+				};%
+			}%
+		}%
+		\ifodd\the\count0%
+			\hrulefill{\SnowFlake}%
+		\else%
+			\SnowFlake\hrulefill{}%
+		\fi%
+	}
+}
+
+\def\sRomanFooter{%
+	\pagenumbering{Roman}%
+	\fancyfoot{}
+	\fancyfoot[C]{\thepage}%
+	\renewcommand{\thesection}{\Roman{section}}%
+	\renewcommand{\thesubsection}{\Roman{section}}%
+	\renewcommand{\thesubsubsection}{\Roman{section}}%
+	\global\renewcommand\footrule{%
+		\hrulefill%
+		\raisebox{-2.1pt}{%
+			\quad\decofourleft\decotwo\decofourright\quad%
+		}%
+		\hrulefill%
+	}%
+}
+
+\makeatother
+

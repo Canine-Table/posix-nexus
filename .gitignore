@@ -162,3 +162,8 @@ __pypackages__/
 # Cython debug symbols
 cython_debug/
 
+# Others
+
+**/nex-solution/
+**/solution.tex
+

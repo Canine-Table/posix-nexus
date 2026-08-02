@@ -1,19 +1,14 @@
-
 function! NxTeXSettings()
+	call NxRegisterEnvironsToMap(g:nex,'tex',['backend','TEX_BACKEND'],['compiler','TEX_COMPILER'],['viewer','TEX_VIEWER'],['bib','BIB_BACKEND'])
+
 	let g:nex_src['tex']['root'] = expand('%:p:h')
 	let g:nex_src['tex']['aux'] = g:nex_src['tex']['root'] . '/aux'
 	let g:nex_src['tex']['out'] = g:nex_src['tex']['root'] . '/out'
 
-	let g:nex['tex']['backend'] = NxBaseName(getenv('G_NEX_TEX_BACKEND'))
-	let g:nex['tex']['compiler'] = NxBaseName(getenv('G_NEX_TEX_COMPILER'))
-	let g:nex['tex']['viewer'] = NxBaseName(getenv('G_NEX_TEX_VIEWER'))
-	let g:nex['tex']['bib'] = NxBaseName(getenv('G_NEX_BIB_BACKEND'))
-
 	let g:vimtex_latexmk_build_dir = g:nex_src['tex']['aux']
 	let g:vimtex_view_automatic = 1
-	let g:vimtex_compiler_method = g:nex['tex']['backend']
-	let g:nex_tex_compiler = g:nex['tex']['compiler']
-	let g:vimtex_view_method = g:nex['tex']['viewer']
+	call NxRegisterGlobalsFromMap(g:nex,'tex',['backend','vimtex_compiler_method'],['viewer','vimtex_view_method'])
+
 	let l:backends = {
 		\ 'latexmk': 'NxConfigureLaTeXMK',
 		\ 'latexrun': 'NxConfigureLaTeXRun',
@@ -43,7 +38,7 @@ function! NxTeXSettings()
 			let g:vimtex_compiler_progname = 'nvr'
 			let vimtex_parser_bib_backend = 'lua'
 		else
-			let vimtex_parser_bib_backend = g:nex['tex']['bib']
+			call NxRegisterGlobalsFromMap(g:nex,'tex', ['bib','vimtex_parser_bib_backend'])
 		endif
 		call NxCallFunction(l:backends[g:vimtex_compiler_method])
 		autocmd Filetype tex call NxTeXKeyMap()

@@ -182,7 +182,6 @@ unsigned long NX_bwAbs_lLF(
 	const unsigned long
 );
 
-
 unsigned long NX_bwModBit_lLLF(
 	const unsigned long,
 	const unsigned long
@@ -217,10 +216,16 @@ unsigned long NX_bwAvg_lLLF(
 	const unsigned long
 );
 
-int nx_bw_mix(
-	int,
-	int,
-	int
+unsigned int NX_bwMix_iIIIF(
+	const unsigned int,
+	const unsigned int,
+	const unsigned int
+);
+
+void nX_bwMixBytes_gG1_l1lF(
+	const void*,
+	unsigned long*,
+	unsigned long
 );
 
 #endif

@@ -26,9 +26,9 @@ function! s:NxVimInit()
 		\ "nex-str.vim",
 		\ "nex-fs.vim",
 		\ "nex-misc.vim",
+		\ "nex-cmd.vim",
 		\ "nex-cfg.vim",
 		\ "nex-source.vim",
-		\ "nex-cmd.vim",
 		\ "nex-plug.vim",
 	\ )
 

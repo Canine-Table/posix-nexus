@@ -12,9 +12,12 @@ function! s:NxConfig()
 		let g:nex_src['log'] = tmpa . '/log/' . g:nex['user'] . '/'
 		call NxContainer(g:nex_src['run'], g:nex_src['log'])
 		if has('persistent_undo')
-			let g:nex_src['vim']['undo'] = g:nex_src['run'] . 'undo'
+			if !has_key(g:nex['vim'], 'version')
+				call NxVimVersion()
+			endif
+			let g:nex_src['vim']['undo'] = g:nex_src['run'] . g:nex['vim']['version'] . '/undo'
 			call NxContainer(g:nex_src['vim']['undo'])
-			set undodir=$NEXUS_ENV/vim/undo
+			let &undodir = g:nex_src['vim']['undo']
 			set undofile
 		endif
 	endif

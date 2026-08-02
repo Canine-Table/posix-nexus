@@ -1,11 +1,11 @@
 function! NxVimVersion()
 	if has('nvim') && stridx($VIMRUNTIME, "nvim") >= 0
-		let g:nex.vim.version = "nvim"
+		let  g:nex['vim']['version'] = "nvim"
 		return NxNeoVimPaths()
 	elseif v:version < 900
-		let g:nex.vim.version = "vim"
+		let g:nex['vim']['version'] = "vim"
 	else
-		let g:nex.vim.version = "vim9"
+		let g:nex['vim']['version'] = "vim9"
 		if filereadable($VIMRUNTIME . '/defaults.vim')
 			echo 'loading defaults'
 			source $VIMRUNTIME/defaults.vim
@@ -59,10 +59,10 @@ function! NxGlobalVariableLogger(f = '', v = '')
 	call writefile([], logfile)  " clear file first
 	" Loop through all global variables
 	for [name, Value] in items(g:)
-		"if name =~# '^' . a:v
-		" Format like awk: key => value
-		call writefile([name . '  =>  ' . string(Value)], logfile, 'a')
-		"endif
+		if name =~# '^' . a:v
+			" Format like awk: key => value
+			call writefile([name . '  =>  ' . string(Value)], logfile, 'a')
+		endif
 	endfor
 	echo "variables written to " . logfile
 endfunction

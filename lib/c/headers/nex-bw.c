@@ -165,7 +165,7 @@ unsigned long NX_bwZeros_lLLLF(
 	unsigned long l = 0ul;
 	long idx = (long)i;  // signed for stepping in either direction
 
-	while (idx >= 0 && idx <= NX_top_LC && ((b >> idx) & 1ul) == 0ul) {
+	while (idx >= 0 && (unsigned long)idx <= NX_top_LC && ((b >> idx) & 1ul) == 0ul) {
 		l++;
 		idx += (long)s;
 	}
@@ -274,13 +274,15 @@ unsigned long NX_bwParity_lLF(
 	const unsigned long b
 ) {
 	unsigned long v = b;
-	for (unsigned int i = NX_bitln_IC - 1; i >= 0; --i)
-		v = NX_bwDiverge_lLLF(v, NX_bits_LC[i]);
+	for (int i = NX_bitln_IC - 1; i >= 0; --i)
+		v = NX_bwDiverge_lLLF(v, NX_bits_LC[(unsigned int)i]);
 	return NX_bwEven_lLF(v);
 }
 
-int nx_bw_mix(
-	int v, int i, int s
+unsigned int NX_bwMix_iIIIF(
+	const unsigned int v,
+	const unsigned int i,
+	const unsigned int s
 ) {
 	/* Start with XOR of inputs */
 	unsigned int h = (unsigned int)v ^ ((unsigned int)i * 0x9E3779B1u) ^ (unsigned int)s;
@@ -290,6 +292,20 @@ int nx_bw_mix(
 	h ^= h >> 13;
 	h *= 0xC2B2AE35u;
 	h ^= h >> 16;
-	return (int)h;
+	return h;
+}
+
+void nX_bwMixBytes_gG1_l1lF(
+	const void *d,
+	unsigned long *h,
+	unsigned long l
+) {
+	const unsigned char *p = (const unsigned char *)d;
+
+	while (l--) {
+		*h ^= (unsigned long)(*p++);
+		/* golden ratio prime */
+		*h *= 0x9E3779B1u;
+	}
 }
 

@@ -28,6 +28,7 @@ nx_py_venv()
 
 			-c) {
 				h_nx_cmd $G_NEX_PY && $G_NEX_PY -m venv "$tmpa/$tmpb/.env.d/"
+				export G_NEX_PY="$(nx_cmd_py)"
 			};;
 
 			*) {
@@ -44,6 +45,7 @@ nx_py_venv()
 						};;
 						-r) {
 							tmpd="$tmpa/$tmpb/requirements.txt"
+							export G_NEX_PIP="$(nx_cmd_pip)"
 							test -f "$tmpd" -a -r "$tmpd" && h_nx_cmd $G_NEX_PIP && {
 								$G_NEX_PIP install -r "$tmpd"
 								$G_NEX_PIP install --upgrade pip

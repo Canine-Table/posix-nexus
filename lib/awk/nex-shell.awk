@@ -382,7 +382,6 @@ function __nx_shell_schema_str(V, D, B)
 	D = D "<default directive-prefix-trim>"
 	D = D "<description Trim trailing flow‑whitespace from directive values before storing them>"
 
-
 	V["--chain-eval"] = "1"
 	D = D "chain-eval<%>"
 	D = D "<type int>"
@@ -2144,7 +2143,6 @@ function nx_shell_environ(V1, V2, D,
 	ust = V1[(oft + 1) * strde]
 	ept = V1[(oft + 4) * strde]
 	dq = V1[(oft + 5) * strde]
-
 
 	oft = m * 7
 	chevl = V1[(oft + 3) * strde]
