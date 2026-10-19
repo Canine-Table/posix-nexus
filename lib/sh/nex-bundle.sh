@@ -1,75 +1,5 @@
 #!/bin/sh
 
-nx_err()
-{
-	printf '\x1b[1;31m[x] %s\x1b[0m\n' "$1" 2>&1
-}
-
-nx_success()
-{
-	printf '\x1b[1;32m[v] %s\x1b[0m\n' "$1" 2>&1
-}
-
-nx_init_install()
-{
-	u=6
-	g=4
-	o=4
-	U=7
-	G=5
-	O=5
-	a="$(whoami)"
-	A="$a"
-	c=""
-	while test "$#" -gt 0; do
-		case "$1" in
-			-c|-C) {
-				test $1 "-C" && c="" || b="1"
-			};;
-			-b) {
-				test -d "$2" && b="$2"
-				shift
-			};;
-			-a|-A) {
-				eval "$(printf '%s' "$1" | cut -d '-' -f 2)"="$2"
-				shift
-			};;
-			-u|-g|-o|-U|-G|-O) {
-				if awk -v prm="$2" 'BEGIN{if(perm >= 0 && perm <= 7){exit 0}else{exit 1}}'; then
-					eval "$(printf '%s' "$1" | cut -d '-' -f 2)"="$2"
-					shift
-				else
-					nx_err "expected an octal number,  received $1."
-				fi
-			};;
-			*) {
-				test -d "$b$1" || {
-					test -e "$b$1" && {
-						while :; do
-							tmpd="$b$1-$(date '+%s').bak"
-							test -e "$tmpd" || break
-						done
-						mv "$b$1" "$tmpd" || {
-							nx_err "The path to '$1' must be either be a directory or a path that does not yet exist, manual intervention required."
-							exit 2
-						}
-					}
-					mkdir -p "$b$1" || {
-						nx_err "The path to '$1' could not be created, manual intervention required."
-						exit 3
-					}
-					nx_success "$b$1 was created"
-				}
-				test -n "$c" && {
-					chmod "$U$G$O" "$b$1"
-					chown "$a:$A" "$b$1"
-				}
-			};;
-		esac
-		shift
-	done
-}
-
 nx_bundle_init()
 (
 	test "$(command -v "${0#-}")" != "$SHELL" && {
@@ -89,30 +19,36 @@ nx_bundle_init()
 	. "$NEXUS_LIB/sh/nex-cmd.sh"
 	export AWK="$(nx_cmd_awk)"
 	. "$NEXUS_LIB/sh/nex-data.sh"
-	. "$NEXUS_LIB/sh/nex-fs.sh"
+	. "$NEXUS_LIB/sh/nex-str.sh"
+	. "$NEXUS_LIB/sh/nex-tty.sh"
+	. "$NEXUS_LIB/sh/nex-fs2.sh"
 
-	--mode 755 \
-	--prefix "$dnm" \
-	--target src \
-	--target docs \
-	--target bin \
-	--target cnf \
-	--target env \
-	--prefix "$HOME/.nx/" \
-	--target csr \
-	--target ssl \
-	--target kdbx \
-	--target db \
-	--prefix "${dnm}env/" \
-	--target log \
-	--target run \
-	--target cache \
-	--target nnn \
-	--target vim \
-	--target ssl \
-	--target bak \
-	--mode 777 \
-	--target tmp
+	export G_NEX_USER="$(command -v whoami 2>&1 1>/dev/null && whoami || printf '%s' "${USER:-${LOGNAME}}")"
+	export NEXUS_BUNDLE="${dnm}lib/sh/$bnm"
+	
+	nx_fs2_install \
+		--mode 755 \
+		--prefix "${dnm}" \
+		--target src \
+		--target docs \
+		--target bin \
+		--target cnf \
+		--target env \
+		--prefix "$HOME/.nx/" \
+		--target csr \
+		--target ssl \
+		--target kdbx \
+		--target db \
+		--prefix "${dnm}env/" \
+		--target log \
+		--target run \
+		--target cache \
+		--target nnn \
+		--target vim \
+		--target ssl \
+		--target bak \
+		--mode 777 \
+		--target tmp;
 
 	cat > "${dnm}env/.nexus-shell.bundles.sh" <<- EOF
 		#!${SHELL:-$(command -v sh)}
@@ -126,55 +62,18 @@ nx_bundle_init()
 		export NEXUS_SBIN="${dnm}sbin"
 		export NEXUS_BIN="${dnm}bin"
 		export NEXUS_TEST="${dnm}/tests"
-		export NEXUS_BUNDLE="${dnm}sh/$bnm"
-		export NEXUS_INIT="${dnm}sh/nex-init"
+		export NEXUS_INIT="${dnm}lib/sh/nex-init"
+		export NEXUS_BUNDLE="$NEXUS_BUNDLE"
+		export G_NEX_USER="$G_NEX_USER"
 	EOF
-)
 
-nx_env()
-(
-	test "$(command -v "${0#-}")" != "$SHELL" && {
-		tmpa="$(basename "$0")"
-		tmpb="$("${AWK:-awk}" -v path="$(cd "$(dirname "$0")" && pwd)/${tmpa}" 'BEGIN {
-			if (!sub("lib/sh/.+[.]sh$", "", path))
-				exit 1
-			gsub("//", "/", path)
-			print path
-		}')"
-	} || {
-		nx_err 'Please make sure the initiator file is executable before proceeding'
-		exit 226
-	}
-
-	umask 022
-	nx_init_install -o 0 -O 0 \
-		-b "$tmpb" cnf env src docs bin sbin img \
-		-b "$HOME/" .nx \
-		-b "$HOME/.nx/" ssl csr kdbx db \
-		-b "${tmpb}env/" log run cache bak ssl nnn vim \
-		-G 7 -U 7 -O 7 tmp proc
-
-	cat > "${tmpb}env/.nexus-shell.bundles.sh" <<- EOF
-		#!${SHELL:-$(command -v sh)}
-		export NEXUS_ROOT="$tmpb"
-		export NEXUS_SRC="${tmpb}src"
-		export NEXUS_LIB="${tmpb}lib"
-		export NEXUS_ENV="${tmpb}env"
-		export NEXUS_CNF="${tmpb}cnf"
-		export NEXUS_DOC="${tmpb}docs"
-		export NEXUS_LOG="${tmpb}env"
-		export NEXUS_SBIN="${tmpb}sbin"
-		export NEXUS_BIN="${tmpb}bin"
-	EOF
-	for tmpc in "${tmpb}lib/sh/"*".sh"; do
-		test ! "$tmpc" = "${tmpb}lib/sh/${tmpa}" -a  -r "$tmpc" && {
+	for tmpc in "${dnm}lib/sh/"*".sh"; do
+		test ! "$tmpc" = "${dnm}lib/sh/${bnm}" -a  -r "$tmpc" && {
 			tmpe="$tmpe<nx:null/>$tmpc"
 			cat "$tmpc"
 		}
-	done 2> /dev/null 1> "${tmpb}env/.nexus-shell.bundles"
-	. "${tmpb}lib/sh/nex-cmd.sh"
-	export AWK="$(nx_cmd_awk)"
-	. "${tmpb}lib/sh/nex-data.sh"
+	done 2> /dev/null 1> "${dnm}env/.nexus-shell.bundles"
+
 	nx_data_include \
 		--truncate \
 		--verbose 1 \
@@ -182,21 +81,22 @@ nx_env()
 		--directive 'nx_include' \
 		--comment-start ":<<-'NX'" \
 		--comment-end 'NX' \
-		--lib-root "${tmpb}lib" \
+		--lib-root "${dnm}lib" \
 		--sigil '#' \
 		--list-separator '<nx:null/>' \
 		--file-separator '/' \
 		--separator ',' \
-		--input "${tmpb}env/.nexus-shell.bundles" \
-	>> "${tmpb}env/.nexus-shell.bundles.sh"
-	rm "${tmpb}env/.nexus-shell.bundles"
-	printf '%s' "${tmpb}env/.nexus-shell.bundles.sh" | tee "$HOME/.nx/.nx-root"
+		--input "${dnm}env/.nexus-shell.bundles" \
+	>> "${dnm}env/.nexus-shell.bundles.sh"
+	rm "${dnm}env/.nexus-shell.bundles"
+	printf '%s' "${dnm}env/.nexus-shell.bundles.sh" | tee "$HOME/.nx/.nx-root"
 )
 
 test "$1" = '-d' && set -x
 if test "$(command -v time)" = 'time'; then
-	time nx_env
+	time nx_bundle_init
 else
-	nx_env
+	nx_bundle_init
 fi
 test "$1" = '-d' && set +x
+

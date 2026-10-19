@@ -1,3 +1,4 @@
+#nx_include nex-tty.sh
 
 nx_fs2_path()
 (
@@ -70,55 +71,80 @@ nx_fs2_path()
 
 nx_fs2_install()
 (
-    tmpa="$(whoami)"
-    nx_data_longopt -- ',
-	m<%mode>
-	<type int>
-	<regex ^[0-7]{3}$>
-	<default 644>
-	<description file mode to apply to created targets (octal)>
+	nx_data_longopt -- ',
+		m<%mode>
+		<type int>
+		<regex ^[0-7]{3}$>
+		<default 644>
+		<description file mode to apply to created targets (octal)>
 
-	O<%owner>
-	<type str>
-	<default '"$tmpa"'>
-	<description owner username to assign to created targets>
+		O<%owner>
+		<type str>
+		<default '"$G_NEX_USER"'>
+		<description owner username to assign to created targets>
 
-	G<%group-owner>
-	<type str>
-	<default '"$tmpa"'>
-	<description group name to assign to created targets>
+		G<%group-owner>
+		<type str>
+		<default '"$G_NEX_USER"'>
+		<description group name to assign to created targets>
 
-	U<%umask>
-	<build umask <nx@U/\>;>
-	<type int>
-	<regex ^[0-7]{3}$>
-	<default 022>
-	<description umask to apply before creating targets (octal)>
+		U<%umask>
+		<build umask <nx@U/\>;>
+		<type int>
+		<regex ^[0-7]{3}$>
+		<default 022>
+		<description umask to apply before creating targets (octal)>
 
-	t<%target>
-	<type str>
-	<build case <nx@T/\> in
-		d) mkdir -p <nx@p/\><nx@t/\>;;
-		f) touch <nx@p/\><nx@t/\>;;
-		p) mkfifo <nx@p/\><nx@t/\>;;
-		*) false;;
-	esac && chmod <nx@m/\> <nx@p/\><nx@t/\> && chown <nx@O/\>:<nx@G/\> <nx@p/\><nx@t/\>;>
-	<description path (relative to prefix) to create as directory, file, or fifo>
+		t<%target>
+		<type str>
+		<build nx_path=<nx@p/\><nx@t/\>; case <nx@T/\> in
+			d) {
+				nx_msg="directory"
+				mkdir -p "$nx_path"
+			};;
+			f) {
+				nx_msg="file"
+				touch "$nx_$path"
+			};;
+			p) {
+				nx_msg="named pipe"
+				mkfifo "$nx_path"
+			};;
+		esac 2\>&1 1\>/dev/null; if test "$?" -eq 0; then
+				nx_tty_print -n -s "Created $nx_msg at $nx_path"
+				nx_msg=<nx@m/\>
+				chmod "$nx_msg" "$nx_path"
+				if test "$?" -eq 0; then
+					nx_tty_print -n -a "Set permissions on $nx_path to $nx_msg"
+					nx_msg="owner <nx@O/\> and group <nx@G/\>"
+					chown <nx@O/\>:<nx@G/\> <nx@p/\><nx@t/\>
+					if test "$?" -eq 0; then
+						nx_tty_print -n -i "Set ownership as $nx_msg on $nx_path"
+					else
+						nx_tty_print -n -e "Failed to set ownership as $nx_msg on $nx_path"
+					fi
+				else
+					nx_tty_print -n -e "Failed to set permissions on $nx_path to $nx_msg"
+				fi
+			else
+				nx_tty_print -e "Failed to create $nx_msg at $nx_path"
+			fi;>
+		<description path (relative to prefix) to create as directory, file, or fifo>
 
-	T<%type>
-	<regex ^[dfp]$>
-	<type char>
-	<default d>
-	<description target type: d=directory, f=file, p=fifo>
+		T<%type>
+		<regex ^[dfp]$>
+		<type char>
+		<default d>
+		<description target type: d=directory, f=file, p=fifo>
 
-	p<%prefix>
-	<build test -d <nx@p/\> -o ! -e <nx@p/\> && mkdir -p <nx@p/\>;>
-	<type str>
-	<description prefix directory under which targets are created>
+		p<%prefix>
+		<build test -d <nx@p/\> -o ! -e <nx@p/\> && mkdir -p <nx@p/\>;>
+		<type str>
+		<description prefix directory under which targets are created>
 
-	help<h>
-	<description show help and exit>
-    ' "$@"
-    test -n "$NEX_ARGV_E" && eval "$NEX_ARGV_E"
+		help<h>
+		<description show help and exit>
+	' "$@"
+	test -n "$NEX_ARGV_E" && eval "$NEX_ARGV_E"
 )
 

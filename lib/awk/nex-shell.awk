@@ -151,7 +151,7 @@ function __nx_shell_schema_str(V, D, B)
 
 	V["-p"] = "<nx:null/>"
 	D = D "p<%param parameter-separator>"
-	D = D "<default <nx:null\>>"
+	D = D "<default <nx:null/\>>"
 	D = D "<type char>"
 	D = D "<description Parameter separator used to split arguments into schema fields.>"
 
@@ -1694,31 +1694,31 @@ function nx_shell_help(V,
 		moff = V[i] + 1
 		j = 0
 		if (moff in V) {
-			nx_ansi_debug("\ntype:\n\t'" V[moff] "'")
+			nx_ansi_debug("<nx:null/>\ntype:\n\t'" V[moff] "'")
 			j = 1
 		}
 
 		moff = moff + strde
 		if (moff in V) {
-			nx_ansi_debug("\ndefault:\n\t'" V[moff] "'")
+			nx_ansi_debug("<nx:null/>\ndefault:\n\t'" V[moff] "'")
 			j = 1
 		}
 
 		moff = moff + strde
 		if (moff in V) {
-			nx_ansi_success("\nepilog:\n\t'" V[moff] "'")
-			j = 1
-		}
-
-		moff = moff + strde
-		if (acm == "usage") {
-			nx_ansi_alert("\usage:\n\t'" V[moff] "'")
+			nx_ansi_success("<nx:null/>\nepilog:\n\t'" V[moff] "'")
 			j = 1
 		}
 
 		moff = moff + strde
 		if (moff in V) {
-			nx_ansi_light("\ndescription:\n\t'" V[moff] "'")
+			nx_ansi_alert("<nx:null/>\nusage:\n\t'" V[moff] "'")
+			j = 1
+		}
+
+		moff = moff + strde
+		if (moff in V) {
+			nx_ansi_light("<nx:null/>\ndescription:\n\t'" V[moff] "'")
 			j = 1
 		}
 

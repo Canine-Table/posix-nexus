@@ -5,6 +5,7 @@ function! NxSourceModules()
 		\ 'module.d/nex-gcobol.vim',
 		\ 'module.d/nex-TeX.vim',
 		\ 'module.d/nex-menus.vim',
+		\ 'module.d/nex-clasp.vim',
 	\ )
 endfunction
 

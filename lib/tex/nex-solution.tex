@@ -159,8 +159,9 @@
 	},%
 	title/.default={Solution Community},%
 	author/.default={Nova Team},%
+	version/.default={1.0.0},%
 	image/.default={img/.env/solution-circle.svg},%
-	link/.default={https://solutioncommunity.org},%
+	link/.default={https://script.google.com/u/0/home/projects/1cFiyfJyJKfvz3XTps_vmY5ZxDEgQbq2dPTIOnnBVCq1mj86tWz4ez3A4/edit},%
 	abstract/.default={Connecting people who need help with those who can provide it.},%
 	Abstract/.default={Connecting hearts, changing lives},%
 	keywords/.default={%
@@ -178,6 +179,7 @@
 	link/.store in=\s@link,%
 	subject/.store in=\s@subject,%
 	keywords/.store in=\s@keywords,%
+	version/.store in=\s@version,%
 	% Code
 	ref/.code={%
 		\pgfkeysifdefined{/solution community/cover page/link}{}{%
@@ -201,6 +203,7 @@
 	\pgfkeys{%
 		solution community cover page,%
 		title,%
+		version,%
 		author,%
 		ref,%
 		abstract,%
@@ -233,7 +236,7 @@
 					text along path,%
 					text align={align=center},%
 					text color=solution.secondary.blue,%
-					text={\today}
+					text={\today{\quad$\cdot$\quad}Version \s@version}
 				}
 			}
 		] (logo) at (current page.center) {};

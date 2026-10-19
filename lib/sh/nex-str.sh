@@ -47,12 +47,20 @@ nx_str_cnt()
 
 nx_str_chain()
 {
+	if test "$1" = '<nx:null/>'; then
+		nx_chain="$2"
+		shift 2
+	else
+		nx_chain='<nx:null/>'
+	fi
+
 	printf '%s' "$1"
 	shift
 	while test "$#" -gt 0; do
-		printf '%s' "<nx:null/>$1"
+		printf '%s' "$nx_chain$1"
 		shift
 	done
+	unset nx_chain
 }
 
 nx_str_timestamp()

@@ -431,6 +431,7 @@
 	\newenvironment{\nx@tmpa}{\begin{itemize}}{\end{itemize}}
 	\tcolorboxenvironment{\nx@tmpa}{%
 		blanker,%
+		breakable,
 		before skip=5mm,%
 		after skip=5mm,%
 		borderline west={1mm}{0pt}{nex.#1.frame},%
@@ -596,7 +597,7 @@
 	\edef\nx@tmpa{Nx\nxTitle{#1}{ }{ }ListBox}
 	\newenvironment{\nx@tmpa}[1][]{%
 		\edef\nx@tmpa{Nx\nxTitle{#1}{ }{ }List}
-		\begin{tcolorbox}[nxTitle, nxSkip, inrB, crnA, nxCol=#1, ##1]
+		\begin{tcolorbox}[nxTitle, breakable, nxSkip, inrB, crnA, nxCol=#1, ##1]
 			\begin{\nx@tmpa}
 	}{
 			\end{\nx@tmpa}

@@ -1,16 +1,26 @@
 #nx_include nex-misc.awk
 
-function nx_ansi_print(D, B,	stk, ansi, args)
+function nx_ansi_print(D, B,	i, stk, ansi, args)
 {
-	# D has no more use, lets store the index counter in it
-	if ((D = split(D, args, "<nx:null/>")) < 2) {
+	if ((i = split(D, args, "<nx:null/>")) < 2) {
 		delete args
 		return -1
 	}
+	
+	if (args[2] == "") {
+		if (!match(D, "<nx:null/>"))
+			return -1
+		delete args
+		args[1] = substr(D, 1, RSTART - 1)
+		args[2] = substr(D, RSTART + RLENGTH)
+		sub("<nx:null/>", "", args[2])
+		i = 2
+	}
+
 	args[1] = split("2" args[1], ansi, "")
 	ansi[0] = args[1]
 
-	args[0] = D # varargs count
+	args[0] = i # varargs count
 	args[1] = 2 # varargs index
 	D = ""
 
@@ -19,7 +29,7 @@ function nx_ansi_print(D, B,	stk, ansi, args)
 	stk[2] = "\0"
 	stk[3] = "<nx:false/>"
 	do {
-		if (ansi[ansi[1]] ~ /[<>_\0]/) {
+		if (ansi[ansi[1]]  == "\0" || ansi[ansi[1]] ~ /[<>_]/) {
 			stk[1] = ansi[ansi[1]]
 		} else if (ansi[ansi[1]] == "^") {
 			stk[2] = __nx_ansi_pmap(ansi[++ansi[1]])

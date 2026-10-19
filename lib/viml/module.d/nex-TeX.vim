@@ -69,6 +69,8 @@ function! NxConfigureLaTeXMK()
 			\ '-verbose',
 			\ '-file-line-error',
 			\ '-synctex=1',
+			\ '-cd',
+			\ '-view=pdf',
 			\ '-interaction=nonstopmode',
 		\ ],
 		\ 'continuous' : 1,

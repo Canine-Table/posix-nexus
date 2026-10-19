@@ -6,9 +6,6 @@
 	minted,%
 	vignette%
 }%
-%\usepgfmodule{%
-%	nonlineartransformations
-%}%
 \usetikzlibrary{%
 	shadows,%
 	mindmap,%
@@ -32,8 +29,17 @@
 	shapes.misc,%
 	graphs,%
 	trees,%
+	quotes,%
+	external,%
 	automata%
 }%
+%\tikzexternalize
+%\hbadness=10000
+
+%\tolerance=2000
+%\emergencystretch=1em
+\usepgfmodule{oo}%
+\usepgfmodule{animations}%
 \def\nxSnowFlakeHeader#1{%
 	\pagestyle{fancy}%
 	\setlength{\headheight}{20.97897pt}%

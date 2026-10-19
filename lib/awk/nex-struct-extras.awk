@@ -60,9 +60,9 @@ function nx_find_pair(D1, V1, V2, D2, D3,	trk, splt)
 
 function nx_uarr(V, D)
 {
-	if (D1 == "")
+	if (D == "")
 		return -1
-	return V[D1]++
+	return V[D]++
 }
 
 function nx_idx_uarr(V, D)

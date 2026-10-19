@@ -1,5 +1,17 @@
 \makeatletter
 \tikzset{%
+	badness warnings for centered text = false,%
+	quotes mean pin,%
+	every node/.style={%
+		node distance=1cm and 1cm,%
+		minimum height=1pt,%
+		minimum width=1pt,%
+		minimum size=1pt,% sets both width and height
+		shape aspect=1,%
+		scale = 1,%
+		outer xsep=0.5\pgflinewidth,%
+		outer ysep=0.5\pgflinewidth%
+	},%
 	-{anx}/.tip={%
 		Rays[%
 			n=9,%
@@ -15,6 +27,8 @@
 			length=1.5mm%
 		]
 	},%
+	arrows1/.tip={Stealth[line width=0.1pt, fill=white, length=10pt]},%
+	arrows2/.tip = {Stealth[line width=1pt, fill=white, length=10pt]},%
 	nxArwRay/.pic = {
 			\draw[%
 			draw=nex.#1.upper,%
@@ -405,152 +419,6 @@
 	\node[scale=2,above, #1, yscale=-1, scope fading=south, opacity=0.4]{\box\nx@boxa};
 }
 
-\pgfdeclarearrow{
-	name = nxMM,
-	parameters = {
-		\the\pgfarrowlength
-	},
-	setup code = {
-		% The different end values:
-		\pgfarrowssettipend{.25\pgfarrowlength}
-		\pgfarrowssetlineend{-.25\pgfarrowlength}
-		\pgfarrowssetvisualbackend{-.5\pgfarrowlength}
-		\pgfarrowssetbackend{-.75\pgfarrowlength}
-		% The hull
-		\pgfarrowshullpoint{.25\pgfarrowlength}{0pt}
-		\pgfarrowshullpoint{-.75\pgfarrowlength}{.5\pgfarrowlength}
-		\pgfarrowshullpoint{-.75\pgfarrowlength}{-.5\pgfarrowlength}
-		% Saves: Only the length:
-		\pgfarrowssavethe\pgfarrowlength
-	},
-	drawing code = {
-		\pgfpathmoveto{\pgfqpoint{.35\pgfarrowlength}{0pt}}
-		\pgfpathlineto{\pgfqpoint{\pgfarrowlength}{.3\pgfarrowlength}}
-		\pgfpathmoveto{\pgfqpoint{.35\pgfarrowlength}{0pt}}
-		\pgfpathlineto{\pgfqpoint{\pgfarrowlength}{-.3\pgfarrowlength}}
-		\pgfpathmoveto{\pgfqpoint{-.25\pgfarrowlength}{0pt}}
-		\pgfpathlineto{\pgfqpoint{\pgfarrowlength}{0pt}}
-		\pgfpathmoveto{\pgfqpoint{.25\pgfarrowlength}{.3\pgfarrowlength}}
-		\pgfpathlineto{\pgfqpoint{.25\pgfarrowlength}{-.3\pgfarrowlength}}
-		\pgfpathclose
-		\pgfusepathqstroke
-	},
-	defaults = {
-		length = 5mm
-	}
-}
-
-\pgfdeclarearrow{
-	name = nxMO,
-	parameters = {
-		\the\pgfarrowlength
-	},
-	setup code = {
-		% The different end values:
-		\pgfarrowssettipend{.25\pgfarrowlength}
-		\pgfarrowssetlineend{-.25\pgfarrowlength}
-		\pgfarrowssetvisualbackend{-.5\pgfarrowlength}
-		\pgfarrowssetbackend{-.75\pgfarrowlength}
-		% The hull
-		\pgfarrowshullpoint{.25\pgfarrowlength}{0pt}
-		\pgfarrowshullpoint{-.75\pgfarrowlength}{.5\pgfarrowlength}
-		\pgfarrowshullpoint{-.75\pgfarrowlength}{-.5\pgfarrowlength}
-		% Saves: Only the length:
-		\pgfarrowssavethe\pgfarrowlength
-	},
-	drawing code = {
-		\pgfpathmoveto{\pgfqpoint{-.25\pgfarrowlength}{0pt}}
-		\pgfpathlineto{\pgfqpoint{\pgfarrowlength}{0pt}}
-		\pgfpathmoveto{\pgfqpoint{.6\pgfarrowlength}{-.3\pgfarrowlength}}
-		\pgfpathlineto{\pgfqpoint{.6\pgfarrowlength}{.3\pgfarrowlength}}
-		\pgfpathmoveto{\pgfqpoint{.3\pgfarrowlength}{-.3\pgfarrowlength}}
-		\pgfpathlineto{\pgfqpoint{.3\pgfarrowlength}{.3\pgfarrowlength}}
-		\pgfpathclose
-		\pgfusepathqstroke
-	},
-	defaults = {
-		length = 5mm
-	}
-}
-
-\pgfdeclarearrow{
-	name = nxOO,
-	parameters = {
-		\the\pgfarrowlength
-	},
-	setup code = {
-		% The different end values:
-		\pgfarrowssettipend{.25\pgfarrowlength}
-		\pgfarrowssetlineend{-.25\pgfarrowlength}
-		\pgfarrowssetvisualbackend{-.5\pgfarrowlength}
-		\pgfarrowssetbackend{-.75\pgfarrowlength}
-		% The hull
-		\pgfarrowshullpoint{.25\pgfarrowlength}{0pt}
-		\pgfarrowshullpoint{-.75\pgfarrowlength}{.5\pgfarrowlength}
-		\pgfarrowshullpoint{-.75\pgfarrowlength}{-.5\pgfarrowlength}
-		% Saves: Only the length:
-		\pgfarrowssavethe\pgfarrowlength
-	},
-	drawing code = {
-		\pgfpathmoveto{\pgfqpoint{.6\pgfarrowlength}{.3\pgfarrowlength}}
-		\pgfpathlineto{\pgfqpoint{.6\pgfarrowlength}{-.3\pgfarrowlength}}
-		\pgfpathmoveto{\pgfqpoint{-.25\pgfarrowlength}{0pt}}
-		\pgfpathlineto{\pgfqpoint{\pgfarrowlength}{0pt}}
-		\pgfpathclose
-		\pgfusepathqstroke
-		\pgfpathcircle{\pgfpoint{.03\pgfarrowlength}{0pt}}{.25\pgfarrowlength}
-		\pgfpathclose
-		\pgfusepathqfill
-	},
-	defaults = {
-		length = 5mm
-	}
-}
-
-\pgfdeclarearrow{
-	name = nxOM,
-	parameters = {
-		\the\pgfarrowlength
-	},
-	setup code = {
-		% The different end values:
-		\pgfarrowssettipend{.25\pgfarrowlength}
-		\pgfarrowssetlineend{-.25\pgfarrowlength}
-		\pgfarrowssetvisualbackend{-.5\pgfarrowlength}
-		\pgfarrowssetbackend{-.75\pgfarrowlength}
-		% The hull
-		\pgfarrowshullpoint{.25\pgfarrowlength}{0pt}
-		\pgfarrowshullpoint{-.75\pgfarrowlength}{.5\pgfarrowlength}
-		\pgfarrowshullpoint{-.75\pgfarrowlength}{-.5\pgfarrowlength}
-		% Saves: Only the length:
-		\pgfarrowssavethe\pgfarrowlength
-	},
-	drawing code = {
-		\pgfpathmoveto{\pgfqpoint{.35\pgfarrowlength}{0pt}}
-		\pgfpathlineto{\pgfqpoint{\pgfarrowlength}{.3\pgfarrowlength}}
-		\pgfpathmoveto{\pgfqpoint{.35\pgfarrowlength}{0pt}}
-		\pgfpathlineto{\pgfqpoint{\pgfarrowlength}{-.3\pgfarrowlength}}
-		\pgfpathmoveto{\pgfqpoint{-.25\pgfarrowlength}{0pt}}
-		\pgfpathlineto{\pgfqpoint{\pgfarrowlength}{0pt}}
-		\pgfpathclose
-		\pgfusepathqstroke
-		\pgfpathcircle{\pgfpoint{.03\pgfarrowlength}{0pt}}{.25\pgfarrowlength}
-		\pgfpathclose
-		\pgfusepathqfill
-	},
-	defaults = {
-		length = 5mm
-	}
-}
-
-\def\nxPlaceLabel#1#2{%
-	\path (#1);%
-	\pgfgetlastxy{\xcoord}{\ycoord}%
-	\pgfmathsetmacro{\xsign}{\xcoord < 0 ? "left" : "right"}%
-	\pgfmathsetmacro{\ysign}{\ycoord < 0 ? "below" : "above"}%
-	\node[anchor=\ysign \xsign] at (#1) {#2};%
-}
-
 \def\nxPlotTri[#1]{%
 	\tikzset{/nx/triangle/.cd, al, bl, cl, as, bs, cs, #1}%
 	\coordinate (\nx@AL) at (\nx@AS);
@@ -560,25 +428,6 @@
 	\nxPlaceLabel{\nx@BL}{\nx@BL}
 	\nxPlaceLabel{\nx@AL}{\nx@AL}
 	\nxPlaceLabel{\nx@CL}{\nx@CL}
-}
-
-\pgfdeclareshape{simple shape}{%
-	\savedanchor{\center}{%
-		\pgfpointorigin}
-	\anchor{center}{\center}
-	\savedanchor{\anchorfoo}{%
-		\pgf@x=1cm
-		\pgf@y=0cm}
-	\deferredanchor{anchor \foo}{\anchorfoo}}
-
-\def\polartransformation{%
-	% \pgf@x will contain the radius
-	% \pgf@y will contain the distance
-	\pgfmathsincos@{\pgf@sys@tonumber\pgf@x}%
-	% pgfmathresultx is now the cosine of radius and
-	% pgfmathresulty is the sine of radius
-	\pgf@x=\pgfmathresultx\pgf@y%
-	\pgf@y=\pgfmathresulty\pgf@y%
 }
 
 \makeatother

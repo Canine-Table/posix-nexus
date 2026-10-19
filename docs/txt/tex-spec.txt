@@ -1,0 +1,146 @@
+\nxTitleBrief{NxTeX Macro Suite Architecture \& Definitional Schema}
+
+\begin{NxLightList}
+    \nxEachArw{ArrowDark}{Primary}{1}{%
+        {1. Core Structural Environments}/{\hfill\nxListDark\begin{NxLightList}
+            \nxEachArw{ArrowDark}{Primary}{1}{%
+                {\texttt{NxLightList}}/{Primary unboxed list environment for dense reference specifications, field mappings, and architectural metadata directly on the page canvas.},%
+                {\texttt{NxLightBox}}/{Bordered container environment used with options like \texttt{[title=\{...\}]} to enclose structured tables and prevent content overflow on standard A4 paper.},%
+                {\texttt{NxLightListBox}}/{Alternative light-themed container reserved for targeted callouts, executive summaries, and secondary warning blocks.},%
+                {Tabular Data (\texttt{tabularx})}/{Structured parameter matrices embedded inside \texttt{NxLightBox} using \texttt{\textbackslash textwidth} and auto-wrapping \texttt{X} columns for clean multi-column layouts.}%
+            }
+        \end{NxLightList}},%
+        {2. Code Isolation \& Code Blocks}/{\hfill\nxListDark\begin{NxLightList}
+            \nxEachArw{ArrowDark}{Primary}{1}{%
+                {\texttt{NxCodeBox}}/{Syntax-highlighted executable code block accepting language targets (\texttt{javascript}) and an embedded \texttt{title=\{...\}} option containing an internal \texttt{NxDarkList} annotation banner.}%
+            }
+        \end{NxLightList}},%
+        {3. Unboxed Canvas \& Primitive Macro Mechanics}/{\hfill\nxListDark\begin{NxLightList}
+            \nxEachArw{ArrowDark}{Primary}{1}{%
+                {\texttt{\textbackslash nxTitleBrief\{title\}}}/{\nxLnJs{\nxLnArcBox} tertiary heading followed by a \texttt{2mm} vertical space and an \nxLnJs{\hrule} separator line.},%
+                {\texttt{\textbackslash nxBrief\{title\}\{content\}}}/{\nxLnJs{\vbox} wrapper invoking \nxLnJs{\nxTitleBrief{#1}}, followed by a \texttt{3mm} gap and an \nxLnJs{\hbox to\linewidth{\hss{#2}\hss}} that horizontally centers the payload across the full line width using TeX glue.}%
+            }
+        \end{NxLightList}},%
+        {4. Inline Typography \& Badging Precision}/{\hfill\nxListDark\begin{NxLightList}
+            \nxEachArw{ArrowDark}{Primary}{1}{%
+                {\texttt{\textbackslash texttt\{text\}}}/{Standard monospace font for general file paths, configuration keys, macro names, and generic LaTeX tags.},%
+                {\texttt{\textbackslash nxLnJs\{code\}}}/{High-contrast Dracula-themed badge (\nxLnJs{\usemintedstyle{dracula}\nxLnArcBox}) reserved strictly for highlighting critical JS methods, runtime properties, and key variables.},%
+                {\texttt{\textbackslash nxLnBox\{label\}}}/{Inline decision label badge (\nxLnBox{yes}, \nxLnBox{no}, \nxLnBox{code}, \nxLnBox{list}) for TikZ connector paths.}%
+            }
+        \end{NxLightList}}%
+    }
+\end{NxLightList}
+
+\vspace{0.8cm}
+
+\begin{NxLightBox}[title={1. \texttt{useSheet} Argument Specifications}]
+    \begin{tabularx}{\textwidth}{|X|X|X|}
+        \hline
+        \textbf{Argument} & \textbf{Type} & \textbf{Requirement} \\
+        \hline
+        \texttt{id} & \texttt{string} & Optional / Conditional \\
+        \hline
+        \texttt{url} & \texttt{string} & Optional / Conditional \\
+        \hline
+        \texttt{sheetName} & \texttt{string} & Optional \\
+        \hline
+        \texttt{tab} & \texttt{string $\mid$ object} & Optional \\
+        \hline
+        \texttt{logLevel} & \texttt{number} & Optional \\
+        \hline
+        \texttt{failFast} & \texttt{boolean} & Optional \\
+        \hline
+    \end{tabularx}
+\end{NxLightBox}
+
+\vspace{0.8cm}
+
+\begin{NxCodeBox}{javascript}{title={\textbf{2. Scoped Tab Override \& Dynamic Method Chaining}
+    \begin{NxDarkList}
+        \nxEachArw{ArrowDark}{Tertiary}{1}{%
+            {Scoped Tab Configuration}/{Connecting to an enterprise ERP spreadsheet using an object parameter for tab, then dynamically switching tab scopes downstream with local overrides.}%
+        }
+    \end{NxDarkList}
+}}
+// Scoped object tab parameter in constructor
+const db = new Sheets2DB({
+    id: '1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms',
+    tab: {
+        tabName: 'Customers',
+        failFast: true,
+        logLevel: 2
+    }
+});
+
+// Fluent chaining to shift active tab cursor downstream with local overrides
+db.useTab({
+  tabName: 'Inventory',
+  failFast: false,
+  logLevel: 4
+});
+\end{NxCodeBox}
+
+\vspace{0.8cm}
+
+\nxBrief{NxTeX Document Rendering Engine Workflow}{%
+\begin{tikzpicture}[
+    align=flush center,
+    node distance=0.8cm and 1.4cm
+]
+
+    \node[/nx/shapes/startstop] (START) {
+        \textbf{[ Raw Data Payload Ingestion ]}
+    };
+
+    \node[below=of START, /nx/shapes/decision] (MACTYPE) {
+        Target Component\\
+        Format?
+    };
+
+    % Left Outer: Executable Code
+    \node[below left=of MACTYPE, /nx/shapes/process] (CODE) {
+        \textbf{[ Code Snippet ]}\\[0.2em]
+        \texttt{NxCodeBox}\\[0.1em]
+        \small Syntax-Highlighted Block
+    };
+
+    % Left Inner: Unboxed Reference List
+    \node[below right=0.5cm and -4cm of CODE, /nx/shapes/process] (LIST) {
+        \textbf{[ Reference Data ]}\\[0.2em]
+        \texttt{NxLightList}\\[0.1em]
+        \small High-Density Unboxed Spec
+    };
+
+    % Right Outer: Centered Visual / TikZ Canvas via \nxBrief
+    \node[below right=of MACTYPE, /nx/shapes/process] (BRIEF) {
+        \textbf{[ Standalone Diagram ]}\\[0.2em]
+        \texttt{\textbackslash nxBrief\{Title\}\{...\}}\\[0.1em]
+        \small \texttt{\textbackslash vbox} + \texttt{\textbackslash hbox} Full-Width Centering
+    };
+
+    % Right Inner: Table / Boxed Matrix
+    \node[below left=0.5cm and -4cm of BRIEF, /nx/shapes/process] (TABLE) {
+        \textbf{[ Matrix / Summary ]}\\[0.2em]
+        \texttt{NxLightBox}\\[0.1em]
+        \small Bordered \texttt{tabularx} Container
+    };
+
+    \node[below=4.8cm of MACTYPE, /nx/shapes/startstop] (END) {
+        \textbf{[ PDF Render Output ]}
+    };
+
+    \begin{pgfonlayer}{background layer}
+        \begin{scope}[-{Kite}, thick]
+            \draw (START) -- (MACTYPE);
+            \draw (MACTYPE.west) -| node[midway]{\nxLnBox{code}} (CODE.north);
+            \draw (MACTYPE.east) -| node[midway]{\nxLnBox{diagram}} (BRIEF.north);
+            \draw[shorten <=-2.5mm] ([xshift=-5mm]MACTYPE.south) to[in=45,out=225] node[midway]{\nxLnBox{list}} ([yshift=-5mm]LIST.north east);
+            \draw[shorten <=-2.5mm] ([xshift=5mm]MACTYPE.south) to[out=-45,in=-225] node[midway]{\nxLnBox{table}} ([yshift=-5mm]TABLE.north west);
+            \draw (CODE.west) -- ++(-2.5mm, 0mm) |- (END.west);
+            \draw ([yshift=-5mm]LIST.south east) -| ([xshift=-5mm]END.north);
+            \draw ([yshift=5mm]TABLE.south west) -| ([xshift=5mm]END.north);
+            \draw (BRIEF.east) -- ++(2.5mm, 0mm) |- (END.east);
+        \end{scope}
+    \end{pgfonlayer}
+\end{tikzpicture}}
+

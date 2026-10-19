@@ -1,4 +1,5 @@
 \makeatletter
+
 \pgfkeys{%
 	/nx/.is family,%
 	/nx/.style={
@@ -61,7 +62,8 @@
 			\pgfkeyssetvalue{/nx/cover page/ref}{\nx@tmpa}%
 		\fi%
 	},%
-	/nx/.cd,%
+	%
+	%
 	/nx/refer/.is family,%
 	nx refer/.style={%
 		nx, refer/.cd%
@@ -75,9 +77,9 @@
 	gls style/.store in=\nx@gls,%
 	bib style/.store in=\nx@bib,%
 	abr style/.store in=\nx@abr,%
-	/nx/.cd,%
+	%
+	%
 	%%% List Box Family %%%
-	/nx/.cd,%
 	/nx/list box/.is family,%
 	nx list box/.style={%
 		nx, list box/.cd%
@@ -103,8 +105,10 @@
 	/nx/shapes/.cd,%
 	byX/.initial=-9pt,%
 	byY/.initial=-9pt,%
+	%
+	%
 	/nx/triangle/.is family,%
-  nx triangle/.style={%
+	nx triangle/.style={%
 		nx, triangle/.cd%
 	},%
 	/nx/triangle/.cd,%
@@ -120,136 +124,297 @@
 	as/.store in=\nx@AS,%
 	bs/.store in=\nx@BS,%
 	cs/.store in=\nx@CS,%
-  /nx/crowsfoot/.cd,%
-  /nx/crowsfoot/.is family,%
-  nx crowsfoot/.style={%
+	%
+	%
+	/nx/crowsfoot/.is family,%
+	nx crowsfoot/.style={%
 		nx, crowsfoot/.cd%
 	},%
-  /nx/crowsfoot/.cd,%
-  shaftoffset/.initial=0.25,%
-  tipoffset/.initial=0.35,%
-  barA/.initial=0.6,%
-  barB/.initial=0.3,%
-  circleradius/.initial=0.25,%
-  circleoffset/.initial=0.03,%
+	/nx/crowsfoot/.cd,%
+	shaftoffset/.initial=0.25,%
+	tipoffset/.initial=0.35,%
+	barA/.initial=0.6,%
+	barB/.initial=0.3,%
+	circleradius/.initial=0.25,%
+	circleoffset/.initial=0.03,%
 	circlestart/.initial=0pt,%
-  footFork/.initial=0.35,%
-  footSpread/.initial=0.3,%
-  backend/.initial=0.75,%
-  visualbackend/.initial=0.5,%
-  lineend/.initial=0.25,%
-  tipend/.initial=0.25,%
-  tipoffset/.initial=0pt,%
-	/nx/uml/.cd%
-}
-
-\begin{comment}
-
-\long\def\nx@Crowsfoot@Saved@Macros@[#1]{%
-	\pgfkeys{
-%
-		nx crowsfoot,%
-		shaftoffset,%
-		tipoffset,%
-		barA,%
-		barB,%
-		footFork,%
-		footSpread,%
-		circleradius,%
-		circleoffset,%
-		circlestart,%
-		backend,%
-		visualbackend,%
-		lineend,%
-		tipend,%
-		#1%
-	}%
-  \savedmacro{\nx@shaftoffset}{\pgfkeysvalueof{shaftoffset}}%
-  \savedmacro{\nx@tipoffset}{\pgfkeysvalueof{tipoffset}}%
-  \savedmacro{\nx@barA}{\pgfkeysvalueof{barA}}%
-  \savedmacro{\nx@barB}{\pgfkeysvalueof{barB}}%
-  \savedmacro{\nx@tipend}{\pgfkeysvalueof{tipend}}%
-  \savedmacro{\nx@lineend}{\pgfkeysvalueof{lineend}}%
-  \savedmacro{\nx@backend}{\pgfkeysvalueof{backend}}%
-
-  \savedmacro{\nx@footFork}{\pgfkeysvalueof{footFork}}%
-  \savedmacro{\nx@footSpread}{\pgfkeysvalueof{footSpread}}%
-  \savedmacro{\nx@visualbackend}{\pgfkeysvalueof{visualbackend}}%
-  \savedmacro{\nx@circleradius}{\pgfkeysvalueof{circleradius}}%
-  \savedmacro{\nx@circleoffset}{\pgfkeysvalueof{circleoffset}}%
-  \savedmacro{\nx@circlestart}{\pgfkeysvalueof{circlestart}}%
-}
-\def\nx@Crowsfoot@Setup@{%
-    \pgfarrowssettipend{\nx@tipend\pgfarrowlength}
-    \pgfarrowssetlineend{-\nx@lineend\pgfarrowlength}
-    \pgfarrowssetvisualbackend{\nx@visualbackend\pgfarrowlength}
-    \pgfarrowssetbackend{-\nx@backend\pgfarrowlength}
-    \pgfarrowshullpoint{\nx@tipend\pgfarrowlength}{\nx@tipoffset}
-    \pgfarrowshullpoint{-\nx@backend\pgfarrowlength}{\nx@tipend\pgfarrowlength}
-    \pgfarrowshullpoint{-\nx@backend\pgfarrowlength}{-\nx@tipend\pgfarrowlength}
-    \pgfarrowssavethe\pgfarrowlength
-}
-\def\nx@Crowsfoot@Circle@Fill{%
-	\pgfpathcircle{\pgfpoint{\nx@circleoffset\pgfarrowlength}{\nx@circlestart}}{\nx@circleradius\pgfarrowlength}%
-	\pgfpathclose%
-	\pgfusepathqfill%
-}
-
-\def\nx@Crowsfoot@Circle@Fill{%
-	\pgfpathcircle{\pgfpoint{\nx@circleoffset\pgfarrowlength}{\nx@circlestart}}{\nx@circleradius\pgfarrowlength}%
-	\pgfpathclose%
-	\pgfusepathqfill%
-}
-\def\nx@Crowsfoot@Foot@Draw{%
-	\pgfpathmoveto{\pgfqpoint{\nx@footFork\pgfarrowlength}{\tipoffset}}%
-	\pgfpathlineto{\pgfqpoint{\pgfarrowlength}{\nx@footSpread\pgfarrowlength}}%
-	\pgfpathmoveto{\pgfqpoint{\nx@footFork\pgfarrowlength}{\nx@tipoffset}}%
-	\pgfpathlineto{\pgfqpoint{\pgfarrowlength}{-\nx@footSpread\pgfarrowlength}}%
+	footFork/.initial=0.35,%
+	footSpread/.initial=0.3,%
+	backend/.initial=0.75,%
+	visualbackend/.initial=0.5,%
+	lineend/.initial=0.25,%
+	tipend/.initial=0.25,%
+	tipoffset/.initial=0pt%
 }
 
 \pgfdeclarearrow{
-	name = testaArw,
+	name = nxMM,
 	parameters = {
-    \nx@Crowsfoot@Saved@Macros@{#1}
 		\the\pgfarrowlength
-  },
-  setup code = {
-		\nx@Crowsfoot@Setup@
-  },
+	},
+	setup code = {
+		% The different end values:
+		\pgfarrowssettipend{.25\pgfarrowlength}
+		\pgfarrowssetlineend{-.25\pgfarrowlength}
+		\pgfarrowssetvisualbackend{-.5\pgfarrowlength}
+		\pgfarrowssetbackend{-.75\pgfarrowlength}
+		% The hull
+		\pgfarrowshullpoint{.25\pgfarrowlength}{0pt}
+		\pgfarrowshullpoint{-.75\pgfarrowlength}{.5\pgfarrowlength}
+		\pgfarrowshullpoint{-.75\pgfarrowlength}{-.5\pgfarrowlength}
+		% Saves: Only the length:
+		\pgfarrowssavethe\pgfarrowlength
+	},
 	drawing code = {
-		\pgfpathmoveto{\pgfqpoint{\nx@footFork\pgfarrowlength}{\tipoffset}}
-		\pgfpathlineto{\pgfqpoint{\pgfarrowlength}{\nx@footSpread\pgfarrowlength}}
-		\pgfpathmoveto{\pgfqpoint{\nx@footFork\pgfarrowlength}{\nx@tipoffset}}
-		\pgfpathlineto{\pgfqpoint{\pgfarrowlength}{-\nx@footSpread\pgfarrowlength}}
-
+		\pgfpathmoveto{\pgfqpoint{.35\pgfarrowlength}{0pt}}
+		\pgfpathlineto{\pgfqpoint{\pgfarrowlength}{.3\pgfarrowlength}}
+		\pgfpathmoveto{\pgfqpoint{.35\pgfarrowlength}{0pt}}
+		\pgfpathlineto{\pgfqpoint{\pgfarrowlength}{-.3\pgfarrowlength}}
+		\pgfpathmoveto{\pgfqpoint{-.25\pgfarrowlength}{0pt}}
+		\pgfpathlineto{\pgfqpoint{\pgfarrowlength}{0pt}}
+		\pgfpathmoveto{\pgfqpoint{.25\pgfarrowlength}{.3\pgfarrowlength}}
+		\pgfpathlineto{\pgfqpoint{.25\pgfarrowlength}{-.3\pgfarrowlength}}
 		\pgfpathclose
 		\pgfusepathqstroke
-		\nx@Crowsfoot@Circle@Fill
 	},
 	defaults = {
 		length = 5mm
-
 	}
 }
 
-
-\pgfooclass{NxLuaObject}{
-	% This is lua object base class
-	\attribute self;
-	\method init(#1) { % The constructor
-		\edef\self{\pgfoovalueof{pgfid}}%
-		\directlua{nex.tex.oop:new("#1", "\self")};
+\pgfdeclarearrow{
+	name = nxMO,
+	parameters = {
+		\the\pgfarrowlength
+	},
+	setup code = {
+		% The different end values:
+		\pgfarrowssettipend{.25\pgfarrowlength}
+		\pgfarrowssetlineend{-.25\pgfarrowlength}
+		\pgfarrowssetvisualbackend{-.5\pgfarrowlength}
+		\pgfarrowssetbackend{-.75\pgfarrowlength}
+		% The hull
+		\pgfarrowshullpoint{.25\pgfarrowlength}{0pt}
+		\pgfarrowshullpoint{-.75\pgfarrowlength}{.5\pgfarrowlength}
+		\pgfarrowshullpoint{-.75\pgfarrowlength}{-.5\pgfarrowlength}
+		% Saves: Only the length:
+		\pgfarrowssavethe\pgfarrowlength
+	},
+	drawing code = {
+		\pgfpathmoveto{\pgfqpoint{-.25\pgfarrowlength}{0pt}}
+		\pgfpathlineto{\pgfqpoint{\pgfarrowlength}{0pt}}
+		\pgfpathmoveto{\pgfqpoint{.6\pgfarrowlength}{-.3\pgfarrowlength}}
+		\pgfpathlineto{\pgfqpoint{.6\pgfarrowlength}{.3\pgfarrowlength}}
+		\pgfpathmoveto{\pgfqpoint{.3\pgfarrowlength}{-.3\pgfarrowlength}}
+		\pgfpathlineto{\pgfqpoint{.3\pgfarrowlength}{.3\pgfarrowlength}}
+		\pgfpathclose
+		\pgfusepathqstroke
+	},
+	defaults = {
+		length = 5mm
 	}
 }
 
-\pgfooclass{NxChild}{
-	\inherit NxLuaObject;
-
-	\method init(){
-		\pgfoosuper{init}{NxChild}
+\pgfdeclarearrow{
+	name = nxOO,
+	parameters = {
+		\the\pgfarrowlength
+	},
+	setup code = {
+		% The different end values:
+		\pgfarrowssettipend{.25\pgfarrowlength}
+		\pgfarrowssetlineend{-.25\pgfarrowlength}
+		\pgfarrowssetvisualbackend{-.5\pgfarrowlength}
+		\pgfarrowssetbackend{-.75\pgfarrowlength}
+		% The hull
+		\pgfarrowshullpoint{.25\pgfarrowlength}{0pt}
+		\pgfarrowshullpoint{-.75\pgfarrowlength}{.5\pgfarrowlength}
+		\pgfarrowshullpoint{-.75\pgfarrowlength}{-.5\pgfarrowlength}
+		% Saves: Only the length:
+		\pgfarrowssavethe\pgfarrowlength
+	},
+	drawing code = {
+		\pgfpathmoveto{\pgfqpoint{.6\pgfarrowlength}{.3\pgfarrowlength}}
+		\pgfpathlineto{\pgfqpoint{.6\pgfarrowlength}{-.3\pgfarrowlength}}
+		\pgfpathmoveto{\pgfqpoint{-.25\pgfarrowlength}{0pt}}
+		\pgfpathlineto{\pgfqpoint{\pgfarrowlength}{0pt}}
+		\pgfpathclose
+		\pgfusepathqstroke
+		\pgfpathcircle{\pgfpoint{.03\pgfarrowlength}{0pt}}{.25\pgfarrowlength}
+		\pgfpathclose
+		\pgfusepathqfill
+	},
+	defaults = {
+		length = 5mm
 	}
 }
 
-\end{comment}
+\pgfdeclarearrow{
+	name = nxOM,
+	parameters = {
+		\the\pgfarrowlength
+	},
+	setup code = {
+		% The different end values:
+		\pgfarrowssettipend{.25\pgfarrowlength}
+		\pgfarrowssetlineend{-.25\pgfarrowlength}
+		\pgfarrowssetvisualbackend{-.5\pgfarrowlength}
+		\pgfarrowssetbackend{-.75\pgfarrowlength}
+		% The hull
+		\pgfarrowshullpoint{.25\pgfarrowlength}{0pt}
+		\pgfarrowshullpoint{-.75\pgfarrowlength}{.5\pgfarrowlength}
+		\pgfarrowshullpoint{-.75\pgfarrowlength}{-.5\pgfarrowlength}
+		% Saves: Only the length:
+		\pgfarrowssavethe\pgfarrowlength
+	},
+	drawing code = {
+		\pgfpathmoveto{\pgfqpoint{.35\pgfarrowlength}{0pt}}
+		\pgfpathlineto{\pgfqpoint{\pgfarrowlength}{.3\pgfarrowlength}}
+		\pgfpathmoveto{\pgfqpoint{.35\pgfarrowlength}{0pt}}
+		\pgfpathlineto{\pgfqpoint{\pgfarrowlength}{-.3\pgfarrowlength}}
+		\pgfpathmoveto{\pgfqpoint{-.25\pgfarrowlength}{0pt}}
+		\pgfpathlineto{\pgfqpoint{\pgfarrowlength}{0pt}}
+		\pgfpathclose
+		\pgfusepathqstroke
+		\pgfpathcircle{\pgfpoint{.03\pgfarrowlength}{0pt}}{.25\pgfarrowlength}
+		\pgfpathclose
+		\pgfusepathqfill
+	},
+	defaults = {
+		length = 5mm
+	}
+}
+
+\def\nxPlaceLabel#1#2{%
+	\path (#1);%
+	\pgfgetlastxy{\xcoord}{\ycoord}%
+	\pgfmathsetmacro{\xsign}{\xcoord < 0 ? "left" : "right"}%
+	\pgfmathsetmacro{\ysign}{\ycoord < 0 ? "below" : "above"}%
+	\node[anchor=\ysign \xsign] at (#1) {#2};%
+}
+
+\pgfdeclareshape{simple shape}{%
+	\savedanchor{\center}{%
+		\pgfpointorigin}
+	\anchor{center}{\center}
+	\savedanchor{\anchorfoo}{%
+		\pgf@x=1cm
+		\pgf@y=0cm}
+	\deferredanchor{anchor \foo}{\anchorfoo}}
+
+\def\polartransformation{%
+	% \pgf@x will contain the radius
+	% \pgf@y will contain the distance
+	\pgfmathsincos@{\pgf@sys@tonumber\pgf@x}%
+	% pgfmathresultx is now the cosine of radius and
+	% pgfmathresulty is the sine of radius
+	\pgf@x=\pgfmathresultx\pgf@y%
+	\pgf@y=\pgfmathresulty\pgf@y%
+}
+
+\pgfdeclareverticalshading{shading1}{100bp}{%
+	color(0bp)=(red);%
+	color(25bp)=(green);%
+	color(75bp)=(blue);%
+	color(100bp)=(black)%
+}
+
+\pgfdeclareverticalshading{shading2}{20pt}{%
+	color(0pt)=(red);%
+	color(20pt)=(blue)%
+}
+
+\pgfdeclareradialshading{shading3}{\pgfpoint{-10bp}{10bp}}{%
+	color(0bp)=(red!15!white);%
+	color(9bp)=(red!75!white);%
+	color(18bp)=(red!70!black);%
+	color(25bp)=(red!50!black);%
+	color(50bp)=(black)%
+}%
+
+\pgfdeclareradialshading{shading4}{\pgfpointorigin}{
+	color(0mm)=(pgftransparent!0);
+	color(5mm)=(pgftransparent!0);
+	color(8mm)=(pgftransparent!100);
+	color(15mm)=(pgftransparent!100)
+}
+
+\pgfdeclarehorizontalshading{shading5}{100bp}{
+	color(0pt)=(transparent!0);
+	color(25bp)=(transparent!0);
+	color(75bp)=(transparent!100);
+	color(100bp)=(transparent!100)
+}
+
+\pgfdeclareverticalshading{shading6}{4cm}{
+	rgb(0cm)=(1,0,0);
+	rgb(1.5cm)=(0,1,0);
+	rgb(2cm)=(0,0,1)
+}
+
+
+\pgfdeclareradialshading{shading7}{\pgfpoint{0.5cm}{0.5cm}}{%
+	rgb(0cm)=(0.9,0,0);%
+	rgb(0.7cm)=(0.7,0,0);%
+	rgb(1cm)=(0.5,0,0);%
+	rgb(1.05cm)=(1,1,1)%
+}%
+
+\pgfdeclarefunctionalshading[black]{portabletwospots}{\pgfpointorigin}{\pgfpoint{3.5cm}{3.5cm}}{}{
+	2 copy
+	45 sub dup mul exch
+	40 sub dup mul 0.5 mul add sqrt
+	dup mul neg 1.0005 exch exp 1.0 exch sub
+	3 1 roll
+	70 sub dup mul .5 mul exch
+	70 sub dup mul add sqrt
+	dup mul neg 1.002 exch exp 1.0 exch sub
+	2.0 3 1 roll
+	\ifpgfshadingmodelcmyk
+		\pgffuncshadingrgbtocmyk
+	\fi
+	\ifpgfshadingmodelgray
+		\pgffuncshadingrgbtogray
+	\fi
+}
+
+\pgfdeclarelayer{background layer}
+\pgfdeclarelayer{foreground layer}
+
+\pgfsetlayers{background layer,main,foreground layer}
 
 \makeatother
+
+\pgfooclass{NxLuaObject}{
+	\attribute nxClass;
+	\attribute nxInstance;
+	\method NxLuaObject(#1) {
+		\pgfooset{nxClass}{#1}%
+		\pgfoothis.get id(\nxInstance)%
+		\pgfooset{nxInstance}{nex.tex.oop.oo["\pgfoovalueof{nxClass}"].instance["\nxInstance"]}%
+		\directlua{nex.tex.oop:new("\pgfoovalueof{nxClass}", "\nxInstance")}%
+	}
+
+	\method setProperties(#1) {
+		\directlua{\pgfoovalueof{nxInstance}:setProperties({#1})}
+	}
+}
+
+\pgfooclass(NxLuaObject){NxTikzPGF}{
+	\method NxTikzPGF() {
+		\pgfoothis.NxLuaObject.NxLuaObject(NxTikzPGF)
+	}
+
+	\method triangle() {
+		\directlua{\pgfoovalueof{nxInstance}:pgfTriangle()}
+	}
+
+	\method rectangle() {
+		\directlua{\pgfoovalueof{nxInstance}:pgfRectangle()}
+	}
+
+	\method circle() {
+		\directlua{\pgfoovalueof{nxInstance}:pgfCircle()}
+	}
+}
+

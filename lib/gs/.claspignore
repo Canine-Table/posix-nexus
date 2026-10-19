@@ -1,0 +1,8 @@
+# Ignore everything by default
+**/*
+
+# Include only JavaScript/GAS files and the manifest
+!*.js
+!*.gs
+!appsscript.json
+

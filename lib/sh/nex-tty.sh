@@ -15,26 +15,41 @@ nx_tty_print()
 					ln = split(inpt, flds, "<nx:null/>")
 					trk["sig"] = "<nx:true/>"
 					trk["bg"] = "<nx:false/>"
+					trk["nl"] = ""
 					for (i = 1; i <= ln; i++) {
 						if (sub(/^-/, "", flds[i])) {
 							inpt = tolower(flds[i])
 							trk["col"] = flds[i]
 							if (inpt == "l") {
 								nx_ansi_light(flds[++i], trk["sig"], trk["bg"] "" trk["col"])
+								nx_fd_stderr(trk["nl"])
 							} else if (inpt == "b") {
 								nx_ansi_dark(flds[++i], trk["sig"], trk["bg"] "" trk["col"])
+								nx_fd_stderr(trk["nl"])
 							} else if (inpt == "s") {
 								nx_ansi_success(flds[++i], trk["sig"], trk["bg"] "" trk["col"])
+								nx_fd_stderr(trk["nl"])
 							} else if (inpt == "w") {
 								nx_ansi_warning(flds[++i], trk["sig"], trk["bg"] "" trk["col"])
+								nx_fd_stderr(trk["nl"])
 							} else if (inpt == "e") {
 								nx_ansi_error(flds[++i], trk["sig"], trk["bg"] "" trk["col"])
+								nx_fd_stderr(trk["nl"])
 							} else if (inpt == "d") {
 								nx_ansi_debug(flds[++i], trk["sig"], trk["bg"] "" trk["col"])
+								nx_fd_stderr(trk["nl"])
 							} else if (inpt == "a") {
 								nx_ansi_alert(flds[++i], trk["sig"], trk["bg"] "" trk["col"])
+								nx_fd_stderr(trk["nl"])
 							} else if (inpt == "i") {
 								nx_ansi_info(flds[++i], trk["sig"], trk["bg"] "" trk["col"])
+								nx_fd_stderr(trk["nl"])
+							} else if (inpt == "n") {
+								if (flds[i] == "n") {
+									trk["nl"] = "\n"
+								} else {
+									trk["nl"] = ""
+								}
 							} else if (inpt == "g") {
 								if (flds[i+1] == "-R") {
 									trk["bg"] = ""
@@ -52,6 +67,7 @@ nx_tty_print()
 							}
 						} else {
 							nx_ansi_print(flds[i] "<nx:null/>" flds[i])
+							nx_fd_stderr(trk["nl"])
 						}
 					}
 					delete flds
