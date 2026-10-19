@@ -71,6 +71,8 @@ nx_fs2_path()
 
 nx_fs2_install()
 (
+
+	L_NEX_USER="$(command -v whoami 2>&1 1>/dev/null && whoami || printf '%s' "${USER:-${LOGNAME}}")"
 	nx_data_longopt -- ',
 		m<%mode>
 		<type int>
@@ -80,16 +82,16 @@ nx_fs2_install()
 
 		O<%owner>
 		<type str>
-		<default '"$G_NEX_USER"'>
+		<default '"$L_NEX_USER"'>
 		<description owner username to assign to created targets>
 
 		G<%group-owner>
 		<type str>
-		<default '"$G_NEX_USER"'>
+		<default '"$L_NEX_USER"'>
 		<description group name to assign to created targets>
 
 		U<%umask>
-		<build umask <nx@U/\>;>
+		<build umask <nx@U/\\>;>
 		<type int>
 		<regex ^[0-7]{3}$>
 		<default 022>
@@ -97,7 +99,7 @@ nx_fs2_install()
 
 		t<%target>
 		<type str>
-		<build nx_path=<nx@p/\><nx@t/\>; case <nx@T/\> in
+		<build nx_path=<nx@p/\\><nx@t/\\>; case <nx@T/\\> in
 			d) {
 				nx_msg="directory"
 				mkdir -p "$nx_path"
@@ -110,14 +112,14 @@ nx_fs2_install()
 				nx_msg="named pipe"
 				mkfifo "$nx_path"
 			};;
-		esac 2\>&1 1\>/dev/null; if test "$?" -eq 0; then
+		esac 2\\>&1 1\\>/dev/null; if test "$?" -eq 0; then
 				nx_tty_print -n -s "Created $nx_msg at $nx_path"
-				nx_msg=<nx@m/\>
+				nx_msg=<nx@m/\\>
 				chmod "$nx_msg" "$nx_path"
 				if test "$?" -eq 0; then
 					nx_tty_print -n -a "Set permissions on $nx_path to $nx_msg"
-					nx_msg="owner <nx@O/\> and group <nx@G/\>"
-					chown <nx@O/\>:<nx@G/\> <nx@p/\><nx@t/\>
+					nx_msg="owner <nx@O/\\> and group <nx@G/\\>"
+					chown <nx@O/\\>:<nx@G/\\> "$nx_path"
 					if test "$?" -eq 0; then
 						nx_tty_print -n -i "Set ownership as $nx_msg on $nx_path"
 					else
@@ -127,7 +129,7 @@ nx_fs2_install()
 					nx_tty_print -n -e "Failed to set permissions on $nx_path to $nx_msg"
 				fi
 			else
-				nx_tty_print -e "Failed to create $nx_msg at $nx_path"
+				nx_tty_print -n -e "Failed to create $nx_msg at $nx_path"
 			fi;>
 		<description path (relative to prefix) to create as directory, file, or fifo>
 
@@ -138,7 +140,7 @@ nx_fs2_install()
 		<description target type: d=directory, f=file, p=fifo>
 
 		p<%prefix>
-		<build test -d <nx@p/\> -o ! -e <nx@p/\> && mkdir -p <nx@p/\>;>
+		<build test -d <nx@p/\\> -o ! -e <nx@p/\\> && mkdir -p <nx@p/\\>;>
 		<type str>
 		<description prefix directory under which targets are created>
 

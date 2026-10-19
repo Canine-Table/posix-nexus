@@ -17,18 +17,18 @@ nx_bundle_init()
 
 	export NEXUS_LIB="${dnm}lib"
 	. "$NEXUS_LIB/sh/nex-cmd.sh"
-	export AWK="$(nx_cmd_awk)"
 	. "$NEXUS_LIB/sh/nex-data.sh"
 	. "$NEXUS_LIB/sh/nex-str.sh"
 	. "$NEXUS_LIB/sh/nex-tty.sh"
 	. "$NEXUS_LIB/sh/nex-fs2.sh"
+	. "$NEXUS_LIB/sh/nex-fs.sh"
 
-	export G_NEX_USER="$(command -v whoami 2>&1 1>/dev/null && whoami || printf '%s' "${USER:-${LOGNAME}}")"
+	export AWK="$(nx_cmd_awk)"
 	export NEXUS_BUNDLE="${dnm}lib/sh/$bnm"
-	
+
 	nx_fs2_install \
 		--mode 755 \
-		--prefix "${dnm}" \
+		--prefix "$dnm" \
 		--target src \
 		--target docs \
 		--target bin \
@@ -48,10 +48,10 @@ nx_bundle_init()
 		--target ssl \
 		--target bak \
 		--mode 777 \
-		--target tmp;
+		--target tmp
 
 	cat > "${dnm}env/.nexus-shell.bundles.sh" <<- EOF
-		#!${SHELL:-$(command -v sh)}
+		#!${SHELL:-"$(command -v sh)"}
 		export NEXUS_ROOT="$dnm"
 		export NEXUS_SRC="${dnm}src"
 		export NEXUS_LIB="${dnm}lib"
@@ -64,7 +64,6 @@ nx_bundle_init()
 		export NEXUS_TEST="${dnm}/tests"
 		export NEXUS_INIT="${dnm}lib/sh/nex-init"
 		export NEXUS_BUNDLE="$NEXUS_BUNDLE"
-		export G_NEX_USER="$G_NEX_USER"
 	EOF
 
 	for tmpc in "${dnm}lib/sh/"*".sh"; do

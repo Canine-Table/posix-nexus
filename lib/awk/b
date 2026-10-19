@@ -1,0 +1,2201 @@
+#nx_include nex-log-extras.awk
+
+# D1	the string
+# D2	the opening group
+# D3	the closing group
+function nx_shell_stride(D1, D2, D3,
+	cnt)
+{
+	cnt = 0
+	while (match(D1, D2)) {
+		cnt += 3
+		D1 = substr(D1, RSTART + RLENGTH)
+		if (! match(D1, D3))
+			return -1
+		D1 = substr(D1, RSTART + RLENGTH)
+	}
+	return cnt
+}
+
+function nx_shell_diff(D1, V1, D2, V2,
+	carr, cr)
+{
+	if (D1 == "")
+		return ""
+	split(D1, carr, __nx_else(D2, "", 1))
+	D2 = ""
+	for (D1 in carr) {
+		cr = carr[D1]
+		if (! (cr in V2 || cr in V1)) {
+			V1[cr] = D1
+			D2 = D2 cr
+		}
+	}
+	delete carr
+	return D2
+}
+
+function __nx_shell_skip(D1, V, D2, N1, N2)
+{
+	if (D1 ~ D2) {
+		while (D1 ~ D2)
+			D1 = V[++N1]
+		return N1 + int(N2)
+	}
+	return N1
+}
+
+function __nx_shell_schema_str(V, D, B)
+{
+	V["-u"] = "<nx:false/>"
+	D = ",u<unset>"
+	D = D "<type toggle>"
+	D = D "<default <nx:false/\>>"
+	D = D "<description Clear all NEX_ARGV_* NEX_ARGC and group variables in the current scope before processing new arguments>"
+
+	V["-q"] = "<nx:false/>"
+	D = D "q<quote>"
+	D = D "<default <nx:false/\>>"
+	D = D "<type toggle>"
+	D = D "<description Use double-quoted values instead of single-quoted shell-safe literals; enables interpolation and requires careful escaping>"
+
+	V["-C"] = "<nx:false/>"
+	D = D "C<null-concat>"
+	D = D "<default <nx:false/\>>"
+	D = D "<type toggle>"
+	D = D "<description Treat empty values as valid concatenation operands instead of skipping them. Useful when building strings with intentional empty segments.>"
+
+	V["-o"] = "<nx:false/>"
+	D = D "o<override type-override>"
+	D = D "<default <nx:false/\>>"
+	D = D "<type toggle>"
+	D = D "<description Preserve the original group form and type when a group is redefined; forces the parser to reuse the existing symbol and prevents form switching.>"
+
+	V["-e"] = "<nx:false/>"
+	D = D "e<export>"
+	D = D "<default <nx:false/\>>"
+	D = D "<type toggle>"
+	D = D "<description Emit export VAR=value; instead of VAR=value during environment construction.>"
+
+	V["-b"] = "<nx:false/>"
+	D = D "b<backtrack>"
+	D = D "<default <nx:false/\>>"
+	D = D "<type toggle>"
+	D = D "<description  When a short-form bundle contains characters that are not valid options, preserve the leftover characters and push them into the remainder instead of discarding them. This does not affect value consumption; only kwarg-style consumer flags take values (e.g., -abc 1 2 3 → a=1, b=2, c=3 only when a, b, c are consumer flags).>"
+
+	V["-a"] = __nx_if(B, "3", "0")
+	D = D "a<abort>"
+	D = D "<default 0>"
+	D = D "<type int>"
+	D = D "<description Abort parsing when encountering invalid or conflicting arguments. Accepts levels 0–3 controlling strictness.>"
+
+	V["-v"] = "1"
+	D = D "v<%verbose>"
+	D = D "<default 1>"
+	D = D "<type int>"
+	D = D "<description Set verbosity level (0–5). Higher levels print schema, parse flow, and full IR dumps.>"
+
+	V["-f"] = "0"
+	D = D "f<force-group>"
+	D = D "<default 0>"
+	D = D "<type int>"
+	D = D "<description Controls how existing group declarations are handled when a group opener is encountered again.\n\tgfr=0: do not modify the existing group; skip new entries.\n\tgfr=1: reuse the existing group’s type symbol for new entries (type-forcing).\n\tgfr=2: override the existing group leader; promote the new declaration to leader and rewire the group mapping.>"
+
+	V["-d"] = "<nx:null/>"
+	D = D "d<%delimiter delimiter-separator>"
+	D = D "<default <nx:null\>>"
+	D = D "<type str>"
+	D = D "<description Set the delimiter used to separate schema fields.>"
+
+	V["-k"] = "%"
+	D = D "k<%key key-separator>"
+	D = D "<default %>"
+	D = D "<type char>"
+	D = D "<description Character used to separate key/value pairs in long‑form arguments.>"
+
+	V["-g"] = "<"
+	D = D "g<%open group-open>"
+	D = D "<default <>"
+	D = D "<type char>"
+	D = D "<description Character marking the start of a group.>"
+
+	V["-G"] = ">"
+	D = D "G<%close group-close>"
+	D = D "<default \>>"
+	D = D "<type char>"
+	D = D "<description Character marking the end of a group.>"
+
+	V["-F"] = "@"
+	D = D "F<%flag-array flag-array-separator>"
+	D = D "<default @>"
+	D = D "<type char>"
+	D = D "<description Separator used for flag arrays (multiple boolean flags grouped together).>"
+
+	V["-K"] = "#"
+	D = D "K<%key-array key-array-separator>"
+	D = D "<default #>"
+	D = D "<type char>"
+	D = D "<description Separator used for key/value arrays (multiple key/value pairs grouped together).>"
+
+	V["-l"] = ","
+	D = D "l<%long>"
+	D = D "<default ,>"
+	D = D "<type char>"
+	D = D "<description Character that begins or continues long‑option mode.>"
+
+	V["-s"] = ";"
+	D = D "s<%short>"
+	D = D "<default ;>"
+	D = D "<type char>"
+	D = D "<description Character that continues short-option mode or ends long‑option mode and returns to short‑option parsing.>"
+
+	V["-p"] = "<nx:null/>"
+	D = D "p<%param parameter-separator>"
+	D = D "<default <nx:null/\>>"
+	D = D "<type char>"
+	D = D "<description Parameter separator used to split arguments into schema fields.>"
+
+	V["-S"] = "="
+	D = D "S<%set>"
+	D = D "<default =>"
+	D = D "<type char>"
+	D = D "<description Symbol used to assign values to keys (e.g., --opt=value).>"
+
+	V["-A"] = "+"
+	D = D "A<%add push>"
+	D = D "<default +>"
+	D = D "<type char>"
+	D = D "<description Push modifier symbol. Appends values to arrays or repeated options.>"
+
+	V["-D"] = "-"
+	D = D "D<%remove pop delete>"
+	D = D "<default ->"
+	D = D "<type char>"
+	D = D "<description Pop/delete modifier symbol. Removes values or unsets options.>"
+
+	V["-M"] = "@"
+	D = D "M<%match find>"
+	D = D "<default @>"
+	D = D "<type char>"
+	D = D "<description Symbol used to mark the match/find modifier in expressions; selects which character denotes the match pattern buffer.>"
+
+	V["-R"] = "~"
+	D = D "R<%subtitute replace>"
+	D = D "<default ~>"
+	D = D "<type char>"
+	D = D "<description Symbol used to mark the substitute/replace modifier in expressions; selects which character denotes replacement operations using the match buffer.>"
+
+	V["-I"] = "#"
+	D = D "I<%index idx>"
+	D = D "<default #>"
+	D = D "<type char>"
+	D = D "<description Symbol used to mark the index-of-match modifier in expressions; selects which character denotes queries for the first match position.>"
+
+	V["-N"] = "%"
+	D = D "N<%number count>"
+	D = D "<default %>"
+	D = D "<type char>"
+	D = D "<description Directive that injects build metadata (version, date, VCS tag) into the schema.>"
+
+	V["-c"] = " "
+	D = D "c<%concat concatenate concatenation-separator>"
+	D = D "<default \ >"
+	D = D "<type str>"
+	D = D "<description String used to join remainder arguments when flattening or emitting environment variables.>"
+
+	V["-y"] = "="
+	D = D "y<%assign assign-separator>"
+	D = D "<default =>"
+	D = D "<type str>"
+	D = D "<description Separator inserted between variable name and value in generated environment assignments.>"
+
+	V["-L"] = "._-:"
+	D = D "L<%extra-long-characters>"
+	D = D "<default ._-:>"
+	D = D "<type str>"
+	D = D "<description Additional characters allowed inside long‑form option names beyond alphabetic characters.>"
+
+	V["-w"] = " \t\n\v\f\r"
+	D = D "w<%whitespace>"
+	D = D "<default \\\\\\t\\\\\\n\\\\\\v\\\\\\f\\\\\\r >"
+	D = D "<type str>"
+	D = D "<description Characters treated as ignorable whitespace during parsing.>"
+
+	V["-O"] = "<nx:false/>"
+	D = D "O<output out>"
+	D = D "<default <nx:false/\>>"
+	D = D "<type toggle>"
+	D = D "<description Emit environment output via echo instead of raw VAR=value lines.>"
+
+	V["-P"] = "-"
+	D = D "P<%prefix argument-prefix>"
+	D = D "<default ->"
+	D = D "<type char>"
+	D = D "<description Prefix used for both short and long options.>"
+
+	V["-h"] = ""
+	D = D "h<help>"
+	D = D "<default null constant>"
+	D = D "<type void>"
+	D = D "<description Display schema, metadata, and usage information for all options.>"
+
+	V["--type"] = "type"
+	D = D "type<%directive-type>"
+	D = D "<default type>"
+	D = D "<type str>"
+	D = D "<description Directive that sets or overrides the type metadata for the next schema element.>"
+
+	V["--default"] = "default"
+	D = D "default<%directive-default>"
+	D = D "<default default>"
+	D = D "<type str>"
+	D = D "<description Directive that assigns a default value to the next schema element.>"
+
+	V["--epilog"] = "epilog"
+	D = D "epilog<%directive-epilog>"
+	D = D "<default epilog>"
+	D = D "<type str>"
+	D = D "<description Directive that appends epilog text to the generated help output.>"
+
+	V["--usage"] = "usage"
+	D = D "usage<%directive-usage>"
+	D = D "<default usage>"
+	D = D "<type str>"
+	D = D "<description Directive that sets the usage string for the schema.>"
+
+	V["--description"] = "description"
+	D = D "description<%directive-description>"
+	D = D "<default description>"
+	D = D "<type str>"
+	D = D "<description Directive that sets the description block for the schema or group.>"
+
+	V["--build"] = "build"
+	D = D "build<%directive-build>"
+	D = D "<default build>"
+	D = D "<type str>"
+	D = D "<description Enables build‑time placeholder expansion; replaces matching tokens in the schema with their evaluated variable values.>"
+
+	V["--macro-prefix"] = "<nx@"
+	D = D "macro-prefix<%directive-macro-prefix>"
+	D = D "<default <nx@>"
+	D = D "<type str>"
+	D = D "<description Directive that sets the prefix used for macro expansion in build snippets.>"
+
+	V["--macro-suffix"] = "/>"
+	D = D "macro-suffix<%directive-macro-suffix>"
+	D = D "<default /\>>"
+	D = D "<type str>"
+	D = D "<description Directive that sets the suffix used for macro expansion in build snippets.>"
+
+	V["--true"] = "<nx:true/>"
+	D = D "true<%yes on>"
+	D = D "<default <nx:true/\>>"
+	D = D "<type toggle>"
+	D = D "<description This is the value that represents false.>"
+
+	V["--false"] = "<nx:false/>"
+	D = D "false<%no off>"
+	D = D "<default <nx:false/\>>"
+	D = D "<type toggle>"
+	D = D "<description This is the value that represents true.>"
+
+	V["--nil"] = "<nx:nil/>"
+	D = D "nil<%null>"
+	D = D "<default <nx:nil/\>>"
+	D = D "<type str>"
+	D = D "<description Sentinel literal that represents an explicit null value within the schema system.>"
+
+	V["--min"] = "min"
+	D = D "min<%directive-min>"
+	D = D "<default min>"
+	D = D "<type str>"
+	D = D "<description Specifies the minimum numeric value allowed for this option.>"
+
+	V["--regex"] = "regex"
+	D = D "regex<%directive-regex>"
+	D = D "<default regex>"
+	D = D "<type str>"
+	D = D "<description Pattern constraint applied to the value; the value must match the given regular expression.>"
+
+	V["--max"] = "max"
+	D = D "max<%directive-max>"
+	D = D "<default max>"
+	D = D "<type str>"
+	D = D "<description Specifies the maximum numeric value allowed for this option.>"
+
+	V["--lazy-defaults"] = __nx_if(B, "<nx:true/>", "<nx:false/>")
+	D = D "lazy-defaults<lazy-assign-defaults>"
+	D = D "<default <nx:false/\>>"
+	D = D "<type str>"
+	D = D "<description when enabled, defaults are not applied during schema load; instead, if the option appears on the command line, its default value is applied immediately before the first user-provided value. If the option is never used, the default is never applied or exported. If the option is typed and the first user value fails type validation, the default remains. Subsequent valid values override the default.>"
+
+	V["--lazy"] = ""
+	D = D "lazy<%directive-lazy Lazy Directive-Lazy>"
+	D = D "<type str>"
+	D = D "<description apply this option's default only if the option is used at least once; the default is assigned immediately before the first valid value and is not exported if the option is never invoked>"
+
+	V["--append"] = "append"
+	D = D "append<%>"
+	D = D "<type str>"
+	D = D "<default append>"
+	D = D "<description Append a literal suffix to the option’s final validated value>"
+
+	V["--prepend"] = "prepend"
+	D = D "prepend<%>"
+	D = D "<type str>"
+	D = D "<default prepend>"
+	D = D "<description Prepend a literal prefix to the option’s final validated value>"
+
+	V["--post-before"] = "post-before"
+	D = D "post-before<%post-eval-before eval-before>"
+	D = D "<type str>"
+	D = D "<default post-before>"
+	D = D "<description Insert text before the final emitted assignment after all options have been parsed>"
+
+	V["--post-after"] = "post-after"
+	D = D "post-after<%post-eval-after eval-after>"
+	D = D "<type str>"
+	D = D "<default post-after>"
+	D = D "<description Insert text after the final emitted assignment after all options have been parsed>"
+
+	V["--post-awk-before"] = "post-awk-before"
+	D = D "post-awk-before<%post-awk-eval-before eval-awk-before>"
+	D = D "<type str>"
+	D = D "<default post-awk-before>"
+	D = D "<description Evaluate AWK code before appending or prepending; if it fails, the value is skipped>"
+
+	V["--post-awk-after"] = "post-awk-after"
+	D = D "post-awk-after<%post-awk-eval-after eval-awk-after>"
+	D = D "<type str>"
+	D = D "<default post-awk-after>"
+	D = D "<description Evaluate AWK code after appending or prepending; if it fails, the value is skipped>"
+
+	V["--directive-suffix-trim"] = "<nx:true/>"
+	D = D "directive-suffix-trim<>"
+	D = D "<type toggle>"
+	D = D "<default directive-prefix-trim>"
+	D = D "<description Trim leading flow‑whitespace from directive values before parsing them>"
+
+	V["--directive-prefix-trim"] = "<nx:true/>"
+	D = D "directive-prefix-trim<>"
+	D = D "<type toggle>"
+	D = D "<default directive-prefix-trim>"
+	D = D "<description Trim trailing flow‑whitespace from directive values before storing them>"
+
+	V["--chain-eval"] = "1"
+	D = D "chain-eval<%>"
+	D = D "<type int>"
+	D = D "<min 0>"
+	D = D "<max 3>"
+	D = D "<default 1>"
+	D = D "<description TODO>"
+
+	return D
+}
+
+function __nx_shell_schema_cat(V, D)
+{
+	# 1	key-value
+	# 2	flag
+	# 3	key-value array
+	# 4	group open
+	# 5	group close
+	# 6	long form
+	# 7	short form
+	return V["-k"] D V["-F"] D V["-K"] D V["-g"] D V["-G"] D V["-l"] D V["-s"]
+}
+
+function __nx_shell_schema_tog(V, D, B)
+{
+	# 1	unset
+	# 2	override
+	# 3	backtrack
+	# 4	export
+	# 5	double quote
+	# 6	concat flag
+	# 7	lazy defaults flag
+	D = V["-u"] D V["-o"] D V["-b"] D V["-e"] D V["-q"] D V["-C"] D V["--lazy-defaults"] D V["--directive-prefix-trim"] D V["--directive-suffix-trim"]
+	if (B)
+		V["--lazy-defaults"] = "<nx:false/>"
+	return D
+}
+
+function __nx_shell_schema_flg(V, D, B)
+{
+	# 1	force [0-3]
+	# 2	abort [0-3]
+	D = V["-f"] D V["-a"] D V["--chain-eval"]
+	if (B)
+		V["-a"] = "0"
+	return D
+}
+
+function __nx_shell_schema_act(V, D)
+{
+	# 1	push modifier symbol
+	# 2	pop modifier symbol
+	# 3	match substitute find modifier symbol
+	# 4	match substitute replace modifier symbol
+	# 5	starting index of match modifier symbol
+	# 6	number of matches modifier symbol
+	return V["-A"] D V["-D"] D V["-M"] D V["-R"] D V["-I"] D V["-N"]
+}
+
+function __nx_shell_schema_mic(V, D)
+{
+	# 1	argument prefix character
+	# 2	extra valid long form characters outside alpha class allowed between alpha characters
+	# 3	characters to ignore/skip defaults to whitespace characters
+	# 4	the concat string to format the string remainder
+	# 5	set symbol
+	# 6	group count
+	# 7	assign separator
+	# 8	macro prefix
+	# 9	macro suffix
+	return V["-P"] D V["-L"] D V["-w"] D V["-c"] D V["-S"] D V["-y"] D V["--macro-prefix"] D V["--macro-suffix"]
+}
+
+function __nx_shell_schema_dir(V, D)
+{
+	# 1 type directive
+	# 2 default directive
+	# 3 epilog directive
+	# 4 usage directive
+	# 5 description directive
+	# 6 build directive
+	# 7 regex directive
+	# 8 min directive
+	# 9 max directive
+	# 10 lazy directive
+	# 11 post before
+	# 12 post after
+	# 13 post awk eval before
+	# 14 post awk eval after
+	# 15 append
+	# 16 prepend
+	return V["--type"] D V["--default"] D V["--epilog"] D V["--usage"] D V["--description"] D V["--build"] D V["--regex"] D V["--min"] D V["--max"] D V["--lazy"] D V["--post-before"] D V["--post-after"] D V["--post-awk-before"] D V["--post-awk-after"] D V["--append"] D V["--prepend"]
+}
+
+
+function __nx_shell_schema_rep(V, D)
+{
+	# 1 true representation
+	# 2 false representation
+	# 3 none representation
+	return V["--true"] D V["--false"] D V["--none"]
+}
+
+# D1	string
+# V	map
+# D2	sep
+# N1	total
+# N2	debug
+# D3	what
+function nx_unique_check(D1, V, D2, N1, N2, D3,
+	l, i, acm, wret)
+{
+	if ((l = split(D1, V, D2)) > 0) {
+		i = __nx_if(l > N1, N1, l)
+		if (N2 > 1) {
+			if (l > N1 + 1)
+				nx_ansi_warning("'" D1 "' string contains more " D3 " than implemented. The " D3 " separator to separate the " D3 "s was either used as an as both separator and " D3 " or you passed '"  l - N1  "' " D3 "s more than you should have, only the first '" N1 "' positions will be used\n")
+			l = i
+			for (i = 1; i <= l; ++i) {
+				acm = V[i]
+				if (acm != "") {
+					if (acm in V) {
+						nx_ansi_warning(D3 " '" acm "' already in use at position '" V[acm] "'\n")
+						V[i] = ""
+						wret = -2
+					} else {
+						V[acm] = i
+					}
+				}
+			}
+		} else {
+			l = i
+			for (i = 1; i <= l; ++i) {
+				acm = V[i]
+				if (acm != "") {
+					if (acm in V) {
+						V[i] = ""
+						wret = -2
+					} else {
+						V[acm] = i
+					}
+				}
+			}
+		}
+	}
+
+	return wret
+}
+
+
+function __nx_shell_schema(D1, D2, D3, N,
+	D4, D5, D6, D7, D8, D9, D10,
+	V1, V2,
+	l, n, i, m,
+	acm, nogrps, lpgrp, grpsrt, grplst,
+	eret, wret, ab,
+	ks, fas, kas, go, gc, lo, lc,
+	tpe, dft, epi, use, dsc, blt, regx, min, max, lzy, pafr, pbfr, apafr, apbfr, ap, pap,
+	fa, fd, fm, fr, fi, fn,
+	pref, ext, skp, ncn, fs, as, psrt, mpre, msuf,
+	tru, fls, non,
+	rgx, acrgx,
+	v_ta, v_tb)
+{
+
+	# PARAMETERS
+	# ----------
+	# SCALAR PARAMETERS
+	# D1	the input
+	# D2	the parameter separator
+	# D3	the remainder separator
+	# N	debug level
+
+	# STRING SPLIT ARRAY PARAMETERS
+	# D4	category symbols
+	# D5	toggles
+	# D6	action symbols
+	# D7	flags
+	# D8	misc symbols
+	# D9	directives
+	# D10	type representations
+	# D11	types
+
+	# REFERENCE ARRAYS
+	# V1	the symbol structure vector
+	# V2	the parameters stack
+
+	# LANES
+	# (0) schelars
+	# (1) types
+	# (2) representation
+	# (3) directives
+	# (4) categories
+	# (5) toggles
+	# (6) actions
+	# (7) flags
+	# (8) misc
+	# (9) regex
+
+	if (D1 ~ /^[ \t\n\v\r\f]*$/) {
+		nx_ansi_error("please provide something to work with, '" D1 "' is not understood here yet\n")
+		return -1
+	}
+
+	D2 = __nx_else(D2, "<nx:null/>")
+	D3 = __nx_else(D3, "<nx:null/>")
+	N = int(N)
+	wret = 0
+	m = 256
+	grpsrt = 1
+	nogrps = 4
+	lpgrp = 3
+	grplst = grpsrt + nogrps * lpgrp
+	psrt = -8
+
+	# CATEGORY (D4) SECTION ###########################
+	n = 7
+	if ((l = split(D4, v_ta, D2)) > 0) {
+		i = __nx_if(l > n, n, l)
+		if (N > 1) {
+			if (l > n + 1)
+				nx_ansi_warning("'" D4 "' separator to separate the separators was was either used within the separators as a separator or you passed '"  l - n  "' separators more than you should have, only the first '" n "' positions will be used\n")
+			l = i
+			for (i = 1; i <= l; ++i) {
+				acm = v_ta[i]
+				if (acm != "") {
+					eret = 1
+					if (acm in v_ta) {
+						nx_ansi_warning("separator '" acm "' already in use as separator number '" v_ta[acm] "'\n")
+					} else if (length(acm) > 1) {
+						nx_ansi_warning("separator '" acm "' must be a single character\n")
+					} else if (nx_is_alpha(acm)) {
+						nx_ansi_warning("separator '" acm "' must not be alphabetic\n")
+					} else {
+						eret = 0
+						v_ta[acm] = i
+					}
+					if (eret)
+						wret = -2
+				}
+			}
+		} else {
+			l = i
+			for (i = 1; i <= l; ++i) {
+				acm = v_ta[i]
+				if (acm in v_ta || nx_is_alnum(acm) || length(acm) > 1) {
+					wret = -2
+				} else {
+					v_ta[acm] = i
+				}
+			}
+		}
+	}
+
+	ks = __nx_else(v_ta[1], "%") # key sep
+	fas = __nx_else(v_ta[2], "@") # appendable arr sep
+	kas = __nx_else(v_ta[3], "#") # appendable kwds sep
+	go = __nx_else(v_ta[4], "<") # begin group
+	gc = __nx_else(v_ta[5], ">") # eng group
+	lo = __nx_else(v_ta[6], ",") # begin or continue long option mode
+	lc = __nx_else(v_ta[7], ";") # end long option mode
+
+	if (nx_delim_sep("key value pair", ks, v_tb, N) == -1)
+		eret = -1
+	if (nx_delim_sep("flag array", fas, v_tb, N) == -1)
+		eret = -1
+	if (nx_delim_sep("key value pair array", kas, v_tb, N) == -1)
+		eret = -1
+	if (nx_delim_sep("open group", go, v_tb, N) == -1)
+		eret = -1
+	if (nx_delim_sep("close group", gc, v_tb, N) == -1)
+		eret = -1
+	if (nx_delim_sep("long option", lo, v_tb, N) == -1)
+		eret = -1
+	if (nx_delim_sep("short option", lc, v_tb, N) == -1)
+		eret = -1
+
+	if (eret == -1) {
+		delete v_ta
+		return -1
+	}
+
+	split(D1, V2, D2)
+	if ((i = nx_shell_stride(V2[1], go, gc)) == -1) {
+		if (N > 0)
+			nx_ansi_error("the group terminator '" gc "' ran away\n")
+		delete v_ta
+		delete v_tb
+		return -1
+	}
+
+	strde = nogrps * lpgrp + i
+	nx_parr_stk(V1, strde)
+
+	i = grpsrt
+	V1[ks] = nx_parr_stk(V1, i, ks)
+	
+	i = i + lpgrp
+	V1[lo] = nx_parr_stk(V1, i, lo)
+
+	i = i + lpgrp
+	V1[fas] = nx_parr_stk(V1, i, fas)
+
+	i = i + lpgrp
+	V1[kas] = nx_parr_stk(V1, i, kas)
+	##################################################
+
+
+	# CATEGORY (D4) SECTION ###########################
+	oft = m * 4
+	V1[(oft + 0) * strde] = n
+	# 1	key-value pair
+	# 2	flag array
+	# 3	key-value pair array
+	# 4	group open
+	# 5	group close
+	# 6	long form / toggle flag
+	# 7	short form
+	V1[(oft + 1) * strde] = ks
+	V1[(oft + 2) * strde] = fas
+	V1[(oft + 3) * strde] = kas
+	V1[(oft + 4) * strde] = go
+	V1[(oft + 5) * strde] = gc
+	V1[(oft + 6) * strde] = lo
+	V1[(oft + 7) * strde] = lc
+	##################################################
+
+
+	# MISC (D8) SECTION ##############################
+	split(D8, v_ta, D2)
+	pref = __nx_else(v_ta[1], "-") # prefix for long/short options
+	ext = __nx_else(v_ta[2], "-_:.") # extra characters allowed between alpha characters in long option mode
+	skp = __nx_else(v_ta[3], "\n\v\f\t\r ") # extra characters that hold no meaning and should be skipped
+	ncn = __nx_if(ncn, "", __nx_else(v_ta[4], " ", 1)) # concat sep of remainder string
+	fs = __nx_else(v_ta[5], "=") # set symbol
+	as = __nx_else(v_ta[6], "=") # assign symbol
+	mpre = __nx_else(v_ta[7], "<nx@") # macro prefix
+	msuf = __nx_else(v_ta[8], "/>") # macro suffix
+
+	split("", v_ta, "")
+	ext = nx_shell_diff(ext, v_ta, "", v_tb)
+	skp = nx_shell_diff(skp, v_ta, "", v_tb)
+	delete v_tb
+
+	split(D8, v_ta, D2)
+	n = 8
+	oft = m * 8
+	V1[(oft + 0) * strde] = n
+	# 1	argument prefix character
+	# 2	extra valid long form characters outside alpha class allowed between alpha characters
+	# 3	characters to ignore/skip defaults to whitespace characters
+	# 4	the concat string to format the string remainder
+	# 5	the action init symbol
+	# 6	assign symbol
+	# 7	macro prefix
+	# 8	macro suffix
+	V1[(oft + 1) * strde] = pref
+	V1[(oft + 2) * strde] = ext
+	V1[(oft + 3) * strde] = skp
+	V1[(oft + 4) * strde] = ncn
+	V1[(oft + 5) * strde] = fs
+	V1[(oft + 6) * strde] = as
+	V1[(oft + 7) * strde] = mpre
+	V1[(oft + 8) * strde] = msuf
+	##################################################
+
+
+	# TOGGLES (D5) SECTION ###########################
+	split(D5, v_ta, D2)
+	n = 9
+	oft = m * 5
+	V1[oft * strde] = n
+	# 1	unset
+	# 2	override
+	# 3	backtrack
+	# 4	export
+	# 5	double quote
+	# 6	concat flag
+	# 7	lazy defaults flag
+	# 8	directive-prefix-trim
+	# 9 	directive-suffix-trim
+	for (i = 1; i <= n; ++i) {
+		oft = oft + 1
+		V1[oft * strde] = v_ta[i] == "<nx:true/>"
+	}
+	ncn = V1[(m * 5 + 6) * strde]
+	##################################################
+
+
+	# FLAGS (D7) SECTION #############################
+	split(D7, v_ta, D2)
+	n = 2
+	oft = m * 7
+	V1[(oft + 0) * strde] = n
+	# 1	force [0-3]
+	# 2	abort [0-3]
+	# 3	chain-eval [0-2]
+	V1[(oft + 1) * strde] = int(v_ta[1])
+	V1[(oft + 2) * strde] = (ab = int(v_ta[2]))
+	V1[(oft + 3) * strde] = int(v_ta[3])
+	##################################################
+
+
+	# ACTION CATEGORY (D6) SECTION ###################
+	n = 6
+	wret = __nx_else(nx_unique_check(D6, v_ta, D2, n, N, "action"), wret)
+
+	fa = __nx_else(v_ta[1], "+") # push modifier symbol
+	fd = __nx_else(v_ta[2], "-") # pop modifier symbol
+	fm = __nx_else(v_ta[3], "@") # match find modifier symbol
+	fr = __nx_else(v_ta[4], "~") # match replace modifier symbol
+	fi = __nx_else(v_ta[5], "%") # match index of match modifier symbol
+	fn = __nx_else(v_ta[6], "#") # match number modifier symbol
+	if (nx_delim_sep("push modifier symbol", fa, v_tb, N) == -1)
+		eret = -1
+	if (nx_delim_sep("pop modifier symbol", fd, v_tb, N) == -1)
+		eret = -1
+	if (nx_delim_sep("match find modifier symbol", fm, v_tb, N) == -1)
+		eret = -1
+	if (nx_delim_sep("match replace modifier symbol", fr, v_tb, N) == -1)
+		eret = -1
+	if (nx_delim_sep("match index modifier symbol", fi, v_tb, N) == -1)
+		eret = -1
+	if (nx_delim_sep("match number modifier symbol", fn, v_tb, N) == -1)
+		eret = -1
+	delete v_tb
+	if (eret == -1) {
+		delete v_ta
+		return -1
+	}
+
+	# start of params when invoking the function nx_shell_args and nx_shell_environ
+	psrt = psrt * strde
+	V1["-0"] = __nx_if(V1["-0"] < psrt, V1["-0"], psrt)
+	##################################################
+
+
+	# ACTION (D6) SECTION ############################
+	oft = m * 6
+	V1[(oft + 0) * strde] = n
+	# 1	push modifier symbol
+	# 2	pop modifier symbol
+	# 3	match substitute find modifier symbol
+	# 4	match substitute replace modifier symbol
+	# 5	starting index of match modifier symbol
+	# 6	number of matches modifier symbol
+	V1[(oft + 1) * strde] = fa
+	V1[(oft + 2) * strde] = fd
+	V1[(oft + 3) * strde] = fm
+	V1[(oft + 4) * strde] = fr
+	V1[(oft + 5) * strde] = fi
+	V1[(oft + 6) * strde] = fn
+	##################################################
+
+
+	# SCELAR SECTION #################################
+	# 1	the parameter separator
+	# 2	the remainder separator
+	# 3	debug level
+	# 4	map boundary
+	# 5	group count
+	# 6	positional parameter starting index and assigned block size
+	# 7	starting group index
+	# 8	ending group index
+	# 9	number of groups
+	# 10	lanes per group
+	V1[1 * strde] = D2
+	V1[2 * strde] = D3
+	V1[3 * strde] = N
+	V1[4 * strde] = m
+	V1[5 * strde] = 0
+	V1[6 * strde] = psrt
+	V1[7 * strde] = grpsrt
+	V1[8 * strde] = grplst
+	V1[9 * strde] = nogrps
+	V1[10 * strde] = lpgrp
+	##################################################
+
+	skp = "(" nx_str_esc(skp, 2) ")+"
+	acm = "([a-zA-Z]"
+	if (ext) {
+		rgx = nx_str_esc(ext, 2)
+		ext = "([a-zA-Z]|" rgx
+		acm = acm ext ")*)?[A-Za-z]+"
+		rgx = rgx")+$"
+		ext = ext ")+"
+		rgx = "(" rgx
+	} else {
+		ext = "[a-zA-Z]+"
+	}
+
+	for (i = 1; i <= n; ++i)
+		acrgx = acrgx "|[" V1[(oft + i) * strde] "]"
+	mpre = nx_str_esc(mpre)
+	msuf = nx_str_esc(msuf)
+
+	# REGEX SECTION ##################################
+	n = 8
+	oft = m * 9
+	V1[(oft + 0) * strde] = n
+	# 1	the action modifier match regex
+	# 2	extended + alphabetic long option character regex
+	# 3	extended long option character regex
+	# 4	skip regex defaults to whitespace
+	# 5	action regex
+	# 6	skip regex defaults to whitespace with anchors
+	# 7	macro regex
+	# 8	macro remove pre suf regex
+	V1[(oft + 1) * strde] = acm
+	V1[(oft + 2) * strde] = ext "$"
+	V1[(oft + 3) * strde] = rgx
+	V1[(oft + 4) * strde] = skp
+	V1[(oft + 5) * strde] = substr(acrgx, 2)
+	V1[(oft + 6) * strde] = "^" skp "$"
+	V1[(oft + 7) * strde] = mpre ext msuf
+	V1[(oft + 8) * strde] = "(^" mpre "|" msuf "$)"
+	##################################################
+
+
+	# CATEGORY (D9) SECTION ###########################
+	n = 16
+	wret = __nx_else(nx_unique_check(D9, v_ta, D2, n, N, "directive"), wret)
+	tpe = __nx_else(v_ta[1], "type")
+	dft = __nx_else(v_ta[2], "default")
+	epi = __nx_else(v_ta[3], "epilog")
+	use = __nx_else(v_ta[4], "usage")
+	dsc = __nx_else(v_ta[5], "description")
+	blt = __nx_else(v_ta[6], "build")
+	regx = __nx_else(v_ta[7], "regex")
+	min = __nx_else(v_ta[8], "min")
+	max = __nx_else(v_ta[9], "max")
+	lzy = __nx_else(v_ta[10], "lazy")
+	pbfr = __nx_else(v_ta[11], "post-before")
+	pafr = __nx_else(v_ta[12], "post-after")
+	apbfr = __nx_else(v_ta[13], "post-awk-before")
+	apafr = __nx_else(v_ta[14], "post-awk-after")
+	ap = __nx_else(v_ta[15], "append")
+	pap = __nx_else(v_ta[16], "prepend")
+
+	if (nx_delim_sep("type directive", tpe, v_tb, N) == -1)
+		eret = -1
+	if (nx_delim_sep("default directive", dft, v_tb, N) == -1)
+		eret = -1
+	if (nx_delim_sep("epilog directive", epi, v_tb, N) == -1)
+		eret = -1
+	if (nx_delim_sep("usage directive", use, v_tb, N) == -1)
+		eret = -1
+	if (nx_delim_sep("description directive", dsc, v_tb, N) == -1)
+		eret = -1
+	if (nx_delim_sep("build directive", blt, v_tb, N) == -1)
+		eret = -1
+	if (nx_delim_sep("regex directive", win, v_tb, N) == -1)
+		eret = -1
+	if (nx_delim_sep("min directive", min, v_tb, N) == -1)
+		eret = -1
+	if (nx_delim_sep("max directive", max, v_tb, N) == -1)
+		eret = -1
+	if (nx_delim_sep("lazy directive", lzy, v_tb, N) == -1)
+		eret = -1
+	if (nx_delim_sep("post before directive", pbfr, v_tb, N) == -1)
+		eret = -1
+	if (nx_delim_sep("post after directive", pafr, v_tb, N) == -1)
+		eret = -1
+	if (nx_delim_sep("post awk eval before directive", apbfr, v_tb, N) == -1)
+		eret = -1
+	if (nx_delim_sep("post awk eval after directive", apafr, v_tb, N) == -1)
+		eret = -1
+	if (nx_delim_sep("append directive", ap, v_tb, N) == -1)
+		eret = -1
+	if (nx_delim_sep("prepend directive", pap, v_tb, N) == -1)
+		eret = -1
+	delete v_tb
+
+	if (eret == -1) {
+		delete v_ta
+		return -1
+	}
+
+	# DIRECTIVE SECTION ##############################
+	oft = m * 3
+	V1[(oft + 0) * strde] = n
+	# 1 type directive
+	# 2 default directive
+	# 3 epilog directive
+	# 4 usage directive
+	# 5 description directive
+	# 6 build directive
+	# 7 regex directive
+	# 8 min directive
+	# 9 max directive
+	# 10 lazy directive
+	# 11 post before
+	# 12 post after
+	# 13 post awk eval before
+	# 14 post awk eval after
+	# 15 append
+	# 16 prepend
+	V1[(oft + 1) * strde] = tpe
+	V1[(oft + 2) * strde] = dft
+	V1[(oft + 3) * strde] = epi
+	V1[(oft + 4) * strde] = use
+	V1[(oft + 5) * strde] = dsc
+	V1[(oft + 6) * strde] = blt
+	V1[(oft + 7) * strde] = regx
+	V1[(oft + 8) * strde] = min
+	V1[(oft + 9) * strde] = max
+	V1[(oft + 10) * strde] = lzy
+	V1[(oft + 11) * strde] = pbfr
+	V1[(oft + 12) * strde] = pafr
+	V1[(oft + 13) * strde] = apbfr
+	V1[(oft + 14) * strde] = apafr
+	V1[(oft + 15) * strde] = ap
+	V1[(oft + 16) * strde] = pap
+	##################################################
+
+
+	# REPRESENTATION (D10) SECTION ###################
+	n = 4
+	wret = __nx_else(nx_unique_check(D10, v_ta, D2, n, N, " representation"), wret)
+	tru = __nx_else(v_ta[1], "<nx:true/>")
+	fls = __nx_else(v_ta[2], "<nx:false/>")
+	non = __nx_else(v_ta[3], "<nx:none/>")
+	if (nx_delim_sep("false representation", fls, v_tb, N) == -1)
+		eret = -1
+	if (nx_delim_sep("true representation", tru, v_tb, N) == -1)
+		eret = -1
+	if (nx_delim_sep("none representation", non, v_tb, N) == -1)
+		eret = -1
+	delete v_tb
+
+	# REPRESENTATION (D10) SECTION ###################
+	n = 3
+	oft = m * 2
+	V1[(oft + 0) * strde] = n
+	# 1 true representation
+	# 2 false representation
+	# 3 none representation
+	V1[(oft + 1) * strde] = tru
+	V1[(oft + 2) * strde] = fls
+	V1[(oft + 3) * strde] = non
+	##################################################
+
+
+	delete v_ta
+	if (ab > 2)
+		return __nx_else(eret, wret)
+	return eret
+}
+
+function nx_shell_opts(V1, V2,
+	m, oft, strde,
+	fas,
+	obol, lo, lc, tcnt, ttrk,
+	grpsrt, grplst, nogrps, lpgrp,
+	kasi, fasi,fsi, ksi,
+	gfr, gcr, gsym, goff, gbse, gpos, gbol, grp, cgrp, go, gc, gent,
+	tpe, dft, epi, use, dsc, blt, regx, min, max, lzy, pbfr, pafr, apbfr, apafr, ap, pap,
+	dbol, djmp, dmov,
+	ab, lzyd, islzy, tpr, tsf,
+	acm, lcr, rcr, cr,
+	ks, kas,
+	fmt, idx, bol,
+	eret, wret,
+	ovr, dbg,
+	flw, sbol,
+	tru, fls,
+	trk)
+{
+
+	strde = V1[0]
+	dbg = V1[strde * 3]
+	m = V1[strde * 4]
+	grpsrt = V1[7 * strde]
+	grplst = V1[8 * strde]
+	nogrps = V1[9 * strde]
+	lpgrp = V1[10 * strde]
+
+	# REPRESENTATION
+	oft = m * 2
+	tru = V1[(oft + 1) * strde]
+	fls = V1[(oft + 2) * strde]
+
+	# DIRECTIVES
+	oft = m * 3
+	tpe = V1[(oft + 1) * strde]
+	dft = V1[(oft + 2) * strde]
+	epi = V1[(oft + 3) * strde]
+	use = V1[(oft + 4) * strde]
+	dsc = V1[(oft + 5) * strde]
+	blt = V1[(oft + 6) * strde]
+	regx = V1[(oft + 7) * strde]
+	min = V1[(oft + 8) * strde]
+	max = V1[(oft + 9) * strde]
+	lzy = V1[(oft + 10) * strde]
+	pbfr = V1[(oft + 11) * strde]
+	pafr = V1[(oft + 12) * strde]
+	apbfr = V1[(oft + 13) * strde]
+	apafr = V1[(oft + 14) * strde]
+	ap = V1[(oft + 15) * strde]
+	pap = V1[(oft + 16) * strde]
+
+	# CATEGORIES
+	oft = m * 4
+	ks = V1[(oft + 1) * strde]
+	fas = V1[(oft + 2) * strde]
+	kas = V1[(oft + 3) * strde]
+	go = V1[(oft + 4) * strde]
+	gc = V1[(oft + 5) * strde]
+	lo = V1[(oft + 6) * strde]
+	lc = V1[(oft + 7) * strde]
+
+	# TOGGLES
+	oft = m * 5
+	ovr = V1[(oft + 2) * strde]
+	lzyd = V1[(oft + 7) * strde]
+	tpr = V1[(oft + 8) * strde]
+	tsf = V1[(oft + 9) * strde]
+
+	# FLAGS
+	oft = m * 7
+	gfr = V1[(oft + 1) * strde]
+	ab = V1[(oft + 2) * strde]
+
+	# REGEX
+	oft = m * 9
+	ext = V1[(oft + 2) * strde]
+	rcr = V1[(oft + 3) * strde]
+	flw = V1[(oft + 4) * strde]
+
+	# MISC
+	oft = m * 8
+	lcr = V1[(oft + 2) * strde]
+
+	idx = grpsrt
+	ksi = idx
+
+	idx = idx + lpgrp
+	fsi = idx
+
+	idx = idx + lpgrp
+	fasi = idx
+
+	idx = idx + lpgrp
+	kasi = idx
+	idx = idx + lpgrp
+	if (idx > grplst && dbg > 1) {
+		grp = (idx - grpsrt) / lpgrp
+		nx_ansi_warning("provided '" grp "' groups, but the schema only specified '" nogrps "'. with a lane size of '" lpgrp "', the last group head should be '" grplst "', last group is '" idx " Please specify the '" grp - nogrps "' remaining groups in the schema as well'\n")
+	}
+
+	cr = V2[1]
+	fmt = split(cr, trk, "")
+	if (dbg > 2)
+		nx_ansi_alert("passed param string was " cr "\n")
+
+	grp = grplst
+	gbol = 0
+
+	for (idx = 1; idx <= fmt; ++idx) {
+		cr = trk[idx = __nx_shell_skip(trk[idx], trk, flw, idx)]
+		if (idx > fmt)
+			break
+
+		bol = cr == lo
+		if (bol || cr == lc) {
+			if (obol != bol) {
+				if (dbg > 2)
+					nx_ansi_info(__nx_if(obol == "", "applying form to " __nx_if(bol, "long form", "short form"), "updating form from " __nx_if(obol, "long form to short form", "short form to long form")) "\n")
+				obol = bol
+			}
+			cr = trk[idx = __nx_shell_skip(trk[++idx], trk, flw, idx)]
+		}
+
+		if (nx_is_alpha(cr)) {
+			acm = cr
+			cr = trk[++idx]
+			if (obol) {
+				while (cr ~ ext) {
+					acm = acm cr
+					cr = trk[++idx]
+				}
+				if (lcr && gsub(rcr, "", acm) && dbg > 1)
+					nx_ansi_alert("trailing '" lcr "' found after '" acm "'\n")
+				if (cr ~ flw)
+					cr = trk[idx = __nx_shell_skip(cr, trk, flw, idx)]
+			}
+			bol = nx_is_alpha(cr)
+			if (acm in V1) {
+				dmov = 0
+				if (gbol) {
+					if (dbg > 1)
+						nx_ansi_warning("argument '" acm "' was already registered\n")
+					idx--
+				} else {
+					gpos = V1[acm]
+					gbse = gpos % strde
+					if (gbse >= grplst && gbse + strde * 2 == gpos && cr == go) {
+						gcr = acm
+						gbol = 1
+
+						if (nx_is_alpha(gsym = trk[__nx_shell_skip(trk[idx], trk, flw, idx)]) || gsym == gc) {
+							if (gsym == gc)
+								--idx
+							gsym = lo
+						}
+
+						if (ovr)
+							V1[gbse + strde] = gsym
+						else
+							gsym = V1[gbse + strde]
+						cgrp = grp
+						grp = gbse
+						if (dbg > 2)
+							nx_ansi_light("adding on to '" acm "' of type '" gsym "'\n")
+					} else if (cr == go) {
+						gsym = trk[__nx_shell_skip(trk[++idx], trk, flw, idx)]
+						if (nx_is_alpha(gsym) || gsym == gc) {
+							--idx
+							gsym = lo
+						}
+
+						if (gfr == 1) {
+							if (ovr) {
+								if (dbg > 1)
+									nx_ansi_warning("replacing '" V1[gbse + strde] "' with '" gsym "' type for group entries within the schelar once refered to as '" acm "'\n")
+							} else {
+								cr = gsym
+								gsym = V1[gbse + strde]
+								if (dbg > 1)
+									nx_ansi_warning("discarding old type '" cr "' and reusing '" gsym "' type for original entry '" acm "' first declaration\n")
+							}
+							dbol = V1[gsym] - strde
+						} else if (gfr == 2) {
+							dmov = 1
+							dbol = 0
+							cr = nx_parr_stk(V1, gbse)
+							if (cr == acm) {
+								delete V1[V1[cr]]
+							} else {
+								dmov = V1[acm]
+								V1[cr] = dmov
+								V1[dmov] = cr
+								delete V1[acm]
+							}
+
+							if (ovr) {
+								if (dbg > 2)
+									nx_ansi_light("param override disabled\n")
+								gsym = V1[gbse + strde]
+								cr = trk[idx + 1];
+								if (nx_is_alpha(cr) || cr == gc) {
+									trk[idx] = gsym
+									trk[--idx] = go
+								} else {
+									trk[idx + 1] = gsym
+								}
+							} else {
+								if (dbg > 2)
+									nx_ansi_light("param override enabled\n")
+							}
+
+							cr = go
+							if (dbg > 2)
+								nx_ansi_light("param override of '" acm "' was prepaired to be registered as a group leader'\n")
+						} else {
+							D1 = acm
+							acm = ""
+							D2 = ""
+							while (++idx <= fmt) {
+								if ((cr = trk[idx = __nx_shell_skip(trk[idx], trk, flw, idx)]) == gc)
+									break
+								dbol = cr == lo
+								if (dbol || cr == lc)
+									D2 = dbol
+								acm = acm cr
+							}
+
+							if (ovr && D2 != "" && D2 != obol) {
+								if (dbg > 2)
+									nx_ansi_info("ovrride was set, " __nx_if(obol == "", "applying form to " __nx_if(D2, "long form", "short form"), "updating form from " __nx_if(obol, "long form to short form", "short form to long form")) "\n")
+								obol = D2
+							}
+
+							if (dbg > 1) {
+								D2 = V1[V1[D1] % strde + strde]
+								nx_ansi_warning("skipping past '" D1 "' group entries '" acm "' as '" D1 "' is already of type '" V2[D2] "' assigned the symbol '" D2 "'\n")
+							}
+							dbol = 0
+						}
+					} else {
+						if (dbg > 1)
+							nx_ansi_warning("argument '" acm "' was already registered\n")
+						idx--
+					}
+				}
+				if (!dmov)
+					continue
+			}
+
+			# skip characters are implicit flags with sbol
+			sbol = nx_is_alpha(cr = trk[idx = __nx_shell_skip(cr, trk, flw, idx)])
+
+			if (dbol) {
+				djmp = cr == lo
+				if ((djmp || cr == lc) && djmp != obol) {
+					if (dbg > 2)
+						nx_ansi_info(__nx_if(obol == "", "setting form to " __nx_if(djmp, "long form", "short form"), "updating form from " __nx_if(obol, "long form to short form", "short form to long form")) "\n")
+					obol = djmp
+				}
+				djmp = cr
+				cr = gsym
+				if (djmp != gc)
+					djmp = ""
+			}
+
+			if (cr == gc && !gbol) {
+				cr = __nx_if(obol, lo, lc)
+				if (dbg > 2)
+					nx_ansi_warning("extra '" gc "' detected after '" acm "' changing type to '" cr "'\n")
+			}
+
+			if (sbol || bol || cr == lo || cr == lc || cr == "" || gbol) {
+				if (sbol) {
+					if (dbg > 2)
+						nx_ansi_info("skipping passed whitespace defined by the schema, continuing with the '" __nx_if(bol, "long", "short") "' form parse, proceeding with the '" acm "' schema entry\n")
+					--idx
+				} else if (cr != gc) {
+					bol = cr == lo
+					if ((bol || cr == lc) && bol != obol) {
+						if (dbg > 2)
+							nx_ansi_info(__nx_if(obol == "", "applying form to " __nx_if(bol, "long form", "short form"), "updating form from " __nx_if(obol, "long form to short form", "short form to long form")) "\n")
+						obol = bol
+						--idx
+					}
+				}
+				if (gbol) {
+					gpos = nx_parr_stk(V1, grp, acm)
+					if (cr == gc) {
+						gbol = 0
+						if (cgrp > grp) {
+							if (dbg > 2)
+								nx_ansi_info("group reset from '" grp "' to '" cgrp "'\n")
+							grp = cgrp
+						} else {
+							grp = grp + 3
+						}
+						if (dbg > 2)
+							nx_ansi_debug("member '" acm "' is end of group type '" gsym "' with leader '" gcr "' at position '" gpos "'\n")
+					} else if (dbg > 2) {
+							nx_ansi_success("appending member '" acm "' to group type '" gsym "' with leader '" gcr "' at position '" gpos "'\n")
+					}
+				} else if (dbol) {
+					gpos = nx_parr_stk(V1, dbol, acm)
+					if (dbg > 2)
+						nx_ansi_success("passed param '" acm "' was modified to from type '" cr "'  to type '" gsym "' at position '" gpos "'\n")
+				} else {
+					gpos = nx_parr_stk(V1, fsi, acm)
+					if (dbg > 2)
+						nx_ansi_success("passed param '" acm "' was registered as a flag at position '" gpos "'\n")
+				}
+			} else if (cr == go) {
+				gcr = acm
+				gbol = 1
+				gsym = trk[idx + 1]
+				cr = trk[idx = __nx_shell_skip(gsym, trk, flw, idx)]
+				if (nx_is_alpha(gsym) || gsym == gc) {
+					gsym = lo
+				} else if (nx_is_alpha(cr) || cr == gc) {
+					gsym = lo
+					--idx
+				} else {
+					++idx
+				}
+				nx_parr_stk(V1, grp, gsym)
+				gpos = nx_parr_stk(V1, grp, acm)
+				if (dbg > 2)
+					nx_ansi_light("passed param '" acm "' was registered as a group leader of type '" gsym "' at position '" gpos "'\n")
+			} else if (cr == ks) {
+				gpos = nx_parr_stk(V1, ksi, acm)
+				if (dbg > 2)
+					nx_ansi_debug("passed param '" acm "' was registered as a keyword argument at position '" gpos "'\n")
+			} else if (cr == fas) {
+				gpos = nx_parr_stk(V1, fasi, acm)
+				if (dbg > 2)
+					nx_ansi_success("passed param '" acm "' was registered as a flag array (appendable) at position '" gpos "'\n")
+			} else if (cr == kas) {
+				gpos = nx_parr_stk(V1, kasi, acm)
+				if (dbg > 2)
+					nx_ansi_debug("passed param '" acm "' was registered as a keyword array (appendable) at position '" gpos "'\n")
+			} else if (dbg > 1) {
+				nx_ansi_warning("passed param '" acm "' was not registered, '" cr "' is not a known group\n")
+				wret = -2
+				continue
+			}
+			V1[acm] = gpos
+			D2 = V1[2 + strde]
+			if (djmp)
+				--idx
+		} else if (cr == gc) {
+			if (gbol) {
+				gbol = 0
+				if (cgrp > grp) {
+					grp = cgrp
+					if (dbg > 2)
+						nx_ansi_debug(acm " is end of the current modification pass of the group type '" gsym "' with leader " gcr " at position " gpos "'\n")
+				} else {
+					grp = grp + lpgrp
+					if (dbg > 2)
+						nx_ansi_debug(acm " is end of the initizlization of group type '" gsym "' with leader " gcr " at position " gpos "'\n")
+				}
+			} else if (dbol) {
+				dbol = 0
+				djmp = ""
+			} else if (dbg > 1) {
+				nx_ansi_warning("extra '" gc "' detected after '" acm __nx_if(nx_is_alpha(trk[idx - 1]), cr, trk[idx - 1]) "', discarding\n")
+			}
+		} else if (cr == go && gcr != "") {
+			acm = trk[idx = __nx_shell_skip(trk[++idx], trk, flw, idx)]
+			while (nx_is_alpha(cr = trk[++idx]))
+				acm = acm cr
+			--idx
+			gent = -1
+
+			cr = tolower(acm)
+			if (cr == tpe) {
+				gent = 0
+			} else if (cr == dft) {
+				gent = 1
+			} else if (cr == epi) {
+				gent = 2
+			} else if (cr == use) {
+				gent = 3
+			} else if (cr == dsc) {
+				gent = 4
+			} else if (cr == blt) {
+				gent = 5
+			} else if (cr == regx) {
+				gent = 6
+			} else if (cr == min) {
+				gent = 7
+			} else if (cr == max) {
+				gent = 8
+			} else if (cr == lzy) {
+				gent = 9
+			} else if (cr == pbfr) {
+				gent = 10
+			} else if (cr == pafr) {
+				gent = 11
+			} else if (cr == apbfr) {
+				gent = 12
+			} else if (cr == apafr) {
+				gent = 13
+			} else if (cr == ap) {
+				gent = 14
+			} else if (cr == pap) {
+				gent = 15
+			} else {
+				if (dbg > 1)
+					nx_ansi_warning("provided '" acm "' is garbage, what do you wish this to mean? '" cr "' discarding unimplemented metadata field\n")
+				continue
+			}
+
+			cr = acm
+			if ((acm = trk[idx = __nx_shell_skip(trk[++idx], trk, flw, idx)]) == "\x5c") {
+				acm = trk[++idx]
+			}  else if (acm == gc) {
+				if (gent == 9) {
+					nx_boolean(V1, V1[V1[gcr] - strde * 2] + 1 + strde * gent, nx_is_lower(substr(acm, 1, 1)), tru, fls)
+				} else {
+					nx_ansi_warning("provided '" cr "' for '" gcr "' is empty, is this intended? It wont be registered, discarding metadata field\n")
+				}
+				continue
+			}
+
+			bol = tpr
+			while ((cr = trk[++idx]) != gc) {
+				if (bol) {
+					while (cr ~ flw)
+						cr = trk[++idx]
+					bol = 0
+				}
+				if (cr == "\x5c") do {
+					cr = trk[++idx]
+				} while (cr ~ flw)
+				acm = acm cr
+			}
+			if (tsf == 1)
+				gsub(flw "$", "", acm)
+
+			cr = V1[gcr] - strde * 2
+			V1[V1[cr] + 1 + strde * gent] = acm
+			islzy = V1[cr] + 1 + strde * 9
+
+			if (ab < 3 && !lzyd && !(islzy in V1 && V1[islzy] == tru)) {
+				if (gent == 1)
+					nx_shell_dispatch(V1, V2, "", cr)
+			}
+
+		} else {
+			if (dbg > 1)
+				nx_ansi_warning("provided '" cr "' is garbage or malformed, what do you wish this to mean? discarding\n")
+			wret = -2
+		}
+	}
+	delete trk
+	V1[5 * strde] = grp
+	if (eret = int(eret))
+		return eret
+	return int(wret)
+}
+
+function nx_shell_args(V1, V2,
+	strde, dbg, m, oft,
+	ps, pref,
+	bk,
+	ab,
+	fs, fa, fd, fm, fr, fi, fn,
+	ctp, cidx,
+	oln, oidx,
+	con, tok,
+	r, s, n,
+	idx, cat, grp, trm,
+	dsh, vl,
+	wret, eret,
+	acrgx, eacrgx,
+	trk)
+{
+	strde = V1[0]
+	dbg = V1[strde * 3]
+	ps = V1[strde * 2]
+	m = V1[strde * 4]
+
+	# ACTIONS
+	oft = m * 6
+	fa = V1[(oft + 1) * strde]
+	fd = V1[(oft + 2) * strde]
+	fm = V1[(oft + 3) * strde]
+	fr = V1[(oft + 4) * strde]
+	fi = V1[(oft + 5) * strde]
+	fn = V1[(oft + 6) * strde]
+
+	# MISC
+	oft = m * 8
+	pref = V1[(oft + 1) * strde]
+	con = V1[(oft + 4) * strde]
+	fs = V1[(oft + 6) * strde]
+
+	# FLAGS
+	oft = m * 7
+	ab = V1[(oft + 2) * strde]
+
+	# REGEX
+	oft = m * 9
+	eacrgx = V1[(oft + 1) * strde]
+	acrgx = V1[(oft + 5) * strde]
+
+	# TOGGLES
+	oft = m * 5
+	bk = V1[(oft + 3) * strde]
+
+	cnt = length(V2)
+	trm = 1
+	ctp = cnt
+	cidx = cnt
+	idx = 1
+	while (idx < cnt || ctp > cnt) {
+		if (ctp > cnt) {
+			if (cidx == ctp) {
+				ctp = cnt
+				cidx = cnt
+				continue
+			}
+			tok = V2[++cidx]
+		} else {
+			tok = V2[++idx]
+		}
+		if (trm > 0 && substr(tok, 1, 1) == pref) {
+			tok = substr(tok, 2)
+			if (substr(tok, 1, 1) == pref) {
+				if ((tok = substr(tok, 2)) == "") {
+					trm = 0
+					if (dbg > 2)
+						nx_ansi_light("end of arguments detected  '" pref pref "' appending remainder\n")
+					continue
+				} else if (length(tok = nx_shell_actions(tok, acrgx, fs, V2, dbg, eacrgx)) > 1 && tok in V1) {
+					if (dbg > 2)
+						nx_ansi_debug("long form option '" tok "' was registered, preceding\n")
+					trm = 2
+				}
+			} else if (nx_shell_actions(tok, acrgx, fs, V2, dbg, eacrgx) != -1) {
+				opt = V2["opt"]
+				if (length(opt) > 1) {
+					vl = V2["mod"] V2["num"] V2["act"] V2["val"]
+					oln = split(opt, trk, "")
+					opt = ""
+					for (oidx = 1; oidx <= oln; ++oidx) {
+						tok = trk[oidx]
+						if (tok in V1) {
+							if (dbg > 2)
+								nx_ansi_alert("short form bundle option '" pref tok vl "' was registered, preceding\n")
+							V2[++ctp] = pref tok vl
+						} else {
+							opt = opt tok
+						}
+					}
+					trm = 2
+					if (bk && opt)
+						V2[idx--] = opt
+					continue
+				} else if (opt in V1) {
+					if (dbg > 2)
+						nx_ansi_success("short form option '" opt "' was registered, preceding\n")
+					trm = 2
+					tok = opt
+				}
+			}
+		}
+
+		if (trm < 2) {
+			if (ab  && trm) {
+				if (dbg > 2)
+					nx_ansi_debug("option '" tok "' was never registered, abort flag was set to '" ab "', preceding\n")
+				if (ab == 1)
+					break
+				trm = 0
+			}
+			tok = V2[idx]
+			s = nx_join_str(s, tok, con)
+			r = nx_join_str(r, tok, ps)
+			++n
+			if (dbg > 2)
+				nx_ansi_alert("appending '" tok "' to remainder \n")
+			continue
+		}
+
+		trm = 1
+		cat = V1[tok]
+		grp = cat % strde
+
+		if (dbg > 2) {
+			if (grp < 13)
+				nx_ansi_light("token index for '" tok "' registered under '" cat "' and part of the '" grp "' id\n")
+			else
+				nx_ansi_light("token index for '" tok "' registered under '" cat "' and part of the '" grp "' id, with the group leader of type '" V1[grp + strde] "' being '" V1[grp + strde * 2] "'\n")
+		}
+		idx = nx_shell_dispatch(V1, V2, idx, grp)
+	}
+
+	V1[-1 * strde] = r
+	V1[-2 * strde] = s
+	V1[-3 * strde] = int(n)
+	if (dbg > 2)
+		nx_ansi_alert("remainder is '" r "' \n")
+	delete trk
+	if (eret = int(eret))
+		return eret
+	return int(wret)
+}
+
+function nx_shell_help(V,
+	str, srt, strde, soff,
+	moff, grps,
+	i, j)
+{
+	strde = V[0]
+	grps = V[strde * 5]
+	soff = strde + strde
+	srt = V[1]
+
+	for (i = 1 + soff; i <= srt; i += strde)
+		str = str " " V[i]
+	if (str != "") {
+		nx_ansi_info("\n(" V[1 + strde] ") keywords:" str)
+		str = ""
+	}
+
+	srt = V[4]
+	for (i = 4 + soff; i <= srt; i += strde)
+		str = str " " V[i]
+	if (str) {
+		nx_ansi_info("\n(" V[4 + strde] ") flags:" str)
+		str = ""
+	}
+
+	srt = V[7]
+	for (i = 7 + soff; i <= srt; i += strde)
+		str = str " " V[i]
+	if (str) {
+		nx_ansi_info("\n(" V[7 + strde] ") flag arrays:" str)
+		str = ""
+	}
+
+	srt = V[10]
+	for (i = 10 + soff; i <= srt; i += strde)
+		str = str " " V[i]
+	if (str) {
+		nx_ansi_info("\n(" V[10 + strde] ") keyword arrays:" str)
+		str = ""
+	}
+
+	for (i = 13; i < grps; i =  i + 3) {
+		j = i + strde
+
+		str = "\n("  V[j] ") group '" V[j + strde] "' ->"
+		srt = V[i]
+		for (j += soff; j <= srt; j += strde)
+			str = str " " V[j]
+		nx_ansi_info(str)
+
+		moff = V[i] + 1
+		j = 0
+		if (moff in V) {
+			nx_ansi_debug("<nx:null/>\ntype:\n\t'" V[moff] "'")
+			j = 1
+		}
+
+		moff = moff + strde
+		if (moff in V) {
+			nx_ansi_debug("<nx:null/>\ndefault:\n\t'" V[moff] "'")
+			j = 1
+		}
+
+		moff = moff + strde
+		if (moff in V) {
+			nx_ansi_success("<nx:null/>\nepilog:\n\t'" V[moff] "'")
+			j = 1
+		}
+
+		moff = moff + strde
+		if (moff in V) {
+			nx_ansi_alert("<nx:null/>\nusage:\n\t'" V[moff] "'")
+			j = 1
+		}
+
+		moff = moff + strde
+		if (moff in V) {
+			nx_ansi_light("<nx:null/>\ndescription:\n\t'" V[moff] "'")
+			j = 1
+		}
+
+		if (j)
+			nx_fd_stderr("\n")
+	}
+	nx_fd_stderr("\n")
+}
+
+function nx_shell_build(V, N,
+	strde, m, oft,
+	pref,
+	msuf, mstr, mrmrgx,
+	mpr, mar, dsh, dq, skp, dbg, mvl)
+{
+	strde = V[0]
+	m = V[strde * 4]
+	dbg = V[strde * 3]
+	skp = 2 * strde
+
+	# REGEX
+	oft = m * 9
+	mrgx = V[(oft + 7) * strde]
+	mrmrgx = V[(oft + 8) * strde]
+	mstr = V[N]
+
+	oft = m * 5
+	dq = !V1[(oft + 5) * strde]
+
+	# MISC
+	oft = m * 8
+	pref = V[(oft + 1) * strde]
+
+	while (match(mstr, mrgx)) {
+		mpr = substr(mstr, RSTART, RLENGTH)
+		mar = mpr
+		gsub(mrmrgx, "", mar)
+		if (mar in V) {
+			mar = V[V[mar] % strde + strde * 2]
+			dsh = __nx_if(length(mar) > 1, pref pref, pref)
+			mvl = __nx_stringify_var("", V[V[dsh mar] + skp], !dq, "", "", 1)
+			if (dbg > 2)
+				nx_ansi_info("the macro '" mar "' was replaced by its value " mvl "\n")
+			sub(mpr, mvl, mstr)
+		} else {
+			sub(mpr, __nx_stringify_var("", "", !dq, "", "", 1), mstr)
+			if (dbg > 1)
+				nx_ansi_warning("the variable '" mar "' is undefined\n")
+		}
+	}
+	oft = -4 * strde
+	V[oft] = V[oft] mstr
+}
+
+
+# V1	vec V2	agv
+# N1	meta lane
+# D1	current data
+# D2	sep
+# D3	stored data
+# N2	direction
+function nx_shell_type(V1, V2, N1, D1, D2, D3, N2,
+	strde, dft, tpe, tru, fls, ap, pap,
+	min, max, regx, opt, vl, ln,
+	dbg,
+	m, oft, num)
+{
+	if (D1 == "")
+		return __nx_else(D3, V2["cur"])
+
+	vl = D1
+	strde = V1[0]
+	dbg = V1[strde * 3]
+	regx = N1 + strde * 6
+	opt = V2["opt"]
+
+	if (N1 in V1) {
+		m = V1[strde * 4]
+		# REPRESENTATION
+		oft = m * 2
+		tru = V1[(oft + 1) * strde]
+		fls = V1[(oft + 2) * strde]
+		tpe = V1[N1]
+
+
+		if (dbg > 2)
+			nx_ansi_alert("type specified was of type '" tpe "' for the option '" opt "' with passed value '" vl "'\n")
+		if (tpe == "toggle") {
+			if (D1 != tru && D1 != fls)
+				D1 = ""
+		} else if (tpe ~ /^char(\[[0-9]*\])?$/) {
+			gsub(/[^0-9]/, "", tpe)
+			ln = __nx_else(tpe, 1)
+			tpe = "char"
+			if (dbg > 2)
+				nx_ansi_alert("char type specified a length of '" ln "' for option '" opt "'\n")
+			if (length(D1) > ln) {
+				if (dbg > 1)
+					nx_ansi_warning("char overflow, type specified a length of '" ln "' for option '" opt "', but '" D1 "' is a length of '" length(D1) "'\n")
+				D1 = ""
+			}
+		} else if (tpe == "int") {
+			num = 1
+			if (! __nx_is_integral(D1, 1)) {
+				D1 = ""
+			}
+		} else if (tpe == "float") {
+			num = 1
+			if (! __nx_is_float(D1, 1))
+				D1 = ""
+		} else if (tpe == "real") {
+			num = 1
+			if (! __nx_is_real(D1, 1))
+				D1 = ""
+		}
+
+
+		if (D1 == "") {
+			if (dbg > 1)
+				nx_ansi_warning("type specified was of type '" tpe "' for the option '" opt "', but '" vl "' does not match the specified type  \n")
+		} else if (num) {
+			sub(/^[+]/, "", D1)
+			min = N1 + strde * 7
+			max = N1 + strde * 8
+
+			if (min in V1) {
+				min = V1[min]
+				if (dbg > 2)
+					nx_ansi_alert("checking if the value  '" vl "' passed to '" opt "' of type '" tpe "' is not less than the minimum value '" min "'\n")
+				if (! (D1 >= min)) {
+					if (max in V1 && ! (D1 <= (max = V1[max]))) {
+						if (dbg > 1)
+							nx_ansi_warning("option '" opt "' of type '" tpe "' received the value '" D1 "' which is outside the range of  [" min " - " max "] specified in the schema\n")
+					} else {
+						if (dbg > 1)
+							nx_ansi_warning("option '" opt "' of type '" tpe "' received the value '" D1 "' which is less than the minimum value '" min "' specified in the schema\n")
+					}
+					D1 = ""
+				}
+			}
+
+			if (D1 != "" && max in V1) {
+				max = V1[max]
+				if (dbg > 2)
+					nx_ansi_alert("checking if the value  '" vl "' passed to '" opt "' of type '" tpe "' is not greater than the maximum value '" max "'\n")
+				if (! (D1 <= max)) {
+					if (dbg > 1)
+						nx_ansi_warning("option '" opt "' of type '" tpe "' received the value '" D1 "' which is greater than the maximum value '" max "' specified in the schema\n")
+					D1 = ""
+				}
+			}
+		}
+	}
+
+	if (D1 != "" && regx in V1) {
+		regx = V1[regx]
+			if (dbg > 2)
+				nx_ansi_alert("checking if the value '" vl "' passed to '" opt "' matches the provided regex '" regx "'\n")
+		if (vl !~ regx) {
+			if (dbg > 1)
+				nx_ansi_warning("the value '" vl "' did not pass the regex '" regx "'\n")
+			D1 = ""
+		}
+	}
+
+	if (D1 == "" && D3 == "")
+		return V2["cur"]
+	if ((vl = N1 + strde * 14) in V1)
+		D1 = D1 V1[vl]
+	if ((vl = N1 + strde * 15) in V1)
+		D1 = V1[vl] D1
+	if (N2)
+		return nx_join_str(D3, D1, D2)
+	return nx_join_str(D1, D3, D2)
+}
+
+
+function nx_shell_dispatch(V1, V2, N1, N2,
+	strde, cat, sym, arg, opt, act, mod, val, num, cse, pref, cur, idx,
+	con, ps, vr, m, oft,
+	tpe, bld, dft, hdft, gcr,
+	tru, fls, dbg, psrt,
+	fa, fd, fm, fr, fi, fn)
+{
+
+	strde = V1[0]
+	m = V1[strde * 4]
+	dbg = V1[strde * 3]
+
+	if (N2 < 13) {
+		opt = V2["opt"]
+		con = ""
+		sym = V1[N2]
+		cat = N2
+	} else {
+		opt = V1[N2 + strde * 2]
+		con = "G"
+		sym = V1[N2 + strde]
+		cat = V1[sym] % strde
+	}
+
+	# MISC
+	oft = m * 8
+	pref = V1[(oft + 1) * strde]
+
+	tpe = V1[V1[opt] - strde * 2] + 1
+	bld = tpe + strde * 5
+	dft = tpe + strde
+
+	if (length(opt) > 1)
+		pref = pref pref
+	if (! (pref opt in V1)) {
+		psrt = V1[strde * 6]
+		num = V1["-0"]
+		idx = num + psrt
+		V1["-0"] = idx
+
+		V1[idx] = pref opt
+		idx = idx + strde
+
+		V1[pref opt] = idx
+		idx = idx + strde
+
+		if (cat == 1)
+			V1[idx] = "NEX_" con "k_" opt
+		else if (cat == 4)
+			V1[idx] = "NEX_" con "f_" opt
+		else if (cat == 7)
+			V1[idx] = "NEX_" con "F_" opt
+		else if (cat == 10)
+			V1[idx] = "NEX_" con "K_" opt
+		else
+			V1[idx] = "NEX_" con "_" opt
+		idx = idx + strde
+		if (hdft = dft in V1)
+			V1[idx] = V1[dft]
+		if (idx > num) {
+			if (dbg > 0)
+				nx_ansi_error("block size is too small, overflow occured, exiting\n")
+			exit -2
+		}
+	} else {
+		idx = V1[pref opt] + strde * 2
+	}
+
+	if (N1 == "") {
+		if (hdft == 1) {
+			if (dbg > 2)
+				nx_ansi_alert("applying default for '" opt "'\n")
+			if (bld in V1) {
+				if (dbg > 2)
+					nx_ansi_alert("applying fast defaults for '" opt "'\n")
+				nx_shell_build(V1, bld)
+			}
+		}
+		return 0
+	}
+
+	ps = V1[strde * 2]
+	con = V1[(oft + 4) * strde]
+
+	# ACTIONS
+	oft = m * 6
+	fa = V1[(oft + 1) * strde]
+	fd = V1[(oft + 2) * strde]
+	fm = V1[(oft + 3) * strde]
+	fr = V1[(oft + 4) * strde]
+	fi = V1[(oft + 5) * strde]
+	fn = V1[(oft + 6) * strde]
+
+	# REPRESENTATION
+	oft = m * 2
+	tru = V1[(oft + 1) * strde]
+	fls = V1[(oft + 2) * strde]
+
+	vr = opt
+	V2["gcr"] = vr
+	opt = V2["opt"]
+	cse = nx_is_lower(substr(opt, 1, 1))
+	cur = V1[idx]
+	V2["cur"] = cur
+
+	if (dft in V1)
+		V1[idx] = __nx_else(cur, V1[dft], 1)
+
+
+	if ((act = V2["act"])  == "") {
+		if (cat == 1) {
+			V1[idx] = nx_shell_type(V1, V2, tpe, V2[++N1], "", "", 0)
+		} else if (cat == 4) {
+			if (vr == "help" || vr == "h") {
+				nx_shell_help(V1)
+			}
+			nx_boolean(V1, idx, !cse, tru, fls)
+		} else if (cat == 7) {
+			if (N2 < 13)
+				nx_boolean(V1, idx, cse, tru, fls)
+			else
+				V1[idx] = nx_shell_type(V1, V2, tpe, opt, "", "", 0)
+		} else if (cat == 10) {
+			V1[idx] = nx_shell_type(V1, V2, tpe, opt, ps, V2[++N1], cse)
+		}
+	} else {
+		val = V2["val"]
+		num = V2["num"]
+		if ((mod = V2["mod"]) == "") {
+			if (cat == 1 || cat == 4 || cat == 7) {
+				V1[idx] = nx_shell_type(V1, V2, tpe, val, "", "", 0)
+				if (! val && cat == 4)
+					nx_boolean(V1, idx, !cse, tru, fls)
+			} else if (cat == 10) {
+				V1[idx] = nx_shell_type(V1, V2, tpe, opt, ps, val, cse)
+				if (cse)
+					V1[idx] = opt ps val
+				else
+					V1[idx] = val ps opt
+			}
+		} else if (mod == fa) {
+			if (cat == 1) {
+				if (N2 < 13)
+					V1[idx] = nx_shell_type(V1, V2, tpe, opt, "", V2[++N1], cse)
+				else
+					V1[idx] = nx_shell_type(V1, V2, tpe, opt, ps, V2[++N1], cse)
+			} else if (cat == 4) {
+				V1[idx] = nx_shell_type(V1, V2, tpe, opt, "", cur, cse)
+			} else if (cat == 7) {
+				V1[idx] = nx_shell_type(V1, V2, tpe, opt, con, cur, cse)
+			} else if (cat == 10) {
+				V1[idx] = nx_shell_type(V1, V2, tpe, opt ps val, ps, cur, cse)
+			}
+		} else if (mod == fd) {
+			# ...
+		} # ...
+	}
+	if (bld in V1)
+		nx_shell_build(V1, bld)
+	return N1
+}
+
+
+
+function nx_shell_actions(D1, D2, D3, V, N, D4,
+	opt, num, val, mod,
+	trk)
+{
+	opt = D1
+	if (match(D1, "^" D4 "((" D2 ")[0-9]*)?" D3)) {
+		val = substr(D1, RLENGTH + 1)
+		D2 = RLENGTH
+		split(substr(D1, 1, --D2), trk, "")
+		while (nx_is_digit(D1 = trk[D2])) {
+			num = D1 num
+			D2--
+		}
+		while (! nx_is_alpha(D1 = trk[D2])) {
+			mod = D1 mod
+			D2--
+		}
+		delete trk
+		opt = substr(opt, 1, D2)
+	} else {
+		if (opt !~ "^" D4 "$") {
+			if (N > 0)
+				nx_ansi_error("the action '" opt "' modifier cannot start with an alphabetic character.\n")
+			return -1
+		}
+		D3 = opt
+	}
+
+	V["gcr"] = ""
+	if (D3 !~ "^" D4 "$") {
+		V["opt"] = opt
+		V["val"] = val
+		V["act"] = D3
+		V["mod"] = mod
+		V["num"] = __nx_else(int(num), "")
+		return opt
+	}
+
+	V["opt"] = D3
+	V["val"] = ""
+	V["act"] = ""
+	V["mod"] = ""
+	V["num"] = ""
+	return D3
+}
+
+function nx_shell_sanitize(D, V,
+	v1, v2, i)
+{
+	for (i in V)
+		gsub(i, V[i], D)
+	if (i != "")
+		return D
+	for (i = 0; i <= 64; ++i)
+		v1[sprintf("%c", i)] = i
+	for (i = 91; i <= 96; ++i)
+		v1[sprintf("%c", i)] = i
+	for (i = 123; i <= 127; ++i)
+		v1[sprintf("%c", i)] = i
+	gsub(/[_A-Za-z0-9]/, "", D)
+	i = split(D, v2, "")
+	do {
+		D = v2[i]
+		V["[" D "]"] = v1[D]
+	} while (--i > 0)
+	delete v1
+	delete v2
+}
+
+function nx_shell_environ(V1, V2, D,
+	as, ln, idx, dq, trk, pre, post, ust, ept, ext, oft,
+	vr, vl, nm, pos, acm, psrt,
+	t2, t3,
+	strde, m, chevl)
+{
+
+	strde = V1[0]
+	m = V1[strde * 4]
+
+	oft = m * 5
+	ust = V1[(oft + 1) * strde]
+	ept = V1[(oft + 4) * strde]
+	dq = V1[(oft + 5) * strde]
+
+	oft = m * 7
+	chevl = V1[(oft + 3) * strde]
+
+	if (ept) {
+		pre = "export "
+		post = ";"
+	} else {
+		pre = ""
+		post = " "
+	}
+
+	oft = m * 8
+	as = V1[(oft + 6) * strde]
+	ext = V1[(oft + 2) * strde]
+	psrt = V1[strde * 6]
+
+	if (ust) {
+		ln = split(D, trk, " ")
+		for (idx = 1; idx <= ln; ++idx)
+			acm = acm pre __nx_stringify_var(trk[idx], "", dq, as, post)
+		delete trk
+	}
+
+	ln = V1["-0"]
+	acm = acm pre __nx_stringify_var("NEX_ARGC", ln / psrt - 1, dq, as, post)
+	acm = acm pre __nx_stringify_var("NEX_ARGV_R", V1[-1 * strde], dq, as, post)
+	acm = acm pre __nx_stringify_var("NEX_ARGV_S", V1[-2 * strde], dq, as, post)
+	acm = acm pre __nx_stringify_var("NEX_ARGV_0", V1[-3 * strde], dq, as, post)
+
+	vl = ENVIRON["NEX_ARGV_E"]
+	if (chevl == 1) {
+		acm = acm pre __nx_stringify_var("NEX_ARGV_E", V1[-4 * strde], dq, as, post)
+	} else if (chevl == 2) {
+		acm = acm pre __nx_stringify_var("NEX_ARGV_E", vl V1[-4 * strde], dq, as, post)
+	} else if (chevl == 3) {
+		acm = acm pre __nx_stringify_var("NEX_ARGV_E", V1[-4 * strde] vl, dq, as, post)
+	}
+
+	idx = ""
+	t2 = strde * 2
+	t3 = strde * 3
+	for (idx in V2)
+		break
+	if (idx == "")
+		nx_shell_sanitize(ext, V2)
+	for (idx = psrt * 2; idx >= ln; idx = idx + psrt) {
+		nm = "NEX_ARGV_" ++pos
+		vr = nx_shell_sanitize(V1[idx + t2], V2)
+		vl = V1[idx + t3]
+		acm = acm pre __nx_stringify_var(nm, vr, dq, as, post)
+		acm = acm pre __nx_stringify_var(vr, vl, dq, as, post)
+	}
+	return acm
+}
+

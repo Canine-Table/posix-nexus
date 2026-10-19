@@ -50,36 +50,36 @@ function __nx_shell_schema_str(V, D, B)
 	V["-u"] = "<nx:false/>"
 	D = ",u<unset>"
 	D = D "<type toggle>"
-	D = D "<default <nx:false/\>>"
+	D = D "<default <nx:false/\\>>"
 	D = D "<description Clear all NEX_ARGV_* NEX_ARGC and group variables in the current scope before processing new arguments>"
 
 	V["-q"] = "<nx:false/>"
 	D = D "q<quote>"
-	D = D "<default <nx:false/\>>"
+	D = D "<default <nx:false/\\>>"
 	D = D "<type toggle>"
 	D = D "<description Use double-quoted values instead of single-quoted shell-safe literals; enables interpolation and requires careful escaping>"
 
 	V["-C"] = "<nx:false/>"
 	D = D "C<null-concat>"
-	D = D "<default <nx:false/\>>"
+	D = D "<default <nx:false/\\>>"
 	D = D "<type toggle>"
 	D = D "<description Treat empty values as valid concatenation operands instead of skipping them. Useful when building strings with intentional empty segments.>"
 
 	V["-o"] = "<nx:false/>"
 	D = D "o<override type-override>"
-	D = D "<default <nx:false/\>>"
+	D = D "<default <nx:false/\\>>"
 	D = D "<type toggle>"
 	D = D "<description Preserve the original group form and type when a group is redefined; forces the parser to reuse the existing symbol and prevents form switching.>"
 
 	V["-e"] = "<nx:false/>"
 	D = D "e<export>"
-	D = D "<default <nx:false/\>>"
+	D = D "<default <nx:false/\\>>"
 	D = D "<type toggle>"
 	D = D "<description Emit export VAR=value; instead of VAR=value during environment construction.>"
 
 	V["-b"] = "<nx:false/>"
 	D = D "b<backtrack>"
-	D = D "<default <nx:false/\>>"
+	D = D "<default <nx:false/\\>>"
 	D = D "<type toggle>"
 	D = D "<description  When a short-form bundle contains characters that are not valid options, preserve the leftover characters and push them into the remainder instead of discarding them. This does not affect value consumption; only kwarg-style consumer flags take values (e.g., -abc 1 2 3 → a=1, b=2, c=3 only when a, b, c are consumer flags).>"
 
@@ -103,7 +103,7 @@ function __nx_shell_schema_str(V, D, B)
 
 	V["-d"] = "<nx:null/>"
 	D = D "d<%delimiter delimiter-separator>"
-	D = D "<default <nx:null\>>"
+	D = D "<default <nx:null\\>>"
 	D = D "<type str>"
 	D = D "<description Set the delimiter used to separate schema fields.>"
 
@@ -121,7 +121,7 @@ function __nx_shell_schema_str(V, D, B)
 
 	V["-G"] = ">"
 	D = D "G<%close group-close>"
-	D = D "<default \>>"
+	D = D "<default \\>>"
 	D = D "<type char>"
 	D = D "<description Character marking the end of a group.>"
 
@@ -151,7 +151,7 @@ function __nx_shell_schema_str(V, D, B)
 
 	V["-p"] = "<nx:null/>"
 	D = D "p<%param parameter-separator>"
-	D = D "<default <nx:null/\>>"
+	D = D "<default <nx:null/\\>>"
 	D = D "<type char>"
 	D = D "<description Parameter separator used to split arguments into schema fields.>"
 
@@ -199,7 +199,7 @@ function __nx_shell_schema_str(V, D, B)
 
 	V["-c"] = " "
 	D = D "c<%concat concatenate concatenation-separator>"
-	D = D "<default \ >"
+	D = D "<default \\ >"
 	D = D "<type str>"
 	D = D "<description String used to join remainder arguments when flattening or emitting environment variables.>"
 
@@ -223,7 +223,7 @@ function __nx_shell_schema_str(V, D, B)
 
 	V["-O"] = "<nx:false/>"
 	D = D "O<output out>"
-	D = D "<default <nx:false/\>>"
+	D = D "<default <nx:false/\\>>"
 	D = D "<type toggle>"
 	D = D "<description Emit environment output via echo instead of raw VAR=value lines.>"
 
@@ -283,25 +283,25 @@ function __nx_shell_schema_str(V, D, B)
 
 	V["--macro-suffix"] = "/>"
 	D = D "macro-suffix<%directive-macro-suffix>"
-	D = D "<default /\>>"
+	D = D "<default /\\\>>"
 	D = D "<type str>"
 	D = D "<description Directive that sets the suffix used for macro expansion in build snippets.>"
 
 	V["--true"] = "<nx:true/>"
 	D = D "true<%yes on>"
-	D = D "<default <nx:true/\>>"
+	D = D "<default <nx:true/\\>>"
 	D = D "<type toggle>"
 	D = D "<description This is the value that represents false.>"
 
 	V["--false"] = "<nx:false/>"
 	D = D "false<%no off>"
-	D = D "<default <nx:false/\>>"
+	D = D "<default <nx:false/\\>>"
 	D = D "<type toggle>"
 	D = D "<description This is the value that represents true.>"
 
 	V["--nil"] = "<nx:nil/>"
 	D = D "nil<%null>"
-	D = D "<default <nx:nil/\>>"
+	D = D "<default <nx:nil/\\>>"
 	D = D "<type str>"
 	D = D "<description Sentinel literal that represents an explicit null value within the schema system.>"
 
@@ -325,7 +325,7 @@ function __nx_shell_schema_str(V, D, B)
 
 	V["--lazy-defaults"] = __nx_if(B, "<nx:true/>", "<nx:false/>")
 	D = D "lazy-defaults<lazy-assign-defaults>"
-	D = D "<default <nx:false/\>>"
+	D = D "<default <nx:false/\\>>"
 	D = D "<type str>"
 	D = D "<description when enabled, defaults are not applied during schema load; instead, if the option appears on the command line, its default value is applied immediately before the first user-provided value. If the option is never used, the default is never applied or exported. If the option is typed and the first user value fails type validation, the default remains. Subsequent valid values override the default.>"
 
@@ -373,13 +373,13 @@ function __nx_shell_schema_str(V, D, B)
 	V["--directive-suffix-trim"] = "<nx:true/>"
 	D = D "directive-suffix-trim<>"
 	D = D "<type toggle>"
-	D = D "<default directive-prefix-trim>"
+	D = D "<default <nx:true/\\>>"
 	D = D "<description Trim leading flow‑whitespace from directive values before parsing them>"
 
 	V["--directive-prefix-trim"] = "<nx:true/>"
 	D = D "directive-prefix-trim<>"
 	D = D "<type toggle>"
-	D = D "<default directive-prefix-trim>"
+	D = D "<default <nx:true/\\>>"
 	D = D "<description Trim trailing flow‑whitespace from directive values before storing them>"
 
 	V["--chain-eval"] = "1"
@@ -498,7 +498,7 @@ function nx_unique_check(D1, V, D2, N1, N2, D3,
 		i = __nx_if(l > N1, N1, l)
 		if (N2 > 1) {
 			if (l > N1 + 1)
-				nx_ansi_warning("'" D1 "' string contains more " D3 " than implemented. The " D3 " separator to separate the " D3 "s was either used as an as both separator and " D3 " or you passed '"  l - N1  "' " D3 "s more than you should have, only the first '" N1 "' positions will be used\n")
+				nx_ansi_warning("<nx:null/>'" D1 "' string contains more " D3 " than implemented. The " D3 " separator to separate the " D3 "s was either used as an as both separator and " D3 " or you passed '"  l - N1  "' " D3 "s more than you should have, only the first '" N1 "' positions will be used\n")
 			l = i
 			for (i = 1; i <= l; ++i) {
 				acm = V[i]
@@ -603,7 +603,7 @@ function __nx_shell_schema(D1, D2, D3, N,
 		i = __nx_if(l > n, n, l)
 		if (N > 1) {
 			if (l > n + 1)
-				nx_ansi_warning("'" D4 "' separator to separate the separators was was either used within the separators as a separator or you passed '"  l - n  "' separators more than you should have, only the first '" n "' positions will be used\n")
+				nx_ansi_warning("<nx:null/>'" D4 "' separator to separate the separators was was either used within the separators as a separator or you passed '"  l - n  "' separators more than you should have, only the first '" n "' positions will be used\n")
 			l = i
 			for (i = 1; i <= l; ++i) {
 				acm = v_ta[i]
@@ -664,7 +664,8 @@ function __nx_shell_schema(D1, D2, D3, N,
 		return -1
 	}
 
-	split(D1, V2, D2)
+	i = split(D1, V2, D2)
+	V2[0] = i
 	if ((i = nx_shell_stride(V2[1], go, gc)) == -1) {
 		if (N > 0)
 			nx_ansi_error("the group terminator '" gc "' ran away\n")
@@ -1509,10 +1510,12 @@ function nx_shell_args(V1, V2,
 	acrgx, eacrgx,
 	trk)
 {
+
 	strde = V1[0]
 	dbg = V1[strde * 3]
 	ps = V1[strde * 2]
 	m = V1[strde * 4]
+
 
 	# ACTIONS
 	oft = m * 6
@@ -1533,6 +1536,7 @@ function nx_shell_args(V1, V2,
 	oft = m * 7
 	ab = V1[(oft + 2) * strde]
 
+
 	# REGEX
 	oft = m * 9
 	eacrgx = V1[(oft + 1) * strde]
@@ -1542,7 +1546,7 @@ function nx_shell_args(V1, V2,
 	oft = m * 5
 	bk = V1[(oft + 3) * strde]
 
-	cnt = length(V2)
+	cnt = V2[0]
 	trm = 1
 	ctp = cnt
 	cidx = cnt
@@ -1558,6 +1562,7 @@ function nx_shell_args(V1, V2,
 		} else {
 			tok = V2[++idx]
 		}
+
 		if (trm > 0 && substr(tok, 1, 1) == pref) {
 			tok = substr(tok, 2)
 			if (substr(tok, 1, 1) == pref) {
@@ -1601,7 +1606,7 @@ function nx_shell_args(V1, V2,
 		}
 
 		if (trm < 2) {
-			if (ab  && trm) {
+			if (ab && trm) {
 				if (dbg > 2)
 					nx_ansi_debug("option '" tok "' was never registered, abort flag was set to '" ab "', preceding\n")
 				if (ab == 1)
@@ -1634,7 +1639,7 @@ function nx_shell_args(V1, V2,
 	V1[-2 * strde] = s
 	V1[-3 * strde] = int(n)
 	if (dbg > 2)
-		nx_ansi_alert("remainder is '" r "' \n")
+		nx_ansi_alert("<nx:null/>remainder is '" r "' \n")
 	delete trk
 	if (eret = int(eret))
 		return eret

@@ -39,6 +39,7 @@ nx_data_longopt()
 			dir = __nx_shell_schema_dir(p, ds)
 			rep = __nx_shell_schema_rep(p, ds)
 			__nx_shell_schema(pstr ds inpt, ds, ps, dbg, cat, tog, act, flg, mic, dir, rep, vec, agv)
+			
 			nx_shell_opts(vec, agv)
 			nx_shell_args(vec, agv)
 			strde = vec[0]
@@ -281,14 +282,14 @@ nx_data_include()
 
 nx_data_path_append()
 (
-	nx_data_longopt -- ',
+	nx_data_longopt -v 1 ',
 
 	v<%value>
 	<description Base value to append into (resolved via nx_data_ref)>
 
 	s<%separator>
 	<description Separator used when joining path components>
-	<default <nx:null/\>>
+	<default <nx:null/\\>>
 
 	help<h>
 	<description Show help>
