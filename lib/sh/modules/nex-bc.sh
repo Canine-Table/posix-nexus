@@ -8,7 +8,7 @@
 __nx_bc()
 {
 
-	nx_data_longopt ',
+	nx_data_longopt -- ',
 	s<%scale>
 	<description bc scale value>
 	<default 20>

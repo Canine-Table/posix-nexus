@@ -18,7 +18,6 @@ nx_bc_sci()
 
 	help<h>
 	<description Show help for nx_bc_sci>
-	<build exit;>
 	' "$@"
 
 	case "$NEX_GF_n" in

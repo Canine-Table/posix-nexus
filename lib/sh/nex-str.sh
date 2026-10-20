@@ -1,36 +1,3 @@
-
-
-nx_str_od()
-(
-	nx_asm_export
-	h_nx_cmd od || {
-		nx_tty_print -e 'o no od was not found'
-		exit 127
-	}
-	test "$NEX_k_s" = '<nx:blank/>' && NEX_k_s='' || NEX_k_s="${NEX_k_s:- }"
-	nx_data_optargs 'd<ox>s:' "$@"
-	test "$G_NEX_ASM_ENDIAN" -eq 1 && G_NEX_ASM_ENDIAN="big" || G_NEX_ASM_ENDIAN="little"
-	NEX_g_d="${NEX_g_d:-x}"
-	${AWK:-$(nx_cmd_awk)} \
-		-v dlm="$NEX_k_s" \
-		-v args="$(printf '%s' "$NEX_R" | od --endian="$G_NEX_ASM_ENDIAN" --address-radix=none --format="${NEX_g_d}1")" \
-		-v cnv="$NEX_g_d" \
-	'
-		BEGIN {
-			if (cnv == "x")
-				gsub(/ /, "\\x", args)
-			else
-				gsub(/ /, "\\0", args)
-			gsub(/\n/, "", args)
-			if (cnv == "x")
-				gsub(/\\x3c\\x6e\\x78\\x3a\\x6e\\x75\\x6c\\x6c\\x2f\\x3e/, dlm, args)
-			else
-				gsub(/\\0074\\0156\\0170\\0072\\0156\\0165\\0154\\0154\\0057\\0076/, dlm, args)
-			printf("%s", args)
-		}
-	'
-)
-
 nx_str_join()
 {
 	printf '%s' "$1" | ${AWK:-$(nx_cmd_awk)} -v dlm="$2" 'NR==1{printf("%s",$0); next}{printf("%s",dlm $0)}'
@@ -63,23 +30,102 @@ nx_str_chain()
 	unset nx_chain
 }
 
+
+
+
+
+
+nx_str_od()
+(
+	nx_asm_export
+	h_nx_cmd od || {
+		nx_tty_print -e 'o no od was not found'
+		exit 127
+	}
+
+	nx_data_longopt -- ',
+		d<%format>
+		<default x>
+		<regex ^[ox]$>
+		<description Byte format: x for hex (\xHH), o for octal (\0NNN); default x>
+
+		s<%separator>
+		<description String inserted between bytes; defaults to a space, <nx:blank/> for none>
+
+		help<h>
+		<description Show help for nx_str_od>
+	' "$@"
+
+	test "$NEX_Gk_s" = '<nx:blank/>' && NEX_Gk_s='' || NEX_Gk_s="${NEX_Gk_s:- }"
+	test "$G_NEX_ASM_ENDIAN" -eq 1 && G_NEX_ASM_ENDIAN="big" || G_NEX_ASM_ENDIAN="little"
+
+	${AWK:-$(nx_cmd_awk)} \
+		-v dlm="$NEX_Gk_s" \
+		-v args="$(printf '%s' "$NEX_ARGV_R" | od --endian="$G_NEX_ASM_ENDIAN" --address-radix=none --format="${NEX_Gk_d}1")" \
+		-v cnv="$NEX_Gk_d" \
+	'
+		BEGIN {
+			if (cnv == "x")
+				gsub(/ /, "\\x", args)
+			else
+				gsub(/ /, "\\0", args)
+			gsub(/\n/, "", args)
+			if (cnv == "x")
+				gsub(/\\x3c\\x6e\\x78\\x3a\\x6e\\x75\\x6c\\x6c\\x2f\\x3e/, dlm, args)
+			else
+				gsub(/\\0074\\0156\\0170\\0072\\0156\\0165\\0154\\0154\\0057\\0076/, dlm, args)
+			printf("%s", args)
+		}
+	'
+)
+
 nx_str_timestamp()
-{
-	while test "$#" -gt 0; do
-		case "$1" in
-			-a) date +"%Y-%m-%d %H:%M:%S %Z (%A)";;
-			-n) date +"%Y-%m-%d %H:%M:%S.%N";;
-			-u) date +"%Y-%m-%dT%H:%M:%SZ";;
-			-l) date +"%Y-%m-%dT%H:%M:%S%z";;
-			-s) date +"%b %d %H:%M:%S";;
-			-e) date +"%s";;
-			-f) date +"%Y%m%d_%H%M%S";;
-			-w) date +"%a_%Y%m%d_%H%M";;
-			-z) date +"%Y-%m-%d %H:%M:%S %Z";;
-		esac
-		shift
-	done
-}
+(
+	nx_data_longopt -- ',
+		a<all>
+		<description Full timestamp with timezone and weekday: YYYY-MM-DD HH:MM:SS TZ (Weekday)>
+		<build date +"%Y-%m-%d %H:%M:%S %Z (%A)";>
+
+		n<nanoseconds>
+		<description Timestamp with nanoseconds: YYYY-MM-DD HH:MM:SS.NNNNNNNNN>
+		<build date +"%Y-%m-%d %H:%M:%S.%N";>
+
+		u<utc>
+		<description ISO-8601 UTC timestamp: YYYY-MM-DDTHH:MM:SSZ>
+		<build date +"%Y-%m-%dT%H:%M:%SZ";>
+
+		l<local-iso>
+		<description ISO-8601 local timestamp with numeric offset: YYYY-MM-DDTHH:MM:SS+ZZZZ>
+		<build date +"%Y-%m-%dT%H:%M:%S%z";>
+
+		s<syslog>
+		<description Syslog-style timestamp: Mon DD HH:MM:SS>
+		<build date +"%b %d %H:%M:%S";>
+
+		e<epoch>
+		<description Unix epoch seconds>
+		<build date +"%s";>
+
+		f<filename>
+		<description Filename-safe timestamp: YYYYMMDD_HHMMSS>
+		<build date +"%Y%m%d_%H%M%S";>
+
+		w<weekday>
+		<description Weekday-prefixed filename timestamp: DDD_YYYYMMDD_HHMM>
+		<build date +"%a_%Y%m%d_%H%M";>
+
+		z<zoned>
+		<description Timestamp with timezone abbreviation: YYYY-MM-DD HH:MM:SS TZ>
+		<build date +"%Y-%m-%d %H:%M:%S %Z";>
+
+		help<h>
+		<description Show help for nx_str_timestamp>
+		<build exit;>
+	' "$@"
+
+	test -n "$NEX_ARGV_E" && eval "$NEX_ARGV_E"
+)
+
 
 nx_str_case()
 (

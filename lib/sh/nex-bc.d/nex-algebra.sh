@@ -7,9 +7,9 @@ __nx_bc_alg()
 }
 
 nx_bc_alg()
-{
+(
 	__nx_bc_alg "$@"
-}
+)
 
 nx_bc_pow()
 (
@@ -102,64 +102,156 @@ nx_bc_euc()
     }
 )
 
+nx_bc_binom()
+(
+	nx_data_longopt -- ',
+		v<%value>
+		<type str>
+		<description Operands n,k for binomial(n,k); n,k non-negative integers with k <= n (defaults to the first positional)>
+
+		help<h>
+		<description Show help for nx_bc_binom>
+	' "$@"
+
+	__nx_bc_alg "$@" -c "nx_binom(${NEX_Gk_v:-$NEX_ARGV_S})" || {
+		nx_tty_print -e 'binomial(n,k) domain breach — n,k must be non‑negative integers with k ≤ n\n'
+		exit 226
+	}
+)
 
 nx_bc_binom()
 (
-	nx_data_optargs 'v:' "$@"
-	nx_bc_alg "$@" -c "nx_binom(${NEX_k_v:-$NEX_S})" || {
+	nx_data_longopt -- ',
+		v<%n>
+		<type int>
+		<description n, the total number of items to choose from>
+
+		k<%k-count>
+		<type int>
+		<description k, the number of items chosen; must satisfy 0 <= k <= n>
+
+		help<h>
+		<description Show help for nx_bc_binom>
+	' "$@"
+
+	__nx_bc_alg "$@" -c "nx_binom(${NEX_Gk_v},${NEX_Gk_k})" || {
 		nx_tty_print -e 'binomial(n,k) domain breach — n,k must be non‑negative integers with k ≤ n\n'
-		exit 227
+		exit 226
 	}
 )
 
 nx_bc_part()
 (
-	nx_data_optargs 'v:' "$@"
-	nx_bc_alg "$@" -c "nx_part(${NEX_k_v:-$NEX_S})"
+	nx_data_longopt -- ',
+		v<%value>
+		<type float>
+		<description Value whose integer part is returned, sign preserved (defaults to the first positional)>
+
+		help<h>
+		<description Show help for nx_bc_part>
+	' "$@"
+
+	__nx_bc_alg "$@" -c "nx_part(${NEX_Gk_v:-$NEX_ARGV_S})"
 )
 
 nx_bc_trunc()
 (
-	nx_data_optargs 'v:' "$@"
-	nx_bc_alg "$@" -c "nx_pt_trunc(${NEX_k_v:-$NEX_S})"
+	nx_data_longopt -- ',
+		v<%value>
+		<type float>
+		<description Value truncated toward zero, i.e. fractional part dropped (defaults to the first positional)>
+
+		help<h>
+		<description Show help for nx_bc_trunc>
+	' "$@"
+
+	__nx_bc_alg "$@" -c "nx_pt_trunc(${NEX_Gk_v:-$NEX_ARGV_S})"
 )
 
 nx_bc_floor()
 (
-	nx_data_optargs 'v:' "$@"
-	nx_bc_alg "$@" -c "nx_pt_floor(${NEX_k_v:-$NEX_S})"
+	nx_data_longopt -- ',
+		v<%value>
+		<type float>
+		<description Value rounded down to the nearest integer (defaults to the first positional)>
+
+		help<h>
+		<description Show help for nx_bc_floor>
+	' "$@"
+
+	__nx_bc_alg "$@" -c "nx_pt_floor(${NEX_Gk_v:-$NEX_ARGV_S})"
 )
 
 nx_bc_ceil()
 (
-	nx_data_optargs 'v:' "$@"
-	nx_bc_alg "$@" -c "nx_pt_ceil(${NEX_k_v:-$NEX_S})"
+	nx_data_longopt -- ',
+		v<%value>
+		<type float>
+		<description Value rounded up to the nearest integer (defaults to the first positional)>
+
+		help<h>
+		<description Show help for nx_bc_ceil>
+	' "$@"
+
+	__nx_bc_alg "$@" -c "nx_pt_ceil(${NEX_Gk_v:-$NEX_ARGV_S})"
 )
 
 nx_bc_frac()
 (
-	nx_data_optargs 'v:' "$@"
-	nx_bc_alg "$@" -c "nx_pt_frac(${NEX_k_v:-$NEX_S})"
+	nx_data_longopt -- ',
+		v<%value>
+		<type float>
+		<description Fractional part of the value, i.e. value minus its integer part (defaults to the first positional)>
+
+		help<h>
+		<description Show help for nx_bc_frac>
+	' "$@"
+
+	nx_bc_alg "$@" -c "nx_pt_frac(${NEX_Gk_v:-$NEX_ARGV_S})"
 )
 
 nx_bc_round()
 (
-	nx_data_optargs 'v:' "$@"
-	nx_bc_alg "$@" -c "nx_pt_round(${NEX_k_v:-$NEX_S})"
+	nx_data_longopt -- ',
+		v<%value>
+		<type float>
+		<description Value rounded to the nearest integer (defaults to the first positional)>
+
+		help<h>
+		<description Show help for nx_bc_round>
+	' "$@"
+
+	nx_bc_alg "$@" -c "nx_pt_round(${NEX_Gk_v:-$NEX_ARGV_S})"
 )
 
 nx_bc_unround()
 (
-	nx_data_optargs 'v:' "$@"
-	nx_bc_alg "$@" -c "nx_pt_unround(${NEX_k_v:-$NEX_S})"
+	nx_data_longopt -- ',
+		v<%value>
+		<type float>
+		<description Value with rounding undone, restoring the pre-round form (defaults to the first positional)>
+
+		help<h>
+		<description Show help for nx_bc_unround>
+	' "$@"
+
+	nx_bc_alg "$@" -c "nx_pt_unround(${NEX_Gk_v:-$NEX_ARGV_S})"
 )
 
 nx_bc_mod()
 (
-	nx_data_optargs 'v:' "$@"
-	nx_bc_alg "$@" -c "nx_pt_mod(${NEX_k_v:-$NEX_S})" || {
+	nx_data_longopt -- ',
+		v<%value>
+		<type str>
+		<description Operands a,b for modulo; divisor must be non-zero and both integral (defaults to the first positional)>
+
+		help<h>
+		<description Show help for nx_bc_mod>
+	' "$@"
+
+	__nx_bc_alg "$@" -c "nx_pt_mod(${NEX_Gk_v:-$NEX_ARGV_S})" || {
 		nx_tty_print -e 'modulo(a,b) domain breach — divisor must be non‑zero and both operands integral\n'
-		exit 227
+		exit 226
 	}
 )
 

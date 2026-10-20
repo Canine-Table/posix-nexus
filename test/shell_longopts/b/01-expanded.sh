@@ -1,7 +1,10 @@
+
+
+
 (
-	nx_data_longopt -g='>'  -G='}' -k='*'  -K='+' -F='/' -l=' ' -s='!'  -v=4 ' 
+	nx_data_longopt -g='>'  -G='}' -k='*' -K='+' -F='/' -l='.' -s='!' -v=4 '.
 		pi
-		!PI
+		!PI.
 		 alpha
 		>+
 			alpha:ON
