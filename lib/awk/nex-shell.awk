@@ -1307,7 +1307,7 @@ function nx_shell_opts(V1, V2,
 			if (sbol || bol || cr == lo || cr == lc || cr == "" || gbol) {
 				if (sbol) {
 					if (dbg > 2)
-						nx_ansi_info("skipping passed whitespace defined by the schema, continuing with the '" __nx_if(bol, "long", "short") "' form parse, proceeding with the '" acm "' schema entry\n")
+						nx_ansi_info("skipping passed whitespace defined by the schema, continuing with the '" __nx_if(obol, "long", "short") "' form parse, proceeding with the '" acm "' schema entry\n")
 					--idx
 				} else if (cr != gc) {
 					bol = cr == lo

@@ -28,9 +28,12 @@ nx_fs2_path()
 		help<
 			h
 		>
+		<build exit;>
 		<
 			description the flag to seek help.>
 	' "$@"
+
+	test -n "$NEX_ARGV_E" && eval "$NEX_ARGV_E"
 	NEX_ARGV_S="$(nx_data_dir "${NEX_Gk_file:=${NEX_ARGV_S:-$(pwd)}}")"
 	case "$?" in
 		66) {
@@ -106,7 +109,7 @@ nx_fs2_install()
 			};;
 			f) {
 				nx_msg="file"
-				touch "$nx_$path"
+				touch "$nx_path"
 			};;
 			p) {
 				nx_msg="named pipe"
