@@ -153,3 +153,116 @@ nx_fs2_install()
 	test -n "$NEX_ARGV_E" && eval "$NEX_ARGV_E"
 )
 
+nx_fs2_canonize()
+(
+	nx_data_longopt -- ',
+		p<%mode>
+		<regex ^[bdp]$>
+		<description Canonicalization mode: b = bare, d = directory, p = path>
+
+		f<%path>
+		<description Path to canonicalize (defaults to the first positional)>
+
+		help<h>
+		<description Show help for nx_fs_canonize>
+		<build exit;>
+	' "$@"
+
+	case "$NEX_Gk_p" in
+		b) NEX_Gk_p="";;
+		d) NEX_Gk_p=1;;
+		*) NEX_Gk_p=0;;
+	esac
+
+	${AWK:-$(nx_cmd_awk)} \
+		-v nm="${NEX_Gk_f:-$NEX_ARGV_S}" \
+		-v prt="$NEX_Gk_p" \
+	"
+		$(nx_data_include -i "${NEXUS_LIB}/awk/nex-io-extras.awk")
+	"'
+		BEGIN {
+			print nx_str_parse_esc(nx_file_path(nm, prt))
+		}
+	'
+)
+
+
+nx_fs2_noclobber()
+(
+	nx_data_longopt -- ',
+		v<%verbose>
+		<type toggle>
+		<description Print the new name without moving the file (dry run)>
+		<build vb=1;>
+
+		help<h>
+		<description Show help for nx_fs_noclobber>
+		<build exit;>
+	' "$@"
+
+	test -n "$NEX_ARGV_E" && eval "$NEX_ARGV_E"
+	acm=''
+	i=1
+
+	while test "$i" -le "$NEX_ARGV_0"; do
+		arg="$(nx_data_ref "NEX_ARGV_$i")"
+		tmpa="$(nx_fs2_path --realpath "$arg" 2>/dev/null)"
+		acm="$acm${acm:+<nx:null/>}${tmpa:-$arg}<nx:null/>$(nx_str_timestamp --filename)"
+		i=$((i+1))
+	done
+
+	acm="$(${AWK:-$(nx_cmd_awk)} \
+		-v acm="$acm" \
+		-v vb="$vb" \
+	"
+		$(nx_data_include -i "${NEXUS_LIB}/awk/nex-io-extras.awk")
+	"'
+		BEGIN {
+			len = split(acm, paths, "<nx:null/>")
+			for (idx = 1; idx < len; idx+=2) {
+				path = nx_str_parse_esc(nx_file_path(paths[idx], 0, "/", earr))
+				stamp = paths[idx + 1]
+				dnm = path
+				bnm = path
+				sub(/[^/]*$/, "", dnm)
+				sub(/^.*\//, "", bnm)
+				if (bnm !~ /^[.]/) {
+					bext = bnm
+					bext = bnm
+					sub(/^[^.]*/, "", bext)
+					sub(/[.].*$/, "", bnm)
+				} else {
+					sz = split(bnm, szarr, "")
+					for (srt = 1; srt <= sz; ++srt) {
+						if (szarr[srt] != ".")
+							break
+					}
+					if (srt == sz) {
+						bext = "." stamp "-$(nx_str_rand 16)" bext
+					} else {
+						tmpa = substr(bnm, srt)
+						bext = tmpa
+						sub(/[.].*$/, "", tmpa)
+						sub(/^[^.]*/, "", bext)
+						bnm = substr(bnm, 1, srt - 1) tmpa
+					}
+				}
+				if (!sub(/(([2-9][0-9]([0248][1-35-79]|[1379][014-9])(((0[135679]|12)([12][0-9]|0[1-9]|3[01]))|((0[469]|11)([12][0-9]|0[1-9]|30))|((0[469]|11)([12][0-9]|0[1-8])))_([01][0-9]|2[0-3])[0-5][0-9][0-5][0-9])|([2-9][0-9]([0248][048]|[1379][23])(((0[135679]|12)([12][0-9]|0[1-9]|3[01]))|((0[469]|11)([12][0-9]|0[1-9]|30))|((0[469]|11)([12][0-9]|0[1-9])))_([01][0-9]|2[0-3])[0-5][0-9][0-5][0-9]))-[0-9A-Za-z]{16}/, stamp "-$(nx_str_rand 16)", bext))
+					bext = "." stamp "-$(nx_str_rand 16)" bext
+				npath = __nx_stringify_var("", dnm bnm bext, 1)
+				printf("%s tmpb%s tmpc=\x22$tmpa\x22;test -e \x22$tmpa\x22", __nx_stringify_var("tmpa", path), npath)
+				if (vb == 1)
+					printf("||{ printf \x27%%s\x27 \x22$tmpa\x22;false;}")
+				printf("&&{ while test -e \x22$tmpc\x22;do tmpc%s;done;", npath)
+				if (vb != 1)
+					printf("mv \x22$tmpa\x22 \x22$tmpc\x22;")
+				printf("printf \x27%%s\x27 \x22$tmpc\x22;}", npath)
+			}
+			delete earr
+			delete szarr
+			delete paths
+		}
+	')"
+	test -n "$acm" && echo "$acm"
+)
+

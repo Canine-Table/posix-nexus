@@ -22,16 +22,20 @@ nx_bundle_init()
 	. "$NEXUS_LIB/sh/nex-tty.sh"
 	. "$NEXUS_LIB/sh/nex-fs2.sh"
 	. "$NEXUS_LIB/sh/nex-fs.sh"
+	. "$NEXUS_LIB/sh/nex-asm.sh"
 
 	export AWK="$(nx_cmd_awk)"
 	export NEXUS_BUNDLE="${dnm}lib/sh/$bnm"
+
+	nx_asm_export
 
 	nx_fs2_install \
 		--mode 755 \
 		--prefix "$dnm" \
 		--target src \
 		--target docs \
-		--target bin \
+		--target "bin/$G_NEX_ASM_ARCH" \
+		--target "sbin/$G_NEX_ASM_ARCH" \
 		--target cnf \
 		--target env \
 		--prefix "$HOME/.nx/" \
@@ -48,7 +52,7 @@ nx_bundle_init()
 		--target ssl \
 		--target bak \
 		--mode 777 \
-		--target tmp
+		--target tmp || exit 226
 
 	cat > "${dnm}env/.nexus-shell.bundles.sh" <<- EOF
 		#!${SHELL:-"$(command -v sh)"}
@@ -59,12 +63,20 @@ nx_bundle_init()
 		export NEXUS_CNF="${dnm}cnf"
 		export NEXUS_DOC="${dnm}docs"
 		export NEXUS_LOG="${dnm}env"
-		export NEXUS_SBIN="${dnm}sbin"
-		export NEXUS_BIN="${dnm}bin"
+		export NEXUS_SBIN="${dnm}sbin/$G_NEX_ASM_ARCH"
+		export NEXUS_BIN="${dnm}bin/$G_NEX_ASM_ARCH"
 		export NEXUS_TEST="${dnm}/tests"
 		export NEXUS_INIT="${dnm}lib/sh/nex-init"
 		export NEXUS_BUNDLE="$NEXUS_BUNDLE"
 	EOF
+
+	CC="$(nx_cmd_cc)" && test -d "${dnm}lib/c/" && for tmpc in \
+		'nex-stdin-ready'
+	do
+		src="${dnm}lib/c/${tmpc}.c"
+		dst="${dnm}bin/$G_NEX_ASM_ARCH/$tmpc"
+		test -f "$src" -a -r "$src" -a ! -e "$dst" && "$CC" -o "$dst" "$src"
+	done
 
 	for tmpc in "${dnm}lib/sh/"*".sh"; do
 		test ! "$tmpc" = "${dnm}lib/sh/${bnm}" -a  -r "$tmpc" && {

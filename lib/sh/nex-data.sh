@@ -3,8 +3,9 @@
 
 nx_data_longopt()
 {
+	NEX_ARGV_S="$(nx_str_chain "$@")"
 	eval "$(${AWK:-$(nx_cmd_awk)} \
-		-v inpt="$(nx_str_chain "$@")" \
+		-v inpt="$NEX_ARGV_S" \
 		-v scpe="$(set | sed -n 's/^\(NEX_\(G\?[fFkK]_[A-Za-z]\+\([0-9]\+[A-Za-z]\+\)\?\)\|ARGC\|ARGV_\([SR]\|[0-9]\+\)\)=.*/\1/p')" \
 	"
 		$(cat \

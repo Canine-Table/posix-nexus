@@ -1,40 +1,3 @@
-nx_str_join()
-{
-	printf '%s' "$1" | ${AWK:-$(nx_cmd_awk)} -v dlm="$2" 'NR==1{printf("%s",$0); next}{printf("%s",dlm $0)}'
-}
-
-nx_str_cnt()
-(
-	nx_data_optargs 'd:' "$@"
-	${AWK:-$(nx_cmd_awk)} \
-		-v dlm="${NEX_k_d:-,}" \
-		-v str="$NEX_S" \
-		'BEGIN {print gsub(dlm, "\\\&", str)}'
-)
-
-nx_str_chain()
-{
-	if test "$1" = '<nx:null/>'; then
-		nx_chain="$2"
-		shift 2
-	else
-		nx_chain='<nx:null/>'
-	fi
-
-	printf '%s' "$1"
-	shift
-	while test "$#" -gt 0; do
-		printf '%s' "$nx_chain$1"
-		shift
-	done
-	unset nx_chain
-}
-
-
-
-
-
-
 nx_str_od()
 (
 	nx_asm_export
@@ -126,20 +89,103 @@ nx_str_timestamp()
 	test -n "$NEX_ARGV_E" && eval "$NEX_ARGV_E"
 )
 
-
-nx_str_case()
+nx_str_rand()
 (
-	nx_data_optargs 'c<ult>v:' "$@"
+	nx_data_longopt --concat ',' ',
+		n<%num number>
+		<type int>
+		<default 8>
+		<min 1>
+		<description Number of random characters to generate>
+
+		alnum<@upper lower xupper xlower digit alpha xdigit print punct>
+		<regex ^(x?upper|x?lower|x?digit|alpha|alnum|print|punct)$>
+		<default alnum>
+		<description Comma-separated character classes: upper, lower, xupper, xlower, digit, alpha, xdigit, alnum, print, punct>
+
+		help<h>
+		<description Show help for nx_str_rand>
+		<build exit;>
+	' "$@"
+
+	test -n "$NEX_ARGV_E" && eval "$NEX_ARGV_E"
+
 	${AWK:-$(nx_cmd_awk)} \
-		-v cse="$NEX_g_c" \
-		-v str="${NEX_k_v:-$NEX_S}" \
+		-v num="$NEX_Gk_n" \
+		-v chars="$NEX_GF_alnum" \
 	"
 		$(nx_data_include -i "${NEXUS_LIB}/awk/nex-str-extras.awk")
 	"'
 		BEGIN {
-			if (cse == "t")
+			if (val = nx_random_str(num, chars))
+				print val
+			else
+				exit 226
+		}
+	'
+)
+
+nx_str_append()
+(
+	nx_data_longopt -- ',
+		n<%number count>
+		<type int>
+		<min 1>
+		<default 1>
+		<description Number of times to repeat the character>
+
+		c<%char>
+		<type char>
+		<description Character to repeat>
+
+		help<h>
+		<description Show help for nx_str_append>
+		<build exit;>
+	' "$@"
+
+	test -n "$NEX_ARGV_E" && eval "$NEX_ARGV_E"
+
+	${AWK:-$(nx_cmd_awk)} \
+		-v cnt="$NEX_Gk_n" \
+		-v cr="$NEX_Gk_c" \
+	"
+		$(nx_data_include -i "${NEXUS_LIB}/awk/nex-str.awk")
+	"'
+		BEGIN {
+			print nx_append_str(cr, cnt)
+		}
+	'
+)
+
+nx_str_case()
+(
+	nx_data_longopt -- '
+		l<@ut, title lower upper>
+		<type str>
+		<regex ^([tul]|title|lower|upper)$>
+		<default l>
+		<description Case transform: t = title, u = upper, l = lower (default)>
+
+		v<%value>
+		<description String to transform (defaults to the first positional)>
+
+		help<h>
+		<description Show help for nx_str_case>
+		<build exit;>
+	' "$@"
+
+	test -n "$NEX_ARGV_E" && eval "$NEX_ARGV_E"
+
+	${AWK:-$(nx_cmd_awk)} \
+		-v cse="$NEX_GF_l" \
+		-v str="${NEX_Gk_v:-$NEX_ARGV_S}" \
+	"
+		$(nx_data_include -i "${NEXUS_LIB}/awk/nex-str-extras.awk")
+	"'
+		BEGIN {
+			if (cse ~ "t")
 				printf("%s", nx_str_totitle(str))
-			else if (cse == "u")
+			else if (cse ~ "u")
 				printf("%s", toupper(str))
 			else
 				printf("%s", tolower(str))
@@ -147,35 +193,53 @@ nx_str_case()
 	'
 )
 
-nx_str_rand()
-{
-	${AWK:-$(nx_cmd_awk)} \
-		-v num="${1:-8}" \
-		-v chars="${2:-alnum}" \
-	"
-		$(nx_data_include -i "${NEXUS_LIB}/awk/nex-str-extras.awk")
-	"'
-		BEGIN {
-			num __nx_if(__nx_is_integral(num), num, 8)
-			if (val = nx_random_str(num, chars))
-				print val
-			else
-				exit 1
-		}
-	'
-}
+nx_str_join()
+(
+	nx_data_longopt -- ',
+		s<%separator>
+		<description Separator inserted between lines>
 
-nx_str_append()
-{
+		help<h>
+		<description Show help for nx_str_join>
+		<build exit;>
+	' "$@"
+
+	test -n "$NEX_ARGV_E" && eval "$NEX_ARGV_E"
+	${AWK:-$(nx_cmd_awk)} -v dlm="$NEX_Gk_s" -v str="$NEX_ARGV_R" 'BEGIN {gsub("<nx:null/>", dlm, str); printf("%s", str)}'
+)
+
+
+nx_str_cnt()
+(
+	nx_data_longopt -- ',
+		d<%delimiter>
+		<type str>
+		<default ,>
+		<description Delimiter to count occurrences of (default comma)>
+
+		help<h>
+		<description Show help for nx_str_cnt>
+		<build exit;>
+	' "$@"
+
+	test -n "$NEX_ARGV_E" && eval "$NEX_ARGV_E"
+
 	${AWK:-$(nx_cmd_awk)} \
-		-v cnt="$1" \
-		-v cr="$2" \
-	"
-			$(nx_data_include -i "${NEXUS_LIB}/awk/nex-str.awk")
-	"'
-		BEGIN {
-			print nx_append_str(cr, cnt)
-		}
-	'
+		-v dlm="$NEX_Gk_d" \
+		-v str="$NEX_ARGV_S" \
+		'BEGIN {print gsub(dlm, "\\&", str)}'
+)
+
+nx_str_chain()
+{
+	: ${G_NEX_DELIMETER:='<nx:null/>'}
+	test "$#" -gt 0 && {
+		printf '%s' "$1"
+		shift
+		while test "$#" -gt 0; do
+			printf '%s' "$G_NEX_DELIMETER$1"
+			shift
+		done
+	}
 }
 

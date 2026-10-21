@@ -1616,7 +1616,7 @@ function nx_shell_args(V1, V2,
 			tok = V2[idx]
 			s = nx_join_str(s, tok, con)
 			r = nx_join_str(r, tok, ps)
-			++n
+			V2["NEX_ARGV_" ++n] = tok
 			if (dbg > 2)
 				nx_ansi_alert("appending '" tok "' to remainder \n")
 			continue
@@ -1807,7 +1807,6 @@ function nx_shell_type(V1, V2, N1, D1, D2, D3, N2,
 		tru = V1[(oft + 1) * strde]
 		fls = V1[(oft + 2) * strde]
 		tpe = V1[N1]
-
 
 		if (dbg > 2)
 			nx_ansi_alert("type specified was of type '" tpe "' for the option '" opt "' with passed value '" vl "'\n")
@@ -2011,6 +2010,7 @@ function nx_shell_dispatch(V1, V2, N1, N2,
 
 
 	if ((act = V2["act"])  == "") {
+
 		if (cat == 1) {
 			V1[idx] = nx_shell_type(V1, V2, tpe, V2[++N1], "", "", 0)
 		} else if (cat == 4) {
@@ -2028,7 +2028,7 @@ function nx_shell_dispatch(V1, V2, N1, N2,
 		}
 	} else {
 		val = V2["val"]
-		num = V2["num"]
+		num = int(V2["num"])
 		if ((mod = V2["mod"]) == "") {
 			if (cat == 1 || cat == 4 || cat == 7) {
 				V1[idx] = nx_shell_type(V1, V2, tpe, val, "", "", 0)
@@ -2055,8 +2055,24 @@ function nx_shell_dispatch(V1, V2, N1, N2,
 				V1[idx] = nx_shell_type(V1, V2, tpe, opt ps val, ps, cur, cse)
 			}
 		} else if (mod == fd) {
-			# ...
-		} # ...
+			if (cat == 7) {
+				val = V1[idx]
+				if (dft in V1)
+					dft = V1[dft]
+				else
+					dft = ""
+				do {
+					if (!sub("(^" opt "" con "|" con "" opt "$)", "", val)) {
+						if (!sub(con "" opt "" con, "", val)) {
+							sub("^" opt "$", dft, val)
+							break
+						}
+					}
+					num = num - 1
+				} while (num != 0)
+				V1[idx] = val
+			}
+		}
 	}
 	if (bld in V1)
 		nx_shell_build(V1, bld)
@@ -2134,8 +2150,8 @@ function nx_shell_sanitize(D, V,
 	delete v2
 }
 
-function nx_shell_environ(V1, V2, D,
-	as, ln, idx, dq, trk, pre, post, ust, ept, ext, oft,
+function nx_shell_environ(V1, V2, D, V3,
+	as, ln, idx, clt, dq, trk, pre, post, ust, ept, ext, oft,
 	vr, vl, nm, pos, acm, psrt,
 	t2, t3,
 	strde, m, chevl)
@@ -2173,30 +2189,36 @@ function nx_shell_environ(V1, V2, D,
 	}
 
 	ln = V1["-0"]
+	clt = V1[-3 * strde]
 	acm = acm pre __nx_stringify_var("NEX_ARGC", ln / psrt - 1, dq, as, post)
 	acm = acm pre __nx_stringify_var("NEX_ARGV_R", V1[-1 * strde], dq, as, post)
 	acm = acm pre __nx_stringify_var("NEX_ARGV_S", V1[-2 * strde], dq, as, post)
-	acm = acm pre __nx_stringify_var("NEX_ARGV_0", V1[-3 * strde], dq, as, post)
+	acm = acm pre __nx_stringify_var("NEX_ARGV_0", clt, dq, as, post)
 
 	vl = ENVIRON["NEX_ARGV_E"]
-	if (chevl == 1) {
+	if (chevl == 1)
 		acm = acm pre __nx_stringify_var("NEX_ARGV_E", V1[-4 * strde], dq, as, post)
-	} else if (chevl == 2) {
+	else if (chevl == 2)
 		acm = acm pre __nx_stringify_var("NEX_ARGV_E", vl V1[-4 * strde], dq, as, post)
-	} else if (chevl == 3) {
+	else if (chevl == 3)
 		acm = acm pre __nx_stringify_var("NEX_ARGV_E", V1[-4 * strde] vl, dq, as, post)
+
+	for (idx = 1; idx <= clt; ++idx) {
+		vr = "NEX_ARGV_" idx
+		acm = acm pre __nx_stringify_var(vr, V2[vr], dq, as, post)
 	}
 
-	idx = ""
 	t2 = strde * 2
 	t3 = strde * 3
-	for (idx in V2)
+
+	idx = ""
+	for (idx in V3)
 		break
 	if (idx == "")
-		nx_shell_sanitize(ext, V2)
+		nx_shell_sanitize(ext, V3)
 	for (idx = psrt * 2; idx >= ln; idx = idx + psrt) {
-		nm = "NEX_ARGV_" ++pos
-		vr = nx_shell_sanitize(V1[idx + t2], V2)
+		nm = "NEX_ARGC_" ++pos
+		vr = nx_shell_sanitize(V1[idx + t2], V3)
 		vl = V1[idx + t3]
 		acm = acm pre __nx_stringify_var(nm, vr, dq, as, post)
 		acm = acm pre __nx_stringify_var(vr, vl, dq, as, post)
