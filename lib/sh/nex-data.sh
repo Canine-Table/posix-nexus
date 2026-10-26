@@ -66,7 +66,7 @@ nx_data_longopt()
 				}
 				dbg = p["-v"]
 				if (p["--dump"] == "<nx:true/>")
-					nx_shell_debugger_dump(vec)
+					nx_shell_debugger_dump(vec, agv)
 				ps = p["-p"]
 				ds = p["-d"]
 				tog = __nx_shell_schema_tog(p, ds)
@@ -95,7 +95,7 @@ nx_data_longopt()
 				print p["-O"] q nx_shell_environ(vec, agv, scpe) q
 
 				if (p["--dump"] == "<nx:true/>")
-					nx_shell_debugger_dump(vec)
+					nx_shell_debugger_dump(vec, agv)
 			}
 			delete p
 			delete vec

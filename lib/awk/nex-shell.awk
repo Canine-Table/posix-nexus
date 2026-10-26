@@ -1,80 +1,85 @@
 #nx_include nex-log-extras.awk
 
-function nx_shell_debugger_dump(V1,
-	strde, m, psrt,
+function nx_shell_debugger_dump(V1, V2,
+	strde, m, psrt, phlst, phsrt,
 	ps, rs, dbg, grpsrt, grplst, nogrps, lpgrp, lns,
-	bse, s, c, i, j, n, L, k)
+	nm, p, oft, s, c, i, j, n, L, k)
 {
 	strde = V1[0]
-	m     = V1[3 * strde]
-
-	# --- everything below is derived from strde / m / psrt ---
 	ps = V1[1 * strde]
 	dbg = V1[2 * strde]
+	m = V1[3 * strde]
 
-	bse = m * 8
-	rs = V1[(bse + 9) * strde]
-
-	bse = m * 10
-	psrt = V1[(bse + 2) * strde]
-	grpsrt = V1[(bse + 3) * strde]
-	nogrps = V1[(bse + 4) * strde]
-	lpgrp  = V1[(bse + 5) * strde]
+	oft = m * 10
+	psrt = V1[(oft + 2) * strde]
+	grpsrt = V1[(oft + 3) * strde]
+	nogrps = V1[(oft + 4) * strde]
+	lpgrp  = V1[(oft + 5) * strde]
 	lns = V1[(oft + 6) * strde]
+	n = V1[(oft + 7) * strde]
+	plst = V1[(oft + 8) * strde]
+	phsrt = V1[(oft + 8) * strde]
+	phlst = V1[(oft + 9) * strde]
+	phskp = V1[(oft + 10) * strde]
 	grplst = grpsrt + nogrps * lpgrp
 
-	printf("printf \x27%s\x27 \x27\n--- dump all lane slots 0..10, fields 0..N ---\n\x27", "%s")
-
-	# --- lane 0: access lane (no count at slot 0) ---
-	for (j = 0; j <= 3; ++j) {
-		c = j * strde
-		if (c in V1)
-			printf("\x27lane 0 field %d  slot %d  cell %d\t= [%s]\n\x27", j, j, c, V1[c])
+	nx_fd_stderr("\n")
+	nx_ansi_light("--- dump all lane slots 1.." lns " ---\n")
+	nx_ansi_info("--- dump all fields 1.." n " in lane slot 0 ---\n")
+	for (j = 0; j <= n; ++j) {
+		s = j
+		c = s * strde
+		nx_ansi_success("<nx:null/>lane '0' field '" j "' slot '" s "'  cell '" c "'\t= [" V1[c] "]\n")
 	}
 
-	# --- lanes 1..10: content lanes (slot 0 = entry count) ---
 	for (i = 1; i <= lns; ++i) {
-		bse = m * i
-		n = V1[bse * strde]
-		if (n == "") n = 0
-		for (j = 0; j <= n; ++j) {
-			s = bse + j
+		oft = m * i
+		n = V1[(oft + 0) * strde]
+		nx_fd_stderr("\n")
+		if (int(n) == 0)
+			nx_ansi_alert("--- lane slot " i " currently has no fields, skipping ---\n")
+		else
+			nx_ansi_info("--- dump all fields 1.." n " in lane slot " i " ---\n")
+
+		for (j = 1; j <= n; ++j) {
+			s = oft + j
 			c = s * strde
-			if (c in V1)
-				printf("\x27lane %d field %d  slot %d  cell %d\t= [%s]\n\x27", i, j, s, c, V1[c])
+			nx_ansi_debug("<nx:null/>lane '" i "' field '" j "' slot '" s "'  cell '" c "'\t= [" V1[c] "]\n")
 		}
 	}
 
+	nx_fd_stderr("\n")
+	nx_ansi_light("--- dump negative slot headers " phlst ".." phsrt " ---\n")
+
 	# --- negative output slots ---
-	printf("\x27\n--- dump negative slots -1..-8 ---\n\x27")
-	for (k = psrt; k <= -1; ++k) {
-		c = k * strde
+	for (i = psrt; i <= phlst; i = i + phskp) {
+		c = i * strde
 		if (c in V1)
-			printf("\x27neg %d  cell %d = [%s]\n\x27", k, c, V1[c])
+			nx_ansi_debug("<nx:null/>neg '" i "'  cell '" c "' = [" V1[c] "]\n")
 	}
 
-	# --- heap records ---
-	printf("\x27\n--- dump heap records ---\n\x27")
-	L = V1["-0"]
-	for (i = psrt * 2; i >= L; i += psrt) {
-		if (i in V1)
-			printf("\x27heap rec base %d: name=[%s] val=[%s]\n\x27", i, V1[i], V1[i + 3 * strde])
-		for (k = 0; k < 8; k++)
-			if ((i + k * strde) in V1)
-				printf("\x27  rec %d +%d*strde = [%s]\n\x27", i, k, V1[i + k * strde])
-	}
+	nx_fd_stderr("\n")
+	nx_ansi_light("--- full dump of V1 ---\n")
+	for (i in V1)
+		nx_ansi_debug("<nx:null/> '" i "' =  [" V1[i] "] \n")
+
+	nx_fd_stderr("\n")
+	nx_ansi_light("--- full dump of V2 ---\n")
+	for (i in V2)
+		nx_ansi_debug("<nx:null/>'" i "' =  [" V2[i] "] \n")
+
 }
 
 
 # D1	the string
 # D2	the opening group
 # D3	the closing group
-function nx_shell_stride(D1, D2, D3,
+function nx_shell_stride(D1, D2, D3, N,
 	cnt)
 {
 	cnt = 0
 	while (match(D1, D2)) {
-		cnt += 3
+		cnt += N
 		D1 = substr(D1, RSTART + RLENGTH)
 		if (! match(D1, D3))
 			return -1
@@ -169,7 +174,7 @@ function __nx_shell_schema_str(V, D, B)
 
 	V["-d"] = "<nx:null/>"
 	D = D "d<%delimiter delimiter-separator>"
-	D = D "<default <nx:null\\>>"
+	D = D "<default <nx:null/\\>>"
 	D = D "<type str>"
 	D = D "<description Set the delimiter used to separate schema fields.>"
 
@@ -611,7 +616,7 @@ function nx_unique_check(D1, V, D2, N1, N2, D3,
 function __nx_shell_schema(D1, D2, D3, N,
 	D4, D5, D6, D7, D8, D9, D10,
 	V1, V2,
-	l, n, i, m, lns,
+	l, n, i, m, lns, zn, phlst, phsrt, phskp,
 	acm, nogrps, lpgrp, grpsrt, grplst,
 	eret, wret, ab,
 	ks, fas, kas, go, gc, lo, lc,
@@ -669,10 +674,13 @@ function __nx_shell_schema(D1, D2, D3, N,
 	m = 256
 	grpsrt = 1
 	lns = 10
+	zn = 3
 	nogrps = 4
 	lpgrp = 3
 	grplst = grpsrt + nogrps * lpgrp
-	psrt = -8
+	phsrt = -8
+	phlst = -1
+	phskp = 1
 
 	# CATEGORY (D4) SECTION ###########################
 	n = 7
@@ -743,7 +751,7 @@ function __nx_shell_schema(D1, D2, D3, N,
 
 	i = split(D1, V2, D2)
 	V2[0] = i
-	if ((i = nx_shell_stride(V2[1], go, gc)) == -1) {
+	if ((i = nx_shell_stride(V2[1], go, gc, lpgrp)) == -1) {
 		if (N > 0)
 			nx_ansi_error("the group terminator '" gc "' ran away\n")
 		delete v_ta
@@ -894,7 +902,7 @@ function __nx_shell_schema(D1, D2, D3, N,
 	}
 
 	# start of params when invoking the function nx_shell_args and nx_shell_environ
-	psrt = psrt * strde
+	psrt = phsrt * strde
 	V1["-0"] = __nx_if(V1["-0"] < psrt, V1["-0"], psrt)
 	##################################################
 
@@ -918,32 +926,13 @@ function __nx_shell_schema(D1, D2, D3, N,
 
 
 	# SCELAR SECTION #################################
+	V1[strde] = 3
 	# 1	the parameter separator
 	# 2	debug level
 	# 3	map boundary
 	V1[1 * strde] = D2
 	V1[2 * strde] = N
 	V1[3 * strde] = m
-	##################################################
-
-
-	# GEOMETRY SECTION ###############################
-	n = 5
-	oft = m * 10
-	V1[(oft + 0) * strde] = n
-
-	# 1	group count
-	# 2	positional parameter starting index and assigned block size
-	# 3	starting group index
-	# 4	number of groups
-	# 5	lanes per group
-	# 6	0 scaled lanes
-	V1[(oft + 1) * strde] = 0
-	V1[(oft + 2) * strde] = psrt
-	V1[(oft + 3) * strde] = grpsrt
-	V1[(oft + 4) * strde] = nogrps
-	V1[(oft + 5) * strde] = lpgrp
-	V1[(oft + 6) * strde] = lns
 	##################################################
 
 	skp = "(" nx_str_esc(skp, 2) ")+"
@@ -1019,7 +1008,7 @@ function __nx_shell_schema(D1, D2, D3, N,
 		eret = -1
 	if (nx_delim_sep("build directive", blt, v_tb, N) == -1)
 		eret = -1
-	if (nx_delim_sep("regex directive", win, v_tb, N) == -1)
+	if (nx_delim_sep("regex directive", rgx, v_tb, N) == -1)
 		eret = -1
 	if (nx_delim_sep("min directive", min, v_tb, N) == -1)
 		eret = -1
@@ -1083,9 +1072,35 @@ function __nx_shell_schema(D1, D2, D3, N,
 	V1[(oft + 16) * strde] = pap
 	##################################################
 
+	# GEOMETRY SECTION ###############################
+	n = 10
+	oft = m * 10
+	V1[(oft + 0) * strde] = n
+
+	# 1	group count
+	# 2	positional parameter starting index and assigned block size
+	# 3	starting group index
+	# 4	number of groups
+	# 5	lanes per group
+	# 6	0 scaled lanes
+	# 7	entries in special lane 0
+	# 8	positional parameter header starting ending index and assigned block size
+	# 9	positional parameter header ending index and assigned block size
+	# 10	positional parameter skip size
+
+	V1[(oft + 1) * strde] = 0
+	V1[(oft + 2) * strde] = psrt
+	V1[(oft + 3) * strde] = grpsrt
+	V1[(oft + 4) * strde] = nogrps
+	V1[(oft + 5) * strde] = lpgrp
+	V1[(oft + 6) * strde] = lns
+	V1[(oft + 7) * strde] = zn
+	V1[(oft + 8) * strde] = phsrt
+	V1[(oft + 9) * strde] = phlst
+	V1[(oft + 10) * strde] = phskp
+	##################################################
 
 	# REPRESENTATION (D10) SECTION ###################
-	n = 4
 	wret = __nx_else(nx_unique_check(D10, v_ta, D2, n, N, " representation"), wret)
 	tru = __nx_else(v_ta[1], "<nx:true/>")
 	fls = __nx_else(v_ta[2], "<nx:false/>")
@@ -1123,10 +1138,9 @@ function nx_shell_opts(V1, V2,
 	obol, lo, lc, tcnt, ttrk,
 	grpsrt, grplst, nogrps, lpgrp,
 	kasi, fasi,fsi, ksi,
-	gfr, gcr, gsym, goff, gbse, gpos, gbol, grp, cgrp, go, gc, gent,
-	tpe, dft, epi, use, dsc, blt, regx, min, max, lzy, pbfr, pafr, apbfr, apafr, ap, pap,
+	gfr, gcr, gsym, goff, gbse, gpos, gbol, grp, cgrp, go, gc,
 	dbol, djmp, dmov,
-	ab, lzyd, islzy, tpr, tsf,
+	ab,
 	acm, lcr, rcr, cr,
 	ks, kas,
 	fmt, idx, bol,
@@ -1148,30 +1162,10 @@ function nx_shell_opts(V1, V2,
 	lpgrp = V1[(oft + 5) * strde]
 	grplst = grpsrt + nogrps * lpgrp
 
-
 	# REPRESENTATION
 	oft = m * 2
 	tru = V1[(oft + 1) * strde]
 	fls = V1[(oft + 2) * strde]
-
-	# DIRECTIVES
-	oft = m * 3
-	tpe = V1[(oft + 1) * strde]
-	dft = V1[(oft + 2) * strde]
-	epi = V1[(oft + 3) * strde]
-	use = V1[(oft + 4) * strde]
-	dsc = V1[(oft + 5) * strde]
-	blt = V1[(oft + 6) * strde]
-	regx = V1[(oft + 7) * strde]
-	min = V1[(oft + 8) * strde]
-	max = V1[(oft + 9) * strde]
-	lzy = V1[(oft + 10) * strde]
-	pbfr = V1[(oft + 11) * strde]
-	pafr = V1[(oft + 12) * strde]
-	apbfr = V1[(oft + 13) * strde]
-	apafr = V1[(oft + 14) * strde]
-	ap = V1[(oft + 15) * strde]
-	pap = V1[(oft + 16) * strde]
 
 	# CATEGORIES
 	oft = m * 4
@@ -1186,9 +1180,6 @@ function nx_shell_opts(V1, V2,
 	# TOGGLES
 	oft = m * 5
 	ovr = V1[(oft + 2) * strde]
-	lzyd = V1[(oft + 7) * strde]
-	tpr = V1[(oft + 8) * strde]
-	tsf = V1[(oft + 9) * strde]
 
 	# FLAGS
 	oft = m * 7
@@ -1489,88 +1480,10 @@ function nx_shell_opts(V1, V2,
 				nx_ansi_warning("extra '" gc "' detected after '" acm __nx_if(nx_is_alpha(trk[idx - 1]), cr, trk[idx - 1]) "', discarding\n")
 			}
 		} else if (cr == go && gcr != "") {
-			acm = trk[idx = __nx_shell_skip(trk[++idx], trk, flw, idx)]
-			while (nx_is_alpha(cr = trk[++idx]))
-				acm = acm cr
-			--idx
-			gent = -1
-
-			cr = tolower(acm)
-			if (cr == tpe) {
-				gent = 0
-			} else if (cr == dft) {
-				gent = 1
-			} else if (cr == epi) {
-				gent = 2
-			} else if (cr == use) {
-				gent = 3
-			} else if (cr == dsc) {
-				gent = 4
-			} else if (cr == blt) {
-				gent = 5
-			} else if (cr == regx) {
-				gent = 6
-			} else if (cr == min) {
-				gent = 7
-			} else if (cr == max) {
-				gent = 8
-			} else if (cr == lzy) {
-				gent = 9
-			} else if (cr == pbfr) {
-				gent = 10
-			} else if (cr == pafr) {
-				gent = 11
-			} else if (cr == apbfr) {
-				gent = 12
-			} else if (cr == apafr) {
-				gent = 13
-			} else if (cr == ap) {
-				gent = 14
-			} else if (cr == pap) {
-				gent = 15
-			} else {
-				if (dbg > 1)
-					nx_ansi_warning("provided '" acm "' is garbage, what do you wish this to mean? '" cr "' discarding unimplemented metadata field\n")
-				continue
-			}
-
-			cr = acm
-			if ((acm = trk[idx = __nx_shell_skip(trk[++idx], trk, flw, idx)]) == "\x5c") {
-				acm = trk[++idx]
-			}  else if (acm == gc) {
-				if (gent == 9) {
-					nx_boolean(V1, V1[V1[gcr] - strde * 2] + 1 + strde * gent, nx_is_lower(substr(acm, 1, 1)), tru, fls)
-				} else {
-					nx_ansi_warning("provided '" cr "' for '" gcr "' is empty, is this intended? It wont be registered, discarding metadata field\n")
-				}
-				continue
-			}
-
-			bol = tpr
-			while ((cr = trk[++idx]) != gc) {
-				if (bol) {
-					while (cr ~ flw)
-						cr = trk[++idx]
-					bol = 0
-				}
-				if (cr == "\x5c") do {
-					cr = trk[++idx]
-				} while (cr ~ flw)
-				acm = acm cr
-			}
-			if (tsf == 1)
-				gsub(flw "$", "", acm)
-
-			cr = V1[gcr] - strde * 2
-			V1[V1[cr] + 1 + strde * gent] = acm
-			islzy = V1[cr] + 1 + strde * 9
-
-			if (ab < 3 && !lzyd && !(islzy in V1 && V1[islzy] == tru)) {
-				if (gent == 1)
-					nx_shell_dispatch(V1, V2, "", cr)
-			}
-
+			idx = nx_shell_group_metadata(V1, V2, trk, idx, gcr)
 		} else {
+			#if (cr == go)
+			#	print "aea"
 			if (dbg > 1)
 				nx_ansi_warning("provided '" cr "' is garbage or malformed, what do you wish this to mean? discarding\n")
 			wret = -2
@@ -1582,6 +1495,161 @@ function nx_shell_opts(V1, V2,
 	if (eret = int(eret))
 		return eret
 	return int(wret)
+}
+
+# idx	N
+# gcr	D
+# V1	V1
+# V2	V2
+# trk	V3
+function nx_shell_group_metadata(V1, V2, V3, N, D,
+	acm, flw, gent, cr, islzy, bol,
+	strde, m, oft, dbg,
+	tru, fls,
+	lzyd, tpr, tpf,
+	ab, gc,
+	dft, epi, use, desc, blt, regx, min, max, pbfr, pafr, pa, pap)
+{
+
+	strde = V1[0]
+	dbg = V1[2 * strde]
+	m = V1[3 * strde]
+
+	# GEOMETRY
+	oft = m * 10
+	grpsrt = V1[(oft + 3) * strde]
+	nogrps = V1[(oft + 4) * strde]
+	lpgrp = V1[(oft + 5) * strde]
+	grplst = grpsrt + nogrps * lpgrp
+
+	# REPRESENTATION
+	oft = m * 2
+	tru = V1[(oft + 1) * strde]
+	fls = V1[(oft + 2) * strde]
+
+	# DIRECTIVES
+	oft = m * 3
+	tpe = V1[(oft + 1) * strde]
+	dft = V1[(oft + 2) * strde]
+	epi = V1[(oft + 3) * strde]
+	use = V1[(oft + 4) * strde]
+	dsc = V1[(oft + 5) * strde]
+	blt = V1[(oft + 6) * strde]
+	regx = V1[(oft + 7) * strde]
+	min = V1[(oft + 8) * strde]
+	max = V1[(oft + 9) * strde]
+	lzy = V1[(oft + 10) * strde]
+	pbfr = V1[(oft + 11) * strde]
+	pafr = V1[(oft + 12) * strde]
+	apbfr = V1[(oft + 13) * strde]
+	apafr = V1[(oft + 14) * strde]
+	ap = V1[(oft + 15) * strde]
+	pap = V1[(oft + 16) * strde]
+
+	# REGEX
+	oft = m * 9
+	flw = V1[(oft + 4) * strde]
+
+	# TOGGLES
+	oft = m * 5
+	lzyd = V1[(oft + 7) * strde]
+	tpr = V1[(oft + 8) * strde]
+	tsf = V1[(oft + 9) * strde]
+
+	# CATEGORIES
+	oft = m * 4
+	gc = V1[(oft + 5) * strde]
+
+	# FLAGS
+	oft = m * 7
+	ab = V1[(oft + 2) * strde]
+
+	acm = V3[N = __nx_shell_skip(V3[++N], V3, flw, N)]
+	while (nx_is_alpha(cr = V3[++N]))
+		acm = acm cr
+	--N
+	gent = -1
+
+	cr = tolower(acm)
+	if (cr == tpe) {
+		gent = 0
+	} else if (cr == dft) {
+		gent = 1
+	} else if (cr == epi) {
+		gent = 2
+	} else if (cr == use) {
+		gent = 3
+	} else if (cr == dsc) {
+		gent = 4
+	} else if (cr == blt) {
+		gent = 5
+	} else if (cr == regx) {
+		gent = 6
+	} else if (cr == min) {
+		gent = 7
+	} else if (cr == max) {
+		gent = 8
+	} else if (cr == lzy) {
+		gent = 9
+	} else if (cr == pbfr) {
+		gent = 10
+	} else if (cr == pafr) {
+		gent = 11
+	} else if (cr == apbfr) {
+		gent = 12
+	} else if (cr == apafr) {
+		gent = 13
+	} else if (cr == ap) {
+		gent = 14
+	} else if (cr == pap) {
+		gent = 15
+	} else {
+		if (dbg > 1)
+			nx_ansi_warning("provided '" acm "' is garbage, what do you wish this to mean? '" cr "' discarding unimplemented metadata field\n")
+		return N
+	}
+
+	cr = acm
+	if ((acm = V3[N = __nx_shell_skip(V3[++N], V3, flw, N)]) == "\x5c") {
+		acm = V3[++N]
+	}  else if (acm == gc) {
+		if (gent == 9) {
+			nx_boolean(V1, V1[V1[D] - strde * 2] + 1 + strde * gent, nx_is_lower(substr(acm, 1, 1)), tru, fls)
+		} else {
+			nx_ansi_warning("provided '" cr "' for '" D "' is empty, is this intended? It wont be registered, discarding metadata field\n")
+		}
+		return N
+	}
+
+	bol = tpr
+	while (++N in V3 && (cr = V3[N]) != gc) {
+		if (bol) {
+			while (cr ~ flw)
+				cr = V3[++N]
+			bol = 0
+		}
+		if (cr == "\x5c") do {
+			cr = V3[++N]
+		} while (cr ~ flw)
+		acm = acm cr
+	}
+
+	if (! (N + 1 in V3) && cr != gc && dbg > 1)
+		nx_ansi_warning("end of input was not the '" gc "' character, did it run away?\n")
+
+
+	if (tsf == 1)
+		gsub(flw "$", "", acm)
+
+	cr = V1[D] - strde * 2
+	V1[V1[cr] + 1 + strde * gent] = acm
+	islzy = V1[cr] + 1 + strde * 9
+
+	if (ab < 3 && !lzyd && !(islzy in V1 && V1[islzy] == tru)) {
+		if (gent == 1)
+			nx_shell_dispatch(V1, V2, "", cr)
+	}
+	return N
 }
 
 function nx_shell_args(V1, V2,
