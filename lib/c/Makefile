@@ -2,6 +2,11 @@ CC      ?= gcc
 CFLAGS  ?=
 CFLAGS  += -Wall -O2
 
+PROGRAMS := $(patsubst %.c,%,$(wildcard nex-*.c))
+HEADERS  := $(wildcard headers/*.h)
+SHARED_OBJ := $(patsubst %.c,%.o,$(wildcard headers/*.c))
+
+
 ifdef NX_C_DEBUG
 	CFLAGS  += -ggdb -Wextra -pedantic
 endif
@@ -14,19 +19,18 @@ ifeq ($(OS),Linux)
 	CFLAGS  += -DLINUX
 endif
 
-SRC = main.c $(wildcard headers/*.c)
-OBJ = $(patsubst %.c,%.o,$(SRC))
+.PHONY: all clean
+all: $(PROGRAMS)
 
-.PHONY: all
-all: nx
+#(PROGRAMS): %: %.c $(HEADERS)
+#	$(CC) $(CPPFLAGS) -Iheaders $(CFLAGS) -o $@ $< $(LDFLAGS) $(LDLIBS)
 
-nx: $(OBJ)
-	$(CC) $(CFLAGS) -o $@ $^
+$(PROGRAMS): %: %.o $(SHARED_OBJ)
+	$(CC) $(LDFLAGS) -o $@ $^ $(LDLIBS)
 
 %.o: %.c
-	$(CC) $(CFLAGS) -c $< -o $@
+	$(CC) $(CPPFLAGS) -Iheaders $(CFLAGS) -c $< -o $@
 
-.PHONY: clean
 clean:
-	rm -f nx $(OBJ)
+	rm -f $(PROGRAMS) $(patsubst %.c,%.o,$(wildcard nex-*.c)) $(SHARED_OBJ)
 

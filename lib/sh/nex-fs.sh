@@ -10,7 +10,7 @@ __nx_fs_n_fifo()
 		tmpa="$NEXUS_ENV/run/nx_$1.fifo"
 		test -e "$tmpa" && unset tmpa
 	}
-	tmpa="$(nx_fs_noclobber -v "$NEXUS_ENV/run/${2:-nx}.$(nx_str_timestamp -f)-$(nx_str_rand 16).fifo")"
+	tmpa="$(nx_fs_noclobber --verbose "$NEXUS_ENV/run/${2:-nx}.$(nx_str_timestamp --filename)-$(nx_str_rand --number 16).fifo")"
 	mkfifo "$tmpa" || {
 		nx_tty_print -E "Failed to create named pipes at '$tmpa'."
 		return 227

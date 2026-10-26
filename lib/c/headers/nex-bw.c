@@ -1,4 +1,5 @@
 #include <limits.h>
+#include <stdint.h>
 #include "nex-bw.h"
 
 #ifndef NEX_targetLimits_G
@@ -309,3 +310,11 @@ void nX_bwMixBytes_gG1_l1lF(
 	}
 }
 
+uint32_t nX_hashChars_h__1BF(const char *str)
+{
+	uint32_t hash = 5381;
+	int c;
+	while ((c = *str++))
+		hash = ((hash << 5) + hash) ^ c;
+	return hash;
+}

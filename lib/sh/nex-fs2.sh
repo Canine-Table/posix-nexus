@@ -190,10 +190,10 @@ nx_fs2_canonize()
 nx_fs2_noclobber()
 (
 	nx_data_longopt -- ',
-		v<%verbose>
+		v<verbose>
 		<type toggle>
 		<description Print the new name without moving the file (dry run)>
-		<build vb=1;>
+		<default <nx:false/\\>>
 
 		help<h>
 		<description Show help for nx_fs_noclobber>
@@ -206,14 +206,14 @@ nx_fs2_noclobber()
 
 	while test "$i" -le "$NEX_ARGV_0"; do
 		arg="$(nx_data_ref "NEX_ARGV_$i")"
-		tmpa="$(nx_fs2_path --realpath "$arg" 2>/dev/null)"
+		tmpa="$(nx_fs2_path --realpath --location "$arg" 2>/dev/null)"
 		acm="$acm${acm:+<nx:null/>}${tmpa:-$arg}<nx:null/>$(nx_str_timestamp --filename)"
 		i=$((i+1))
 	done
 
 	acm="$(${AWK:-$(nx_cmd_awk)} \
 		-v acm="$acm" \
-		-v vb="$vb" \
+		-v vb="$NEX_Gf_v"  \
 	"
 		$(nx_data_include -i "${NEXUS_LIB}/awk/nex-io-extras.awk")
 	"'
@@ -238,7 +238,7 @@ nx_fs2_noclobber()
 							break
 					}
 					if (srt == sz) {
-						bext = "." stamp "-$(nx_str_rand 16)" bext
+						bext = "." stamp "-$(nx_str_rand --number 16)" bext
 					} else {
 						tmpa = substr(bnm, srt)
 						bext = tmpa
@@ -247,14 +247,14 @@ nx_fs2_noclobber()
 						bnm = substr(bnm, 1, srt - 1) tmpa
 					}
 				}
-				if (!sub(/(([2-9][0-9]([0248][1-35-79]|[1379][014-9])(((0[135679]|12)([12][0-9]|0[1-9]|3[01]))|((0[469]|11)([12][0-9]|0[1-9]|30))|((0[469]|11)([12][0-9]|0[1-8])))_([01][0-9]|2[0-3])[0-5][0-9][0-5][0-9])|([2-9][0-9]([0248][048]|[1379][23])(((0[135679]|12)([12][0-9]|0[1-9]|3[01]))|((0[469]|11)([12][0-9]|0[1-9]|30))|((0[469]|11)([12][0-9]|0[1-9])))_([01][0-9]|2[0-3])[0-5][0-9][0-5][0-9]))-[0-9A-Za-z]{16}/, stamp "-$(nx_str_rand 16)", bext))
-					bext = "." stamp "-$(nx_str_rand 16)" bext
+				if (!gsub(/(([0-9]{2}(0[1235679]|[2468][1235679]|[13579][0134579])(((0[13578]|1[02])(0[1-9]|[12][0-9]|3[01]))|((0[469]|11)(0[1-9]|[12][0-9]|30))|(02(0[1-9]|1[0-9]|2[0-8])))_([01][0-9]|2[0-3])[0-5][0-9][0-5][0-9])|([0-9]{2}(0[48]|[2468][048]|[13579][26])(((0[13578]|1[02])(0[1-9]|[12][0-9]|3[01]))|((0[469]|11)(0[1-9]|[12][0-9]|30))|(02(0[1-9]|1[0-9]|2[0-9])))_([01][0-9]|2[0-3])[0-5][0-9][0-5][0-9]))-[0-9A-Za-z]{16}/, stamp "-$(nx_str_rand --number 16)", bext))
+					bext = "." stamp "-$(nx_str_rand --number 16)" bext
 				npath = __nx_stringify_var("", dnm bnm bext, 1)
 				printf("%s tmpb%s tmpc=\x22$tmpa\x22;test -e \x22$tmpa\x22", __nx_stringify_var("tmpa", path), npath)
-				if (vb == 1)
+				if (vb == "<nx:true/>")
 					printf("||{ printf \x27%%s\x27 \x22$tmpa\x22;false;}")
 				printf("&&{ while test -e \x22$tmpc\x22;do tmpc%s;done;", npath)
-				if (vb != 1)
+				if (vb !=  "<nx:true/>")
 					printf("mv \x22$tmpa\x22 \x22$tmpc\x22;")
 				printf("printf \x27%%s\x27 \x22$tmpc\x22;}", npath)
 			}
@@ -263,6 +263,76 @@ nx_fs2_noclobber()
 			delete paths
 		}
 	')"
-	test -n "$acm" && echo "$acm"
+	test -n "$acm" && eval  "$acm"
 )
 
+
+__nx_fs_n_fifo()
+(
+	nx_data_longopt -- ',
+		n<%name>
+		<description Name for the FIFO (optional; if omitted, a unique name is generated)>
+
+		s<%suffix>
+		<default nx>
+		<description Suffix for the generated name (default nx)>
+
+		help<h>
+		<description Show help for __nx_fs_n_fifo>
+		<build exit;>
+	' "$@"
+
+	tmpa="$NEXUS_ENV/run/${NEX_Gk_s:-nx}_$NEX_Gk_n:-".$(nx_str_timestamp --filename)-$(nx_str_rand --number 16)"}.fifo"
+	test -e "$tmpa" && tmpa="$(nx_fs_noclobber --verbose "$tmpa")"
+	mkfifo "$tmpa" || {
+		nx_tty_print -E "Failed to create named pipes at '$tmpa'."
+		return 227
+	}
+	printf '%s' "$tmpa"
+)
+
+nx_fs_fifo()
+(
+	h_nx_cmd mkfifo || {
+		nx_tty_print -W 'mkfifo not found! The realm of named pipes is closed to us.'
+		exit 127
+	}
+	nx_data_longopt -- '
+		t<@rc, remove try create>
+		<type str>
+		<regex ^(r|t|c|remove|try|create)$>
+		<default t>
+		<description Operation: r/remove, t/try, c/create (default try)>
+
+		help<h>
+		<description Show help for nx_fs_fifo>
+		<build exit;>
+	' "$@"
+
+	i=1
+	while test "$i" -le "$NEX_ARGV_0"; do
+		case "$NEX_Gk_t" in
+			r|remove) test -p "$(nx_data_ref "NEX_ARGV_$i")" && rm "$(nx_data_ref "NEX_ARGV_$i")";;
+			t|try) {
+				name="$(nx_data_ref "NEX_ARGV_$i")"
+				i=$((i+1))
+				suf="$(nx_data_ref "NEX_ARGV_$i")"
+				tmpa="$NEXUS_ENV/run/nx_$name.fifo"
+				if test -p "$name"; then
+					printf '%s' "$name" "$suf"
+				elif test -p "$tmpa"; then
+					printf '%s' "$tmpa"
+				else
+					__nx_fs_n_fifo "$name" "$suf"
+				fi
+			};;
+			c|create) {
+				name="$(nx_data_ref "NEX_ARGV_$i")"
+				i=$((i+1))
+				suf="$(nx_data_ref "NEX_ARGV_$i")"
+				__nx_fs_n_fifo "$name" "$suf"
+			};;
+		esac
+		i=$((i+1))
+	done
+)

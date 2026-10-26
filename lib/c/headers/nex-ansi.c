@@ -2,12 +2,6 @@
 #include <stdio.h>
 #include "nex-ansi.h"
 
-#define NEX_ansiPrefix_M(color, symbol) \
-	fprintf(stderr, color "[" "\x1b[4;3;7m" symbol "\x1b[24;23;27m" "]" "\x1b[37m: " color)
-
-#define NEX_ansiSuffix_M() \
-	fprintf(stderr, "\x1b\[0m\n")
-
 void nx_ansi_success(const char *fmt, ...)
 {
 	va_list args;

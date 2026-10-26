@@ -40,24 +40,33 @@ nx_data_longopt()
 			dir = __nx_shell_schema_dir(p, ds)
 			rep = __nx_shell_schema_rep(p, ds)
 			__nx_shell_schema(pstr ds inpt, ds, ps, dbg, cat, tog, act, flg, mic, dir, rep, vec, agv)
-			
+
 			nx_shell_opts(vec, agv)
 			nx_shell_args(vec, agv)
 			strde = vec[0]
-			m = vec[strde * 4]
+			m = vec[strde * 3]
 			oft = m * 9
 			vl = vec[-2 * strde]
+
 			if (vl ~ vec[(oft + 6) * strde] || vl == "") {
-				print "printf \x22%s\x22 \x22\x22"
+				if (p["--dump"] == "<nx:true/>") {
+					nx_shell_debugger_dump(vec)
+				} else {
+					print "printf \x22%s\x22 \x22\x22"
+				}
 			} else {
 				l = vec[0]
 				L = vec["-0"]
-				psrt = vec[l * 6]
+				oft = m * 10
+				psrt = vec[(oft + 2) * l]
+				oft = m * 6
 				ofst = l * 3
 				for (i = psrt * 2; i >= L; i = i + psrt) {
 					p[vec[i]] = vec[i + ofst]
 				}
 				dbg = p["-v"]
+				if (p["--dump"] == "<nx:true/>")
+					nx_shell_debugger_dump(vec)
 				ps = p["-p"]
 				ds = p["-d"]
 				tog = __nx_shell_schema_tog(p, ds)
@@ -72,6 +81,7 @@ nx_data_longopt()
 				pstr = vec[-1 * l]
 				split("", vec, "")
 				split("", agv, "")
+
 				__nx_shell_schema(pstr, ds, ps, dbg, cat, tog, act, flg, mic, dir, rep, vec, agv)
 				if (p["-O"] == tru) {
 					p["-O"] = "echo "
@@ -81,21 +91,17 @@ nx_data_longopt()
 				}
 				nx_shell_opts(vec, agv)
 				nx_shell_args(vec, agv)
+
 				print p["-O"] q nx_shell_environ(vec, agv, scpe) q
+
+				if (p["--dump"] == "<nx:true/>")
+					nx_shell_debugger_dump(vec)
 			}
 			delete p
 			delete vec
 			delete agv
 		}
 	')"
-}
-
-__nx_data_longopt_eval()
-{
-	test -n "$NEX_ARGV_E" || exit 226
-	printf "$NEX_ARGV_E"
-	nx_tty_div -s
-	eval "$NEX_ARGV_E"
 }
 
 nx_data_ref()
@@ -314,9 +320,9 @@ nx_data_path_append()
 				# A leading "-" toggles direction
 				if (sub(/^-/, "", strs[i])) {
 					if (strs[i] == "a")
-						strs["b4"] = 0   # prepend
+						strs["b4"] = 0	 # prepend
 					else
-						strs["b4"] = 1   # append
+						strs["b4"] = 1	 # append
 				}
 
 				# Only append/prepend if not already present

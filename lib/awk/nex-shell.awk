@@ -1,5 +1,71 @@
 #nx_include nex-log-extras.awk
 
+function nx_shell_debugger_dump(V1,
+	strde, m, psrt,
+	ps, rs, dbg, grpsrt, grplst, nogrps, lpgrp, lns,
+	bse, s, c, i, j, n, L, k)
+{
+	strde = V1[0]
+	m     = V1[3 * strde]
+
+	# --- everything below is derived from strde / m / psrt ---
+	ps = V1[1 * strde]
+	dbg = V1[2 * strde]
+
+	bse = m * 8
+	rs = V1[(bse + 9) * strde]
+
+	bse = m * 10
+	psrt = V1[(bse + 2) * strde]
+	grpsrt = V1[(bse + 3) * strde]
+	nogrps = V1[(bse + 4) * strde]
+	lpgrp  = V1[(bse + 5) * strde]
+	lns = V1[(oft + 6) * strde]
+	grplst = grpsrt + nogrps * lpgrp
+
+	printf("printf \x27%s\x27 \x27\n--- dump all lane slots 0..10, fields 0..N ---\n\x27", "%s")
+
+	# --- lane 0: access lane (no count at slot 0) ---
+	for (j = 0; j <= 3; ++j) {
+		c = j * strde
+		if (c in V1)
+			printf("\x27lane 0 field %d  slot %d  cell %d\t= [%s]\n\x27", j, j, c, V1[c])
+	}
+
+	# --- lanes 1..10: content lanes (slot 0 = entry count) ---
+	for (i = 1; i <= lns; ++i) {
+		bse = m * i
+		n = V1[bse * strde]
+		if (n == "") n = 0
+		for (j = 0; j <= n; ++j) {
+			s = bse + j
+			c = s * strde
+			if (c in V1)
+				printf("\x27lane %d field %d  slot %d  cell %d\t= [%s]\n\x27", i, j, s, c, V1[c])
+		}
+	}
+
+	# --- negative output slots ---
+	printf("\x27\n--- dump negative slots -1..-8 ---\n\x27")
+	for (k = psrt; k <= -1; ++k) {
+		c = k * strde
+		if (c in V1)
+			printf("\x27neg %d  cell %d = [%s]\n\x27", k, c, V1[c])
+	}
+
+	# --- heap records ---
+	printf("\x27\n--- dump heap records ---\n\x27")
+	L = V1["-0"]
+	for (i = psrt * 2; i >= L; i += psrt) {
+		if (i in V1)
+			printf("\x27heap rec base %d: name=[%s] val=[%s]\n\x27", i, V1[i], V1[i + 3 * strde])
+		for (k = 0; k < 8; k++)
+			if ((i + k * strde) in V1)
+				printf("\x27  rec %d +%d*strde = [%s]\n\x27", i, k, V1[i + k * strde])
+	}
+}
+
+
 # D1	the string
 # D2	the opening group
 # D3	the closing group
@@ -283,7 +349,7 @@ function __nx_shell_schema_str(V, D, B)
 
 	V["--macro-suffix"] = "/>"
 	D = D "macro-suffix<%directive-macro-suffix>"
-	D = D "<default /\\\>>"
+	D = D "<default /\\>>"
 	D = D "<type str>"
 	D = D "<description Directive that sets the suffix used for macro expansion in build snippets.>"
 
@@ -382,6 +448,10 @@ function __nx_shell_schema_str(V, D, B)
 	D = D "<default <nx:true/\\>>"
 	D = D "<description Trim trailing flow‑whitespace from directive values before storing them>"
 
+
+
+
+	# TODO
 	V["--chain-eval"] = "1"
 	D = D "chain-eval<%>"
 	D = D "<type int>"
@@ -389,6 +459,12 @@ function __nx_shell_schema_str(V, D, B)
 	D = D "<max 3>"
 	D = D "<default 1>"
 	D = D "<description TODO>"
+
+	V["--dump"] = "<nx:false/>"
+	D = D "dump<>"
+	D = D "<default <nx:false/\\>>"
+	D = D "<type toggle>"
+	D = D "<description Dump the full registry after both passes when the debug level exceeds 3 or this option is set. Prints every populated lane slot, negative output slot, and heap record. Intended for diagnosing layout and addressing problems.>"
 
 	return D
 }
@@ -535,7 +611,7 @@ function nx_unique_check(D1, V, D2, N1, N2, D3,
 function __nx_shell_schema(D1, D2, D3, N,
 	D4, D5, D6, D7, D8, D9, D10,
 	V1, V2,
-	l, n, i, m,
+	l, n, i, m, lns,
 	acm, nogrps, lpgrp, grpsrt, grplst,
 	eret, wret, ab,
 	ks, fas, kas, go, gc, lo, lc,
@@ -592,6 +668,7 @@ function __nx_shell_schema(D1, D2, D3, N,
 	wret = 0
 	m = 256
 	grpsrt = 1
+	lns = 10
 	nogrps = 4
 	lpgrp = 3
 	grplst = grpsrt + nogrps * lpgrp
@@ -728,7 +805,7 @@ function __nx_shell_schema(D1, D2, D3, N,
 	delete v_tb
 
 	split(D8, v_ta, D2)
-	n = 8
+	n = 9
 	oft = m * 8
 	V1[(oft + 0) * strde] = n
 	# 1	argument prefix character
@@ -739,6 +816,7 @@ function __nx_shell_schema(D1, D2, D3, N,
 	# 6	assign symbol
 	# 7	macro prefix
 	# 8	macro suffix
+	# 9	the remainder separator
 	V1[(oft + 1) * strde] = pref
 	V1[(oft + 2) * strde] = ext
 	V1[(oft + 3) * strde] = skp
@@ -747,6 +825,7 @@ function __nx_shell_schema(D1, D2, D3, N,
 	V1[(oft + 6) * strde] = as
 	V1[(oft + 7) * strde] = mpre
 	V1[(oft + 8) * strde] = msuf
+	V1[(oft + 9) * strde] = D3
 	##################################################
 
 
@@ -840,25 +919,31 @@ function __nx_shell_schema(D1, D2, D3, N,
 
 	# SCELAR SECTION #################################
 	# 1	the parameter separator
-	# 2	the remainder separator
-	# 3	debug level
-	# 4	map boundary
-	# 5	group count
-	# 6	positional parameter starting index and assigned block size
-	# 7	starting group index
-	# 8	ending group index
-	# 9	number of groups
-	# 10	lanes per group
+	# 2	debug level
+	# 3	map boundary
 	V1[1 * strde] = D2
-	V1[2 * strde] = D3
-	V1[3 * strde] = N
-	V1[4 * strde] = m
-	V1[5 * strde] = 0
-	V1[6 * strde] = psrt
-	V1[7 * strde] = grpsrt
-	V1[8 * strde] = grplst
-	V1[9 * strde] = nogrps
-	V1[10 * strde] = lpgrp
+	V1[2 * strde] = N
+	V1[3 * strde] = m
+	##################################################
+
+
+	# GEOMETRY SECTION ###############################
+	n = 5
+	oft = m * 10
+	V1[(oft + 0) * strde] = n
+
+	# 1	group count
+	# 2	positional parameter starting index and assigned block size
+	# 3	starting group index
+	# 4	number of groups
+	# 5	lanes per group
+	# 6	0 scaled lanes
+	V1[(oft + 1) * strde] = 0
+	V1[(oft + 2) * strde] = psrt
+	V1[(oft + 3) * strde] = grpsrt
+	V1[(oft + 4) * strde] = nogrps
+	V1[(oft + 5) * strde] = lpgrp
+	V1[(oft + 6) * strde] = lns
 	##################################################
 
 	skp = "(" nx_str_esc(skp, 2) ")+"
@@ -1053,12 +1138,16 @@ function nx_shell_opts(V1, V2,
 {
 
 	strde = V1[0]
-	dbg = V1[strde * 3]
-	m = V1[strde * 4]
-	grpsrt = V1[7 * strde]
-	grplst = V1[8 * strde]
-	nogrps = V1[9 * strde]
-	lpgrp = V1[10 * strde]
+	dbg = V1[2 * strde]
+	m = V1[3 * strde]
+
+	# GEOMETRY
+	oft = m * 10
+	grpsrt = V1[(oft + 3) * strde]
+	nogrps = V1[(oft + 4) * strde]
+	lpgrp = V1[(oft + 5) * strde]
+	grplst = grpsrt + nogrps * lpgrp
+
 
 	# REPRESENTATION
 	oft = m * 2
@@ -1327,7 +1416,7 @@ function nx_shell_opts(V1, V2,
 								nx_ansi_info("group reset from '" grp "' to '" cgrp "'\n")
 							grp = cgrp
 						} else {
-							grp = grp + 3
+							grp = grp + lpgrp
 						}
 						if (dbg > 2)
 							nx_ansi_debug("member '" acm "' is end of group type '" gsym "' with leader '" gcr "' at position '" gpos "'\n")
@@ -1488,7 +1577,8 @@ function nx_shell_opts(V1, V2,
 		}
 	}
 	delete trk
-	V1[5 * strde] = grp
+	oft = m * 10
+	V1[(oft + 1) * strde] = grp
 	if (eret = int(eret))
 		return eret
 	return int(wret)
@@ -1507,15 +1597,21 @@ function nx_shell_args(V1, V2,
 	idx, cat, grp, trm,
 	dsh, vl,
 	wret, eret,
+	grpsrt, nogrps, lpgrp, grplst,
 	acrgx, eacrgx,
 	trk)
 {
 
 	strde = V1[0]
-	dbg = V1[strde * 3]
-	ps = V1[strde * 2]
-	m = V1[strde * 4]
+	dbg = V1[2 * strde]
+	m = V1[3 * strde]
 
+	# GEOMETRY
+	oft = m * 10
+	grpsrt = V1[(oft + 3) * strde]
+	nogrps = V1[(oft + 4) * strde]
+	lpgrp = V1[(oft + 5) * strde]
+	grplst = grpsrt + nogrps * lpgrp
 
 	# ACTIONS
 	oft = m * 6
@@ -1531,11 +1627,12 @@ function nx_shell_args(V1, V2,
 	pref = V1[(oft + 1) * strde]
 	con = V1[(oft + 4) * strde]
 	fs = V1[(oft + 6) * strde]
+	ps = V1[(oft + 9) * strde]
+
 
 	# FLAGS
 	oft = m * 7
 	ab = V1[(oft + 2) * strde]
-
 
 	# REGEX
 	oft = m * 9
@@ -1627,7 +1724,7 @@ function nx_shell_args(V1, V2,
 		grp = cat % strde
 
 		if (dbg > 2) {
-			if (grp < 13)
+			if (grp < grplst)
 				nx_ansi_light("token index for '" tok "' registered under '" cat "' and part of the '" grp "' id\n")
 			else
 				nx_ansi_light("token index for '" tok "' registered under '" cat "' and part of the '" grp "' id, with the group leader of type '" V1[grp + strde] "' being '" V1[grp + strde * 2] "'\n")
@@ -1638,6 +1735,7 @@ function nx_shell_args(V1, V2,
 	V1[-1 * strde] = r
 	V1[-2 * strde] = s
 	V1[-3 * strde] = int(n)
+
 	if (dbg > 2)
 		nx_ansi_alert("<nx:null/>remainder is '" r "' \n")
 	delete trk
@@ -1647,47 +1745,60 @@ function nx_shell_args(V1, V2,
 }
 
 function nx_shell_help(V,
-	str, srt, strde, soff,
-	moff, grps,
-	i, j)
+	str, srt, strde, soff, coff,
+	moff, grps, lpgrp, grpsrt,
+	i, j, m)
 {
 	strde = V[0]
-	grps = V[strde * 5]
-	soff = strde + strde
-	srt = V[1]
+	m = V[3 * strde]
 
-	for (i = 1 + soff; i <= srt; i += strde)
+	# GEOMETRY
+	oft = m * 10
+	grps = V[(oft + 1) * strde]
+	grpsrt = V[(oft + 3) * strde]
+	lpgrp = V[(oft + 5) * strde]
+
+	soff = strde + strde
+
+	coff = grpsrt
+	srt = V[coff]
+
+	for (i = coff + soff; i <= srt; i += strde)
 		str = str " " V[i]
 	if (str != "") {
-		nx_ansi_info("\n(" V[1 + strde] ") keywords:" str)
+		nx_ansi_info("\n(" V[coff + strde] ") keywords:" str)
 		str = ""
 	}
 
-	srt = V[4]
-	for (i = 4 + soff; i <= srt; i += strde)
+	coff = coff + lpgrp
+	srt = V[coff]
+	for (i = coff + soff; i <= srt; i += strde)
 		str = str " " V[i]
 	if (str) {
-		nx_ansi_info("\n(" V[4 + strde] ") flags:" str)
+		nx_ansi_info("\n(" V[coff + strde] ") flags:" str)
 		str = ""
 	}
 
-	srt = V[7]
-	for (i = 7 + soff; i <= srt; i += strde)
+	coff = coff + lpgrp
+	srt = V[coff]
+	for (i = coff + soff; i <= srt; i += strde)
 		str = str " " V[i]
 	if (str) {
-		nx_ansi_info("\n(" V[7 + strde] ") flag arrays:" str)
+		nx_ansi_info("\n(" V[coff + strde] ") flag arrays:" str)
 		str = ""
 	}
 
-	srt = V[10]
-	for (i = 10 + soff; i <= srt; i += strde)
+	coff = coff + lpgrp
+	srt = V[coff]
+	for (i = coff + soff; i <= srt; i += strde)
 		str = str " " V[i]
 	if (str) {
-		nx_ansi_info("\n(" V[10 + strde] ") keyword arrays:" str)
+		nx_ansi_info("\n(" V[coff + strde] ") keyword arrays:" str)
 		str = ""
 	}
 
-	for (i = 13; i < grps; i =  i + 3) {
+	coff = coff + lpgrp
+	for (i = coff; i < grps; i =  i + lpgrp) {
 		j = i + strde
 
 		str = "\n("  V[j] ") group '" V[j + strde] "' ->"
@@ -1737,11 +1848,13 @@ function nx_shell_build(V, N,
 	strde, m, oft,
 	pref,
 	msuf, mstr, mrmrgx,
-	mpr, mar, dsh, dq, skp, dbg, mvl)
+	mpr, mar, dsh, dq, skp, dbg, mvl,
+	ln, i, mstrs)
 {
 	strde = V[0]
-	m = V[strde * 4]
-	dbg = V[strde * 3]
+	dbg = V[2 * strde]
+	m = V[3 * strde]
+
 	skp = 2 * strde
 
 	# REGEX
@@ -1765,6 +1878,7 @@ function nx_shell_build(V, N,
 			mar = V[V[mar] % strde + strde * 2]
 			dsh = __nx_if(length(mar) > 1, pref pref, pref)
 			mvl = __nx_stringify_var("", V[V[dsh mar] + skp], !dq, "", "", 1)
+			gsub("\x26", "<nx:x26/>", mvl)
 			if (dbg > 2)
 				nx_ansi_info("the macro '" mar "' was replaced by its value " mvl "\n")
 			sub(mpr, mvl, mstr)
@@ -1773,7 +1887,16 @@ function nx_shell_build(V, N,
 			if (dbg > 1)
 				nx_ansi_warning("the variable '" mar "' is undefined\n")
 		}
+		
 	}
+	
+	ln = split(mstr, mstrs, "<nx:x26/>")
+	mar = mstrs[1]
+	for (i = 2; i < ln; ++i)
+		mar = mar "&" mstrs[i]
+	delete mstrs
+	mstr = mar
+
 	oft = -4 * strde
 	V[oft] = V[oft] mstr
 }
@@ -1796,12 +1919,13 @@ function nx_shell_type(V1, V2, N1, D1, D2, D3, N2,
 
 	vl = D1
 	strde = V1[0]
-	dbg = V1[strde * 3]
+	dbg = V1[2 * strde]
+
 	regx = N1 + strde * 6
 	opt = V2["opt"]
 
 	if (N1 in V1) {
-		m = V1[strde * 4]
+		m = V1[3 * strde]
 		# REPRESENTATION
 		oft = m * 2
 		tru = V1[(oft + 1) * strde]
@@ -1902,17 +2026,30 @@ function nx_shell_type(V1, V2, N1, D1, D2, D3, N2,
 
 function nx_shell_dispatch(V1, V2, N1, N2,
 	strde, cat, sym, arg, opt, act, mod, val, num, cse, pref, cur, idx,
+	grplst, lpgrp, grpsrt, psrt, nogrps,
 	con, ps, vr, m, oft,
 	tpe, bld, dft, hdft, gcr,
-	tru, fls, dbg, psrt,
+	tru, fls, dbg,
 	fa, fd, fm, fr, fi, fn)
 {
 
 	strde = V1[0]
-	m = V1[strde * 4]
-	dbg = V1[strde * 3]
+	dbg = V1[2 * strde]
+	m = V1[3 * strde]
 
-	if (N2 < 13) {
+	# GEOMETRY
+	oft = m * 10
+	grpsrt = V1[(oft + 3) * strde]
+	nogrps = V1[(oft + 4) * strde]
+	lpgrp = V1[(oft + 5) * strde]
+
+	grplst = grpsrt + nogrps * lpgrp
+	c1 = grpsrt + lpgrp * 0
+	c2 = grpsrt + lpgrp * 1
+	c3 = grpsrt + lpgrp * 2
+	c4 = grpsrt + lpgrp * 3
+
+	if (N2 < grplst) {
 		opt = V2["opt"]
 		con = ""
 		sym = V1[N2]
@@ -1935,7 +2072,9 @@ function nx_shell_dispatch(V1, V2, N1, N2,
 	if (length(opt) > 1)
 		pref = pref pref
 	if (! (pref opt in V1)) {
-		psrt = V1[strde * 6]
+		oft = m * 10
+		psrt = V1[(oft + 2) * strde]
+
 		num = V1["-0"]
 		idx = num + psrt
 		V1["-0"] = idx
@@ -1946,13 +2085,13 @@ function nx_shell_dispatch(V1, V2, N1, N2,
 		V1[pref opt] = idx
 		idx = idx + strde
 
-		if (cat == 1)
+		if (cat == c1)
 			V1[idx] = "NEX_" con "k_" opt
-		else if (cat == 4)
+		else if (cat == c2)
 			V1[idx] = "NEX_" con "f_" opt
-		else if (cat == 7)
+		else if (cat == c3)
 			V1[idx] = "NEX_" con "F_" opt
-		else if (cat == 10)
+		else if (cat == c4)
 			V1[idx] = "NEX_" con "K_" opt
 		else
 			V1[idx] = "NEX_" con "_" opt
@@ -1981,7 +2120,8 @@ function nx_shell_dispatch(V1, V2, N1, N2,
 		return 0
 	}
 
-	ps = V1[strde * 2]
+	oft = m * 8
+	ps = V1[(oft + 9) * strde]
 	con = V1[(oft + 4) * strde]
 
 	# ACTIONS
@@ -2011,30 +2151,30 @@ function nx_shell_dispatch(V1, V2, N1, N2,
 
 	if ((act = V2["act"])  == "") {
 
-		if (cat == 1) {
+		if (cat == c1) {
 			V1[idx] = nx_shell_type(V1, V2, tpe, V2[++N1], "", "", 0)
-		} else if (cat == 4) {
+		} else if (cat == c2) {
 			if (vr == "help" || vr == "h") {
 				nx_shell_help(V1)
 			}
 			nx_boolean(V1, idx, !cse, tru, fls)
-		} else if (cat == 7) {
-			if (N2 < 13)
+		} else if (cat == c3) {
+			if (N2 < grplst)
 				nx_boolean(V1, idx, cse, tru, fls)
 			else
 				V1[idx] = nx_shell_type(V1, V2, tpe, opt, "", "", 0)
-		} else if (cat == 10) {
+		} else if (cat == c4) {
 			V1[idx] = nx_shell_type(V1, V2, tpe, opt, ps, V2[++N1], cse)
 		}
 	} else {
 		val = V2["val"]
 		num = int(V2["num"])
 		if ((mod = V2["mod"]) == "") {
-			if (cat == 1 || cat == 4 || cat == 7) {
+			if (cat == c1 || cat == c2 || cat == c3) {
 				V1[idx] = nx_shell_type(V1, V2, tpe, val, "", "", 0)
-				if (! val && cat == 4)
+				if (! val && cat == c2)
 					nx_boolean(V1, idx, !cse, tru, fls)
-			} else if (cat == 10) {
+			} else if (cat == c4) {
 				V1[idx] = nx_shell_type(V1, V2, tpe, opt, ps, val, cse)
 				if (cse)
 					V1[idx] = opt ps val
@@ -2042,20 +2182,20 @@ function nx_shell_dispatch(V1, V2, N1, N2,
 					V1[idx] = val ps opt
 			}
 		} else if (mod == fa) {
-			if (cat == 1) {
-				if (N2 < 13)
+			if (cat == c1) {
+				if (N2 < grplst)
 					V1[idx] = nx_shell_type(V1, V2, tpe, opt, "", V2[++N1], cse)
 				else
 					V1[idx] = nx_shell_type(V1, V2, tpe, opt, ps, V2[++N1], cse)
-			} else if (cat == 4) {
+			} else if (cat == c2) {
 				V1[idx] = nx_shell_type(V1, V2, tpe, opt, "", cur, cse)
-			} else if (cat == 7) {
+			} else if (cat == c3) {
 				V1[idx] = nx_shell_type(V1, V2, tpe, opt, con, cur, cse)
-			} else if (cat == 10) {
+			} else if (cat == c4) {
 				V1[idx] = nx_shell_type(V1, V2, tpe, opt ps val, ps, cur, cse)
 			}
 		} else if (mod == fd) {
-			if (cat == 7) {
+			if (cat == c3) {
 				val = V1[idx]
 				if (dft in V1)
 					dft = V1[dft]
@@ -2158,7 +2298,7 @@ function nx_shell_environ(V1, V2, D, V3,
 {
 
 	strde = V1[0]
-	m = V1[strde * 4]
+	m = V1[3 * strde]
 
 	oft = m * 5
 	ust = V1[(oft + 1) * strde]
@@ -2176,10 +2316,13 @@ function nx_shell_environ(V1, V2, D, V3,
 		post = " "
 	}
 
+	
+	oft = m * 10
+	psrt = V1[(oft + 2) * strde]
+
 	oft = m * 8
 	as = V1[(oft + 6) * strde]
 	ext = V1[(oft + 2) * strde]
-	psrt = V1[strde * 6]
 
 	if (ust) {
 		ln = split(D, trk, " ")

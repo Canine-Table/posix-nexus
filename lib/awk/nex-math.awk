@@ -97,7 +97,7 @@ function nx_modulus_range(N1, N2, N3, N4)
 	}
 }
 
-function nx_modular_exponentiation(N1, N2,	r, n, b)
+function nx_modular_exponentiation(N1, N2, N3,	r, n, b)
 {
 	if ((N1 = nx_digit(N1, 1)) != "") {
 		if ((N2 = nx_digit(N2, 1)) != "") {
@@ -110,8 +110,8 @@ function nx_modular_exponentiation(N1, N2,	r, n, b)
 				b = 1
 			}
 			r = 1
-			n = 100000007
-			N1 = (N1 % n) + n
+			n = int(__nx_if(nx_natural(N3), N3, 100000007))
+			N1 = (N1 % n + n) % n
 			while (N2 > 0) {
 				if (N2 % 2 == 1)
 					r = (r * N1) % n
@@ -219,7 +219,8 @@ function nx_miller_rabin(N, S,		v, t, d, s, a, x, i, j)
 
 function __nx_entropy(N,	s)
 {
-	if (s = nx_convert_base(nx_random_str(N, "alnum"), 62, 10))
+	N = int(__nx_if(nx_natural(N), N, 8))
+	if (s = nx_convert_base(nx_random_str(N + N, "alnum"), 62, 10))
 		return substr(s, 1, N)
 }
 
@@ -227,7 +228,7 @@ function nx_prime(N,	n)
 {
 	if (nx_natural(N = nx_digit(N, 1))) {
 		do {
-			n = substr(__nx_entropy(N), 1, N)
+			n = __nx_entropy(N)
 		} while (! nx_miller_rabin(n))
 		return n
 	}

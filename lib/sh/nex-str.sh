@@ -226,8 +226,9 @@ nx_str_cnt()
 
 	${AWK:-$(nx_cmd_awk)} \
 		-v dlm="$NEX_Gk_d" \
-		-v str="$NEX_ARGV_S" \
-		'BEGIN {print gsub(dlm, "\\&", str)}'
+		-v str="$NEX_ARGV_R" "
+		$(nx_data_include -i "${NEXUS_LIB}/awk/nex-str-extras.awk")
+		"'BEGIN {printf("%d", gsub(nx_str_esc(dlm), "\\\\&", str))}'
 )
 
 nx_str_chain()

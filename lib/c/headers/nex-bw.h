@@ -1,6 +1,8 @@
 #ifndef NEX_bw_H
 #define NEX_bw_H
 
+#include <stdint.h>
+
 /* Endian Macros */
 #if (defined(__BYTE_ORDER__) && (__BYTE_ORDER__ == __ORDER_BIG_ENDIAN__ || __BYTE_ORDER__ != __ORDER_LITTLE_ENDIAN__)) \
 	||defined(__BIG_ENDIAN__) || defined(_BIG_ENDIAN) || defined(__ARMEB__) \
@@ -226,6 +228,10 @@ void nX_bwMixBytes_gG1_l1lF(
 	const void*,
 	unsigned long*,
 	unsigned long
+);
+
+uint32_t nX_hashChars_h__1BF(
+		const char*
 );
 
 #endif

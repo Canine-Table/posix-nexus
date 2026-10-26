@@ -1,7 +1,6 @@
 nx_dbus_playbook()
 (
-	nx_data_longopt -v 3 -- ',
-
+	nx_data_longopt -- ',
 	n<names>
 	<description List all names on the session bus>
 	<lazy>
@@ -29,7 +28,7 @@ nx_dbus_playbook()
 	<description Monitor only DBus signals>
 	<lazy>
 	<build
-		dbus-monitor --session <nx@T/\>;
+		dbus-monitor --session <nx@T/\\>;
 	>
 
 	I<%interface>
@@ -42,7 +41,7 @@ nx_dbus_playbook()
 	<description Monitor messages for a specific interface>
 	<lazy>
 	<build
-		dbus-monitor --session <nx@I/\>;
+		dbus-monitor --session <nx@I/\\>;
 	>
 
 	N<%member>
@@ -54,7 +53,7 @@ nx_dbus_playbook()
 	<description Monitor messages for a specific member>
 	<lazy>
 	<build
-		dbus-monitor --session <nx@N/\>;
+		dbus-monitor --session <nx@N/\\>;
 	>
 
 	S<%sender>
@@ -66,7 +65,7 @@ nx_dbus_playbook()
 	<description Monitor messages from a specific sender>
 	<lazy>
 	<build
-		dbus-monitor --session <nx@S/\>;
+		dbus-monitor --session <nx@S/\\>;
 	>
 
 	D<%destination>
@@ -79,7 +78,7 @@ nx_dbus_playbook()
 	<description Monitor messages sent to a specific destination>
 	<lazy>
 	<build
-		dbus-monitor --session <nx@D/\>;
+		dbus-monitor --session <nx@D/\\>;
 	>
 
 	A<%arg>
@@ -91,7 +90,7 @@ nx_dbus_playbook()
 	<description Monitor messages where arg0 matches a value>
 	<lazy>
 	<build
-	    dbus-monitor --session <nx@A/\>;
+	    dbus-monitor --session <nx@A/\\>;
 	>
 
 	X<%ping-target>
@@ -104,7 +103,7 @@ nx_dbus_playbook()
 	<lazy>
 	<build
 		dbus-send --session \
-			--dest=<nx@X/\> \
+			--dest=<nx@X/\\> \
 			/org/freedesktop/DBus \
 			org.freedesktop.DBus.Peer.Ping;
 	>
@@ -122,7 +121,7 @@ nx_dbus_playbook()
 			--dest=org.freedesktop.DBus \
 			/org/freedesktop/DBus \
 			org.freedesktop.DBus.GetNameOwner \
-			string:<nx@O/\>;
+			string:<nx@O/\\>;
 	>
 
 	Q<%request-name>
@@ -138,7 +137,7 @@ nx_dbus_playbook()
 			--dest=org.freedesktop.DBus \
 			/org/freedesktop/DBus \
 			org.freedesktop.DBus.RequestName \
-			string:<nx@Q/\> uint32:0;
+			string:<nx@Q/\\> uint32:0;
 	>
 
 	R<%release-name>
@@ -154,7 +153,7 @@ nx_dbus_playbook()
 			--dest=org.freedesktop.DBus \
 			/org/freedesktop/DBus \
 			org.freedesktop.DBus.ReleaseName \
-			string:<nx@R/\>;
+			string:<nx@R/\\>;
 	>
 
 	v<daemon-version>
@@ -182,7 +181,7 @@ nx_dbus_playbook()
 	<description Monitor messages for a specific object path>
 	<lazy>
 	<build
-		dbus-monitor --session <nx@P/\>;
+		dbus-monitor --session <nx@P/\\>;
 	>
 
 	ix<introspect>
@@ -192,7 +191,7 @@ nx_dbus_playbook()
 	<lazy>
 	<build
 		dbus-send --session \
-			--dest=<nx@ix/\> \
+			--dest=<nx@ix/\\> \
 			/ \
 			org.freedesktop.DBus.Introspectable.Introspect;
 	>
@@ -201,6 +200,6 @@ nx_dbus_playbook()
 	<description Show help>
 	<build exit;>
 	' "$@"
-	__nx_data_longopt_eval
+	test -n "$NEX_ARGV_E" && eval "$NEX_ARGV_E"
 )
 
