@@ -67,7 +67,6 @@ function nx_shell_debugger_dump(V1, V2,
 	nx_ansi_light("--- full dump of V2 ---\n")
 	for (i in V2)
 		nx_ansi_debug("<nx:null/>'" i "' =  [" V2[i] "] \n")
-
 }
 
 
@@ -376,6 +375,12 @@ function __nx_shell_schema_str(V, D, B)
 	D = D "<type str>"
 	D = D "<description Sentinel literal that represents an explicit null value within the schema system.>"
 
+	V["--ampersand"] = "<nx:x26/>"
+	D = D "ampersand<%>"
+	D = D "<default <nx:x26/\\>>"
+	D = D "<type str>"
+	D = D "<description Sentinel literal that represents an explicit & during sub and gsub operations.>"
+
 	V["--min"] = "min"
 	D = D "min<%directive-min>"
 	D = D "<default min>"
@@ -453,8 +458,11 @@ function __nx_shell_schema_str(V, D, B)
 	D = D "<default <nx:true/\\>>"
 	D = D "<description Trim trailing flow‑whitespace from directive values before storing them>"
 
-
-
+	V["--dump"] = "<nx:false/>"
+	D = D "dump<>"
+	D = D "<default <nx:false/\\>>"
+	D = D "<type toggle>"
+	D = D "<description Dump the full registry after both passes when the debug level exceeds 3 or this option is set. Prints every populated lane slot, negative output slot, and heap record. Intended for diagnosing layout and addressing problems.>"
 
 	# TODO
 	V["--chain-eval"] = "1"
@@ -465,11 +473,6 @@ function __nx_shell_schema_str(V, D, B)
 	D = D "<default 1>"
 	D = D "<description TODO>"
 
-	V["--dump"] = "<nx:false/>"
-	D = D "dump<>"
-	D = D "<default <nx:false/\\>>"
-	D = D "<type toggle>"
-	D = D "<description Dump the full registry after both passes when the debug level exceeds 3 or this option is set. Prints every populated lane slot, negative output slot, and heap record. Intended for diagnosing layout and addressing problems.>"
 
 	return D
 }
@@ -495,7 +498,7 @@ function __nx_shell_schema_tog(V, D, B)
 	# 5	double quote
 	# 6	concat flag
 	# 7	lazy defaults flag
-	D = V["-u"] D V["-o"] D V["-b"] D V["-e"] D V["-q"] D V["-C"] D V["--lazy-defaults"] D V["--directive-prefix-trim"] D V["--directive-suffix-trim"]
+	D = V["-u"] D V["-o"] D V["-b"] D V["-e"] D V["-q"] D V["-C"] D V["--lazy-defaults"] D V["--directive-prefix-trim"] D V["--directive-suffix-trim"] D V["--dump"]
 	if (B)
 		V["--lazy-defaults"] = "<nx:false/>"
 	return D
@@ -563,7 +566,8 @@ function __nx_shell_schema_rep(V, D)
 	# 1 true representation
 	# 2 false representation
 	# 3 none representation
-	return V["--true"] D V["--false"] D V["--none"]
+	# 4 ampersand representation
+	return V["--true"] D V["--false"] D V["--none"] D V["--ampersand"]
 }
 
 # D1	string
@@ -623,7 +627,7 @@ function __nx_shell_schema(D1, D2, D3, N,
 	tpe, dft, epi, use, dsc, blt, regx, min, max, lzy, pafr, pbfr, apafr, apbfr, ap, pap,
 	fa, fd, fm, fr, fi, fn,
 	pref, ext, skp, ncn, fs, as, psrt, mpre, msuf,
-	tru, fls, non,
+	tru, fls, non, amp,
 	rgx, acrgx,
 	v_ta, v_tb)
 {
@@ -661,6 +665,9 @@ function __nx_shell_schema(D1, D2, D3, N,
 	# (7) flags
 	# (8) misc
 	# (9) regex
+	# (10) geometry
+	# (11) defaults
+	# (12) positionals
 
 	if (D1 ~ /^[ \t\n\v\r\f]*$/) {
 		nx_ansi_error("please provide something to work with, '" D1 "' is not understood here yet\n")
@@ -673,7 +680,7 @@ function __nx_shell_schema(D1, D2, D3, N,
 	wret = 0
 	m = 256
 	grpsrt = 1
-	lns = 10
+	lns = 11
 	zn = 3
 	nogrps = 4
 	lpgrp = 3
@@ -839,7 +846,7 @@ function __nx_shell_schema(D1, D2, D3, N,
 
 	# TOGGLES (D5) SECTION ###########################
 	split(D5, v_ta, D2)
-	n = 9
+	n = 10
 	oft = m * 5
 	V1[oft * strde] = n
 	# 1	unset
@@ -851,6 +858,7 @@ function __nx_shell_schema(D1, D2, D3, N,
 	# 7	lazy defaults flag
 	# 8	directive-prefix-trim
 	# 9 	directive-suffix-trim
+	# 10 	dump
 	for (i = 1; i <= n; ++i) {
 		oft = oft + 1
 		V1[oft * strde] = v_ta[i] == "<nx:true/>"
@@ -1100,29 +1108,49 @@ function __nx_shell_schema(D1, D2, D3, N,
 	V1[(oft + 10) * strde] = phskp
 	##################################################
 
+	# DEFAULTS SECTION ###############################
+	n = 3
+	oft = m * 11
+	V1[(oft + 0) * strde] = n
+	# 1: back-pointer slot (holds the base)
+	# 2: base slot
+	# 3: name slot (what gcr points at)
+	V1[(oft + 1) * strde] =  (oft + 3) * strde
+	V1[(oft + 3) * strde] = (oft + 3) * strde
+
+
+	##################################################
+
+
 	# REPRESENTATION (D10) SECTION ###################
+	n = 4
 	wret = __nx_else(nx_unique_check(D10, v_ta, D2, n, N, " representation"), wret)
 	tru = __nx_else(v_ta[1], "<nx:true/>")
 	fls = __nx_else(v_ta[2], "<nx:false/>")
 	non = __nx_else(v_ta[3], "<nx:none/>")
+	amp = __nx_else(v_ta[4], "<nx:x26/>")
 	if (nx_delim_sep("false representation", fls, v_tb, N) == -1)
 		eret = -1
 	if (nx_delim_sep("true representation", tru, v_tb, N) == -1)
 		eret = -1
 	if (nx_delim_sep("none representation", non, v_tb, N) == -1)
 		eret = -1
+	if (nx_delim_sep("ampersand representation", amp, v_tb, N) == -1)
+		eret = -1
 	delete v_tb
 
 	# REPRESENTATION (D10) SECTION ###################
-	n = 3
 	oft = m * 2
 	V1[(oft + 0) * strde] = n
 	# 1 true representation
 	# 2 false representation
 	# 3 none representation
+	# 4 ampersand representation
 	V1[(oft + 1) * strde] = tru
 	V1[(oft + 2) * strde] = fls
 	V1[(oft + 3) * strde] = non
+	V1[(oft + 4) * strde] = amp
+
 	##################################################
 
 
@@ -1154,6 +1182,8 @@ function nx_shell_opts(V1, V2,
 	strde = V1[0]
 	dbg = V1[2 * strde]
 	m = V1[3 * strde]
+
+	gcr = V1[(m * 11 + 3) * strde]
 
 	# GEOMETRY
 	oft = m * 10
@@ -1482,8 +1512,6 @@ function nx_shell_opts(V1, V2,
 		} else if (cr == go && gcr != "") {
 			idx = nx_shell_group_metadata(V1, V2, trk, idx, gcr)
 		} else {
-			#if (cr == go)
-			#	print "aea"
 			if (dbg > 1)
 				nx_ansi_warning("provided '" cr "' is garbage or malformed, what do you wish this to mean? discarding\n")
 			wret = -2
@@ -1661,11 +1689,13 @@ function nx_shell_args(V1, V2,
 	ctp, cidx,
 	oln, oidx,
 	con, tok,
+	gbld, gld,
+	gpparam1,
 	r, s, n,
 	idx, cat, grp, trm,
 	dsh, vl,
 	wret, eret,
-	grpsrt, nogrps, lpgrp, grplst,
+	gcr, grpsrt, nogrps, lpgrp, grplst,
 	acrgx, eacrgx,
 	trk)
 {
@@ -1680,6 +1710,10 @@ function nx_shell_args(V1, V2,
 	nogrps = V1[(oft + 4) * strde]
 	lpgrp = V1[(oft + 5) * strde]
 	grplst = grpsrt + nogrps * lpgrp
+	gcr = V1[(m * 11 + 3) * strde] + 1
+	gbld = V1[gcr + strde * 5]
+
+	gpparam1 = (m * 12 + 1) * strde
 
 	# ACTIONS
 	oft = m * 6
@@ -1696,7 +1730,6 @@ function nx_shell_args(V1, V2,
 	con = V1[(oft + 4) * strde]
 	fs = V1[(oft + 6) * strde]
 	ps = V1[(oft + 9) * strde]
-
 
 	# FLAGS
 	oft = m * 7
@@ -1778,7 +1811,15 @@ function nx_shell_args(V1, V2,
 					break
 				trm = 0
 			}
+
 			tok = V2[idx]
+
+			if (!ab) {
+				V1[gld] = tok
+				# build TODO
+				nx_shell_build(V1, gbld)
+			}
+
 			s = nx_join_str(s, tok, con)
 			r = nx_join_str(r, tok, ps)
 			V2["NEX_ARGV_" ++n] = tok
@@ -1812,6 +1853,50 @@ function nx_shell_args(V1, V2,
 	return int(wret)
 }
 
+function __nx_shell_help_format(V, N,
+	j, strde, dbg)
+{
+	strde = V[0]
+	dbg = V[2 * strde]
+
+	j = 0
+	if (N in V) { nx_ansi_light("<nx:null/>\ntype:\n\t'" V[N] "'"); j = 1 }
+	N += strde
+	if (N in V) { nx_ansi_debug("<nx:null/>\ndefault:\n\t'" V[N] "'"); j = 1 }
+	N += strde
+	if (N in V) { nx_ansi_success("<nx:null/>\nepilog:\n\t'" V[N] "'"); j = 1 }
+	N += strde
+	if (N in V) { nx_ansi_alert("<nx:null/>\nusage:\n\t'" V[N] "'"); j = 1 }
+	N += strde
+	if (N in V) { nx_ansi_light("<nx:null/>\ndescription:\n\t'" V[N] "'"); j = 1 }
+	N += strde
+	if (dbg > 3 && N in V) { nx_ansi_debug("<nx:null/>\nbuild:\n\t'"  V[N] "'"); j = 1 }
+	N += strde
+	if (N in V) { nx_ansi_success("<nx:null/>\nregex:\n\t'" V[N] "'"); j = 1 }
+	N += strde
+	if (N in V) { nx_ansi_alert("<nx:null/>\nmin:\n\t'" V[N] "'"); j = 1 }
+	N += strde
+	if (N in V) { nx_ansi_light("<nx:null/>\nmax:\n\t'" V[N] "'"); j = 1 }
+	N += strde
+	if (dbg > 3 && N in V) { nx_ansi_debug("<nx:null/>\nlazy:\n\t'" V[N] "'"); j = 1 }
+	N += strde
+	if (dbg > 3 && N in V) { nx_ansi_success("<nx:null/>\npost-before:\n\t'" V[N] "'"); j = 1 }
+	N += strde
+	if (dbg > 3 && N in V) { nx_ansi_alert("<nx:null/>\npost-after:\n\t'" V[N] "'"); j = 1 }
+	N += strde
+	if (dbg > 3 && N in V) { nx_ansi_light("<nx:null/>\npost-awk-before:\n\t'" V[N] "'"); j = 1 }
+	N += strde
+	if (dbg > 3 && N in V) { nx_ansi_debug("<nx:null/>\npost-awk-after:\n\t'" V[N] "'"); j = 1 }
+	N += strde
+	if (dbg > 1 && N in V) { nx_ansi_success("<nx:null/>\nappend:\n\t'" V[N] "'"); j = 1 }
+	N += strde
+	if (dbg > 1 && N in V) { nx_ansi_alert("<nx:null/>\nprepend:\n\t'" V[N] "'"); j = 1 }
+	if (j) nx_fd_stderr("\n")
+}
+
+
+
+
 function nx_shell_help(V,
 	str, srt, strde, soff, coff,
 	moff, grps, lpgrp, grpsrt,
@@ -1820,16 +1905,22 @@ function nx_shell_help(V,
 	strde = V[0]
 	m = V[3 * strde]
 
+	nx_ansi_light("Posix-Nexus Help Pages ")
+	nx_ansi_warning("Global Defaults\n")
+
 	# GEOMETRY
 	oft = m * 10
 	grps = V[(oft + 1) * strde]
 	grpsrt = V[(oft + 3) * strde]
 	lpgrp = V[(oft + 5) * strde]
+	gcr = (m * 11 + 3) * strde
 
 	soff = strde + strde
 
 	coff = grpsrt
 	srt = V[coff]
+
+	__nx_shell_help_format(V, V[gcr] + 1)
 
 	for (i = coff + soff; i <= srt; i += strde)
 		str = str " " V[i]
@@ -1874,56 +1965,34 @@ function nx_shell_help(V,
 		for (j += soff; j <= srt; j += strde)
 			str = str " " V[j]
 		nx_ansi_info(str)
-
-		moff = V[i] + 1
-		j = 0
-		if (moff in V) {
-			nx_ansi_debug("<nx:null/>\ntype:\n\t'" V[moff] "'")
-			j = 1
-		}
-
-		moff = moff + strde
-		if (moff in V) {
-			nx_ansi_debug("<nx:null/>\ndefault:\n\t'" V[moff] "'")
-			j = 1
-		}
-
-		moff = moff + strde
-		if (moff in V) {
-			nx_ansi_success("<nx:null/>\nepilog:\n\t'" V[moff] "'")
-			j = 1
-		}
-
-		moff = moff + strde
-		if (moff in V) {
-			nx_ansi_alert("<nx:null/>\nusage:\n\t'" V[moff] "'")
-			j = 1
-		}
-
-		moff = moff + strde
-		if (moff in V) {
-			nx_ansi_light("<nx:null/>\ndescription:\n\t'" V[moff] "'")
-			j = 1
-		}
-
-		if (j)
-			nx_fd_stderr("\n")
+		__nx_shell_help_format(V, V[i] + 1)
 	}
 	nx_fd_stderr("\n")
+}
+
+
+function echo(D)
+{
+	print "echo \x27" D "\x27"
 }
 
 function nx_shell_build(V, N,
 	strde, m, oft,
 	pref,
-	msuf, mstr, mrmrgx,
+	msuf, mpre, mstr, mrmrgx,
 	mpr, mar, dsh, dq, skp, dbg, mvl,
 	ln, i, mstrs)
 {
 	strde = V[0]
 	dbg = V[2 * strde]
 	m = V[3 * strde]
-
 	skp = 2 * strde
+
+	# REP
+	oft = m * 2
+	amp = V[(oft + 4) * strde]
+
+	echo(amp)
 
 	# REGEX
 	oft = m * 9
@@ -1937,7 +2006,10 @@ function nx_shell_build(V, N,
 	# MISC
 	oft = m * 8
 	pref = V[(oft + 1) * strde]
+	mpre = V1[(oft + 7) * strde]
+	msuf = V1[(oft + 8) * strde]
 
+	gsub("\x26", "<nx:x26/>", mvl)
 	while (match(mstr, mrgx)) {
 		mpr = substr(mstr, RSTART, RLENGTH)
 		mar = mpr
