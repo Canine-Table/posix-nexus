@@ -22,7 +22,7 @@ void nx_createCmdList_gF()
 		"ENDIAN"
 	};
 	for (size_t i = 0; i < sizeof(list) / sizeof(list[0]); ++i)
-		printf("#define NEX_%s_C 0x%x\n", list[i], nX_hashChars_h__1BF(list[i]));
+		printf("#define NEX_%s_C 0x%x\n", list[i], nX_hashChars_h__1BF((unsigned char*)list[i]));
 }
 
 void nX_signalHandler_g_iF(int sig)
@@ -71,7 +71,7 @@ void nX_shimLoop_g_iF(int size)
 		}
 
 		buffer[bytes - 1] = '\0';
-		hash = nX_hashChars_h__1BF(buffer);
+		hash = nX_hashChars_h__1BF((unsigned char*)&buffer);
 
 		switch (hash) {
 			case NEX_GIDS_C:

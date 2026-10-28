@@ -447,22 +447,42 @@ function __nx_shell_schema_str(V, D, B)
 	D = D "<description Evaluate AWK code after appending or prepending; if it fails, the value is skipped>"
 
 	V["--directive-suffix-trim"] = "<nx:true/>"
-	D = D "directive-suffix-trim<>"
+	D = D "directive-suffix-trim<Directive-Suffix-Trim>"
 	D = D "<type toggle>"
 	D = D "<default <nx:true/\\>>"
 	D = D "<description Trim leading flow‑whitespace from directive values before parsing them>"
 
 	V["--directive-prefix-trim"] = "<nx:true/>"
-	D = D "directive-prefix-trim<>"
+	D = D "directive-prefix-trim<Directive-Prefix-Trim>"
 	D = D "<type toggle>"
 	D = D "<default <nx:true/\\>>"
 	D = D "<description Trim trailing flow‑whitespace from directive values before storing them>"
 
 	V["--dump"] = "<nx:false/>"
-	D = D "dump<>"
+	D = D "dump<Dump>"
 	D = D "<default <nx:false/\\>>"
 	D = D "<type toggle>"
 	D = D "<description Dump the full registry after both passes when the debug level exceeds 3 or this option is set. Prints every populated lane slot, negative output slot, and heap record. Intended for diagnosing layout and addressing problems.>"
+
+	V["--period"] = "9"
+	D = D "period<%>"
+	D = D "<type int>"
+	D = D "<min 1>"
+	D = D "<default 9>"
+	D = D "<description The size of the cycle buffer, in entries. Entries repeat modulo this value: a period of 9 means the cycle has 9 slots before wrapping. Acts as the ring size for the cyclic buffer.>"
+
+	V["--period-cycle"] = "1"
+	D = D "period-cycle<%>"
+	D = D "<type int>"
+	D = D "<min 1>"
+	D = D "<default 1>"
+	D = D "<description How many entries are accumulated in the buffer before the cycle is applied. A period-cycle of 1 applies the cycle after every entry; larger values batch entries before cycling.>"
+
+	V["--cycle-back"] = "<nx:true/>"
+	D = D "Cycle-Back<Cycle-Back>"
+	D = D "<type toggle>"
+	D = D "<default <nx:true/\\>>"
+	D = D "<description Cycle direction. When true (the default), the buffer behaves like a stack: new entries overwrite the oldest, and the cycle advances backward. When false, it behaves like a queue: entries shift out oldest-first and the cycle advances forward.>"
 
 	# TODO
 	V["--chain-eval"] = "1"
@@ -472,7 +492,6 @@ function __nx_shell_schema_str(V, D, B)
 	D = D "<max 3>"
 	D = D "<default 1>"
 	D = D "<description TODO>"
-
 
 	return D
 }
@@ -498,7 +517,9 @@ function __nx_shell_schema_tog(V, D, B)
 	# 5	double quote
 	# 6	concat flag
 	# 7	lazy defaults flag
-	D = V["-u"] D V["-o"] D V["-b"] D V["-e"] D V["-q"] D V["-C"] D V["--lazy-defaults"] D V["--directive-prefix-trim"] D V["--directive-suffix-trim"] D V["--dump"]
+	# 8	dump
+	# 9	cycle back
+	D = V["-u"] D V["-o"] D V["-b"] D V["-e"] D V["-q"] D V["-C"] D V["--lazy-defaults"] D V["--directive-prefix-trim"] D V["--directive-suffix-trim"] D V["--dump"] D V["--cycle-back"]
 	if (B)
 		V["--lazy-defaults"] = "<nx:false/>"
 	return D
@@ -508,7 +529,9 @@ function __nx_shell_schema_flg(V, D, B)
 {
 	# 1	force [0-3]
 	# 2	abort [0-3]
-	D = V["-f"] D V["-a"] D V["--chain-eval"]
+	# 3	chain eval [0-2]
+	# 4	period [1-]
+	D = V["-f"] D V["-a"] D V["--chain-eval"] D V["--period"]
 	if (B)
 		V["-a"] = "0"
 	return D
@@ -623,6 +646,7 @@ function __nx_shell_schema(D1, D2, D3, N,
 	l, n, i, m, lns, zn, phlst, phsrt, phskp,
 	acm, nogrps, lpgrp, grpsrt, grplst,
 	eret, wret, ab,
+	cycln, cychd, cycskp,
 	ks, fas, kas, go, gc, lo, lc,
 	tpe, dft, epi, use, dsc, blt, regx, min, max, lzy, pafr, pbfr, apafr, apbfr, ap, pap,
 	fa, fd, fm, fr, fi, fn,
@@ -676,11 +700,14 @@ function __nx_shell_schema(D1, D2, D3, N,
 
 	D2 = __nx_else(D2, "<nx:null/>")
 	D3 = __nx_else(D3, "<nx:null/>")
-	N = int(N)
+
+	i = int(N)
+	N = __nx_if(i < 0 || i > 5, 1, i)
+
 	wret = 0
 	m = 256
 	grpsrt = 1
-	lns = 11
+	lns = 12
 	zn = 3
 	nogrps = 4
 	lpgrp = 3
@@ -688,6 +715,8 @@ function __nx_shell_schema(D1, D2, D3, N,
 	phsrt = -8
 	phlst = -1
 	phskp = 1
+	cychd = 9
+	cycskp = 1
 
 	# CATEGORY (D4) SECTION ###########################
 	n = 7
@@ -846,7 +875,7 @@ function __nx_shell_schema(D1, D2, D3, N,
 
 	# TOGGLES (D5) SECTION ###########################
 	split(D5, v_ta, D2)
-	n = 10
+	n = 11
 	oft = m * 5
 	V1[oft * strde] = n
 	# 1	unset
@@ -859,6 +888,7 @@ function __nx_shell_schema(D1, D2, D3, N,
 	# 8	directive-prefix-trim
 	# 9 	directive-suffix-trim
 	# 10 	dump
+	# 11	cycle-back
 	for (i = 1; i <= n; ++i) {
 		oft = oft + 1
 		V1[oft * strde] = v_ta[i] == "<nx:true/>"
@@ -869,17 +899,22 @@ function __nx_shell_schema(D1, D2, D3, N,
 
 	# FLAGS (D7) SECTION #############################
 	split(D7, v_ta, D2)
-	n = 2
+	n = 4
 	oft = m * 7
 	V1[(oft + 0) * strde] = n
 	# 1	force [0-3]
 	# 2	abort [0-3]
 	# 3	chain-eval [0-2]
-	V1[(oft + 1) * strde] = int(v_ta[1])
-	V1[(oft + 2) * strde] = (ab = int(v_ta[2]))
-	V1[(oft + 3) * strde] = int(v_ta[3])
+	# 4	period [1-m]
+	i = int(v_ta[1])
+	V1[(oft + 1) * strde] = __nx_if(i < 0 || i > 3, 0, i)
+	i = int(v_ta[2])
+	V1[(oft + 2) * strde] = (ab = __nx_if(i < 0 || i > 3, 0, i))
+	i = int(v_ta[3])
+	V1[(oft + 3) * strde] = __nx_if(i < 0 || i > 2, 1, i)
+	i = int(v_ta[4])
+	V1[(oft + 4) * strde] = (cycln = __nx_if(i < 1 || i > m - cychd, 9, i))
 	##################################################
-
 
 	# ACTION CATEGORY (D6) SECTION ###################
 	n = 6
@@ -932,9 +967,7 @@ function __nx_shell_schema(D1, D2, D3, N,
 	V1[(oft + 6) * strde] = fn
 	##################################################
 
-
 	# SCELAR SECTION #################################
-	V1[strde] = 3
 	# 1	the parameter separator
 	# 2	debug level
 	# 3	map boundary
@@ -973,6 +1006,7 @@ function __nx_shell_schema(D1, D2, D3, N,
 	# 6	skip regex defaults to whitespace with anchors
 	# 7	macro regex
 	# 8	macro remove pre suf regex
+	# 9	macro remove pre suf positional regex
 	V1[(oft + 1) * strde] = acm
 	V1[(oft + 2) * strde] = ext "$"
 	V1[(oft + 3) * strde] = rgx
@@ -981,8 +1015,8 @@ function __nx_shell_schema(D1, D2, D3, N,
 	V1[(oft + 6) * strde] = "^" skp "$"
 	V1[(oft + 7) * strde] = mpre ext msuf
 	V1[(oft + 8) * strde] = "(^" mpre "|" msuf "$)"
+	V1[(oft + 9) * strde] = mpre "[1-9][0-9]*" msuf
 	##################################################
-
 
 	# CATEGORY (D9) SECTION ###########################
 	n = 16
@@ -1107,6 +1141,25 @@ function __nx_shell_schema(D1, D2, D3, N,
 	V1[(oft + 9) * strde] = phlst
 	V1[(oft + 10) * strde] = phskp
 	##################################################
+
+	# POSITIONAL PARAMETERS SECTION ##################
+	# 1	lower bound
+	# 2	upper bound
+	# 3	skip size
+	# 4	head index
+	# 5	tail index
+	# 6	cycle counter
+	n = cycln + cychd
+	oft = m * 12
+	i = (oft + cychd) * strde
+	V1[(oft + 0) * strde] = n
+	V1[(oft + 1) * strde] = i
+	V1[(oft + 2) * strde] = (oft + n) * strde
+	V1[(oft + 3) * strde] = cycskp * strde
+	V1[(oft + 4) * strde] = i + strde
+	V1[(oft + 5) * strde] = i
+	V1[(oft + 6) * strde] = 0
+
 
 	# DEFAULTS SECTION ###############################
 	n = 3
@@ -1688,9 +1741,10 @@ function nx_shell_args(V1, V2,
 	fs, fa, fd, fm, fr, fi, fn,
 	ctp, cidx,
 	oln, oidx,
-	con, tok,
+	con, tok, atok,
 	gbld, gld,
 	gpparam1,
+	cyclw, cycup, cycsskp, cychd, cychdi,
 	r, s, n,
 	idx, cat, grp, trm,
 	dsh, vl,
@@ -1704,16 +1758,27 @@ function nx_shell_args(V1, V2,
 	dbg = V1[2 * strde]
 	m = V1[3 * strde]
 
+	# 1	lower bound
+	# 2	upper bound
+	# 3	skip size
+	# 4	head index
+	# 5	tail index
+	# 6	cycle counter
+	oft = m * 12
+	cycup = V1[(oft + 1) * strde]
+	cyclw = V1[(oft + 2) * strde]
+	cycsskp = V1[(oft + 3) * strde]
+	cychd = (oft + 4) * strde
+	cychdi = V1[cychd]
+
 	# GEOMETRY
 	oft = m * 10
 	grpsrt = V1[(oft + 3) * strde]
 	nogrps = V1[(oft + 4) * strde]
 	lpgrp = V1[(oft + 5) * strde]
 	grplst = grpsrt + nogrps * lpgrp
-	gcr = V1[(m * 11 + 3) * strde] + 1
-	gbld = V1[gcr + strde * 5]
 
-	gpparam1 = (m * 12 + 1) * strde
+	gbld = (V1[(m * 11 + 3) * strde] + 1) + strde * 5
 
 	# ACTIONS
 	oft = m * 6
@@ -1723,6 +1788,10 @@ function nx_shell_args(V1, V2,
 	fr = V1[(oft + 4) * strde]
 	fi = V1[(oft + 5) * strde]
 	fn = V1[(oft + 6) * strde]
+
+	# REPRESENTATION
+	oft = m * 2
+	amp = V[(oft + 4) * strde]
 
 	# MISC
 	oft = m * 8
@@ -1815,9 +1884,15 @@ function nx_shell_args(V1, V2,
 			tok = V2[idx]
 
 			if (!ab) {
-				V1[gld] = tok
-				# build TODO
+				atok =  tok
+				gsub("&", amp, atok)
+				V1[cychdi] = atok
+				V1[cychd] = cychdi - strde * 9
+				if (dbg > 2)
+					nx_ansi_alert(cychdi ", " cycup ", " cyclw ", " cycsskp "\n")
 				nx_shell_build(V1, gbld)
+				cychdi = nx_modulus_range(cychdi, cycup, cyclw, cycsskp)
+				V1[cychd] = cychdi
 			}
 
 			s = nx_join_str(s, tok, con)
@@ -1979,6 +2054,7 @@ function echo(D)
 function nx_shell_build(V, N,
 	strde, m, oft,
 	pref,
+	cbk, cyclw, cycup, cycsskp, cychdi,
 	msuf, mpre, mstr, mrmrgx,
 	mpr, mar, dsh, dq, skp, dbg, mvl,
 	ln, i, mstrs)
@@ -1988,28 +2064,52 @@ function nx_shell_build(V, N,
 	m = V[3 * strde]
 	skp = 2 * strde
 
-	# REP
+
+	# TOGGLES
+	oft = m * 5
+	cbk = __nx_else(V[(oft + 11) * strde], -1)
+
+	# REPRESENTATION
 	oft = m * 2
 	amp = V[(oft + 4) * strde]
-
-	echo(amp)
 
 	# REGEX
 	oft = m * 9
 	mrgx = V[(oft + 7) * strde]
 	mrmrgx = V[(oft + 8) * strde]
+	prgx = V[(oft + 9) * strde]
+
 	mstr = V[N]
 
 	oft = m * 5
-	dq = !V1[(oft + 5) * strde]
+	dq = !V[(oft + 5) * strde]
 
 	# MISC
 	oft = m * 8
 	pref = V[(oft + 1) * strde]
-	mpre = V1[(oft + 7) * strde]
-	msuf = V1[(oft + 8) * strde]
+	mpre = V[(oft + 7) * strde]
+	msuf = V[(oft + 8) * strde]
 
-	gsub("\x26", "<nx:x26/>", mvl)
+	oft = m * 12
+	cycup = V[(oft + 1) * strde]
+	cyclw = V[(oft + 2) * strde]
+	cycsskp = V[(oft + 3) * strde]
+	cychdi = V[(oft + 4) * strde]
+
+	while (match(mstr, prgx)) {
+		mpr = substr(mstr, RSTART, RLENGTH)
+		mar = mpr
+		gsub(mrmrgx, "", mar)
+		mar = cbk * (cycsskp * mar - cycsskp)
+		mar = nx_modulus_range(cychdi, cycup, cyclw, mar)
+		if (mar in V)
+			mvl = V[mar]
+		else
+			mvl = ""
+		mvl = __nx_stringify_var("", mvl, !dq, "", "", 1)
+		gsub(mpr, mvl, mstr)
+	}
+
 	while (match(mstr, mrgx)) {
 		mpr = substr(mstr, RSTART, RLENGTH)
 		mar = mpr
@@ -2018,22 +2118,21 @@ function nx_shell_build(V, N,
 			mar = V[V[mar] % strde + strde * 2]
 			dsh = __nx_if(length(mar) > 1, pref pref, pref)
 			mvl = __nx_stringify_var("", V[V[dsh mar] + skp], !dq, "", "", 1)
-			gsub("\x26", "<nx:x26/>", mvl)
+			gsub("\x26", amp, mvl)
 			if (dbg > 2)
 				nx_ansi_info("the macro '" mar "' was replaced by its value " mvl "\n")
-			sub(mpr, mvl, mstr)
+			gsub(mpr, mvl, mstr)
 		} else {
-			sub(mpr, __nx_stringify_var("", "", !dq, "", "", 1), mstr)
+			gsub(mpr, __nx_stringify_var("", "", !dq, "", "", 1), mstr)
 			if (dbg > 1)
 				nx_ansi_warning("the variable '" mar "' is undefined\n")
 		}
-		
 	}
-	
-	ln = split(mstr, mstrs, "<nx:x26/>")
+
+	ln = split(mstr, mstrs, amp)
 	mar = mstrs[1]
 	for (i = 2; i < ln; ++i)
-		mar = mar "&" mstrs[i]
+		mar = mar "\x26" mstrs[i]
 	delete mstrs
 	mstr = mar
 
@@ -2145,7 +2244,7 @@ function nx_shell_type(V1, V2, N1, D1, D2, D3, N2,
 		regx = V1[regx]
 			if (dbg > 2)
 				nx_ansi_alert("checking if the value '" vl "' passed to '" opt "' matches the provided regex '" regx "'\n")
-		if (vl !~ regx) {
+		if (D1 !~ regx) {
 			if (dbg > 1)
 				nx_ansi_warning("the value '" vl "' did not pass the regex '" regx "'\n")
 			D1 = ""
@@ -2169,7 +2268,7 @@ function nx_shell_dispatch(V1, V2, N1, N2,
 	grplst, lpgrp, grpsrt, psrt, nogrps,
 	con, ps, vr, m, oft,
 	tpe, bld, dft, hdft, gcr,
-	tru, fls, dbg,
+	tru, fls, dbg, rgx,
 	fa, fd, fm, fr, fi, fn)
 {
 
@@ -2341,8 +2440,10 @@ function nx_shell_dispatch(V1, V2, N1, N2,
 					dft = V1[dft]
 				else
 					dft = ""
+				rgx = __nx_if(cse, "(^" opt "" con "|" con "" opt "$)", "(" opt "" con "$|^" con "" opt ")")
+
 				do {
-					if (!sub("(^" opt "" con "|" con "" opt "$)", "", val)) {
+					if (!sub(rgx, "", val)) {
 						if (!sub(con "" opt "" con, "", val)) {
 							sub("^" opt "$", dft, val)
 							break

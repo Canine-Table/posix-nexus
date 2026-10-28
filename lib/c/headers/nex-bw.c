@@ -310,7 +310,7 @@ void nX_bwMixBytes_gG1_l1lF(
 	}
 }
 
-uint32_t nX_hashChars_h__1BF(const char *str)
+uint32_t nX_hashChars_h__1BF(const unsigned char *str)
 {
 	uint32_t hash = 5381;
 	int c;

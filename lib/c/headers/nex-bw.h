@@ -231,7 +231,7 @@ void nX_bwMixBytes_gG1_l1lF(
 );
 
 uint32_t nX_hashChars_h__1BF(
-		const char*
+		const unsigned char*
 );
 
 #endif

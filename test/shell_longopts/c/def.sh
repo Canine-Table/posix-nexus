@@ -3,7 +3,7 @@
 		<default int>
 		<description Introspect a DBus service (raw XML)>
 		<regex ^[A-Za-z0-9_.]+$>
-		<build echo hi>
+		<build echo <nx@1/\\> <nx@E/\\> <nx@alpha/\\>;>
 		<epilog things to test>
 		<usage for the stuff>
 		<min 0>
@@ -25,10 +25,6 @@
 		<default no>
 
 	' "$@"
-	test -n "$NEX_ARGV_E" && echo "$NEX_ARGV_E"
+	test -n "$NEX_ARGV_E" && eval "$NEX_ARGV_E"
 )
 
-#		
-#		<description h>
-#
-#		i<#,is also>
