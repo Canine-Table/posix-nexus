@@ -2055,7 +2055,8 @@ function nx_shell_build(V, N,
 	strde, m, oft,
 	pref,
 	cbk, cyclw, cycup, cycsskp, cychdi,
-	msuf, mpre, mstr, mrmrgx,
+	mstr, mrmrgx,
+	mrgx, prgx, amp,
 	mpr, mar, dsh, dq, skp, dbg, mvl,
 	ln, i, mstrs)
 {
@@ -2087,8 +2088,6 @@ function nx_shell_build(V, N,
 	# MISC
 	oft = m * 8
 	pref = V[(oft + 1) * strde]
-	mpre = V[(oft + 7) * strde]
-	msuf = V[(oft + 8) * strde]
 
 	oft = m * 12
 	cycup = V[(oft + 1) * strde]
@@ -2117,16 +2116,18 @@ function nx_shell_build(V, N,
 		if (mar in V) {
 			mar = V[V[mar] % strde + strde * 2]
 			dsh = __nx_if(length(mar) > 1, pref pref, pref)
-			mvl = __nx_stringify_var("", V[V[dsh mar] + skp], !dq, "", "", 1)
-			gsub("\x26", amp, mvl)
-			if (dbg > 2)
-				nx_ansi_info("the macro '" mar "' was replaced by its value " mvl "\n")
-			gsub(mpr, mvl, mstr)
-		} else {
-			gsub(mpr, __nx_stringify_var("", "", !dq, "", "", 1), mstr)
-			if (dbg > 1)
-				nx_ansi_warning("the variable '" mar "' is undefined\n")
+			if (dsh mar in V) {
+				mvl = __nx_stringify_var("", V[V[dsh mar] + skp], !dq, "", "", 1)
+				gsub("\x26", amp, mvl)
+				if (dbg > 2)
+					nx_ansi_info("the macro '" mar "' was replaced by its value " mvl "\n")
+				sub(mpr, mvl, mstr)
+				continue
+			}
 		}
+		gsub(mpr, __nx_stringify_var("", "", !dq, "", "", 1), mstr)
+		if (dbg > 1)
+			nx_ansi_warning("the variable '" mar "' is undefined\n")
 	}
 
 	ln = split(mstr, mstrs, amp)
@@ -2139,7 +2140,6 @@ function nx_shell_build(V, N,
 	oft = -4 * strde
 	V[oft] = V[oft] mstr
 }
-
 
 # V1	vec V2	agv
 # N1	meta lane
@@ -2268,7 +2268,8 @@ function nx_shell_dispatch(V1, V2, N1, N2,
 	grplst, lpgrp, grpsrt, psrt, nogrps,
 	con, ps, vr, m, oft,
 	tpe, bld, dft, hdft, gcr,
-	tru, fls, dbg, rgx,
+	tru, fls, dbg,
+	rgx, rgxmd, rgxed, orgx, crgx,
 	fa, fd, fm, fr, fi, fn)
 {
 
@@ -2423,9 +2424,9 @@ function nx_shell_dispatch(V1, V2, N1, N2,
 		} else if (mod == fa) {
 			if (cat == c1) {
 				if (N2 < grplst)
-					V1[idx] = nx_shell_type(V1, V2, tpe, opt, "", V2[++N1], cse)
+					V1[idx] = nx_shell_type(V1, V2, tpe, val, "", cur, cse)
 				else
-					V1[idx] = nx_shell_type(V1, V2, tpe, opt, ps, V2[++N1], cse)
+					V1[idx] = nx_shell_type(V1, V2, tpe, val, ps, cur, cse)
 			} else if (cat == c2) {
 				V1[idx] = nx_shell_type(V1, V2, tpe, opt, "", cur, cse)
 			} else if (cat == c3) {
@@ -2434,23 +2435,45 @@ function nx_shell_dispatch(V1, V2, N1, N2,
 				V1[idx] = nx_shell_type(V1, V2, tpe, opt ps val, ps, cur, cse)
 			}
 		} else if (mod == fd) {
-			if (cat == c3) {
+			if (cat == c1) {
+				opt = val
+				con = ps
+			}
+			if (cat == c3 || cat == c1) {
 				val = V1[idx]
 				if (dft in V1)
 					dft = V1[dft]
 				else
 					dft = ""
-				rgx = __nx_if(cse, "(^" opt "" con "|" con "" opt "$)", "(" opt "" con "$|^" con "" opt ")")
+
+				if (cse) {
+					con = nx_reverse_str(con)
+					opt = nx_reverse_str(opt)
+					val = nx_reverse_str(val)
+				}
+
+				opt = nx_str_ignorecase(opt)
+				rgxed = con "" opt "$"
+				rgx = "^" opt "" con
+				rgxmd = con "" opt "" con
+				orgx = "^" opt "$"
+				crgx = "^" con "$"
 
 				do {
 					if (!sub(rgx, "", val)) {
-						if (!sub(con "" opt "" con, "", val)) {
-							sub("^" opt "$", dft, val)
+						if (!sub(rgxmd, con, val)) {
+							if (!sub(rgxed, "", val)) {
+								sub(orgx, dft, val)
+								break
+							}
+						} else if (sub(crgx, dft, val)) {
 							break
 						}
 					}
 					num = num - 1
 				} while (num != 0)
+				if (cse)
+					val = nx_reverse_str(val)
 				V1[idx] = val
 			}
 		}
@@ -2557,7 +2580,6 @@ function nx_shell_environ(V1, V2, D, V3,
 		post = " "
 	}
 
-	
 	oft = m * 10
 	psrt = V1[(oft + 2) * strde]
 

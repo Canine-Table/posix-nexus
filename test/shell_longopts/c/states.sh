@@ -1,30 +1,16 @@
 (
-	nx_data_longopt -- '
-		<default int>
-		<description Introspect a DBus service (raw XML)>
-		<regex ^[A-Za-z0-9_.]+$>
-		<build echo <nx@1/\\>"a";>
-		<epilog things to test>
-		<usage for the stuff>
-		<min 0>
-		<max 1>
-		<type str>
-		<default yes>
+	nx_data_longopt -- ',
+		i<#in input>
 
-		a	@
-				b
-		;c#
-			d%
-		E<%e>,
-		alpha<@beta;fgh><lazy>,
-		help<>
-		i@j%k@l%m#opq,rest<%long;rs@t!uv>
-		<lazy>
-		<description EOF>
-		<type char[2]>
-		<default no>
-
+		o<%out output>
+		
+		a<@all another Things All things stuff>
 	' "$@"
-	test -n "$NEX_ARGV_E" && eval "$NEX_ARGV_E"
+
+	echo "in: $NEX_GK_i"
+	echo "out: $NEX_Gk_o"
+	echo "a: $NEX_GF_a"
+
+	#test -n "$NEX_ARGV_E" && eval "$NEX_ARGV_E"
 )
 

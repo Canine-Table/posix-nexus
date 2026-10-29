@@ -11,9 +11,6 @@ nx_int_Q()
 	printf ' %s' $* | sed -E --posix -f "${NEXUS_LIB}/sed/nex-parse.sed"
 }
 
-
-
-
 nx_int_convert()
 (
 	nx_data_longopt -- ',
@@ -404,44 +401,48 @@ nx_int_entropy()
 	'
 )
 
-
-__nx_int_round_trunc() { tmpa="$tmpa\nif(n=nx_trunc($1))"; tmb="trunc"; }
-__nx_int_round_round() { tmpa="$tmpa\nif(n=nx_round($1))"; tmpb="round"; }
-__nx_int_round_floor() { tmpa="$tmpa\nif(n=nx_floor($1))"; tmpb="floor"; }
-__nx_int_round_ceiling() { tmpa="$tmpa\nif(n=nx_ceiling($1))"; tmpb="ceiling"; }
 nx_int_round()
 (
 	nx_data_longopt -- '
-		r<@tfc, trunc round floor ceiling>
+		<type real>
+		<default 1>
+		<build case <nx@r/\\> in
+			t|trunc) NEX_GF_r=trunc;;
+			r|round) NEX_GF_r=round;;
+			f|floor) NEX_GF_r=floor;;
+			c|ceil|ceiling) NEX_GF_r=ceiling;;
+		esac;tmpa="${tmpa}printf(\\\\x22$tmpb%%d\\\\x22,nx_$NEX_GF_r("<nx@1/\\>"));";tmpb="\x20";>
+
+		r<@tfc, trunc round floor ceiling ceil>
 		<type str>
-		<regex ^(trunc|round|floor|ceiling|t|r|f|c)$>
+		<regex ^(t(runc)?|r(ound)?|f(loor)?|c(eil(ing)?)?)$>
 		<default round>
 		<description Default rounding mode: trunc, round, floor, ceiling (or t/r/f/c); default round>
+
+		dry<Dry>
+		<type toggle>
+		<default <nx:false/\\>>
+		<description Print the generated program instead of executing it. When enabled, the build output is emitted verbatim rather than evaluated, so the code that would have run is shown as-is.>"
 
 		help<h>
 		<description Show help for nx_int_round>
 		<build exit;>
 	' "$@"
 
-	tmpa=""
-	tmpb="$NEX_GF_r"
-	case "$tmpb" in
-		t) tmpb=trunc;; r) tmpb=round;; f) tmpb=floor;; c) tmpb=ceiling;;
-	esac
-	i=1
-	while test "$i" -le "$NEX_ARGV_0"; do
-		__nx_int_round_$tmpb "$(nx_data_ref "NEX_ARGV_$i")"
-		tmpa="$tmpa{print n}else{e=-1}"
-		i=$((i+1))
-	done
-
-	test -n "$tmpa" && ${AWK:-$(nx_cmd_awk)} "
-		$(nx_data_include -i "${NEXUS_LIB}/awk/nex-int-extras.awk")
-	"'
-		BEGIN {
-			'"$(printf "$tmpa")"'
-		}
-	'
+	tmpb="" tmpa=""
+	test -n "$NEX_ARGV_E" && eval "$NEX_ARGV_E" && test -n "$tmpa" && {
+		if test "$NEX_Gf_dry" = '<nx:true/>'; then
+			printf '%s' "$NEX_ARGV_E"
+		else
+			${AWK:-$(nx_cmd_awk)} -v tmpa="$tmpa" "
+				$(nx_data_include -i "${NEXUS_LIB}/awk/nex-int-extras.awk")
+			"'
+				BEGIN {
+					'"$(printf "$tmpa")"'printf("\n")
+				}
+			'
+		fi
+	}
 )
 
 

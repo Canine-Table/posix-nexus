@@ -1,4 +1,3 @@
-
 nx_fpg_mime()
 {
 	${AWK:-$(nx_cmd_awk)} -v fl="$*" '

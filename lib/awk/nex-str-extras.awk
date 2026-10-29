@@ -253,6 +253,21 @@ function __nx_str_map(V)
 	nx_bijective(V, ++V[0], "punct", "\x21-\x2f\x3a-\x40\x5b-\x60\x7b-\x7e")
 }
 
+function nx_str_ignorecase(D,
+	hi, lw, v, i, acm)
+{
+	D = toupper(D)
+	l = split(D, v, "")
+	acm = ""
+	for (i = 1; i <= l; ++i) {
+		hi = v[i]
+		lw = tolower(hi)
+		acm = acm "[" __nx_if(hi == lw, hi, hi "" lw) "]"
+	}
+	delete v
+	return acm
+}
+
 function nx_random_str(N, D, S, B,	i, v1, v2, v3, s, r, f)
 {
 	N = int(__nx_if(nx_natural(N), N, 8))

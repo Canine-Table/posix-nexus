@@ -79,7 +79,7 @@ nx_fs2_install()
 	nx_data_longopt -- ',
 		m<%mode>
 		<type int>
-		<regex ^[0-7]{3}$>
+		/<regex ^[0-7]{3}$>
 		<default 644>
 		<description file mode to apply to created targets (octal)>
 
@@ -267,72 +267,87 @@ nx_fs2_noclobber()
 )
 
 
-__nx_fs_n_fifo()
-(
+__nx_fs2_n_fifo()
+{
 	nx_data_longopt -- ',
 		n<%name>
 		<description Name for the FIFO (optional; if omitted, a unique name is generated)>
 
-		s<%suffix>
+		r<%random>
+		<default 16>
+		<description number of random digits to add to the end of the file name (default 16)>
+
+		p<%prefix>
 		<default nx>
-		<description Suffix for the generated name (default nx)>
+		<description Prefix for the generated name (default nx)>
 
 		help<h>
 		<description Show help for __nx_fs_n_fifo>
 		<build exit;>
 	' "$@"
-
-	tmpa="$NEXUS_ENV/run/${NEX_Gk_s:-nx}_$NEX_Gk_n:-".$(nx_str_timestamp --filename)-$(nx_str_rand --number 16)"}.fifo"
-	test -e "$tmpa" && tmpa="$(nx_fs_noclobber --verbose "$tmpa")"
+	test -n "$NEX_ARGV_E" && eval "$NEX_ARGV_E"
+	tmpa="$NEXUS_ENV/run/${NEX_Gk_p}_${NEX_Gk_n:-"$(nx_str_timestamp --filename)-$(nx_str_rand --number "$NEX_Gk_r")"}.fifo"
+	while test -e "$tmpa"; do
+		tmpa="$(nx_fs2_noclobber --verbose "$tmpa")"
+	done
 	mkfifo "$tmpa" || {
 		nx_tty_print -E "Failed to create named pipes at '$tmpa'."
-		return 227
+		exit 227
 	}
-	printf '%s' "$tmpa"
-)
+	printf '%s\n' "$tmpa"
+}
 
-nx_fs_fifo()
+
+nx_fs2_fifo()
 (
 	h_nx_cmd mkfifo || {
 		nx_tty_print -W 'mkfifo not found! The realm of named pipes is closed to us.'
 		exit 127
 	}
-	nx_data_longopt -- '
-		t<@rc, remove try create>
+	nx_data_longopt  -- '
+		t<@c, try create>
 		<type str>
-		<regex ^(r|t|c|remove|try|create)$>
+		<regex ^(t|c|try|create)$>
 		<default t>
-		<description Operation: r/remove, t/try, c/create (default try)>
+		<lazy>
+		<build case <nx@t/\\> in
+			t|try)
+				tmpa=<nx@p/\\>_<nx@n/\\>.fifo
+				tmpb="$NEXUS_ENV/run/$tmpa"
+				if test -p "$tmpa"; then
+					printf "%s" "$tmpa"
+				elif test -p "$tmpb"; then
+					printf "%s" "$tmpb"
+				else
+					__nx_fs2_n_fifo -n=<nx@n/\\> -p=<nx@p/\\> -r=<nx@r/\\>
+				fi
+			;;
+			c|create) __nx_fs2_n_fifo -n=<nx@n/\\> -p=<nx@p/\\> -r=<nx@r/\\>;;
+		esac;>
+		<description Operation: t/try, c/create (default try)>
+
+		d<%del delete>
+		<build test -p <nx@d/\\> && rm -f <nx@d/\\>;>
+
+		r<%random>
+		<default 16>
+		<description number of random digits to add to the end of the file name (default 16)>
+
+		n<%name>
+		<description Name for the FIFO (optional; if omitted, a unique name is generated)>
+
+		p<%prefix>
+		<default nx>
+		<description Prefix for the generated name (default nx)>
 
 		help<h>
 		<description Show help for nx_fs_fifo>
 		<build exit;>
 	' "$@"
-
-	i=1
-	while test "$i" -le "$NEX_ARGV_0"; do
-		case "$NEX_Gk_t" in
-			r|remove) test -p "$(nx_data_ref "NEX_ARGV_$i")" && rm "$(nx_data_ref "NEX_ARGV_$i")";;
-			t|try) {
-				name="$(nx_data_ref "NEX_ARGV_$i")"
-				i=$((i+1))
-				suf="$(nx_data_ref "NEX_ARGV_$i")"
-				tmpa="$NEXUS_ENV/run/nx_$name.fifo"
-				if test -p "$name"; then
-					printf '%s' "$name" "$suf"
-				elif test -p "$tmpa"; then
-					printf '%s' "$tmpa"
-				else
-					__nx_fs_n_fifo "$name" "$suf"
-				fi
-			};;
-			c|create) {
-				name="$(nx_data_ref "NEX_ARGV_$i")"
-				i=$((i+1))
-				suf="$(nx_data_ref "NEX_ARGV_$i")"
-				__nx_fs_n_fifo "$name" "$suf"
-			};;
-		esac
-		i=$((i+1))
-	done
+	test -n "$NEX_ARGV_E" && eval "$NEX_ARGV_E"
 )
+
+
+
+
+

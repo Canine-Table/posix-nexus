@@ -54,7 +54,7 @@ nx_web_fetch()
 	out="$(nx_fs_noclobber -v "$out/$tmpa")"
 	mkdir -p "$out" || return 227
 	while test "$#" -gt 0; do
-		FILENAME="$(nx_fs_noclobber -v "$out/$pre.$(nx_str_timestamp -f)-$(nx_str_rand 16)$suf")"
+		FILENAME="$(nx_fs_noclobber -v "$out/$pre.$(nx_str_timestamp -f)-$(nx_str_rand -n 16)$suf")"
 		FILEID="$(${AWK:-$(nx_cmd_awk)} -v lnk="$1" '
 			BEGIN {
 				if (sub(/^[ \t\n\f\v]*https:\/\/drive\.google\.com\/file\/d\//, "", lnk)) {
