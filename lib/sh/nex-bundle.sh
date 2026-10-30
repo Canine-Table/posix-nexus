@@ -20,7 +20,7 @@ nx_bundle_init()
 	. "$NEXUS_LIB/sh/nex-data.sh"
 	. "$NEXUS_LIB/sh/nex-str.sh"
 	. "$NEXUS_LIB/sh/nex-tty.sh"
-	. "$NEXUS_LIB/sh/nex-fs2.sh"
+	. "$NEXUS_LIB/sh/nex-fs.sh"
 	. "$NEXUS_LIB/sh/nex-fs.sh"
 	. "$NEXUS_LIB/sh/nex-asm.sh"
 
@@ -29,7 +29,7 @@ nx_bundle_init()
 
 	nx_asm_export
 
-	nx_fs2_install \
+	nx_fs_install \
 		--mode 755 \
 		--prefix "$dnm" \
 		--target src \

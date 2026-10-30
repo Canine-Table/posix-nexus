@@ -2415,24 +2415,22 @@ function nx_shell_dispatch(V1, V2, N1, N2,
 				if (! val && cat == c2)
 					nx_boolean(V1, idx, !cse, tru, fls)
 			} else if (cat == c4) {
-				V1[idx] = nx_shell_type(V1, V2, tpe, opt, ps, val, cse)
-				if (cse)
-					V1[idx] = opt ps val
-				else
-					V1[idx] = val ps opt
+				if (val = nx_shell_type(V1, V2, tpe, val, "", "", cse)) {
+					if (cse)
+						V1[idx] = opt ps val
+					else
+						V1[idx] = val ps opt
+				}
 			}
 		} else if (mod == fa) {
 			if (cat == c1) {
-				if (N2 < grplst)
-					V1[idx] = nx_shell_type(V1, V2, tpe, val, "", cur, cse)
-				else
-					V1[idx] = nx_shell_type(V1, V2, tpe, val, ps, cur, cse)
+				V1[idx] = nx_shell_type(V1, V2, tpe, val, con, cur, cse)
 			} else if (cat == c2) {
 				V1[idx] = nx_shell_type(V1, V2, tpe, opt, "", cur, cse)
 			} else if (cat == c3) {
 				V1[idx] = nx_shell_type(V1, V2, tpe, opt, con, cur, cse)
 			} else if (cat == c4) {
-				V1[idx] = nx_shell_type(V1, V2, tpe, opt ps val, ps, cur, cse)
+				V1[idx] = nx_shell_type(V1, V2, tpe, val, ps opt ps, cur, cse)
 			}
 		} else if (mod == fd) {
 			if (cat == c1) {
