@@ -1,8 +1,9 @@
 (
 	nx_data_longopt -- ',
-		l<#L Long long>
-		<type int>
+		alpha<beta Alpha Beta>
+		theta<#gamma Theta Gamma>
 	' "$@"
 
-	echo "$NEX_GK_l"
+	echo "Alpha: $NEX_Gf_alpha"
+	echo "Theta: $NEX_GK_theta"
 )

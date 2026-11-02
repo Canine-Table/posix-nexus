@@ -73,6 +73,7 @@ function nx_shell_debugger_dump(V1, V2,
 # D1	the string
 # D2	the opening group
 # D3	the closing group
+# N	the lanes
 function nx_shell_stride(D1, D2, D3, N,
 	cnt)
 {
@@ -484,6 +485,12 @@ function __nx_shell_schema_str(V, D, B)
 	D = D "<default <nx:true/\\>>"
 	D = D "<description Cycle direction. When true (the default), the buffer behaves like a stack: new entries overwrite the oldest, and the cycle advances backward. When false, it behaves like a queue: entries shift out oldest-first and the cycle advances forward.>"
 
+	V["--blank"] = "<nx:blank/>"
+	D = D "blank<%Blank>"
+	D = D "<type str>"
+	D = D "<default <nx:blank/\\>>"
+	D = D "<description Sentinel literal for an explicitly empty value. Distinct from absence: an option set to <nx:blank/> is present but empty, whereas an unset option has no value at all.>"
+
 	# TODO
 	V["--chain-eval"] = "1"
 	D = D "chain-eval<%>"
@@ -590,7 +597,8 @@ function __nx_shell_schema_rep(V, D)
 	# 2 false representation
 	# 3 none representation
 	# 4 ampersand representation
-	return V["--true"] D V["--false"] D V["--none"] D V["--ampersand"]
+	# 6 blank representation
+	return V["--true"] D V["--false"] D V["--none"] D V["--ampersand"] D V["--blank"]
 }
 
 # D1	string
@@ -832,12 +840,49 @@ function __nx_shell_schema(D1, D2, D3, N,
 	##################################################
 
 
+	# REPRESENTATION (D10) SECTION ###################
+	n = 5
+	wret = __nx_else(nx_unique_check(D10, v_ta, D2, n, N, " representation"), wret)
+	tru = __nx_else(v_ta[1], "<nx:true/>")
+	fls = __nx_else(v_ta[2], "<nx:false/>")
+	non = __nx_else(v_ta[3], "<nx:none/>")
+	amp = __nx_else(v_ta[4], "<nx:x26/>")
+	blnk = __nx_else(v_ta[5], "<nx:blank/>")
+	if (nx_delim_sep("false representation", fls, v_tb, N) == -1)
+		eret = -1
+	if (nx_delim_sep("true representation", tru, v_tb, N) == -1)
+		eret = -1
+	if (nx_delim_sep("none representation", non, v_tb, N) == -1)
+		eret = -1
+	if (nx_delim_sep("ampersand representation", amp, v_tb, N) == -1)
+		eret = -1
+	if (nx_delim_sep("ampersand representation", blnk, v_tb, N) == -1)
+		eret = -1
+	delete v_tb
+
+	# REPRESENTATION (D10) SECTION ###################
+	oft = m * 2
+	V1[(oft + 0) * strde] = n
+	# 1 true representation
+	# 2 false representation
+	# 3 none representation
+	# 4 ampersand representation
+	# 5 blank representation
+	V1[(oft + 1) * strde] = tru
+	V1[(oft + 2) * strde] = fls
+	V1[(oft + 3) * strde] = non
+	V1[(oft + 4) * strde] = amp
+	V1[(oft + 5) * strde] = blnk
+
+	##################################################
+
 	# MISC (D8) SECTION ##############################
 	split(D8, v_ta, D2)
 	pref = __nx_else(v_ta[1], "-") # prefix for long/short options
 	ext = __nx_else(v_ta[2], "-_:.") # extra characters allowed between alpha characters in long option mode
 	skp = __nx_else(v_ta[3], "\n\v\f\t\r ") # extra characters that hold no meaning and should be skipped
-	ncn = __nx_if(ncn, "", __nx_else(v_ta[4], " ", 1)) # concat sep of remainder string
+	ncn = __nx_else(v_ta[4], " ", 1) # concat sep of remainder string
+	ncn = __nx_if(ncn == blnk, "", ncn)
 	fs = __nx_else(v_ta[5], "=") # set symbol
 	as = __nx_else(v_ta[6], "=") # assign symbol
 	mpre = __nx_else(v_ta[7], "<nx@") # macro prefix
@@ -1160,7 +1205,6 @@ function __nx_shell_schema(D1, D2, D3, N,
 	V1[(oft + 5) * strde] = i
 	V1[(oft + 6) * strde] = 0
 
-
 	# DEFAULTS SECTION ###############################
 	n = 3
 	oft = m * 11
@@ -1171,41 +1215,7 @@ function __nx_shell_schema(D1, D2, D3, N,
 	V1[(oft + 1) * strde] =  (oft + 3) * strde
 	V1[(oft + 3) * strde] = (oft + 3) * strde
 
-
 	##################################################
-
-
-	# REPRESENTATION (D10) SECTION ###################
-	n = 4
-	wret = __nx_else(nx_unique_check(D10, v_ta, D2, n, N, " representation"), wret)
-	tru = __nx_else(v_ta[1], "<nx:true/>")
-	fls = __nx_else(v_ta[2], "<nx:false/>")
-	non = __nx_else(v_ta[3], "<nx:none/>")
-	amp = __nx_else(v_ta[4], "<nx:x26/>")
-	if (nx_delim_sep("false representation", fls, v_tb, N) == -1)
-		eret = -1
-	if (nx_delim_sep("true representation", tru, v_tb, N) == -1)
-		eret = -1
-	if (nx_delim_sep("none representation", non, v_tb, N) == -1)
-		eret = -1
-	if (nx_delim_sep("ampersand representation", amp, v_tb, N) == -1)
-		eret = -1
-	delete v_tb
-
-	# REPRESENTATION (D10) SECTION ###################
-	oft = m * 2
-	V1[(oft + 0) * strde] = n
-	# 1 true representation
-	# 2 false representation
-	# 3 none representation
-	# 4 ampersand representation
-	V1[(oft + 1) * strde] = tru
-	V1[(oft + 2) * strde] = fls
-	V1[(oft + 3) * strde] = non
-	V1[(oft + 4) * strde] = amp
-
-	##################################################
-
 
 	delete v_ta
 	if (ab > 2)
@@ -2373,6 +2383,27 @@ function nx_shell_dispatch(V1, V2, N1, N2,
 	fi = V1[(oft + 5) * strde]
 	fn = V1[(oft + 6) * strde]
 
+
+	# ACTION (D6) SECTION ############################
+	oft = m * 6
+	V1[(oft + 0) * strde] = n
+	# 1	push modifier symbol
+	# 2	pop modifier symbol
+	# 3	match substitute find modifier symbol
+	# 4	match substitute replace modifier symbol
+	# 5	starting index of match modifier symbol
+	# 6	number of matches modifier symbol
+	
+	#V1[(oft + 1) * strde] = fa
+	#V1[(oft + 2) * strde] = fd
+	#V1[(oft + 3) * strde] = fm
+	#V1[(oft + 4) * strde] = fr
+	#V1[(oft + 5) * strde] = fi
+	#V1[(oft + 6) * strde] = fn
+	##################################################
+
+
+
 	# REPRESENTATION
 	oft = m * 2
 	tru = V1[(oft + 1) * strde]
@@ -2433,11 +2464,14 @@ function nx_shell_dispatch(V1, V2, N1, N2,
 				V1[idx] = nx_shell_type(V1, V2, tpe, val, ps opt ps, cur, cse)
 			}
 		} else if (mod == fd) {
-			if (cat == c1) {
-				opt = val
-				con = ps
-			}
-			if (cat == c3 || cat == c1) {
+			if (cat == c1 || cat == c2 || cat == c3) {
+				if (cat == c1) {
+					opt = val
+					con = ps
+				} else if (cat == c2) {
+					con = ""
+				}
+
 				val = V1[idx]
 				if (dft in V1)
 					dft = V1[dft]
@@ -2473,6 +2507,13 @@ function nx_shell_dispatch(V1, V2, N1, N2,
 				if (cse)
 					val = nx_reverse_str(val)
 				V1[idx] = val
+			} else {
+				# ...
+			}
+		} else if (mod == fm) {
+			if (cat == c1 || cat == c2 || cat == c3) {
+			} else {
+				# ...
 			}
 		}
 	}
@@ -2480,8 +2521,6 @@ function nx_shell_dispatch(V1, V2, N1, N2,
 		nx_shell_build(V1, bld)
 	return N1
 }
-
-
 
 function nx_shell_actions(D1, D2, D3, V, N, D4,
 	opt, num, val, mod,

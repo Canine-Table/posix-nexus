@@ -5,7 +5,6 @@
 		<build echo "captain=<nx@captain/\\> crew=<nx@crew/\\> mode=<nx@mode/\\> cycle=<nx@cycle-back/\\> period=<nx@period/\\> leftover=<nx@1/\\>";>,
 
 		captain<%>
-			<default Kirk>
 			<description The captain; macro-expands as <nx@captain/\\> in build strings>
 
 		crew<%>
