@@ -10,6 +10,7 @@ nx_data_longopt()
 	"
 		$(cat \
 			"${NEXUS_LIB}/awk/nex-misc.awk" \
+			"${NEXUS_LIB}/awk/nex-bits.awk" \
 			"${NEXUS_LIB}/awk/nex-misc-extras.awk" \
 			"${NEXUS_LIB}/awk/nex-math.awk" \
 			"${NEXUS_LIB}/awk/nex-math-extras.awk" \

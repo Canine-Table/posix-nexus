@@ -1,4 +1,5 @@
 #nx_include nex-log-extras.awk
+#nx_include nex-bits.awk
 
 function nx_shell_debugger_dump(V1, V2,
 	strde, m, psrt, phlst, phsrt,
@@ -720,7 +721,7 @@ function __nx_shell_schema(D1, D2, D3, N,
 	nogrps = 4
 	lpgrp = 3
 	grplst = grpsrt + nogrps * lpgrp
-	phsrt = -8
+	phsrt = -16
 	phlst = -1
 	phskp = 1
 	cychd = 9
@@ -856,7 +857,7 @@ function __nx_shell_schema(D1, D2, D3, N,
 		eret = -1
 	if (nx_delim_sep("ampersand representation", amp, v_tb, N) == -1)
 		eret = -1
-	if (nx_delim_sep("ampersand representation", blnk, v_tb, N) == -1)
+	if (nx_delim_sep("blank representation", blnk, v_tb, N) == -1)
 		eret = -1
 	delete v_tb
 
@@ -1040,7 +1041,7 @@ function __nx_shell_schema(D1, D2, D3, N,
 	msuf = nx_str_esc(msuf)
 
 	# REGEX SECTION ##################################
-	n = 8
+	n = 9
 	oft = m * 9
 	V1[(oft + 0) * strde] = n
 	# 1	the action modifier match regex
@@ -1728,7 +1729,6 @@ function nx_shell_group_metadata(V1, V2, V3, N, D,
 	if (! (N + 1 in V3) && cr != gc && dbg > 1)
 		nx_ansi_warning("end of input was not the '" gc "' character, did it run away?\n")
 
-
 	if (tsf == 1)
 		gsub(flw "$", "", acm)
 
@@ -1752,8 +1752,7 @@ function nx_shell_args(V1, V2,
 	ctp, cidx,
 	oln, oidx,
 	con, tok, atok,
-	gbld, gld,
-	gpparam1,
+	gbld, gtpe,
 	cyclw, cycup, cycsskp, cychd, cychdi,
 	r, s, n,
 	idx, cat, grp, trm,
@@ -1763,6 +1762,7 @@ function nx_shell_args(V1, V2,
 	acrgx, eacrgx,
 	trk)
 {
+
 
 	strde = V1[0]
 	dbg = V1[2 * strde]
@@ -1788,7 +1788,9 @@ function nx_shell_args(V1, V2,
 	lpgrp = V1[(oft + 5) * strde]
 	grplst = grpsrt + nogrps * lpgrp
 
-	gbld = (V1[(m * 11 + 3) * strde] + 1) + strde * 5
+	oft = m * 11
+	gtpe = V1[(oft + 1) * strde] + 1 + strde * 0
+	gbld = V1[(oft + 3) * strde] + 1 + strde * 5
 
 	# ACTIONS
 	oft = m * 6
@@ -1894,15 +1896,19 @@ function nx_shell_args(V1, V2,
 			tok = V2[idx]
 
 			if (!ab) {
-				atok =  tok
-				gsub("&", amp, atok)
-				V1[cychdi] = atok
-				V1[cychd] = cychdi - strde * 9
-				if (dbg > 2)
-					nx_ansi_alert(cychdi ", " cycup ", " cyclw ", " cycsskp "\n")
-				nx_shell_build(V1, gbld)
-				cychdi = nx_modulus_range(cychdi, cycup, cyclw, cycsskp)
-				V1[cychd] = cychdi
+				atok =  nx_shell_type(V1, V2, gtpe, tok, "", "", 0)
+				if (atok != "") {
+					gsub("&", amp, atok)
+					V1[cychdi] = atok
+					V1[cychd] = cychdi - strde * 9
+					if (dbg > 2)
+						nx_ansi_alert("default triggered for '" atok "' schema range [" cyclw " - " cycup "] with skip '" cycsskp "' puts the next cycle index at '" V1[cychd] "'\n")
+					nx_shell_build(V1, gbld)
+					cychdi = nx_modulus_range(cychdi, cycup, cyclw, cycsskp)
+					V1[cychd] = cychdi
+				} else if (dbg > 1) {
+					nx_ansi_warning("default type failed, '" tok "' did not match type '" V1[gtpe] "', skipping\n")
+				}
 			}
 
 			s = nx_join_str(s, tok, con)
@@ -1979,9 +1985,6 @@ function __nx_shell_help_format(V, N,
 	if (j) nx_fd_stderr("\n")
 }
 
-
-
-
 function nx_shell_help(V,
 	str, srt, strde, soff, coff,
 	moff, grps, lpgrp, grpsrt,
@@ -2055,10 +2058,61 @@ function nx_shell_help(V,
 	nx_fd_stderr("\n")
 }
 
-
-function echo(D)
+function __nx_shell_find_replace(V1, V2, N,
+	skp, strde, dbg, m, oft, amp,
+	cse, num, val, dft, bits,
+	mar, mstrs, mstr, mvl, ln, i)
 {
-	print "echo \x27" D "\x27"
+	strde = V1[0]
+	dbg = V1[2 * strde]
+	m = V1[3 * strde]
+	bits = V1[N + strde * 4]
+
+	# REPRESENTATION
+	oft = m * 2
+	amp = V1[(oft + 4) * strde]
+
+	cse = nx_is_upper(substr(V2["opt"], 1, 1))
+	mvl = V2["val"]
+	gsub(/&/, amp, mvl)
+	num = int(V2["num"])
+	mstr = V1[N]
+	mar = V1[N + strde]
+
+	if (num > 0) {
+		if (cse) {
+			mvl = nx_reverse_str(mvl)
+			mstr = nx_reverse_str(mstr)
+			mar = nx_reverse_str(mar)
+		}
+		if (nx_bit_is(bits, 4))
+			mar = nx_str_ignorecase(mar)
+		do {
+			if (!sub(mar, mvl, mstr))
+				break
+			--num
+		} while (num > 0)
+
+		if (cse)
+			mstr = nx_reverse_str(mstr)
+	} else {
+		if (nx_bit_is(bits, 4))
+			mar = nx_str_ignorecase(mar)
+		gsub(mar, mvl, mstr)
+	}
+
+	ln = split(mstr, mstrs, amp)
+	mstr = mstrs[1]
+	for (i = 2; i < ln; ++i)
+		mstr = mstr "\x26" mstrs[i]
+	delete mstrs
+
+	if (nx_bit_is(bits, 2)) {
+		V1[N + strde * 2] = V1[N]
+		V1[N] = mstr
+	} else {
+		V1[N + strde * 2] = mstr
+	}
 }
 
 function nx_shell_build(V, N,
@@ -2074,7 +2128,6 @@ function nx_shell_build(V, N,
 	dbg = V[2 * strde]
 	m = V[3 * strde]
 	skp = 2 * strde
-
 
 	# TOGGLES
 	oft = m * 5
@@ -2292,8 +2345,8 @@ function nx_shell_dispatch(V1, V2, N1, N2,
 	grpsrt = V1[(oft + 3) * strde]
 	nogrps = V1[(oft + 4) * strde]
 	lpgrp = V1[(oft + 5) * strde]
-
 	grplst = grpsrt + nogrps * lpgrp
+
 	c1 = grpsrt + lpgrp * 0
 	c2 = grpsrt + lpgrp * 1
 	c3 = grpsrt + lpgrp * 2
@@ -2375,6 +2428,12 @@ function nx_shell_dispatch(V1, V2, N1, N2,
 	con = V1[(oft + 4) * strde]
 
 	# ACTIONS
+	# 1	push modifier symbol
+	# 2	pop modifier symbol
+	# 3	match substitute find modifier symbol
+	# 4	match substitute replace modifier symbol
+	# 5	starting index of match modifier symbol
+	# 6	number of matches modifier symbol
 	oft = m * 6
 	fa = V1[(oft + 1) * strde]
 	fd = V1[(oft + 2) * strde]
@@ -2382,27 +2441,6 @@ function nx_shell_dispatch(V1, V2, N1, N2,
 	fr = V1[(oft + 4) * strde]
 	fi = V1[(oft + 5) * strde]
 	fn = V1[(oft + 6) * strde]
-
-
-	# ACTION (D6) SECTION ############################
-	oft = m * 6
-	V1[(oft + 0) * strde] = n
-	# 1	push modifier symbol
-	# 2	pop modifier symbol
-	# 3	match substitute find modifier symbol
-	# 4	match substitute replace modifier symbol
-	# 5	starting index of match modifier symbol
-	# 6	number of matches modifier symbol
-	
-	#V1[(oft + 1) * strde] = fa
-	#V1[(oft + 2) * strde] = fd
-	#V1[(oft + 3) * strde] = fm
-	#V1[(oft + 4) * strde] = fr
-	#V1[(oft + 5) * strde] = fi
-	#V1[(oft + 6) * strde] = fn
-	##################################################
-
-
 
 	# REPRESENTATION
 	oft = m * 2
@@ -2419,15 +2457,12 @@ function nx_shell_dispatch(V1, V2, N1, N2,
 	if (dft in V1)
 		V1[idx] = __nx_else(cur, V1[dft], 1)
 
-
 	if ((act = V2["act"])  == "") {
-
 		if (cat == c1) {
 			V1[idx] = nx_shell_type(V1, V2, tpe, V2[++N1], "", "", 0)
 		} else if (cat == c2) {
-			if (vr == "help" || vr == "h") {
+			if (vr == "help" || vr == "h")
 				nx_shell_help(V1)
-			}
 			nx_boolean(V1, idx, !cse, tru, fls)
 		} else if (cat == c3) {
 			if (N2 < grplst)
@@ -2455,7 +2490,7 @@ function nx_shell_dispatch(V1, V2, N1, N2,
 			}
 		} else if (mod == fa) {
 			if (cat == c1) {
-				V1[idx] = nx_shell_type(V1, V2, tpe, val, con, cur, cse)
+				V1[idx] = nx_shell_type(V1, V2, tpe, val, ps, cur, cse)
 			} else if (cat == c2) {
 				V1[idx] = nx_shell_type(V1, V2, tpe, opt, "", cur, cse)
 			} else if (cat == c3) {
@@ -2511,7 +2546,34 @@ function nx_shell_dispatch(V1, V2, N1, N2,
 				# ...
 			}
 		} else if (mod == fm) {
+			V1[idx + strde] = val
+			__nx_shell_bits(V1, V2, idx, num)
+		} else if (mod == fr) {
+			if (idx + strde in V1) {
+				if (cat == c1 || cat == c2 || cat == c3) {
+					__nx_shell_bits(V1, V2, idx, cse)
+					__nx_shell_find_replace(V1, V2, idx)
+				} else {
+					# ...
+				}
+			}
+		} else if (mod == fi) {
+			# ...
+		} else if (mod == fn) {
 			if (cat == c1 || cat == c2 || cat == c3) {
+				if (cse) {
+					if (cat == c1) {
+						con = ps
+					} else if (cat == c2) {
+						con = ""
+					}
+					gsub(con, "", cur)
+				}
+
+				if (val == "")
+					V1[idx + strde * 5] = length(cur)
+				else
+					V1[idx + strde * 5]  = gsub(val, "", cur)
 			} else {
 				# ...
 			}
@@ -2520,6 +2582,15 @@ function nx_shell_dispatch(V1, V2, N1, N2,
 	if (bld in V1)
 		nx_shell_build(V1, bld)
 	return N1
+}
+
+function __nx_shell_bits(V1, V2, N1, N2,
+	strde, m, oft)
+{
+	strde = V1[0]
+	m = V1[3 * strde]
+	return V1[N1 + strde * 4] = nx_bit_assign(V1[N1 + strde * 4], N2, nx_is_lower(substr(V2["opt"], 1, 1)))
+
 }
 
 function nx_shell_actions(D1, D2, D3, V, N, D4,
@@ -2594,7 +2665,7 @@ function nx_shell_sanitize(D, V,
 function nx_shell_environ(V1, V2, D, V3,
 	as, ln, idx, clt, dq, trk, pre, post, ust, ept, ext, oft,
 	vr, vl, nm, pos, acm, psrt,
-	t2, t3,
+	t2, t3, t4, t5, t6, t7, t8,
 	strde, m, chevl)
 {
 
@@ -2653,6 +2724,11 @@ function nx_shell_environ(V1, V2, D, V3,
 
 	t2 = strde * 2
 	t3 = strde * 3
+	t4 = strde * 4
+	t5 = strde * 5
+	t6 = strde * 6
+	t7 = strde * 7
+	t8 = strde * 8
 
 	idx = ""
 	for (idx in V3)
@@ -2663,6 +2739,18 @@ function nx_shell_environ(V1, V2, D, V3,
 		nm = "NEX_ARGC_" ++pos
 		vr = nx_shell_sanitize(V1[idx + t2], V3)
 		vl = V1[idx + t3]
+
+		if (idx + t4 in V1) # Hold space
+			acm = acm pre __nx_stringify_var("_H_" vr, V1[idx + t4], dq, as, post)
+		if (idx + t5 in V1) # Patern space
+			acm = acm pre __nx_stringify_var("_P_" vr, V1[idx + t5], dq, as, post)
+		if (idx + t6 in V1) # Index space
+			acm = acm pre __nx_stringify_var("_I_" vr, V1[idx + t6], dq, as, post)
+		if (idx + t7 in V1) # Bit field space
+			acm = acm pre __nx_stringify_var("_B_" vr, V1[idx + t7], dq, as, post)
+		if (idx + t8 in V1) # Count space
+			acm = acm pre __nx_stringify_var("_N_" vr, V1[idx + t8], dq, as, post)
+
 		acm = acm pre __nx_stringify_var(nm, vr, dq, as, post)
 		acm = acm pre __nx_stringify_var(vr, vl, dq, as, post)
 	}

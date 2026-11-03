@@ -86,37 +86,24 @@ nx_bc_gcd() { nx_bc_euc "$@"; }
 nx_bc_euc()
 (
     nx_data_longopt ',
-        v<%value>
-        <description Pair (x,y) for Euclidean GCD>
+
+	x<%x-value>
+	<type real>
+        <description x value of the Pair (x,y) for Euclidean GCD>
+
+	y<%y-value>
+	<type real>
+        <description y value of the Pair (x,y) for Euclidean GCD>
 
         help<h>
         <description Show help for nx_bc_euc>
         <build exit;>
     ' "$@"
 
-    NEX_Gk_v="${NEX_Gk_v:-$NEX_ARGV_S}"
-
-    __nx_bc_alg "$@" -c "nx_euc($NEX_Gk_v)" || {
+    __nx_bc_alg "$@" -c "nx_euc($NEX_Gk_x,$NEX_G_y)" || {
         nx_tty_print -e 'euc(x,y) domain breach — x,y must be non‑negative integers\n'
         exit 227
     }
-)
-
-nx_bc_binom()
-(
-	nx_data_longopt -- ',
-		v<%value>
-		<type str>
-		<description Operands n,k for binomial(n,k); n,k non-negative integers with k <= n (defaults to the first positional)>
-
-		help<h>
-		<description Show help for nx_bc_binom>
-	' "$@"
-
-	__nx_bc_alg "$@" -c "nx_binom(${NEX_Gk_v:-$NEX_ARGV_S})" || {
-		nx_tty_print -e 'binomial(n,k) domain breach — n,k must be non‑negative integers with k ≤ n\n'
-		exit 226
-	}
 )
 
 nx_bc_binom()
@@ -136,15 +123,17 @@ nx_bc_binom()
 
 	__nx_bc_alg "$@" -c "nx_binom(${NEX_Gk_v},${NEX_Gk_k})" || {
 		nx_tty_print -e 'binomial(n,k) domain breach — n,k must be non‑negative integers with k ≤ n\n'
-		exit 226
+		exit 227
 	}
 )
 
 nx_bc_part()
 (
 	nx_data_longopt -- ',
+		<type real>
+
 		v<%value>
-		<type float>
+		<type real>
 		<description Value whose integer part is returned, sign preserved (defaults to the first positional)>
 
 		help<h>
@@ -157,8 +146,10 @@ nx_bc_part()
 nx_bc_trunc()
 (
 	nx_data_longopt -- ',
+		<type real>
+
 		v<%value>
-		<type float>
+		<type real>
 		<description Value truncated toward zero, i.e. fractional part dropped (defaults to the first positional)>
 
 		help<h>
@@ -171,8 +162,10 @@ nx_bc_trunc()
 nx_bc_floor()
 (
 	nx_data_longopt -- ',
+		<type real>
+
 		v<%value>
-		<type float>
+		<type real>
 		<description Value rounded down to the nearest integer (defaults to the first positional)>
 
 		help<h>
@@ -213,8 +206,10 @@ nx_bc_frac()
 nx_bc_round()
 (
 	nx_data_longopt -- ',
+		<type real>
+
 		v<%value>
-		<type float>
+		<type real>
 		<description Value rounded to the nearest integer (defaults to the first positional)>
 
 		help<h>
@@ -227,6 +222,8 @@ nx_bc_round()
 nx_bc_unround()
 (
 	nx_data_longopt -- ',
+		<type float>
+
 		v<%value>
 		<type float>
 		<description Value with rounding undone, restoring the pre-round form (defaults to the first positional)>
@@ -251,6 +248,28 @@ nx_bc_mod()
 
 	__nx_bc_alg "$@" -c "nx_pt_mod(${NEX_Gk_v:-$NEX_ARGV_S})" || {
 		nx_tty_print -e 'modulo(a,b) domain breach — divisor must be non‑zero and both operands integral\n'
+		exit 226
+	}
+)
+
+nx_bc_sum()
+(
+	nx_data_longopt -- ',
+		s<%start>
+		<type real>
+		<default 1>
+		<description starting number>
+
+		t<%times>
+		<type real>
+		<default 1>
+		<description sum from start t times>
+
+		help<h>
+		<description Show help for nx_bc_mod>
+	' "$@"
+
+	__nx_bc_alg "$@" -c "nx_sum($NEX_Gk_s,$NEX_Gk_t)" || {
 		exit 226
 	}
 )

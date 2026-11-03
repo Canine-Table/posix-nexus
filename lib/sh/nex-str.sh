@@ -128,14 +128,16 @@ nx_str_rand()
 nx_str_append()
 (
 	nx_data_longopt -- ',
+		<type str>
+
 		n<%number count>
 		<type int>
 		<min 1>
 		<default 1>
 		<description Number of times to repeat the character>
 
-		c<%char>
-		<type char>
+		c<%char chars>
+		<type str>
 		<description Character to repeat>
 
 		help<h>
@@ -147,7 +149,7 @@ nx_str_append()
 
 	${AWK:-$(nx_cmd_awk)} \
 		-v cnt="$NEX_Gk_n" \
-		-v cr="$NEX_Gk_c" \
+		-v cr="${NEX_Gk_c:-$NEX_ARGV_S}" \
 	"
 		$(nx_data_include -i "${NEXUS_LIB}/awk/nex-str.awk")
 	"'

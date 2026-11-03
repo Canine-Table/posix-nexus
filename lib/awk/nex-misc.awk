@@ -107,3 +107,7 @@ function __nx_equality(B1, B2, B3,	b, e, g)
 	return __nx_compare(B1, B2)
 }
 
+function echo(D)
+{
+	print "echo \x27" D "\x27"
+}

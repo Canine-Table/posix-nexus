@@ -127,7 +127,9 @@ __nx_tty_div()
 		-d|--double) tmpa="═";;
 		*) tmpa='╍';;
 	esac
-	nx_str_append "$G_NEX_TTY_COLUMNS" "$tmpa" | xargs printf '\n%s\n'
+	nx_str_append \
+		--number "$G_NEX_TTY_COLUMNS" \
+		--chars "$tmpa" | xargs printf '\n%s\n'
 }
 
 nx_tty_div()

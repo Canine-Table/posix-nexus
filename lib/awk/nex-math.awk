@@ -427,3 +427,11 @@ function nx_convert_base(N1, N2, N3, N4, V1, V2, N5,	v, l, n, i, j)
 	}
 }
 
+# N1	times
+# N2	start
+function nx_sum(N1, N2)
+{
+	N1 = int(nx_natural(N1))
+	N2 = int(nx_natural(N2))
+	return (N1 - N2 + 1) * (N2 + N1) / 2
+}

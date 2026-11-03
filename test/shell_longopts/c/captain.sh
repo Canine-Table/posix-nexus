@@ -1,10 +1,12 @@
 (
-	nx_data_longopt -- '
-		<description Silly demo of macro expansion across groups and positionals>
-		<lazy>
-		<build echo "captain=<nx@captain/\\> crew=<nx@crew/\\> mode=<nx@mode/\\> cycle=<nx@cycle-back/\\> period=<nx@period/\\> leftover=<nx@1/\\>";>,
 
-		captain<%>
+	nx_data_longopt -O -- '
+		<description Silly demo of macro expansion across groups and positionals>
+		<build echo "captain=<nx@captain/\\> crew=<nx@crew/\\> mode=<nx@mode/\\> cycle=<nx@cycle-back/\\> period=<nx@period/\\> leftover=<nx@1/\\>\n">
+		<lazy>
+		,
+
+		captain<%Captain>
 			<description The captain; macro-expands as <nx@captain/\\> in build strings>
 
 		crew<%>
@@ -31,5 +33,6 @@
 
 	' "$@"
 	test -n "$NEX_ARGV_E" && eval "$NEX_ARGV_E"
+	echo "$_CNT_NEX_Gk_captain"
 )
 
