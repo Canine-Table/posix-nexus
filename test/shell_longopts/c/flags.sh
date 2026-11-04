@@ -8,5 +8,6 @@ ${AWK:-$(nx_cmd_awk)} -v x="$1" -v y="$2" -v b="${3:-0}" \
 		print "flip: " nx_bit_flip(x, y)
 		print "on: " nx_bit_on(x, y)
 		print "off: " nx_bit_off(x, y)
+		print "off: " nx_bit_next(x)
 	}
 '

@@ -11,12 +11,13 @@
 # B 	if you want to keep V for later set it to 1
 function nx_str_parse_esc(D1, D2, D3, D4, D5, V, B,
 	pre, post, ptok, ctok, acm,
-	ln, i, j)
+	ln, i, j, bk)
 {
 	D2 = __nx_else(D2, "/", 1)
 	D3 = __nx_else(D3, "\\\\", 1)
 	D4 = __nx_else(D4, "\xFF", 1)
 	D5 = __nx_else(D5, ".", 1)
+	bk = D5 D5
 
 	gsub(D3, D4, D1)
 
@@ -24,8 +25,6 @@ function nx_str_parse_esc(D1, D2, D3, D4, D5, V, B,
 	ln = split(nx_trim_str(D1), V, "")
 	if (V[1] == D2)
 		pre = D2
-	if (V[ln] == D2)
-		post = D2
 
 	for (i = 1; i <= ln; ++i) {
 		ptok = ctok
@@ -47,12 +46,12 @@ function nx_str_parse_esc(D1, D2, D3, D4, D5, V, B,
 
 	for (i = j; i > 0; --i) {
 		ctok = V[i]
-		if (ctok == "..") {
+		if (ctok == bk) {
 			ln = 0
 			do {
 				ln++
 				ctok = V[--i]
-			} while (i > 1 && ctok == "..")
+			} while (i > 1 && ctok == bk)
 			i = i - ln
 			if (i < 1)
 				i = 1
@@ -188,9 +187,6 @@ function __nx_nesc_match(D1, D2, B, D3, D4,
 		return D2
 	return D1 __nx_else(D4, "<nx:null/>") D2
 }
-
-
-
 
 function nx_nesc_match(D1, D2, B, D3, D4,
 	trk)

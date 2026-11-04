@@ -160,32 +160,52 @@ nx_fs_install()
 nx_fs_canonize()
 (
 	nx_data_longopt -- ',
-		p<%mode>
-		<regex ^[bdp]$>
-		<description Canonicalization mode: b = basename, d = directory, p = path>
+		r<@b d basename realpath dirname>
+		<regex ^(b(asename)?|d(irname)?|r(ealpath)?)$>
+		<default realpath>
+		<description Canonicalization mode: b = basename, d = directory, r = realpath. Uppercase R negates (see below).>
 
-		f<%path>
-		<description Path to canonicalize (defaults to the first positional)>
+		f<%file>
+		<description Path to canonicalize. Defaults to the first positional (NEX_ARGV_S) if not supplied.>
+
+		s<%sep separator>
+		<default />
+		<description Separator inserted between path components. Empty (the default) means components are joined with no separator; set to / to produce a Unix-style path.>
+
+		e<%esc escape>
+		<default \\\\\\\\>
+		<description Escape character for path components. Components containing the separator, the escape character, or the placeholder are escaped with this character.>
+
+		t<%this>
+		<default .>
+		<description Token representing the current directory. Used when a path component resolves to "." or when a relative path begins at the current directory.>
+
+		p<%placeholder>
+		<default \\xFF>
+		<description Sentinel emitted in place of a component that cannot be represented. Consumers can detect or substitute it.>
 
 		help<h>
 		<description Show help for nx_fs_canonize>
 		<build exit;>
-	' "$@"
+	' "$@" \
+		-r@2='^b(asename)?$' -r~='<nx:blank/>' \
+		-r@='^d(irname)?$' -r~='1' \
+		-r@='^r(ealpath)?$' -r~='0'
 
-	case "$NEX_Gk_p" in
-		b) NEX_Gk_p="";;
-		d) NEX_Gk_p=1;;
-		*) NEX_Gk_p=0;;
-	esac
+	test -n "$NEX_ARGV_E" && eval "$NEX_ARGV_E"
 
 	${AWK:-$(nx_cmd_awk)} \
 		-v nm="${NEX_Gk_f:-$NEX_ARGV_S}" \
-		-v prt="$NEX_Gk_p" \
+		-v prt="$NEX_GF_r" \
+		-v plce="$NEX_Gk_p" \
+		-v slf="$NEX_Gk_t" \
+		-v esc="$NEX_Gk_e" \
+		-v sp="$NEX_Gk_s" \
 	"
 		$(nx_data_include -i "${NEXUS_LIB}/awk/nex-io-extras.awk")
 	"'
 		BEGIN {
-			print nx_str_parse_esc(nx_file_path(nm, prt))
+			print nx_file_path(nx_str_parse_esc(nm, sp, esc, plce, slf), prt, sp)
 		}
 	'
 )
@@ -504,9 +524,9 @@ nx_fs_mount()
 			};;
 
 			-m|--mount) {
-				tmpa="$(nx_fs_canonize -p "$psloc/$sloc/$ssloc")"
+				tmpa="$(nx_fs_canonize --file "$psloc/$sloc/$ssloc")"
 				mnt="${mnt}if(\$3==\"$tmpa\"){delete lmnt[\$3]}"
-				lmnt="${lmnt}lmnt[\"$tmpa\"]=\"$(nx_fs_canonize -p "$pdloc/$dloc/$sdloc")\";"
+				lmnt="${lmnt}lmnt[\"$tmpa\"]=\"$(nx_fs_canonize --file "$pdloc/$dloc/$sdloc")\";"
 			};;
 		esac
 		shift

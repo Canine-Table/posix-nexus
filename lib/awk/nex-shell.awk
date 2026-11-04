@@ -59,15 +59,15 @@ function nx_shell_debugger_dump(V1, V2,
 			nx_ansi_debug("<nx:null/>neg '" i "'  cell '" c "' = [" V1[c] "]\n")
 	}
 
-	nx_fd_stderr("\n")
-	nx_ansi_light("--- full dump of V1 ---\n")
-	for (i in V1)
-		nx_ansi_debug("<nx:null/> '" i "' =  [" V1[i] "] \n")
+	#nx_fd_stderr("\n")
+	#nx_ansi_light("--- full dump of V1 ---\n")
+	#for (i in V1)
+	#	nx_ansi_debug("<nx:null/> '" i "' =  [" V1[i] "] \n")
 
-	nx_fd_stderr("\n")
-	nx_ansi_light("--- full dump of V2 ---\n")
-	for (i in V2)
-		nx_ansi_debug("<nx:null/>'" i "' =  [" V2[i] "] \n")
+	#nx_fd_stderr("\n")
+	#nx_ansi_light("--- full dump of V2 ---\n")
+	#for (i in V2)
+	#	nx_ansi_debug("<nx:null/>'" i "' =  [" V2[i] "] \n")
 }
 
 
@@ -2060,7 +2060,7 @@ function nx_shell_help(V,
 
 function __nx_shell_find_replace(V1, V2, N,
 	skp, strde, dbg, m, oft, amp,
-	cse, num, val, dft, bits,
+	cse, num, val, dft, bits, blnk,
 	mar, mstrs, mstr, mvl, ln, i)
 {
 	strde = V1[0]
@@ -2071,6 +2071,7 @@ function __nx_shell_find_replace(V1, V2, N,
 	# REPRESENTATION
 	oft = m * 2
 	amp = V1[(oft + 4) * strde]
+	blnk = V1[(oft + 5) * strde]
 
 	cse = nx_is_upper(substr(V2["opt"], 1, 1))
 	mvl = V2["val"]
@@ -2666,11 +2667,15 @@ function nx_shell_environ(V1, V2, D, V3,
 	as, ln, idx, clt, dq, trk, pre, post, ust, ept, ext, oft,
 	vr, vl, nm, pos, acm, psrt,
 	t2, t3, t4, t5, t6, t7, t8,
-	strde, m, chevl)
+	strde, m, chevl, blnk)
 {
 
 	strde = V1[0]
 	m = V1[3 * strde]
+
+	# REPRESENTATION
+	oft = m * 2
+	blnk = V1[(oft + 5) * strde]
 
 	oft = m * 5
 	ust = V1[(oft + 1) * strde]
@@ -2751,6 +2756,7 @@ function nx_shell_environ(V1, V2, D, V3,
 		if (idx + t8 in V1) # Count space
 			acm = acm pre __nx_stringify_var("_N_" vr, V1[idx + t8], dq, as, post)
 
+		gsub(blnk, "", vl)
 		acm = acm pre __nx_stringify_var(nm, vr, dq, as, post)
 		acm = acm pre __nx_stringify_var(vr, vl, dq, as, post)
 	}

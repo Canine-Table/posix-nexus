@@ -23,9 +23,15 @@ function nx_is_map(V, i)
 	return i != ""
 }
 
-function nx_file_path(D1, B, D2, V,	i, j)
+function nx_file_path(D1, B, D2, V,
+	i, j, s, n)
 {
 	D2 = __nx_else(D2, "/")
+	n = nx_str_esc(D2, 4, 1)
+	if (D2 != "/")
+		s = nx_str_esc(D2, 2)
+	else
+		s = D2
 	if (match(D1, /^(-|~|NE?X_[A-Z]+:)\//)) {
 		if (! ("-/" in V)) {
 			V["-/"] = ENVIRON["OLDPWD"] D2
@@ -40,7 +46,7 @@ function nx_file_path(D1, B, D2, V,	i, j)
 			V["NX_S:/"] = ENVIRON["NEXUS_SRC"] D2
 			V["NX_J:/"] = V["NX_L:/"] "java" D2 ENVIRON["G_NEX_JAVA_PROJECT"] D2
 			for (i in V)
-				gsub(D2 "+", D2, V[i])
+				gsub(s "+", D2, V[i])
 		}
 		i = substr(D1, 1, RLENGTH)
 		j = i
@@ -48,10 +54,13 @@ function nx_file_path(D1, B, D2, V,	i, j)
 		if (j in V)
 			sub(i, V[j], D1)
 	}
-	gsub(D2 "+", D2, D1)
-	gsub(D2 "+$", "", D1)
+
+	gsub(s "+", D2, D1)
+	gsub(s "+$", "", D1)
+
+
 	i = D1
-	if (! sub("[^" D2 "]+$", "", i))
+	if (!sub("(" n ")+$", "", i))
 		return D1
 	i = length(i)
 	j = length(D2)

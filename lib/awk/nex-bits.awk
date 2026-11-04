@@ -30,7 +30,7 @@ function nx_bit_next(N, V, n, m, b, p)
 
 function nx_bit_is(N1, N2)
 {
-	return int(+N1 / +N2) % 2 == 1
+	return int(+N1 / (+N2 + (+N2 == 0))) % 2 == 1
 }
 
 #	B	N2	result
