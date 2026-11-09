@@ -10,17 +10,15 @@
 #define NEX_CWD_C 0xb87d155
 #define NEX_HOSTNAME_C 0x90cd15c2
 #define NEX_ENDIAN_C 0x8dd0294c
-
 #define NEX_ARCH_C 0x7c7ecf1d
-
-
 
 void nx_cmdGroups_g1gF(void*);
 int nX_getGroups_ii_1uF(int, gid_t*);
 int NX_sizeofGetGroups_iF();
 int NX_sizeofStkBuf_iF();
 void nX_signalHandler_g_iF(int sig);
-void nx_createCmdList_gF();
+void NX_createCmdList_g_1C_uF(const char* const*, size_t);
+
 void nX_shimLoop_g_iF(int);
 void nx_cmdHostname_g1gF(void*);
 int NX_sizeofGetGroups_iF();

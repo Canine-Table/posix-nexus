@@ -70,7 +70,6 @@ function nx_shell_debugger_dump(V1, V2,
 	#	nx_ansi_debug("<nx:null/>'" i "' =  [" V2[i] "] \n")
 }
 
-
 # D1	the string
 # D2	the opening group
 # D3	the closing group
@@ -131,6 +130,7 @@ function __nx_shell_schema_str(V, D, B)
 	D = D "<type toggle>"
 	D = D "<description Use double-quoted values instead of single-quoted shell-safe literals; enables interpolation and requires careful escaping>"
 
+	# still needed?
 	V["-C"] = "<nx:false/>"
 	D = D "C<null-concat>"
 	D = D "<default <nx:false/\\>>"
@@ -353,11 +353,41 @@ function __nx_shell_schema_str(V, D, B)
 	D = D "<type str>"
 	D = D "<description Directive that sets the prefix used for macro expansion in build snippets.>"
 
+	V["--macro-env"] = "$"
+	D = D "macro-env<%macro-environ macro-environ-modifier>"
+	D = D "<default $>"
+	D = D "<type str>"
+	D = D "<description Environment-variable modifier: appended to a name inside a macro, resolves the name as an environment variable instead of a schema slot. Example: <nx@var<@nx:$/\\> resolves $var.>"
+
+	V["--macro-else"] = ":-"
+	D = D "macro-else<%macro-else-modifier>"
+	D = D "<default :->"
+	D = D "<type str>"
+	D = D "<description Default-if-null: substitutes the following expression when the preceding name is null. Null means empty string or the none representation (<nx:none/\\>); the blank representation (<nx:blank/\\>) is not null to the parser. The fallback may itself be a macro.>"
+
+	V["--macro-if"] = ":+"
+	D = D "macro-if<%macro-if-modifier>"
+	D = D "<default :+>"
+	D = D "<type str>"
+	D = D "<description Alternate-if-non-null: substitutes the following expression when the preceding name is non-null (present and not empty or none); substitutes nothing when it is null.>"
+
+	V["--macro-coalescing"] = ":="
+	D = D "macro-coalescing<%macro-coalescing-modifier>"
+	D = D "<default :=>"
+	D = D "<type str>"
+	D = D "<description Assign-if-null: when the preceding name is null, assigns the following expression to that name and substitutes it. Null means empty string or the none representation; blank is not null to the parser.>"
+
 	V["--macro-suffix"] = "/>"
 	D = D "macro-suffix<%directive-macro-suffix>"
 	D = D "<default /\\>>"
 	D = D "<type str>"
 	D = D "<description Directive that sets the suffix used for macro expansion in build snippets.>"
+
+	V["--macro-expand"] = "<nx@"
+	D = D "macro-expand<%macro-expansion>"
+	D = D "<default <nx@>"
+	D = D "<type str>"
+	D = D "<description Macro open marker: starts a macro expression. Text following this marker, up to the matching close marker, is expanded. Pairs with macro-close to delimit the expression.>"
 
 	V["--true"] = "<nx:true/>"
 	D = D "true<%yes on>"
@@ -371,11 +401,11 @@ function __nx_shell_schema_str(V, D, B)
 	D = D "<type toggle>"
 	D = D "<description This is the value that represents true.>"
 
-	V["--nil"] = "<nx:nil/>"
-	D = D "nil<%null>"
-	D = D "<default <nx:nil/\\>>"
+	V["--none"] = "<nx:none/>"
+	D = D "none<%>"
+	D = D "<default <nx:none/\\>>"
 	D = D "<type str>"
-	D = D "<description Sentinel literal that represents an explicit null value within the schema system.>"
+	D = D "<description Sentinel literal that represents an explicit none value within the schema system.>"
 
 	V["--ampersand"] = "<nx:x26/>"
 	D = D "ampersand<%>"
@@ -490,7 +520,7 @@ function __nx_shell_schema_str(V, D, B)
 	D = D "blank<%Blank>"
 	D = D "<type str>"
 	D = D "<default <nx:blank/\\>>"
-	D = D "<description Sentinel literal for an explicitly empty value. Distinct from absence: an option set to <nx:blank/> is present but empty, whereas an unset option has no value at all.>"
+	D = D "<description Sentinel literal for an explicitly empty value. Distinct from absence: an option set to <nx:blank/\\> is present but empty, whereas an unset option has no value at all.>"
 
 	# TODO
 	V["--chain-eval"] = "1"
@@ -567,7 +597,12 @@ function __nx_shell_schema_mic(V, D)
 	# 7	assign separator
 	# 8	macro prefix
 	# 9	macro suffix
-	return V["-P"] D V["-L"] D V["-w"] D V["-c"] D V["-S"] D V["-y"] D V["--macro-prefix"] D V["--macro-suffix"]
+	# 10	macro env modifier
+	# 11	macro else modifier
+	# 12	macro if modifier
+	# 13	macro coalescing modifier
+	# 14	macro expand continuation
+	return V["-P"] D V["-L"] D V["-w"] D V["-c"] D V["-S"] D V["-y"] D V["--macro-prefix"] D V["--macro-suffix"] D V["--macro-env"] D V["--macro-else"] D V["--macro-if"] D V["--macro-coalescing"] D V["--macro-expand"]
 }
 
 function __nx_shell_schema_dir(V, D)
@@ -590,7 +625,6 @@ function __nx_shell_schema_dir(V, D)
 	# 16 prepend
 	return V["--type"] D V["--default"] D V["--epilog"] D V["--usage"] D V["--description"] D V["--build"] D V["--regex"] D V["--min"] D V["--max"] D V["--lazy"] D V["--post-before"] D V["--post-after"] D V["--post-awk-before"] D V["--post-awk-after"] D V["--append"] D V["--prepend"]
 }
-
 
 function __nx_shell_schema_rep(V, D)
 {
@@ -659,7 +693,7 @@ function __nx_shell_schema(D1, D2, D3, N,
 	ks, fas, kas, go, gc, lo, lc,
 	tpe, dft, epi, use, dsc, blt, regx, min, max, lzy, pafr, pbfr, apafr, apbfr, ap, pap,
 	fa, fd, fm, fr, fi, fn,
-	pref, ext, skp, ncn, fs, as, psrt, mpre, msuf,
+	pref, ext, skp, ncn, fs, as, psrt, mpre, msuf, menv, mels, mif, mcls, mexp,
 	tru, fls, non, amp,
 	rgx, acrgx,
 	v_ta, v_tb)
@@ -681,7 +715,6 @@ function __nx_shell_schema(D1, D2, D3, N,
 	# D8	misc symbols
 	# D9	directives
 	# D10	type representations
-	# D11	types
 
 	# REFERENCE ARRAYS
 	# V1	the symbol structure vector
@@ -689,7 +722,7 @@ function __nx_shell_schema(D1, D2, D3, N,
 
 	# LANES
 	# (0) schelars
-	# (1) types
+	# (1) (unused)
 	# (2) representation
 	# (3) directives
 	# (4) categories
@@ -708,7 +741,7 @@ function __nx_shell_schema(D1, D2, D3, N,
 	}
 
 	D2 = __nx_else(D2, "<nx:null/>")
-	D3 = __nx_else(D3, "<nx:null/>")
+	D3 = __nx_else(D3, D2)
 
 	i = int(N)
 	N = __nx_if(i < 0 || i > 5, 1, i)
@@ -809,7 +842,7 @@ function __nx_shell_schema(D1, D2, D3, N,
 
 	i = grpsrt
 	V1[ks] = nx_parr_stk(V1, i, ks)
-	
+
 	i = i + lpgrp
 	V1[lo] = nx_parr_stk(V1, i, lo)
 
@@ -818,8 +851,8 @@ function __nx_shell_schema(D1, D2, D3, N,
 
 	i = i + lpgrp
 	V1[kas] = nx_parr_stk(V1, i, kas)
-	##################################################
 
+	##################################################
 
 	# CATEGORY (D4) SECTION ###########################
 	oft = m * 4
@@ -839,7 +872,6 @@ function __nx_shell_schema(D1, D2, D3, N,
 	V1[(oft + 6) * strde] = lo
 	V1[(oft + 7) * strde] = lc
 	##################################################
-
 
 	# REPRESENTATION (D10) SECTION ###################
 	n = 5
@@ -888,14 +920,35 @@ function __nx_shell_schema(D1, D2, D3, N,
 	as = __nx_else(v_ta[6], "=") # assign symbol
 	mpre = __nx_else(v_ta[7], "<nx@") # macro prefix
 	msuf = __nx_else(v_ta[8], "/>") # macro suffix
+	menv = __nx_else(v_ta[9], "$")
+	mels = __nx_else(v_ta[10], ":-")
+	mif = __nx_else(v_ta[11], ":+")
+	mcls = __nx_else(v_ta[12], ":=")
+	mexp = __nx_else(v_ta[13], mpre)
+
+	split("", v_ta, "")
+	if (nx_delim_sep("macro prefix", mpre, v_tb, N) == -1)
+		eret = -1
+	if (nx_delim_sep("macro suffix", msuf, v_tb, N) == -1)
+		eret = -1
+	if (nx_delim_sep("macro environ modifier", menv, v_tb, N) == -1)
+		eret = -1
+	if (nx_delim_sep("macro else modifier", mels, v_tb, N) == -1)
+		eret = -1
+	if (nx_delim_sep("macro if modifier", mif, v_tb, N) == -1)
+		eret = -1
+	if (nx_delim_sep("macro coalescing modifier", mcls, v_tb, N) == -1)
+		eret = -1
+
+	delete v_tb
 
 	split("", v_ta, "")
 	ext = nx_shell_diff(ext, v_ta, "", v_tb)
 	skp = nx_shell_diff(skp, v_ta, "", v_tb)
 	delete v_tb
-
 	split(D8, v_ta, D2)
-	n = 9
+
+	n = 14
 	oft = m * 8
 	V1[(oft + 0) * strde] = n
 	# 1	argument prefix character
@@ -907,6 +960,11 @@ function __nx_shell_schema(D1, D2, D3, N,
 	# 7	macro prefix
 	# 8	macro suffix
 	# 9	the remainder separator
+	# 10	macro env modifier
+	# 11	macro else modifier
+	# 12	macro if modifier
+	# 13	macro coalescing modifier
+	# 14	macro expand continuation
 	V1[(oft + 1) * strde] = pref
 	V1[(oft + 2) * strde] = ext
 	V1[(oft + 3) * strde] = skp
@@ -916,8 +974,12 @@ function __nx_shell_schema(D1, D2, D3, N,
 	V1[(oft + 7) * strde] = mpre
 	V1[(oft + 8) * strde] = msuf
 	V1[(oft + 9) * strde] = D3
+	V1[(oft + 10) * strde] = menv
+	V1[(oft + 11) * strde] = mels
+	V1[(oft + 12) * strde] = mif
+	V1[(oft + 13) * strde] = mcls
+	V1[(oft + 14) * strde] = mexp
 	##################################################
-
 
 	# TOGGLES (D5) SECTION ###########################
 	split(D5, v_ta, D2)
@@ -1945,43 +2007,43 @@ function nx_shell_args(V1, V2,
 }
 
 function __nx_shell_help_format(V, N,
-	j, strde, dbg)
+	j, strde, dbg, oft)
 {
 	strde = V[0]
 	dbg = V[2 * strde]
-
-	j = 0
-	if (N in V) { nx_ansi_light("<nx:null/>\ntype:\n\t'" V[N] "'"); j = 1 }
-	N += strde
-	if (N in V) { nx_ansi_debug("<nx:null/>\ndefault:\n\t'" V[N] "'"); j = 1 }
-	N += strde
-	if (N in V) { nx_ansi_success("<nx:null/>\nepilog:\n\t'" V[N] "'"); j = 1 }
-	N += strde
-	if (N in V) { nx_ansi_alert("<nx:null/>\nusage:\n\t'" V[N] "'"); j = 1 }
-	N += strde
-	if (N in V) { nx_ansi_light("<nx:null/>\ndescription:\n\t'" V[N] "'"); j = 1 }
-	N += strde
-	if (dbg > 3 && N in V) { nx_ansi_debug("<nx:null/>\nbuild:\n\t'"  V[N] "'"); j = 1 }
-	N += strde
-	if (N in V) { nx_ansi_success("<nx:null/>\nregex:\n\t'" V[N] "'"); j = 1 }
-	N += strde
-	if (N in V) { nx_ansi_alert("<nx:null/>\nmin:\n\t'" V[N] "'"); j = 1 }
-	N += strde
-	if (N in V) { nx_ansi_light("<nx:null/>\nmax:\n\t'" V[N] "'"); j = 1 }
-	N += strde
-	if (dbg > 3 && N in V) { nx_ansi_debug("<nx:null/>\nlazy:\n\t'" V[N] "'"); j = 1 }
-	N += strde
-	if (dbg > 3 && N in V) { nx_ansi_success("<nx:null/>\npost-before:\n\t'" V[N] "'"); j = 1 }
-	N += strde
-	if (dbg > 3 && N in V) { nx_ansi_alert("<nx:null/>\npost-after:\n\t'" V[N] "'"); j = 1 }
-	N += strde
-	if (dbg > 3 && N in V) { nx_ansi_light("<nx:null/>\npost-awk-before:\n\t'" V[N] "'"); j = 1 }
-	N += strde
-	if (dbg > 3 && N in V) { nx_ansi_debug("<nx:null/>\npost-awk-after:\n\t'" V[N] "'"); j = 1 }
-	N += strde
-	if (dbg > 1 && N in V) { nx_ansi_success("<nx:null/>\nappend:\n\t'" V[N] "'"); j = 1 }
-	N += strde
-	if (dbg > 1 && N in V) { nx_ansi_alert("<nx:null/>\nprepend:\n\t'" V[N] "'"); j = 1 }
+	oft = V[3 * strde] * 3 * strde - N + strde
+	j = 0 # 1 type directive
+	if (N in V) { nx_ansi_light("<nx:null/>\n" V[N + oft] ":\n\t'" V[N] "'"); j = 1 }
+	N = N + strde # 2 default directive
+	if (N in V) { nx_ansi_debug("<nx:null/>\n" V[N + oft] ":\n\t'" V[N] "'"); j = 1 }
+	N = N + strde # 3 epilog directive
+	if (N in V) { nx_ansi_success("<nx:null/>\n" V[N + oft] ":\n\t'" V[N] "'"); j = 1 }
+	N = N + strde # 4 usage directive
+	if (N in V) { nx_ansi_alert("<nx:null/>\n" V[N + oft] ":\n\t'" V[N] "'"); j = 1 }
+	N = N + strde # 5 description directive
+	if (N in V) { nx_ansi_light("<nx:null/>\n" V[N + oft] ":\n\t'" V[N] "'"); j = 1 }
+	N = N + strde # 6 build directive
+	if (dbg > 3 && N in V) { nx_ansi_debug("<nx:null/>\n" V[N + oft] ":\n\t'"  V[N] "'"); j = 1 }
+	N = N + strde # 7 regex directive
+	if (N in V) { nx_ansi_success("<nx:null/>\n" V[N + oft] ":\n\t'" V[N] "'"); j = 1 }
+	N = N + strde # 8 min directive
+	if (N in V) { nx_ansi_alert("<nx:null/>\n" V[N + oft] ":\n\t'" V[N] "'"); j = 1 }
+	N = N + strde # 9 max directive
+	if (N in V) { nx_ansi_light("<nx:null/>\n" V[N + oft] ":\n\t'" V[N] "'"); j = 1 }
+	N = N + strde # 10 lazy directive
+	if (dbg > 3 && N in V) { nx_ansi_debug("<nx:null/>\n" V[N + oft] ":\n\t'" V[N] "'"); j = 1 }
+	N = N + strde # 11 post before
+	if (dbg > 3 && N in V) { nx_ansi_success("<nx:null/>\n" V[N + oft] ":\n\t'" V[N] "'"); j = 1 }
+	N = N + strde # 12 post after
+	if (dbg > 3 && N in V) { nx_ansi_alert("<nx:null/>\n" V[N + oft] ":\n\t'" V[N] "'"); j = 1 }
+	N = N + strde # 13 post awk eval before
+	if (dbg > 3 && N in V) { nx_ansi_light("<nx:null/>\n" V[N + oft] ":\n\t'" V[N] "'"); j = 1 }
+	N = N + strde # 14 post awk eval after
+	if (dbg > 3 && N in V) { nx_ansi_debug("<nx:null/>\n" V[N + oft] ":\n\t'" V[N] "'"); j = 1 }
+	N = N + strde # 15 append
+	if (dbg > 1 && N in V) { nx_ansi_success("<nx:null/>\n" V[N + oft] ":\n\t'" V[N] "'"); j = 1 }
+	N = N + strde # 16 prepend
+	if (dbg > 1 && N in V) { nx_ansi_alert("<nx:null/>\n" V[N + oft] ":\n\t'" V[N] "'"); j = 1 }
 	if (j) nx_fd_stderr("\n")
 }
 
@@ -2114,6 +2176,85 @@ function __nx_shell_find_replace(V1, V2, N,
 	} else {
 		V1[N + strde * 2] = mstr
 	}
+}
+
+function nx_macro_parser(V, N,
+	npre, nsuf, ps, menv, mels, mif, mcls, mexp,
+	m, strde, dbg, bits, amp, blnk, n, oft,
+	mres, mvl, mar, ln, srt, cse, ste)
+{
+	strde = V[0]
+	dbg = V[2 * strde]
+	m = V[3 * strde]
+	bits = V[N + strde * 4]
+
+	# REPRESENTATION
+	oft = m * 2
+	amp = V[(oft + 4) * strde]
+	blnk = V[(oft + 5) * strde]
+
+	cse = nx_is_upper(substr(V2["opt"], 1, 1))
+	mvl = V2["val"]
+	gsub(/&/, amp, mvl)
+	num = int(V2["num"])
+	mstr = V[N]
+	mar = V[N + strde]
+
+	oft = m * 8
+	# 1	argument prefix character
+	# 2	extra valid long form characters outside alpha class allowed between alpha characters
+	# 3	characters to ignore/skip defaults to whitespace characters
+	# 4	the concat string to format the string remainder
+	# 5	the action init symbol
+	# 6	assign symbol
+	# 7	macro prefix
+	# 8	macro suffix
+	# 9	the remainder separator
+	# 10	macro env modifier
+	# 11	macro else modifier
+	# 12	macro if modifier
+	# 13	macro coalescing modifier
+	# 14	macro expand continuation
+	mpre = V[(oft + 7) * strde]
+	msuf = V[(oft + 8) * strde]
+	ps = V[(oft + 9) * strde]
+	menv = V[(oft + 10) * strde]
+	mels = V[(oft + 11) * strde]
+	mif = V[(oft + 12) * strde]
+	mcls = V[(oft + 13) * strde] # TODO
+	mexp = V[(oft + 14) * strde]
+
+	##################################################
+	mres = ""
+	while (match(mstr, mpre)) {
+		srt = RSTART
+		ln = RLENGTH
+		mar = substr(mstr, srt)
+		if (!match(mar, msuf)) {
+			mres = mres substr(mstr, 1, srt + ln - 1)
+			mstr = substr(mstr, srt + ln)
+			continue
+		}
+
+		mres = mres substr(mstr, 1, srt - 1)
+		mstr = substr(mstr, srt + RSTART + RLENGTH - 1)
+		mar = substr(mar, 1 + ln, RSTART - ln - 1)
+		ste = 1
+		do {
+			if (ste == 1) { # no state
+				if (ste != 5)
+					ste = 0
+			} else if (ste == 2) { # flag state
+			} else if (ste == 3) { # positional state
+			} else if (ste == 4) { # environ state
+			} else if (ste == 5) { # expand state
+			} else if (ste == 6) { # else state
+			} else if (ste == 7) { # if state
+			}
+		} while (ste)
+		mres = mres "" mar
+	}
+	return mres "" mstr
 }
 
 function nx_shell_build(V, N,
@@ -2580,7 +2721,7 @@ function nx_shell_dispatch(V1, V2, N1, N2,
 			}
 		}
 	}
-	if (bld in V1)
+	if (mod != fi && bld in V1)
 		nx_shell_build(V1, bld)
 	return N1
 }

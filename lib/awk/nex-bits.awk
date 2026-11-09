@@ -1,12 +1,42 @@
 #nx_include nex-misc.awk
 
-function nx_bit_next(N, V, n, m, b, p)
+function nx_bit_next(N, V, n)
+{
+	if (N > 0)
+		return nx_bit_get(N, V) * 2
+	n = nx_bit_get(-N, V) * 2
+	return nx_bit_get(-n)
+}
+
+function nx_bit_round(N, V, n1, n2, b)
+{
+	if (b = N < 0)
+		N = -N
+	n1 = nx_bit_prev(N, V)
+	n2 = nx_bit_next(N, V)
+	if (N - n1 < n2 - N)
+		N = n1
+	else
+		N = n2
+	if (b)
+		return nx_bit_get(-N, V)
+	return N
+}
+
+function nx_bit_prev(N, V)
+{
+	if (N > 0)
+		return nx_bit_get(N, V)
+	return nx_bit_get(-nx_bit_get(-N, V))
+}
+
+function nx_bit_get(N, V, n, m, b, p)
 {
 	n = 1
 	if ((N = int(N)) <= 1) {
 		if (N == 0 || N == 1)
 			return N
-		N = -N + 1
+		N = -N
 		p = 0
 		do {
 			m = N / 2

@@ -10,19 +10,12 @@
 #include "nex-bw.h"
 #include "nex-misc.h"
 
-void nx_createCmdList_gF()
+void NX_createCmdList_g_1C_uF(const char *const *list, size_t count)
 {
-	char *list[] = {
-		"UID",
-		"GID",
-		"GIDS",
-		"PID",
-		"CWD",
-		"HOSTNAME",
-		"ENDIAN"
-	};
-	for (size_t i = 0; i < sizeof(list) / sizeof(list[0]); ++i)
-		printf("#define NEX_%s_C 0x%x\n", list[i], nX_hashChars_h__1BF((unsigned char*)list[i]));
+	for (size_t i = 0; i < count; ++i)
+		printf("#define NEX_%s_C 0x%x\n",
+			list[i],
+			nX_hashChars_h__1BF((const unsigned char *)list[i]));
 }
 
 void nX_signalHandler_g_iF(int sig)
